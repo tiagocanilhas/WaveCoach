@@ -1,9 +1,9 @@
-package pt.isel.daw.imSystem.repository
+package waveCoach.repository
+
+import waveCoach.repository.UserRepository
 
 interface Transaction {
-    val usersRepository: UsersRepository
-    val channelsRepository: ChannelsRepository
-    val messagesRepository: MessagesRepository
+    val userRepository: UserRepository
 
     // other repository types
     fun rollback()

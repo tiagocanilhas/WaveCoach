@@ -4,7 +4,6 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint") version "12.1.1"
 }
 
-group = "pt.isel.daw"
 version = "1.0-SNAPSHOT"
 
 repositories {
@@ -14,8 +13,8 @@ repositories {
 dependencies {
 
     // Module dependencies
-    implementation(project(":IMSystem:domain"))
-    implementation(project(":IMSystem:services"))
+    implementation(project(":waveCoach:domain"))
+    implementation(project(":waveCoach:services"))
 
     // To use Spring MVC and the Servlet API
     implementation("org.springframework:spring-webmvc:6.1.13")

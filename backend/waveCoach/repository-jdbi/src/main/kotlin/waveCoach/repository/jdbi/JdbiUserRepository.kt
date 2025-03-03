@@ -1,7 +1,7 @@
 package waveCoach.repository.jdbi
 
-import org.springframework.asm.Handle
-import waveCoach.domain.UserRepository
+import org.jdbi.v3.core.Handle
+import waveCoach.repository.UserRepository
 
 class JdbiUserRepository(
     private val handle: Handle,

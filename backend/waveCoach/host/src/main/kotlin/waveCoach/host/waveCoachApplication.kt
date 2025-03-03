@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean
 import waveCoach.repository.jdbi.configureWithAppRequirements
 
 @SpringBootApplication
-class ImSystemApplication {
+class WaveCoachApplication {
     @Bean
     fun jdbi() = Jdbi.create(
         PGSimpleDataSource().apply {
@@ -19,5 +19,5 @@ class ImSystemApplication {
 
 
 fun main(args: Array<String>) {
-    runApplication<ImSystemApplication>(*args)
+    runApplication<WaveCoachApplication>(*args)
 }

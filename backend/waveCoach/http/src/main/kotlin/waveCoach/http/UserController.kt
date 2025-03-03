@@ -1,7 +1,11 @@
-package waveCoach.domain
+package waveCoach.http
 
-data class User(
-    val id: Int,
-    val username: String,
-    val password: String, //PasswordValidationInfo,
-)
+import org.springframework.web.bind.annotation.RestController
+import waveCoach.services.UserServices
+
+@RestController
+class UserController(
+    private val userServices: UserServices,
+) {
+    // TODO: Implement UserController
+}

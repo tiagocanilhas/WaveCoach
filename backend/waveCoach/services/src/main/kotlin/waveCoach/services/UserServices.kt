@@ -1,7 +1,10 @@
-package waveCoach.domain
+package waveCoach.services
 
-data class User(
-    val id: Int,
-    val username: String,
-    val password: String, //PasswordValidationInfo,
-)
+import org.springframework.stereotype.Component
+
+@Component
+class UserServices(
+
+){
+    // TODO: Implement UserServices
+}

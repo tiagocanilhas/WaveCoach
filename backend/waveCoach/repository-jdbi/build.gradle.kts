@@ -3,7 +3,6 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint") version "12.1.1"
 }
 
-group = "pt.isel.daw"
 version = "1.0-SNAPSHOT"
 
 repositories {
@@ -12,8 +11,8 @@ repositories {
 
 dependencies {
     // Module dependencies
-    implementation(project(":IMSystem:repository"))
-    implementation(project(":IMSystem:domain"))
+    implementation(project(":waveCoach:repository"))
+    implementation(project(":waveCoach:domain"))
 
     // To get the DI annotation
     implementation("jakarta.inject:jakarta.inject-api:2.0.1")
@@ -41,8 +40,8 @@ tasks.test {
     if (System.getenv("DB_URL") == null) {
         environment("DB_URL", "jdbc:postgresql://localhost:5432/db?user=dbuser&password=changeit")
     }
-    dependsOn(":IMSystem:repository-jdbi:dbTestsWait")
-    finalizedBy(":IMSystem:repository-jdbi:dbTestsDown")
+    dependsOn(":waveCoach:repository-jdbi:dbTestsWait")
+    finalizedBy(":waveCoach:repository-jdbi:dbTestsDown")
 }
 
 kotlin {

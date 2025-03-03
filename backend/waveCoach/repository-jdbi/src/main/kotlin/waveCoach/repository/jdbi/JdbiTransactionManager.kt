@@ -1,9 +1,9 @@
-package pt.isel.daw.imSystem.repository.jdbi
+package waveCoach.repository.jdbi
 
 import org.jdbi.v3.core.Jdbi
 import org.springframework.stereotype.Component
-import pt.isel.daw.imSystem.repository.Transaction
-import pt.isel.daw.imSystem.repository.TransactionManager
+import waveCoach.repository.Transaction
+import waveCoach.repository.TransactionManager
 
 @Component
 class JdbiTransactionManager(

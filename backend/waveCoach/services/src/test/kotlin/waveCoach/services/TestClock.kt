@@ -1,4 +1,4 @@
-package pt.isel.daw.imSystem.services
+package waveCoach.services
 
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant

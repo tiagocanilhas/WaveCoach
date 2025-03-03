@@ -1,4 +1,4 @@
-package pt.isel.daw.imSystem
+package waveCoach.host
 
 object Environment {
     fun getDbUrl() = System.getenv(KEY_DB_URL) ?: throw Exception("Missing env var $KEY_DB_URL")

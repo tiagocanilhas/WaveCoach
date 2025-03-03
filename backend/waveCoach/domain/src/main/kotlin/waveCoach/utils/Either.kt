@@ -1,4 +1,4 @@
-package pt.isel.daw.imSystem.utils
+package waveCoach.utils
 
 sealed class Either<out L, out R> {
     data class Left<out L>(val value: L) : Either<L, Nothing>()

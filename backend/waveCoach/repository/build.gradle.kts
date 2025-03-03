@@ -3,7 +3,6 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint") version "12.1.1"
 }
 
-group = "pt.isel.daw"
 version = "1.0-SNAPSHOT"
 
 repositories {
@@ -12,7 +11,7 @@ repositories {
 
 dependencies {
     // Module dependencies
-    api(project(":IMSystem:domain"))
+    api(project(":waveCoach:domain"))
 
     // To use Kotlin specific date and time functions
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.1")

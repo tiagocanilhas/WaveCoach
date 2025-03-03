@@ -10,4 +10,4 @@ COPY ${DEPENDENCY}/META-INF /app/META-INF
 COPY ${DEPENDENCY}/BOOT-INF/classes /app
 
 # the entry point
-ENTRYPOINT ["java","-cp","app:app/lib/*","pt.isel.daw.IMSystem.ImSystemApplicationKt"]
+ENTRYPOINT ["java","-cp","app:app/lib/*","waveCoach.WaveCoachApplicationKt"]
