@@ -27,13 +27,13 @@
 
 \author{
 \begin{tabular}{c}
+             Tiago Canilhas, n.º50472, e-mail: a50472@alunos.isel.pt, tel.: 924115540\\
              João Barrisco, n.º50476, e-mail: a50476@alunos.isel.pt, tel.: 967487235\\
-             Tiago Canilhas, n.º 50472, e-mail: a50472@alunos.isel.pt, tel.: 924115540\\
 \end{tabular}}
 
 \date{
 \begin{tabular}{ll}
-  {Supervisor:} & Filipe Freitas, e-mail: filipe.freitas@isel.pt \\
+  {Supervisor:} Filipe Freitas, e-mail: ffreitas@cc.isel.ipl.pt \\
 \end{tabular}\\
 \vspace{5mm}
 March 9,  2025}
@@ -41,43 +41,53 @@ March 9,  2025}
 \maketitle
 
 \section{Introduction}
-The goal of this project is to develop a web application that allows the management of surfing athletes. This application is mainly aimed at coaches, but athletes can also access it to view their performance. Coaches will be able to register athletes, log different training sessions, such as gym or surf sessions, record competition results, and monitor
-performance through interactive charts. This will help them analyze progress and adjust training plans. This project arose from the need for coaches to have a more efficient and effective platform, in order to replace manual registration.
+The goal of this project is to develop a web application that allows the management of surfing athletes. This application is mainly aimed at coaches, but athletes can also access it to view their performance. Coaches will be able to register athletes, log different training sessions (e.g. gym, surf), record competition results, and monitor
+performance through interactive charts. This will help them analyze progress and adjust training plans. This project is being developed to meet coaches' need for a more efficient and effective platform, replacing manual registration.
 
 \section{System Requirements}
+
 \subsection{Functional Requirements}
 \begin{itemize}
-\item \textbf{User registration:} Coaches should be able to register independently by providing a username and password;
-\item \textbf{Athlete management:} The website should allow coaches to add and remove their athletes.Adding an athlete will only require their name and date of birth and will generate a code that the coach can give to the athlete to access the web application;
+\item \textbf{User registration:} Coaches should be able to register by providing a username and password;
+\item \textbf{Athlete management:} Coaches should be able to add and remove their athletes. Adding an athlete will only require their name and date of birth. A code will be generated to share with the athlete to access the web application;
 \item \textbf{Athlete profile:} Coaches should be able to add and view information related to their athletes, such as weight, height, body mass index, and more. Athletes can also view this same information;
 \item \textbf{Athletes' training records:} Coaches, through interactive tables and charts, should be able to record and track each athlete's training sessions. Each training session contains different information:
 \begin{itemize}
 \item \textbf{Surf training sessions:} Sea conditions, maneuvers performed, and a training-related questionnaire completed by the athlete;
-\item \textbf{Gym training sessions:}Type of exercise, repetitions, and load.
+\item \textbf{Gym training sessions:} Type of exercise, repetitions, and weight.
 \end{itemize}
 \item \textbf{Athletes' summaries:} The application should allow, weekly or monthly, summaries so that coaches can analyze their athletes' progress;
-\item \textbf{Athletes' competition records:}The application should allow coaches to store data from their athletes' competitions, such as the date, location, and score achieved.
+\item \textbf{Athletes' competition records:} Coaches can store data from their athletes' competitions, such as the date, location, and score achieved.
 \end{itemize}
+
 \subsection{Non-Functional Requirements}
 \begin{itemize}
 \item \textbf{User-friendly:} The application should be easy to understand, and therefore, it should have a simple and intuitive user interface;
-\item \textbf{Cloud Deployment:}
+\item \textbf{Cloud Deployment:} The application will be hosted on a cloud platform to ensure easy access. This will allow users to access the platform from anywhere without needing local installations.
 \item \textbf{Tested:} The application must include tests to ensure that all functionalities work correctly.
 \end{itemize}
+
 \subsection{Optional Features}
 \begin{itemize}
 \item \textbf{PDF Generation:} The application should be able to generate a PDF file with the athlete's summaries, so the coach can interact with the summaries more easily;
 \item \textbf{Planning of future training sessions:} In addition to accessing past training sessions, the coach will be able to schedule new training sessions by providing the date and type of training. Athletes will be able to access this information;
-\item \textbf{Email notificationsl:} The application will notify athletes by email if any training session is scheduled or changed. For this, athletes will need to associate their email address.
+\item \textbf{Email notifications:} The application will notify athletes by email if any training session is scheduled or changed. For this, athletes will need to associate their email address.
 \end{itemize}
+
 \section{Technologies}
 In the development of this project different technologies will be employed, such as the Kotlin programming language \cite{kotlin} and the Spring framework \cite{spring}, which will be utilized for the creation of the API. PostgreSQL \cite{postgresql} will also be used for data storage. Finally, TypeScript \cite{typescript} will be applied, together with the React library \cite{react}, for the creation of the website
 
 \section{Risks}
 \begin{itemize}
-\item One Risk
+\item .
 \end{itemize}
 
+\section{Plan}
+\begin{figure}[h]
+\centering
+\includegraphics [width=6in]{GanttChart.png}
+\caption{Gantt Chart plan.}
+\end{figure}
 
 \bibliographystyle{unsrt}
 \bibliography{references}
