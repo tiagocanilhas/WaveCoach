@@ -44,9 +44,9 @@
         <task id="5" uid="7469164dbfd7407ea8674fca43b40b0b" name="Final Delivery" meeting="false" start="2025-07-14" duration="1" complete="0" expand="true"/>
         <task id="1" uid="932cd6acc8b74e658bc131b23f31cd87" name="Backend" meeting="false" start="2025-03-10" duration="41" complete="0" expand="true"/>
         <task id="2" uid="fefbd70259df42a4a3c9dbbcd1bdb27b" name="Frontend" meeting="false" start="2025-03-17" duration="53" complete="0" expand="true"/>
-        <task id="10" uid="41bf2b7aefb04b75952844f0d4fac7ae" name="Report" meeting="false" start="2025-03-10" duration="60" complete="0" expand="true"/>
         <task id="11" uid="0e79038fdae54d69979bee3931a36738" name="Optionals" meeting="false" start="2025-06-03" duration="19" complete="0" expand="true"/>
         <task id="9" uid="75b16676574e4d549267ecb64713bc5a" name="Deployment" meeting="false" start="2025-06-30" duration="6" complete="0" expand="true"/>
+        <task id="10" uid="41bf2b7aefb04b75952844f0d4fac7ae" name="Report" meeting="false" start="2025-03-10" duration="86" complete="0" expand="true"/>
     </tasks>
     <resources/>
     <allocations/>
