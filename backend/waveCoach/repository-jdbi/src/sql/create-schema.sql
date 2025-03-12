@@ -48,60 +48,60 @@ CREATE TABLE waveCoach.token (
 
 CREATE TABLE waveCoach.caracteristics (
     date BIGINT DEFAULT EXTRACT(EPOCH FROM CURRENT_TIMESTAMP) PRIMARY KEY NOT NULL,
-    uid INTEGER REFERENCES waveCoach.athlete(id),
+    uid INTEGER REFERENCES waveCoach.athlete(uid),
     weight FLOAT,
     height INTEGER,
     calories INTEGER,
-    %MG FLOAT,
+--    %MG FLOAT,
     waist INTEGER,
-    arm INTEGER,
+   arm INTEGER,
     thigh INTEGER,
     tricep FLOAT,
-    abdominal FLOAT,
-    waist FLOAT,
+    abdominal FLOAT--,
+    --waist FLOAT
 );
 
 CREATE TABLE waveCoach.mesocycle(
     id SERIAL PRIMARY KEY,
-    uid INTEGER REFERENCES waveCoach.athlete(id),
+    uid INTEGER REFERENCES waveCoach.athlete(uid),
     start_time BIGINT NOT NULL,
-    end_time BIGINT NOT NULL,
-)
+    end_time BIGINT NOT NULL
+);
 
 CREATE TABLE waveCoach.microcycle(
     id SERIAL PRIMARY KEY,
     mesocycle INTEGER REFERENCES waveCoach.mesocycle(id),
     start_time BIGINT NOT NULL,
-    end_time BIGINT NOT NULL,
-)
+    end_time BIGINT NOT NULL
+);
 
 CREATE TABLE waveCoach.activity(
     id SERIAL PRIMARY KEY,
     microcycle INTEGER REFERENCES waveCoach.microcycle(id),
-    date BIGINT DEFAULT EXTRACT(EPOCH FROM CURRENT_TIMESTAMP) NOT NULL,
-)
+    date BIGINT DEFAULT EXTRACT(EPOCH FROM CURRENT_TIMESTAMP) NOT NULL
+);
 
 CREATE TABLE waveCoach.gym(
     activity INTEGER PRIMARY KEY,
-    FOREIGN KEY (activity) REFERENCES waveCoach.activity(id),
-)
+    FOREIGN KEY (activity) REFERENCES waveCoach.activity(id)
+);
 
 CREATE TABLE waveCoach.gym_exercises(
     id SERIAL PRIMARY KEY,
     name VARCHAR(64) NOT NULL,
-    category VARCHAR(64) NOT NULL,
-)
+    category VARCHAR(64) NOT NULL
+);
 
 CREATE TABLE waveCoach.exercise(
     id SERIAL PRIMARY KEY,
-    activity INTEGER REFERENCES waveCoach.gym(id),
+    activity INTEGER REFERENCES waveCoach.gym(activity),
     exercise INTEGER REFERENCES waveCoach.gym_exercises(id),
     weight FLOAT,
     series INTEGER,
     repetitions INTEGER,
     rest_time INTEGER,
-    order INTEGER,
-)
+    order_ INTEGER
+);
 
 CREATE TABLE waveCoach.water(
     activity INTEGER PRIMARY KEY,
@@ -111,48 +111,48 @@ CREATE TABLE waveCoach.water(
     condition VARCHAR(64),
     heart_rate INTEGER,
     time INTEGER,
-    FOREIGN KEY (activity) REFERENCES waveCoach.activity(id),
-)
+    FOREIGN KEY (activity) REFERENCES waveCoach.activity(id)
+);
 
 CREATE TABLE waveCoach.questionnaire(
     id SERIAL PRIMARY KEY,
-    activity INTEGER REFERENCES waveCoach.water(id),
+    activity INTEGER REFERENCES waveCoach.water(activity),
     sleep INTEGER,
     fatigue INTEGER,
     stress INTEGER,
-    muscle_pain INTEGER,
-)
+    muscle_pain INTEGER
+);
 
 CREATE TABLE waveCoach.water_maneuvers(
-    activity INTEGER PRIMARY KEY,
-    name VARCHAR(64),
-    FOREIGN KEY (activity) REFERENCES waveCoach.activity(id),
-)
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(64) NOT NULL
+);
 
 CREATE TABLE waveCoach.maneuver(
     id SERIAL PRIMARY KEY,
-    activity INTEGER REFERENCES waveCoach.water(id),
+    activity INTEGER REFERENCES waveCoach.water(activity),
     maneuver INTEGER REFERENCES waveCoach.water_maneuvers(id),
-    side ENUM('left', 'right') NOT NULL,
+    side VARCHAR(5) CHECK (side IN ('left', 'right')) NOT NULL,
     success INTEGER,
     failed INTEGER,
-    order INTEGER,
-)
+    order_ INTEGER
+);
 
 CREATE TABLE waveCoach.competition(
     id SERIAL PRIMARY KEY,
     date BIGINT DEFAULT EXTRACT(EPOCH FROM CURRENT_TIMESTAMP) NOT NULL,
-    location VARCHAR(64),
-)
+    location VARCHAR(64)
+);
 
 CREATE TABLE waveCoach.athlete_competition(
-    athlete INTEGER REFERENCES waveCoach.athlete(id),
+    athlete INTEGER REFERENCES waveCoach.athlete(uid),
     competition INTEGER REFERENCES waveCoach.competition(id),
     score INTEGER,
-    PRIMARY KEY (athlete, competition),
-)
+    PRIMARY KEY (athlete, competition)
+);
 
 CREATE TABLE waveCoach.heat(
-)
+);
+
 
 
