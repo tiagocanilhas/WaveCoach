@@ -13,6 +13,9 @@ class UserDomain(
     private val tokenEncoder: TokenEncoder,
     private val config: UserDomainConfig,
 ) {
+    fun isUsernameValid(username: String): Boolean =
+        username.length in 4..63
+
     fun isSafePassword(password: String): Boolean =
         password.length > 6 &&
                 password.any { it.isUpperCase() } &&

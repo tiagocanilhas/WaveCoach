@@ -12,7 +12,7 @@ DROP TABLE IF EXISTS waveCoach.gym;
 DROP TABLE IF EXISTS waveCoach.activity;
 DROP TABLE IF EXISTS waveCoach.microcycle;
 DROP TABLE IF EXISTS waveCoach.mesocycle;
-DROP TABLE IF EXISTS waveCoach.caracteristics;
+DROP TABLE IF EXISTS waveCoach.characteristics;
 DROP TABLE IF EXISTS waveCoach.token;
 DROP TABLE IF EXISTS waveCoach.athlete;
 DROP TABLE IF EXISTS waveCoach.coach;
@@ -35,7 +35,11 @@ CREATE TABLE waveCoach.coach (
 
 CREATE TABLE waveCoach.athlete (
     uid INTEGER PRIMARY KEY,
-    code VARCHAR(64) UNIQUE NOT NULL,
+    coach INTEGER,
+    name VARCHAR(64) NOT NULL,
+    birth_date DATE NOT NULL,
+    --code VARCHAR(64) UNIQUE NOT NULL,
+    FOREIGN KEY (coach) REFERENCES waveCoach.coach(uid),
     FOREIGN KEY (uid) REFERENCES waveCoach.user(id)
 );
 
@@ -46,7 +50,7 @@ CREATE TABLE waveCoach.token (
     used_time BIGINT DEFAULT EXTRACT(EPOCH FROM CURRENT_TIMESTAMP) NOT NULL
 );
 
-CREATE TABLE waveCoach.caracteristics (
+CREATE TABLE waveCoach.characteristics (
     date BIGINT DEFAULT EXTRACT(EPOCH FROM CURRENT_TIMESTAMP) PRIMARY KEY NOT NULL,
     uid INTEGER REFERENCES waveCoach.athlete(uid),
     weight FLOAT,

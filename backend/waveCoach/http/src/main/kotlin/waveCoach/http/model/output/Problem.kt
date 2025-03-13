@@ -28,5 +28,15 @@ class Problem(
             "Username already exists",
             URI.create("$BASE_URI/username-already-exists")
         )
+
+        val invalidBirthDate = Problem(
+            "Invalid birth date",
+            URI.create("$BASE_URI/invalid-birth-date")
+        )
+
+        val invalidName = Problem(
+            "Invalid name",
+            URI.create("$BASE_URI/invalid-name")
+        )
     }
 }

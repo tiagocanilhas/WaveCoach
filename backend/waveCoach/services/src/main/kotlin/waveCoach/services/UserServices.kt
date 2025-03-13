@@ -22,6 +22,8 @@ sealed class GetUserByTokenError {
 }
 typealias GetUserByTokenResult = Either<GetUserByTokenError, User>
 
+
+
 @Component
 class UserServices(
     private val transactionManager: TransactionManager,
