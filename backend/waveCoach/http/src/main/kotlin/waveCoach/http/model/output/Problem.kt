@@ -19,9 +19,14 @@ class Problem(
 
         private const val BASE_URI = ""
 
-        val xpto = Problem(
-            "xpto",
-            URI("$BASE_URI/xpto"),
+        val insecurePassword = Problem(
+            "Insecure password",
+            URI.create("$BASE_URI/insecure-password")
+        )
+
+        val usernameAlreadyExists = Problem(
+            "Username already exists",
+            URI.create("$BASE_URI/username-already-exists")
         )
     }
 }
