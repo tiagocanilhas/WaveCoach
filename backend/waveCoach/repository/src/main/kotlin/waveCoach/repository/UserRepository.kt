@@ -9,6 +9,8 @@ import waveCoach.domain.User
 interface UserRepository {
     fun storeUser(username: String, passwordValidationInfo: PasswordValidationInfo): Int
 
+    fun getUserByUsername(username: String): User?
+
     fun checkUsername(username: String): Boolean
 
     fun storeToken(token: Token, maxTokens: Int)

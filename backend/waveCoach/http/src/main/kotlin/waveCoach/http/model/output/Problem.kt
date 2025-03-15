@@ -21,12 +21,27 @@ class Problem(
 
         val insecurePassword = Problem(
             "Insecure password",
-            URI.create("$BASE_URI/insecure-password")
+            URI("$BASE_URI/insecure-password")
+        )
+
+        val invalidLogin = Problem(
+            "Invalid login",
+            URI("$BASE_URI/invalid-login")
+        )
+
+        val passwordIsBlank = Problem(
+            "Password is blank",
+            URI("$BASE_URI/password-is-blank")
         )
 
         val usernameAlreadyExists = Problem(
             "Username already exists",
-            URI.create("$BASE_URI/username-already-exists")
+            URI("$BASE_URI/username-already-exists")
+        )
+
+        val usernameIsBlank = Problem(
+            "Username is blank",
+            URI("$BASE_URI/username-is-blank")
         )
 
         val invalidBirthDate = Problem(

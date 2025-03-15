@@ -19,6 +19,11 @@ class UserControllerTest {
     val BASE_URL: String
         get() = "http://localhost:$port/api"
 
+
+    /**
+     * Create User Tests
+     */
+
     @Test
     fun `create a user - success`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
@@ -43,19 +48,29 @@ class UserControllerTest {
     fun `create a user - insecure password`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val body = mapOf(
-            "username" to randomString(),
-            "password" to "insecure password",
+        val insecurePasswords = listOf(
+            "Abc1234", // missing special character
+            "abc123!", // missing uppercase letter
+            "ABC123!", // missing lowercase letter
+            "Abc!@#", // missing number
+            "Abc123", // smaller than 6 characters
         )
 
-        client.post().uri("/users")
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(body)
-            .exchange()
-            .expectStatus().isBadRequest
-            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
-            .expectBody()
-            .jsonPath("type").isEqualTo(Problem.insecurePassword.type.toString())
+        insecurePasswords.forEach { password ->
+            val body = mapOf(
+                "username" to randomString(),
+                "password" to password,
+            )
+
+            client.post().uri("/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(body)
+                .exchange()
+                .expectStatus().isBadRequest
+                .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+                .expectBody()
+                .jsonPath("type").isEqualTo(Problem.insecurePassword.type.toString())
+        }
     }
 
     @Test
@@ -63,7 +78,7 @@ class UserControllerTest {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
         val body = mapOf(
-            "username" to "admin",
+            "username" to USERNAME_OF_ADMIN,
             "password" to randomString(),
         )
 
@@ -77,7 +92,92 @@ class UserControllerTest {
             .jsonPath("type").isEqualTo(Problem.usernameAlreadyExists.type.toString())
     }
 
+    /**
+     * Login Tests
+     */
+
+    @Test
+    fun `login - success`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body = mapOf(
+            "username" to USERNAME_OF_ADMIN,
+            "password" to PASSWORD_OF_ADMIN,
+        )
+
+        client.post().uri("/login")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isOk
+            .expectBody()
+            .jsonPath("id").isEqualTo(1)
+            .jsonPath("username").isEqualTo(USERNAME_OF_ADMIN)
+            .jsonPath("token").isNotEmpty
+    }
+
+    @Test
+    fun `login - username is blank`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body = mapOf(
+            "username" to "",
+            "password" to PASSWORD_OF_ADMIN,
+        )
+
+        client.post().uri("/login")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.usernameIsBlank.type.toString())
+    }
+
+    @Test
+    fun `login - password is blank`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body = mapOf(
+            "username" to USERNAME_OF_ADMIN,
+            "password" to "",
+        )
+
+        client.post().uri("/login")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.passwordIsBlank.type.toString())
+    }
+
+    @Test
+    fun `login - invalid login`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body = mapOf(
+            "username" to randomString(),
+            "password" to randomString()
+        )
+
+        client.post().uri("/login")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidLogin.type.toString())
+    }
+
+
     companion object {
+        val USERNAME_OF_ADMIN = "admin"
+        val PASSWORD_OF_ADMIN = "Admin123!"
+
         private fun randomString() = "String_${abs(Random.nextLong())}"
     }
 }
