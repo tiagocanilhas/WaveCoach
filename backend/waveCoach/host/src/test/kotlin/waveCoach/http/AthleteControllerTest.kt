@@ -42,6 +42,6 @@ class AthleteControllerTest {
     companion object {
         private fun randomString() = "String_${abs(Random.nextLong())}"
 
-        private val tokenOfAdminOnDb = ""
+        private val tokenOfAdminOnDb = "i_aY-4lpMqAIMuhkimTbKy4xYEuyvgFPaaTpVS0lctQ="
     }
 }

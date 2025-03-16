@@ -27,16 +27,17 @@ class AthleteServices(
     ): CreateAthleteResult {
         val passwordValidationInfo = userDomain.createPasswordValidationInformation("changeit")
 
-        if (athleteDomain.birthDateValid(birthDate)) return failure(CreateAthleteError.InvalidBirthDate)
-        if(!athleteDomain.nameValid(name)) return failure(CreateAthleteError.InvalidName)
+        val date = athleteDomain.birthDateToLong(birthDate) ?: return failure(CreateAthleteError.InvalidBirthDate)
 
-        return transactionManager.run {
-            val userRepository = it.userRepository
-            val athleteRepository = it.athleteRepository
+        if (!athleteDomain.nameValid(name)) return failure(CreateAthleteError.InvalidName)
 
-            val aid = userRepository.storeUser("athlete", passwordValidationInfo)
-            athleteRepository.storeAthlete(aid, coachId, name, birthDate)
-            success(aid)
-        }
+            return transactionManager.run {
+                val userRepository = it.userRepository
+                val athleteRepository = it.athleteRepository
+
+                val aid = userRepository.storeUser("athlete", passwordValidationInfo)
+                athleteRepository.storeAthlete(aid, coachId, name, date)
+                success(aid)
+            }
     }
 }

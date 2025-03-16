@@ -76,13 +76,13 @@ class JdbiUserRepository(
         val username: String,
         val password: PasswordValidationInfo,
         val token: TokenValidationInfo,
-        val createdAt: Long,
-        val lastUsedAt: Long,
+        val createdTime: Long,
+        val usedTime: Long,
     ) {
         val userAndToken: Pair<User, Token>
             get() = Pair(
                 User(id, username, password),
-                Token(token, id, Instant.fromEpochSeconds(createdAt), Instant.fromEpochSeconds(lastUsedAt)),
+                Token(token, id, Instant.fromEpochSeconds(createdTime), Instant.fromEpochSeconds(usedTime)),
             )
     }
 

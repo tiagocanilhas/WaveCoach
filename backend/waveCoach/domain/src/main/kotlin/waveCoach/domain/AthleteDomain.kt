@@ -2,19 +2,25 @@ package waveCoach.domain
 
 import org.springframework.stereotype.Component
 import java.time.LocalDate
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 
 
 @Component
 class AthleteDomain {
-    fun birthDateValid(birthDate: String): Boolean {
+    fun birthDateToLong(birthDate: String): Long? {
         return try {
             val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
             val date = LocalDate.parse(birthDate, formatter)
-            date.isBefore(LocalDate.now())
+
+            if (date.isBefore(LocalDate.now())) {
+                date.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+            } else {
+                null
+            }
         } catch (e: DateTimeParseException) {
-            false
+            null
         }
     }
 

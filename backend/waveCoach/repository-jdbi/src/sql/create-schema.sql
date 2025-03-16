@@ -37,7 +37,7 @@ CREATE TABLE waveCoach.athlete (
     uid INTEGER PRIMARY KEY,
     coach INTEGER,
     name VARCHAR(64) NOT NULL,
-    birth_date DATE NOT NULL,
+    birth_date BIGINT NOT NULL,
     --code VARCHAR(64) UNIQUE NOT NULL,
     FOREIGN KEY (coach) REFERENCES waveCoach.coach(uid),
     FOREIGN KEY (uid) REFERENCES waveCoach.user(id)
