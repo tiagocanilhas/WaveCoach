@@ -6,6 +6,7 @@ import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.http.MediaType
 import org.springframework.test.web.reactive.server.WebTestClient
 import waveCoach.host.WaveCoachApplication
+import waveCoach.http.model.output.Problem
 import kotlin.math.abs
 import kotlin.random.Random
 import kotlin.test.Test
@@ -24,11 +25,11 @@ class AthleteControllerTest {
 
         val body = mapOf(
             "name" to randomString(),
-            "birthDate" to "2000-01-01",
+            "birthDate" to VALID_BIRTHDATE,
         )
 
         client.post().uri("/athletes")
-            .header("Authorization", "Bearer $tokenOfAdminOnDb")
+            .header("Authorization", "Bearer $ADMIN_TOKEN")
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(body)
             .exchange()
@@ -39,9 +40,52 @@ class AthleteControllerTest {
             }
     }
 
+    @Test
+    fun `create an athlete - invalid birth date`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body = mapOf(
+            "name" to randomString(),
+            "birthDate" to INVALID_BIRTHDATE,
+        )
+
+        client.post().uri("/athletes")
+            .header("Authorization", "Bearer $ADMIN_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidBirthDate.type.toString())
+    }
+
+    @Test
+    fun `create an athlete - invalid name`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body = mapOf(
+            "name" to "",
+            "birthDate" to VALID_BIRTHDATE,
+        )
+
+        client.post().uri("/athletes")
+            .header("Authorization", "Bearer $ADMIN_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidName.type.toString())
+    }
+
     companion object {
         private fun randomString() = "String_${abs(Random.nextLong())}"
+        private const val VALID_BIRTHDATE = "2000-01-01"
+        private const val INVALID_BIRTHDATE = "2000-01-32"
 
-        private val tokenOfAdminOnDb = "i_aY-4lpMqAIMuhkimTbKy4xYEuyvgFPaaTpVS0lctQ="
+
+        private const val ADMIN_TOKEN = "i_aY-4lpMqAIMuhkimTbKy4xYEuyvgFPaaTpVS0lctQ="
     }
 }

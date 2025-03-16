@@ -25,7 +25,7 @@ class AthleteController(
         return when (result) {
             is Success -> ResponseEntity
                 .status(201)
-                .header("Location", Uris.Users.byId(result.value).toASCIIString())
+                .header("Location", Uris.Athletes.byId(result.value).toASCIIString())
                 .build<Unit>()
 
             is Failure -> when (result.value) {

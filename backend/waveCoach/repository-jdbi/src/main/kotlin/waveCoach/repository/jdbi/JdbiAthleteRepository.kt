@@ -9,7 +9,7 @@ class JdbiAthleteRepository(
     private val handle: Handle,
 ): AthleteRepository {
     override fun storeAthlete(uid: Int, coachId: Int, name: String, birthDate: Long): Int =
-        handle.createUpdate("insert into waveCoach.athlete (uid, coach_id, name, birth_date) values (:uid, :coach, :name, :birth_date)")
+        handle.createUpdate("insert into waveCoach.athlete (uid, coach, name, birth_date) values (:uid, :coach, :name, :birth_date)")
             .bind("uid", uid)
             .bind("coach", coachId)
             .bind("name", name)
