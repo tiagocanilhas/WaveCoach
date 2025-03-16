@@ -24,12 +24,11 @@ class AthleteServicesTest {
 
     @Test
     fun `create athlete - success`() {
-        val maxTokensPerUser = 5
-        val athleteServices = createAthleteServices(maxTokensPerUser = maxTokensPerUser)
+        val athleteServices = createAthleteServices(maxTokensPerUser = MAX_TOKENS_PER_USER)
 
         val name = randomString()
 
-        when (val result = athleteServices.createAthlete(name, COACH_ID, VALID_BIRTHDATE)) {
+        when (val result = athleteServices.createAthlete(name, FIRST_COACH_ID, VALID_BIRTHDATE)) {
             is Failure -> fail("Unexpected $result")
             is Success -> assertTrue(result.value > 1)
         }
@@ -37,8 +36,7 @@ class AthleteServicesTest {
 
     @Test
     fun `create athlete - invalid name`() {
-        val maxTokensPerUser = 5
-        val athleteServices = createAthleteServices(maxTokensPerUser = maxTokensPerUser)
+        val athleteServices = createAthleteServices(maxTokensPerUser = MAX_TOKENS_PER_USER)
 
         val invalidNames = listOf(
             "",
@@ -46,7 +44,7 @@ class AthleteServicesTest {
         )
 
         invalidNames.forEach { name ->
-            when (val result = athleteServices.createAthlete(name, COACH_ID, VALID_BIRTHDATE)) {
+            when (val result = athleteServices.createAthlete(name, FIRST_COACH_ID, VALID_BIRTHDATE)) {
                 is Failure -> assertTrue(result.value is CreateAthleteError.InvalidName)
                 is Success -> fail("Unexpected $result")
             }
@@ -55,8 +53,7 @@ class AthleteServicesTest {
 
     @Test
     fun `create athlete - invalid birth date`() {
-        val maxTokensPerUser = 5
-        val athleteServices = createAthleteServices(maxTokensPerUser = maxTokensPerUser)
+        val athleteServices = createAthleteServices(maxTokensPerUser = MAX_TOKENS_PER_USER)
 
         val name = randomString()
         val invalidBirthDays = listOf(
@@ -66,10 +63,40 @@ class AthleteServicesTest {
         )
 
         invalidBirthDays.forEach { birthDate ->
-            when (val result = athleteServices.createAthlete(name, COACH_ID, birthDate)) {
+            when (val result = athleteServices.createAthlete(name, FIRST_COACH_ID, birthDate)) {
                 is Failure -> assertTrue(result.value is CreateAthleteError.InvalidBirthDate)
                 is Success -> fail("Unexpected $result")
             }
+        }
+    }
+
+    @Test
+    fun `remove athlete - success`() {
+        val athleteServices = createAthleteServices(maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (val removeResult = athleteServices.removeAthlete(SECOND_COACH_ID, SECOND_ATHLETE_ID)) {
+            is Failure -> fail("Unexpected $removeResult")
+            is Success -> assertTrue(removeResult.value == SECOND_ATHLETE_ID)
+        }
+    }
+
+    @Test
+    fun `remove athlete - athlete not found`() {
+        val athleteServices = createAthleteServices(maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (val removeResult = athleteServices.removeAthlete(FIRST_COACH_ID, 0)) {
+            is Failure -> assertTrue(removeResult.value is RemoveAthleteError.AthleteNotFound)
+            is Success -> fail("Unexpected $removeResult")
+        }
+    }
+
+    @Test
+    fun `remove athlete - not athlete's coach`() {
+        val athleteServices = createAthleteServices(maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (val removeResult = athleteServices.removeAthlete(SECOND_COACH_ID, FIRST_ATHLETE_ID)) {
+            is Failure -> assertTrue(removeResult.value is RemoveAthleteError.NotAthletesCoach)
+            is Success -> fail("Unexpected $removeResult")
         }
     }
 
@@ -77,7 +104,12 @@ class AthleteServicesTest {
         private fun randomString() = "String_${abs(Random.nextLong())}"
 
         private const val VALID_BIRTHDATE = "2000-01-01"
-        private const val COACH_ID = 1
+        private const val FIRST_COACH_ID = 1
+        private const val SECOND_COACH_ID = 2
+        private const val FIRST_ATHLETE_ID = 3
+        private const val SECOND_ATHLETE_ID = 4
+
+        private const val MAX_TOKENS_PER_USER = 5
 
         private fun createAthleteServices(
             tokenTtl: Duration = 30.days,

@@ -1,8 +1,8 @@
 package waveCoach.domain
 
 data class Athlete (
-    val id: Int,
-    val coachId: Int,
+    val uid: Int,
+    val coach: Int,
     val name: String,
-    val birthDate: String
+    val birthDate: Long
 )

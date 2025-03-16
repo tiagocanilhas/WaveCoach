@@ -1,6 +1,8 @@
 package waveCoach.http
 
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
@@ -9,6 +11,7 @@ import waveCoach.http.model.input.AthleteCreateInputModel
 import waveCoach.http.model.output.Problem
 import waveCoach.services.AthleteServices
 import waveCoach.services.CreateAthleteError
+import waveCoach.services.RemoveAthleteError
 import waveCoach.utils.Failure
 import waveCoach.utils.Success
 
@@ -31,6 +34,22 @@ class AthleteController(
             is Failure -> when (result.value) {
                 CreateAthleteError.InvalidBirthDate -> Problem.response(400, Problem.invalidBirthDate)
                 CreateAthleteError.InvalidName -> Problem.response(400, Problem.invalidName)
+            }
+        }
+    }
+
+    @DeleteMapping(Uris.Athletes.REMOVE)
+    fun removeAthlete(
+        coach: AuthenticatedUser,
+        @PathVariable aid: String
+    ): ResponseEntity<*> {
+        val uid = aid.toIntOrNull() ?: return Problem.response(400, Problem.invalidAthleteId)
+        val result = athleteServices.removeAthlete(coach.info.id, uid)
+        return when (result) {
+            is Success -> ResponseEntity.status(204).build<Unit>()
+            is Failure -> when (result.value) {
+                RemoveAthleteError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
+                RemoveAthleteError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
             }
         }
     }

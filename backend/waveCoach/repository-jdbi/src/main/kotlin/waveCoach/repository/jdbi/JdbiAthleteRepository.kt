@@ -2,8 +2,8 @@ package waveCoach.repository.jdbi
 
 import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.kotlin.mapTo
+import waveCoach.domain.Athlete
 import waveCoach.repository.AthleteRepository
-import java.sql.Date
 
 class JdbiAthleteRepository(
     private val handle: Handle,
@@ -17,4 +17,17 @@ class JdbiAthleteRepository(
             .executeAndReturnGeneratedKeys()
             .mapTo<Int>()
             .one()
+
+    override fun getAthlete(uid: Int): Athlete? =
+        handle.createQuery("select * from waveCoach.athlete where uid = :uid")
+            .bind("uid", uid)
+            .mapTo<Athlete>()
+            .findFirst()
+            .orElse(null)
+
+    override fun removeAthlete(uid: Int) {
+        handle.createUpdate("delete from waveCoach.athlete where uid = :uid")
+            .bind("uid", uid)
+            .execute()
+    }
 }

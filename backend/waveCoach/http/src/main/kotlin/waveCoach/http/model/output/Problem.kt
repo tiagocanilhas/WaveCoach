@@ -63,5 +63,20 @@ class Problem(
             "Invalid name",
             URI.create("$BASE_URI/invalid-name")
         )
+
+        val athleteNotFound = Problem(
+            "Athlete not found",
+            URI.create("$BASE_URI/athlete-not-found")
+        )
+
+        val notAthletesCoach = Problem(
+            "Not athlete's coach",
+            URI.create("$BASE_URI/not-athletes-coach")
+        )
+
+        val invalidAthleteId = Problem(
+            "Invalid athlete id",
+            URI.create("$BASE_URI/invalid-athlete-id")
+        )
     }
 }

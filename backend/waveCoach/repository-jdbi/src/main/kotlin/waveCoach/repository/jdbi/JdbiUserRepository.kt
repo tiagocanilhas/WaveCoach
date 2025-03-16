@@ -20,6 +20,12 @@ class JdbiUserRepository(
             .mapTo<Int>()
             .one()
 
+    override fun removeUser(uid: Int) {
+        handle.createUpdate("delete from waveCoach.user where id = :id")
+            .bind("id", uid)
+            .execute()
+    }
+
     override fun getUserByUsername(username: String): User? =
         handle.createQuery("select * from waveCoach.user where username = :username")
             .bind("username", username)

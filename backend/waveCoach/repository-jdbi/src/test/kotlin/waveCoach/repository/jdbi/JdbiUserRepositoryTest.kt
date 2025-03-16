@@ -1,6 +1,7 @@
 package waveCoach.repository.jdbi
 
 import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
 import org.postgresql.util.PSQLException
 import waveCoach.domain.PasswordValidationInfo
 import kotlin.math.abs
@@ -33,6 +34,19 @@ class JdbiUserRepositoryTest {
         } catch (e: PSQLException) {
             // Expected
         }
+    }
+
+    @Test
+    fun `remove user`() = testWithHandleAndRollback { handle ->
+        val userRepository = JdbiUserRepository(handle)
+
+        val username = randomString()
+        val uid = userRepository.storeUser(username, PasswordValidationInfo(PASSWORD))
+        userRepository.removeUser(uid)
+
+        val user = userRepository.getUserByUsername(username)
+
+        assertNull(user)
     }
 
     /**
