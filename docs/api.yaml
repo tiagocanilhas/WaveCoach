@@ -1,0 +1,245 @@
+openapi: 3.0.3
+
+info:
+  title: Wave Coach
+  description: Training Management Platform for Surf
+  version: 1.0.0
+  
+servers:
+  - url: https://example.com
+  
+tags:
+  - name: Users
+    description: Operations about user
+
+paths:
+  /users:
+    description: The resource that represents the users
+    post:
+      tags:
+      - Users
+      summary: Create an User
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreateInputModel'
+      responses:
+        201:
+          description: User was created
+          headers:
+            Location:
+              description: The URL of the created user resource
+              schema:
+                type: string
+                example: "/users/123"
+                  
+        400:
+          description: Failed to create a user
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/InsecurePassword'
+                  - $ref: '#/components/schemas/UsernameAlreadyExists'
+              examples:
+                insecurePassword:
+                  $ref: '#/components/examples/InsecurePassword'
+                usernameAlreadyExists:
+                  $ref: '#/components/examples/UsernameAlreadyExists'
+  /login:
+    description: The resource that represents a login
+    post:
+      tags:
+      - Users
+      summary: Login with credentials
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginInputModel'
+      responses:
+        200:
+          description: The user logged in
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginOutputModel'
+        400:
+          description: Errors when not inserting proper info on login
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/UsernameIsBlank'
+                  - $ref: '#/components/schemas/PasswordIsBlank'
+                  - $ref: '#/components/schemas/InvalidLogin'
+              examples:
+                usernameIsBlank:
+                  $ref: '#/components/examples/UsernameIsBlank'
+                passwordIsBlank:
+                  $ref: '#/components/examples/PasswordIsBlank'
+                invalidLogin:
+                  $ref: '#/components/examples/InvalidLogin'
+                
+  /logout:
+    description: The resource that represents a logout
+    post:
+      tags:
+        - Users
+      summary: Logout
+      responses:
+        204:
+          description: The user logged out
+        400:
+          description: Error when the token is invalid
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/InvalidToken'
+        404:
+          description: Error when the token is not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/TokenNotFound' 
+      
+components:
+  schemas:  
+  
+    # Input Models
+    
+    UserCreateInputModel:
+      required:
+        - username
+        - password
+      type: object
+      properties:
+        username:
+          type: string
+          example: "username"
+        password:
+          type: string
+          example: "Password123!"
+          
+    LoginInputModel:
+      required:
+        - username
+        - password
+      type: object
+      properties:
+        username:
+          type: string
+          example: "username"
+        password:
+          type: string
+          example: "Password123!"
+          
+    # Output Models
+    
+    LoginOutputModel:
+      required:
+        - id
+        - username
+        - token
+      type: object
+      properties:
+        id:
+          type: string
+          example: 1
+        username:
+          type: string
+          example: "username"
+        token:
+          type: string
+          example: "token"
+    
+    # Problems
+    
+    InsecurePassword:
+      required:
+        - type
+      type: object
+      properties:
+        type:
+          type: string
+          example: ""
+    
+    InvalidLogin:
+      required:
+        - type
+      type: object
+      properties:
+        type:
+          type: string
+          example: ""
+          
+    InvalidToken:
+      required:
+        - type
+      type: object
+      properties:
+        type:
+          type: string
+          example: ""
+    
+    PasswordIsBlank:
+      required:
+        - type
+      type: object
+      properties:
+        type:
+          type: string
+          example: ""
+          
+    TokenNotFound:
+      required:
+        - type
+      type: object
+      properties:
+        type:
+          type: string
+          example: ""
+    
+    UsernameAlreadyExists:
+      required:
+        - type
+      type: object
+      properties:
+        type:
+          type: string
+          example: ""
+    
+    UsernameIsBlank:
+      required:
+        - type
+      type: object
+      properties:
+        type:
+          type: string
+          example: ""
+  
+  examples:
+  
+    InsecurePassword:
+      value:
+        type: ""
+  
+    InvalidLogin:
+      value:
+        type: ""
+        
+    PasswordIsBlank:
+      value:
+        type: ""
+        
+    UsernameAlreadyExists:
+      value:
+        type: ""
+        
+    UsernameIsBlank:
+      value:
+        type: ""
+  

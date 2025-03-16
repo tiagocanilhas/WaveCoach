@@ -10,6 +10,8 @@ import org.springframework.web.servlet.ModelAndView
 import waveCoach.domain.AuthenticatedUser
 import waveCoach.domain.UserDomainConfig
 import waveCoach.http.Uris
+import waveCoach.http.pipeline.AuthenticatedUserArgumentResolver.Companion.addUserTo
+import waveCoach.http.pipeline.AuthenticatedUserArgumentResolver.Companion.getUserFrom
 
 @Component
 class AuthenticationInterceptor(
@@ -31,6 +33,8 @@ class AuthenticationInterceptor(
             val userCookie = tokenProcessor
                 .processAuthorizationCookieValue(request.getHeader(COOKIE_HEADER))
 
+            val authenticatedUser = userAuthHeader ?: userCookie
+
             return when {
                 userAuthHeader == null && userCookie == null -> {
                     response.status = 401
@@ -38,7 +42,7 @@ class AuthenticationInterceptor(
                     false
                 }
                 else -> {
-                    addUserTo(userAuthHeader ?: userCookie!!, request)
+                    addUserTo(authenticatedUser!!, request)
                     true
                 }
             }
@@ -73,19 +77,11 @@ class AuthenticationInterceptor(
         response.addHeader("Set-Cookie", refreshedUserCookie.toString())
     }
 
-
-    private fun addUserTo(user: AuthenticatedUser, request: HttpServletRequest) =
-        request.setAttribute(KEY, user)
-
-    private fun getUserFrom(request: HttpServletRequest): AuthenticatedUser? =
-        request.getAttribute(KEY)?.let { it as? AuthenticatedUser }
-
     companion object {
         const val AUTHORIZATION_HEADER = "Authorization"
         const val COOKIE_HEADER = "Cookie"
 
         private const val WWW_AUTHENTICATE_HEADER = "WWW-Authenticate"
 
-        private const val KEY = "AuthenticatedUser"
     }
 }

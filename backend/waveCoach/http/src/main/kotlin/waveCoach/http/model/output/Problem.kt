@@ -29,9 +29,19 @@ class Problem(
             URI("$BASE_URI/invalid-login")
         )
 
+        val invalidToken = Problem(
+            "Invalid token",
+            URI("$BASE_URI/invalid-token")
+        )
+
         val passwordIsBlank = Problem(
             "Password is blank",
             URI("$BASE_URI/password-is-blank")
+        )
+
+        val tokenNotFound = Problem(
+            "Token not found",
+            URI("$BASE_URI/token-not-found")
         )
 
         val usernameAlreadyExists = Problem(

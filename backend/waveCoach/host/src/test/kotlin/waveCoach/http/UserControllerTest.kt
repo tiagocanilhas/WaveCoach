@@ -5,6 +5,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.http.MediaType
 import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.test.web.reactive.server.returnResult
 import waveCoach.host.WaveCoachApplication
 import waveCoach.http.model.output.Problem
 import kotlin.math.abs
@@ -18,6 +19,7 @@ class UserControllerTest {
 
     val BASE_URL: String
         get() = "http://localhost:$port/api"
+
 
 
     /**
@@ -91,6 +93,8 @@ class UserControllerTest {
             .expectBody()
             .jsonPath("type").isEqualTo(Problem.usernameAlreadyExists.type.toString())
     }
+
+
 
     /**
      * Login Tests
@@ -171,6 +175,70 @@ class UserControllerTest {
             .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
             .expectBody()
             .jsonPath("type").isEqualTo(Problem.invalidLogin.type.toString())
+    }
+
+
+
+    /**
+     * Logout Tests
+     */
+
+    @Test
+    fun `logout (authorization header) - success`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body = mapOf(
+            "username" to USERNAME_OF_ADMIN,
+            "password" to PASSWORD_OF_ADMIN,
+        )
+
+        client.post().uri("/login").bodyValue(body).exchange().expectBody()
+            .jsonPath("$.token").value<String> { token ->
+                client.post().uri("/logout")
+                    .header("Authorization", "Bearer $token")
+                    .exchange()
+                    .expectStatus().isOk
+            }
+    }
+
+
+    @Test
+    fun `logout (cookie) - success`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body = mapOf(
+            "username" to USERNAME_OF_ADMIN,
+            "password" to PASSWORD_OF_ADMIN,
+        )
+
+        client.post().uri("/login").bodyValue(body).exchange().expectBody()
+            .jsonPath("$.token").value<String> { token ->
+                client.post().uri("/logout")
+                    .cookie("token", token)
+                    .exchange()
+                    .expectStatus().isOk
+            }
+    }
+
+    @Test
+    fun `logout - unauthorized`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val token = randomString()
+
+        // Authorization header
+        client.post().uri("/logout")
+            .header("Authorization", "Bearer $token")
+            .contentType(MediaType.APPLICATION_JSON)
+            .exchange()
+            .expectStatus().isUnauthorized
+
+        // Cookie
+        client.post().uri("/logout")
+            .cookie("token", token)
+            .contentType(MediaType.APPLICATION_JSON)
+            .exchange()
+            .expectStatus().isUnauthorized
     }
 
 

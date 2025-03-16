@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
+import waveCoach.domain.AuthenticatedUser
 import waveCoach.http.model.input.LoginInputModel
 import waveCoach.http.model.input.CreateUserInputModel
 import waveCoach.http.model.output.LoginOutputModel
@@ -58,9 +59,18 @@ class UserController(
     }
 
     @PostMapping(Uris.Users.LOGOUT)
-    fun logout(): ResponseEntity<*> {
-        TODO("Not yet implemented")
+    fun logout(
+        user: AuthenticatedUser,
+    ): ResponseEntity<*> {
+        val result = userServices.logout(user.token)
+
+        return when (result) {
+            is Success -> ResponseEntity.status(200).build<Unit>()
+
+            is Failure -> {
+                Problem.response(400, Problem.invalidToken)
+                Problem.response(400, Problem.tokenNotFound)
+            }
+        }
     }
-
-
 }

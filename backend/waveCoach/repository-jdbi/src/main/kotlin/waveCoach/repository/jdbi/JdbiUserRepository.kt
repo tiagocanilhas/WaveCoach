@@ -87,10 +87,15 @@ class JdbiUserRepository(
     }
 
     override fun updateTokenLastUsed(token: Token, now: Instant) {
-        TODO("Not yet implemented")
+        handle.createUpdate("update waveCoach.token set used_time = :used_time where token = :token")
+            .bind("used_time", now.epochSeconds)
+            .bind("token", token.tokenValidationInfo.value)
+            .execute()
     }
 
     override fun removeToken(tokenValidationInfo: TokenValidationInfo) {
-        TODO("Not yet implemented")
+        handle.createUpdate("delete from waveCoach.token where token = :token")
+            .bind("token", tokenValidationInfo.value)
+            .execute()
     }
 }

@@ -37,6 +37,12 @@ sealed class GetUserByTokenError {
 }
 typealias GetUserByTokenResult = Either<GetUserByTokenError, User>
 
+sealed class LogoutError {
+    data object InvalidToken : LogoutError()
+    data object TokenNotFound : LogoutError()
+}
+typealias LogoutResult = Either<LogoutError, Boolean>
+
 
 
 @Component
@@ -101,6 +107,21 @@ class UserServices(
             if (!userDomain.isTokenTimeValid(clock, token)) return@run failure(GetUserByTokenError.InvalidToken)
             userRepository.updateTokenLastUsed(token, clock.now())
             success(user)
+        }
+    }
+
+    fun logout(token: String): LogoutResult {
+//        if (!userDomain.canBeToken(token)) return failure(LogoutError.InvalidToken)
+
+        val tokenValidationInfo = userDomain.createTokenValidationInformation(token)
+
+        return transactionManager.run {
+            val userRepository = it.userRepository
+
+//            userRepository.getToken(tokenValidationInfo) ?: return@run failure(LogoutError.TokenNotFound)
+
+            userRepository.removeToken(tokenValidationInfo)
+            success(true)
         }
     }
 }
