@@ -27,6 +27,8 @@ object Uris {
         const val REMOVE = "$ATHLETES/{aid}"
         const val GET_BY_ID = "$ATHLETES/{aid}"
 
+        const val CREATE_CHARACTERISTICS = "$ATHLETES/{aid}/characteristics"
+
         fun byId(id: Int): URI = UriTemplate(GET_BY_ID).expand(id)
     }
 }

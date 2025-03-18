@@ -57,7 +57,7 @@ class JdbiAthleteRepositoryTest {
     companion object {
         private fun randomString() = "String_${abs(Random.nextLong())}"
 
-        private const val BIRTHDATE = 958815600000 // (2000-05-15)
+        private const val BIRTHDATE = 958815600000 // (15-05-2000)
         private const val COACH_ID = 1
         private const val USERNAME = "athlete test"
         private const val PASSWORD = "changeit"

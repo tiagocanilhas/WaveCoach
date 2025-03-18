@@ -4,10 +4,7 @@ import org.jdbi.v3.core.Jdbi
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.postgresql.ds.PGSimpleDataSource
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-import waveCoach.domain.AthleteDomain
-import waveCoach.domain.Sha256TokenEncoder
-import waveCoach.domain.UserDomain
-import waveCoach.domain.UserDomainConfig
+import waveCoach.domain.*
 import waveCoach.repository.jdbi.JdbiTransactionManager
 import waveCoach.repository.jdbi.configureWithAppRequirements
 import waveCoach.utils.Failure
@@ -28,7 +25,7 @@ class AthleteServicesTest {
 
         val name = randomString()
 
-        when (val result = athleteServices.createAthlete(name, FIRST_COACH_ID, VALID_BIRTHDATE)) {
+        when (val result = athleteServices.createAthlete(name, FIRST_COACH_ID, VALID_DATE)) {
             is Failure -> fail("Unexpected $result")
             is Success -> assertTrue(result.value > 1)
         }
@@ -44,7 +41,7 @@ class AthleteServicesTest {
         )
 
         invalidNames.forEach { name ->
-            when (val result = athleteServices.createAthlete(name, FIRST_COACH_ID, VALID_BIRTHDATE)) {
+            when (val result = athleteServices.createAthlete(name, FIRST_COACH_ID, VALID_DATE)) {
                 is Failure -> assertTrue(result.value is CreateAthleteError.InvalidName)
                 is Success -> fail("Unexpected $result")
             }
@@ -57,9 +54,9 @@ class AthleteServicesTest {
 
         val name = randomString()
         val invalidBirthDays = listOf(
-            "2000-01-32",
-            "01-01-2000",
-            "2200-01-01",
+            "32-01-2000",
+            "2000-01-01",
+            "01-01-2200",
         )
 
         invalidBirthDays.forEach { birthDate ->
@@ -100,10 +97,131 @@ class AthleteServicesTest {
         }
     }
 
+    @Test
+    fun `create characteristics - success`() {
+        val athleteServices = createAthleteServices(maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (val result = athleteServices.createCharacteristics(
+            FIRST_COACH_ID,
+            FIRST_ATHLETE_ID,
+            VALID_DATE,
+            1,
+            1.1f,
+            1,
+            1,
+            1,
+            1,
+            1.1f,
+            1.1f,
+        )) {
+            is Failure -> fail("Unexpected $result")
+            is Success -> assertTrue(result.value > 0)
+        }
+    }
+
+    @Test
+    fun `create characteristics - invalid date`() {
+        val athleteServices = createAthleteServices(maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        val invalidDates = listOf(
+            "32-01-2000",
+            "2000-01-01",
+            "01-01-2200",
+        )
+
+        invalidDates.forEach { date ->
+            when (val result = athleteServices.createCharacteristics(
+                FIRST_COACH_ID,
+                FIRST_ATHLETE_ID,
+                date,
+                1,
+                1.1f,
+                1,
+                1,
+                1,
+                1,
+                1.1f,
+                1.1f,
+            )) {
+                is Failure -> assertTrue(result.value is CreateCharacteristicsError.InvalidDate)
+                is Success -> fail("Unexpected $result")
+            }
+        }
+    }
+
+    @Test
+    fun `create characteristics - invalid characteristics`() {
+        val athleteServices = createAthleteServices(maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (val result = athleteServices.createCharacteristics(
+            FIRST_COACH_ID,
+            FIRST_ATHLETE_ID,
+            VALID_DATE,
+            -1,
+            -1f,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1f,
+            -1f,
+            )
+        ) {
+            is Failure -> assertTrue(result.value is CreateCharacteristicsError.InvalidCharacteristics)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
+    @Test
+    fun `create characteristics - athlete not found`() {
+        val athleteServices = createAthleteServices(maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (val result = athleteServices.createCharacteristics(
+            FIRST_COACH_ID,
+            0,
+            VALID_DATE,
+            1,
+            1.1f,
+            1,
+            1,
+            1,
+            1,
+            1.1f,
+            1.1f,
+            )
+        ) {
+            is Failure -> assertTrue(result.value is CreateCharacteristicsError.AthleteNotFound)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
+    @Test
+    fun `create characteristics - not athlete's coach`() {
+        val athleteServices = createAthleteServices(maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (val result = athleteServices.createCharacteristics(
+            SECOND_COACH_ID,
+            FIRST_ATHLETE_ID,
+            VALID_DATE,
+            1,
+            1.1f,
+            1,
+            1,
+            1,
+            1,
+            1.1f,
+            1.1f,
+            )
+        ) {
+            is Failure -> assertTrue(result.value is CreateCharacteristicsError.NotAthletesCoach)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
     companion object {
         private fun randomString() = "String_${abs(Random.nextLong())}"
 
-        private const val VALID_BIRTHDATE = "2000-01-01"
+        private const val VALID_DATE = "01-01-2000"
         private const val FIRST_COACH_ID = 1
         private const val SECOND_COACH_ID = 2
         private const val FIRST_ATHLETE_ID = 3
@@ -118,6 +236,7 @@ class AthleteServicesTest {
         ) = AthleteServices(
             JdbiTransactionManager(jdbi),
             AthleteDomain(),
+            CharacteristicsDomain(),
             UserDomain(
                 BCryptPasswordEncoder(),
                 Sha256TokenEncoder(),

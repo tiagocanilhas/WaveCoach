@@ -78,5 +78,15 @@ class Problem(
             "Invalid athlete id",
             URI.create("$BASE_URI/invalid-athlete-id")
         )
+
+        val invalidCharacteristics = Problem(
+            "Invalid characteristics",
+            URI.create("$BASE_URI/invalid-characteristics")
+        )
+
+        val invalidDate = Problem(
+            "Invalid date",
+            URI.create("$BASE_URI/invalid-date")
+        )
     }
 }

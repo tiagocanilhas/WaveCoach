@@ -9,9 +9,9 @@ import java.time.format.DateTimeParseException
 
 @Component
 class AthleteDomain {
-    fun birthDateToLong(birthDate: String): Long? {
+    fun dateToLong(birthDate: String): Long? {
         return try {
-            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+            val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
             val date = LocalDate.parse(birthDate, formatter)
 
             if (date.isBefore(LocalDate.now())) {

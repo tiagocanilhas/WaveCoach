@@ -51,7 +51,7 @@ CREATE TABLE waveCoach.token (
 );
 
 CREATE TABLE waveCoach.characteristics (
-    date BIGINT DEFAULT EXTRACT(EPOCH FROM CURRENT_TIMESTAMP) PRIMARY KEY NOT NULL,
+    date BIGINT DEFAULT EXTRACT(EPOCH FROM CURRENT_TIMESTAMP) NOT NULL,
     uid INTEGER REFERENCES waveCoach.athlete(uid),
     weight FLOAT,
     height INTEGER,
@@ -61,8 +61,9 @@ CREATE TABLE waveCoach.characteristics (
    arm INTEGER,
     thigh INTEGER,
     tricep FLOAT,
-    abdominal FLOAT--,
+    abdominal FLOAT,
     --waist FLOAT
+    PRIMARY KEY (date, uid)
 );
 
 CREATE TABLE waveCoach.mesocycle(
