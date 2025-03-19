@@ -28,6 +28,7 @@ object Uris {
         const val GET_BY_ID = "$ATHLETES/{aid}"
 
         const val CREATE_CHARACTERISTICS = "$ATHLETES/{aid}/characteristics"
+        const val UPDATE_CHARACTERISTICS = "$ATHLETES/{aid}/characteristics"
 
         fun byId(id: Int): URI = UriTemplate(GET_BY_ID).expand(id)
     }

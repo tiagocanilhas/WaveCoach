@@ -71,7 +71,6 @@ class AthleteServicesTest {
     }
 
 
-
     /**
      * Remove Athlete Tests
      */
@@ -107,7 +106,6 @@ class AthleteServicesTest {
     }
 
 
-
     /**
      * Create Characteristics Tests
      */
@@ -120,6 +118,28 @@ class AthleteServicesTest {
             FIRST_COACH_ID,
             FIRST_ATHLETE_ID,
             VALID_DATE,
+            1,
+            1.1f,
+            1,
+            1,
+            1,
+            1,
+            1.1f,
+            1.1f,
+        )) {
+            is Failure -> fail("Unexpected $result")
+            is Success -> assertTrue(result.value > 0)
+        }
+    }
+
+    @Test
+    fun `create characteristics - success without date`() {
+        val athleteServices = createAthleteServices(maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (val result = athleteServices.createCharacteristics(
+            FIRST_COACH_ID,
+            FIRST_ATHLETE_ID,
+            null,
             1,
             1.1f,
             1,
@@ -180,7 +200,7 @@ class AthleteServicesTest {
             -1,
             -1f,
             -1f,
-            )
+        )
         ) {
             is Failure -> assertTrue(result.value is CreateCharacteristicsError.InvalidCharacteristics)
             is Success -> fail("Unexpected $result")
@@ -203,7 +223,7 @@ class AthleteServicesTest {
             1,
             1.1f,
             1.1f,
-            )
+        )
         ) {
             is Failure -> assertTrue(result.value is CreateCharacteristicsError.AthleteNotFound)
             is Success -> fail("Unexpected $result")
@@ -226,9 +246,127 @@ class AthleteServicesTest {
             1,
             1.1f,
             1.1f,
-            )
+        )
         ) {
             is Failure -> assertTrue(result.value is CreateCharacteristicsError.NotAthletesCoach)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
+    @Test
+    fun `update characteristics - success`() {
+        val athleteServices = createAthleteServices(maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (val result = athleteServices.updateCharacteristics(
+            FIRST_COACH_ID,
+            FIRST_ATHLETE_ID,
+            VALID_DATE,
+            1,
+            1.1f,
+            1,
+            1,
+            1,
+            1,
+            1.1f,
+            1.1f,
+        )) {
+            is Failure -> fail("Unexpected $result")
+            is Success -> assertTrue(result.value == FIRST_ATHLETE_ID)
+        }
+    }
+
+    @Test
+    fun `update characteristics - invalid date`() {
+        val athleteServices = createAthleteServices(maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        val invalidDates = listOf(
+            "32-01-2000",
+            "2000-01-01",
+            "01-01-2200",
+        )
+
+        invalidDates.forEach { date ->
+            when (val result = athleteServices.updateCharacteristics(
+                FIRST_COACH_ID,
+                FIRST_ATHLETE_ID,
+                date,
+                1,
+                1.1f,
+                1,
+                1,
+                1,
+                1,
+                1.1f,
+                1.1f,
+            )) {
+                is Failure -> assertTrue(result.value is UpdateCharacteristicsError.InvalidDate)
+                is Success -> fail("Unexpected $result")
+            }
+        }
+    }
+
+    @Test
+    fun `update characteristics - invalid characteristics`() {
+        val athleteServices = createAthleteServices(maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (val result = athleteServices.updateCharacteristics(
+            FIRST_COACH_ID,
+            FIRST_ATHLETE_ID,
+            VALID_DATE,
+            -1,
+            -1f,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1f,
+            -1f,
+        )) {
+            is Failure -> assertTrue(result.value is UpdateCharacteristicsError.InvalidCharacteristics)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
+    @Test
+    fun `update characteristics - athlete not found`() {
+        val athleteServices = createAthleteServices(maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (val result = athleteServices.updateCharacteristics(
+            FIRST_COACH_ID,
+            0,
+            VALID_DATE,
+            1,
+            1.1f,
+            1,
+            1,
+            1,
+            1,
+            1.1f,
+            1.1f,
+        )) {
+            is Failure -> assertTrue(result.value is UpdateCharacteristicsError.AthleteNotFound)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
+    @Test
+    fun `update characteristics - not athlete's coach`() {
+        val athleteServices = createAthleteServices(maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (val result = athleteServices.updateCharacteristics(
+            SECOND_COACH_ID,
+            FIRST_ATHLETE_ID,
+            VALID_DATE,
+            1,
+            1.1f,
+            1,
+            1,
+            1,
+            1,
+            1.1f,
+            1.1f,
+        )) {
+            is Failure -> assertTrue(result.value is UpdateCharacteristicsError.NotAthletesCoach)
             is Success -> fail("Unexpected $result")
         }
     }

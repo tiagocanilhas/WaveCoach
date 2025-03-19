@@ -11,7 +11,7 @@ class JdbiCharacteristicsRepository(
 ) : CharacteristicsRepository {
     override fun storeCharacteristics(
         uid: Int,
-        date: Long?,
+        date: Long,
         height: Int?,
         weight: Float?,
         calories: Int?,
@@ -21,13 +21,47 @@ class JdbiCharacteristicsRepository(
         tricep: Float?,
         abdominal: Float?
     ) {
-        handle.createUpdate("""
-            insert into waveCoach.characteristics 
-                (uid, date, height, weight, calories, waist, arm, thigh, tricep, abdominal) 
-            values (:uid, :date, :height, :weight, :calories, :waist, :arm, :thigh, :tricep, :abdominal)
-        """.trimIndent())
+        val query = """
+            insert into waveCoach.characteristics (
+                uid, date, height, weight, calories, waist, arm, thigh, tricep, abdominal
+            ) values (
+                :uid, :date, :height, :weight, :calories, :waist, :arm, :thigh, :tricep, :abdominal
+            )
+        """.trimIndent()
+        handle.createUpdate(query)
             .bind("uid", uid)
             .bind("date", date)
+            .bind("height", height)
+            .bind("weight", weight)
+            .bind("calories", calories)
+            .bind("waist", waist)
+            .bind("arm", arm)
+            .bind("thigh", thigh)
+            .bind("tricep", tricep)
+            .bind("abdominal", abdominal)
+            .execute()
+    }
+
+    override fun storeCharacteristicsWithoutDate(
+        uid: Int,
+        height: Int?,
+        weight: Float?,
+        calories: Int?,
+        waist: Int?,
+        arm: Int?,
+        thigh: Int?,
+        tricep: Float?,
+        abdominal: Float?
+    ) {
+        val query = """
+            insert into waveCoach.characteristics (
+                uid, height, weight, calories, waist, arm, thigh, tricep, abdominal
+            ) values (
+                :uid, :height, :weight, :calories, :waist, :arm, :thigh, :tricep, :abdominal
+            )
+        """.trimIndent()
+        handle.createUpdate(query)
+            .bind("uid", uid)
             .bind("height", height)
             .bind("weight", weight)
             .bind("calories", calories)
@@ -45,4 +79,42 @@ class JdbiCharacteristicsRepository(
             .bind("date", date)
             .mapTo<Characteristics>()
             .singleOrNull()
+
+    override fun updateCharacteristics(
+        uid: Int,
+        date: Long,
+        height: Int?,
+        weight: Float?,
+        calories: Int?,
+        waist: Int?,
+        arm: Int?,
+        thigh: Int?,
+        tricep: Float?,
+        abdominal: Float?
+    ) {
+        val query = """
+            update waveCoach.characteristics set
+                height = :height,
+                weight = :weight,
+                calories = :calories,
+                waist = :waist,
+                arm = :arm,
+                thigh = :thigh,
+                tricep = :tricep,
+                abdominal = :abdominal
+            where uid = :uid and date = :date
+        """.trimIndent()
+        handle.createUpdate(query)
+            .bind("uid", uid)
+            .bind("date", date)
+            .bind("height", height)
+            .bind("weight", weight)
+            .bind("calories", calories)
+            .bind("waist", waist)
+            .bind("arm", arm)
+            .bind("thigh", thigh)
+            .bind("tricep", tricep)
+            .bind("abdominal", abdominal)
+            .execute()
+    }
 }

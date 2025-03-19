@@ -4,17 +4,16 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import waveCoach.domain.AuthenticatedUser
 import waveCoach.http.model.input.AthleteCreateCharacteristicsInputModel
+import waveCoach.http.model.input.AthleteUpdateCharacteristicsInputModel
 import waveCoach.http.model.input.AthleteCreateInputModel
 import waveCoach.http.model.output.CreateCharacteristicsOutputModel
 import waveCoach.http.model.output.Problem
-import waveCoach.services.AthleteServices
-import waveCoach.services.CreateAthleteError
-import waveCoach.services.CreateCharacteristicsError
-import waveCoach.services.RemoveAthleteError
+import waveCoach.services.*
 import waveCoach.utils.Failure
 import waveCoach.utils.Success
 
@@ -64,8 +63,10 @@ class AthleteController(
         @RequestBody input: AthleteCreateCharacteristicsInputModel
     ): ResponseEntity<*> {
         val uid = aid.toIntOrNull() ?: return Problem.response(400, Problem.invalidAthleteId)
-        val result = athleteServices.createCharacteristics(coach.info.id, uid, input.date, input.height, input.weight, input.calories,
-            input.waist, input.arm, input.thigh, input.tricep, input.abdominal)
+        val result = athleteServices.createCharacteristics(
+            coach.info.id, uid, input.date, input.height, input.weight, input.calories,
+            input.waist, input.arm, input.thigh, input.tricep, input.abdominal
+        )
 
         return when (result) {
             is Success -> ResponseEntity.status(201)
@@ -73,9 +74,41 @@ class AthleteController(
 
             is Failure -> when (result.value) {
                 CreateCharacteristicsError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
-                CreateCharacteristicsError.InvalidCharacteristics -> Problem.response(400, Problem.invalidCharacteristics)
+                CreateCharacteristicsError.InvalidCharacteristics -> Problem.response(
+                    400,
+                    Problem.invalidCharacteristics
+                )
+
                 CreateCharacteristicsError.InvalidDate -> Problem.response(400, Problem.invalidDate)
                 CreateCharacteristicsError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
+            }
+        }
+    }
+
+    @PutMapping(Uris.Athletes.UPDATE_CHARACTERISTICS)
+    fun updateCharacteristics(
+        coach: AuthenticatedUser,
+        @PathVariable aid: String,
+        @RequestBody input: AthleteUpdateCharacteristicsInputModel
+    ): ResponseEntity<*> {
+        val uid = aid.toIntOrNull() ?: return Problem.response(400, Problem.invalidAthleteId)
+        val result = athleteServices.updateCharacteristics(
+            coach.info.id, uid, input.date, input.height, input.weight, input.calories,
+            input.waist, input.arm, input.thigh, input.tricep, input.abdominal
+        )
+
+        return when (result) {
+            is Success -> ResponseEntity.status(204).build<Unit>()
+
+            is Failure -> when (result.value) {
+                UpdateCharacteristicsError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
+                UpdateCharacteristicsError.InvalidCharacteristics -> Problem.response(
+                    400,
+                    Problem.invalidCharacteristics
+                )
+
+                UpdateCharacteristicsError.InvalidDate -> Problem.response(400, Problem.invalidDate)
+                UpdateCharacteristicsError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
             }
         }
     }

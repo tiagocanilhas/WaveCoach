@@ -334,6 +334,182 @@ class AthleteControllerTest {
             .jsonPath("type").isEqualTo(Problem.notAthletesCoach.type.toString())
     }
 
+    @Test
+    fun `update characteristics - success`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body = mapOf(
+            "date" to VALID_DATE,
+            "height" to 1,
+            "weight" to 1.0,
+            "calories" to 1,
+            "waist" to 1,
+            "arm" to 1,
+            "thigh" to 1,
+            "tricep" to 1.0,
+            "abdominal" to 1.0,
+        )
+
+        client.put().uri("/athletes/$SECOND_ATHLETE_ID/characteristics")
+            .header("Authorization", "Bearer $SECOND_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isNoContent
+    }
+
+    @Test
+    fun `update characteristics - invalid date`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body = mapOf(
+            "date" to INVALID_DATE,
+            "height" to 1,
+            "weight" to 1.0,
+            "calories" to 1,
+            "waist" to 1,
+            "arm" to 1,
+            "thigh" to 1,
+            "tricep" to 1.0,
+            "abdominal" to 1.0,
+        )
+
+        client.put().uri("/athletes/$SECOND_ATHLETE_ID/characteristics")
+            .header("Authorization", "Bearer $SECOND_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidDate.type.toString())
+    }
+
+    @Test
+    fun `update characteristics - invalid characteristics`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body = mapOf(
+            "date" to VALID_DATE,
+            "height" to 1,
+            "weight" to 1.0,
+            "calories" to 1,
+            "waist" to 1,
+            "arm" to 1,
+            "thigh" to 1,
+            "tricep" to 1.0,
+            "abdominal" to 1.0,
+        )
+
+        val invalidCharacteristics = listOf(
+            body + ("height" to -1),
+            body + ("weight" to -1.0),
+            body + ("calories" to -1),
+            body + ("waist" to -1),
+            body + ("arm" to -1),
+            body + ("thigh" to -1),
+            body + ("tricep" to -1.0),
+            body + ("abdominal" to -1.0),
+        )
+
+        invalidCharacteristics.forEach { characteristics ->
+            client.put().uri("/athletes/$SECOND_ATHLETE_ID/characteristics")
+                .header("Authorization", "Bearer $SECOND_COACH_TOKEN")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(characteristics)
+                .exchange()
+                .expectStatus().isBadRequest
+                .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+                .expectBody()
+                .jsonPath("type").isEqualTo(Problem.invalidCharacteristics.type.toString())
+        }
+    }
+
+    @Test
+    fun `update characteristics - invalid athlete id`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val id = "invalid"
+
+        val body = mapOf(
+            "date" to VALID_DATE,
+            "height" to 1,
+            "weight" to 1.0,
+            "calories" to 1,
+            "waist" to 1,
+            "arm" to 1,
+            "thigh" to 1,
+            "tricep" to 1.0,
+            "abdominal" to 1.0,
+        )
+
+        client.put().uri("/athletes/$id/characteristics")
+            .header("Authorization", "Bearer $SECOND_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidAthleteId.type.toString())
+    }
+
+    @Test
+    fun `update characteristics - athlete not found`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val id = 0
+
+        val body = mapOf(
+            "date" to VALID_DATE,
+            "height" to 1,
+            "weight" to 1.0,
+            "calories" to 1,
+            "waist" to 1,
+            "arm" to 1,
+            "thigh" to 1,
+            "tricep" to 1.0,
+            "abdominal" to 1.0,
+        )
+
+        client.put().uri("/athletes/$id/characteristics")
+            .header("Authorization", "Bearer $SECOND_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isNotFound
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.athleteNotFound.type.toString())
+    }
+
+    @Test
+    fun `update characteristics - not athlete's coach`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body = mapOf(
+            "date" to VALID_DATE,
+            "height" to 1,
+            "weight" to 1.0,
+            "calories" to 1,
+            "waist" to 1,
+            "arm" to 1,
+            "thigh" to 1,
+            "tricep" to 1.0,
+            "abdominal" to 1.0,
+        )
+
+        client.put().uri("/athletes/$SECOND_ATHLETE_ID/characteristics")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isForbidden
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.notAthletesCoach.type.toString())
+    }
+
     companion object {
         private fun randomString() = "String_${abs(Random.nextLong())}"
 

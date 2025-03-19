@@ -33,6 +33,14 @@ sealed class CreateCharacteristicsError {
 }
 typealias CreateCharacteristicsResult = Either<CreateCharacteristicsError, Int>
 
+sealed class UpdateCharacteristicsError {
+    data object InvalidDate : UpdateCharacteristicsError()
+    data object InvalidCharacteristics : UpdateCharacteristicsError()
+    data object AthleteNotFound : UpdateCharacteristicsError()
+    data object NotAthletesCoach : UpdateCharacteristicsError()
+}
+typealias UpdateCharacteristicsResult = Either<UpdateCharacteristicsError, Int>
+
 @Component
 class AthleteServices(
     private val transactionManager: TransactionManager,
@@ -46,7 +54,8 @@ class AthleteServices(
         birthDate: String
     ): CreateAthleteResult {
         val username = athleteDomain.createAthleteUsername()
-        val passwordValidationInfo = userDomain.createPasswordValidationInformation(athleteDomain.athleteDefaultPassword)
+        val passwordValidationInfo =
+            userDomain.createPasswordValidationInformation(athleteDomain.athleteDefaultPassword)
 
         if (!athleteDomain.isNameValid(name)) return failure(CreateAthleteError.InvalidName)
         val date = dateToLong(birthDate) ?: return failure(CreateAthleteError.InvalidBirthDate)
@@ -79,6 +88,63 @@ class AthleteServices(
     fun createCharacteristics(
         coachId: Int,
         uid: Int,
+        date: String?,
+        height: Int?,
+        weight: Float?,
+        calories: Int?,
+        waist: Int?,
+        arm: Int?,
+        thigh: Int?,
+        tricep: Float?,
+        abdominal: Float?
+    ): CreateCharacteristicsResult {
+        val dateLong = date?.let { dateToLong(it) }
+            ?: if (date != null) return failure(CreateCharacteristicsError.InvalidDate) else null
+
+        if (!characteristicsDomain.checkCharacteristics(height, weight, calories, waist, arm, thigh, tricep, abdominal))
+            return failure(CreateCharacteristicsError.InvalidCharacteristics)
+
+        return transactionManager.run {
+            val characteristicsRepository = it.characteristicsRepository
+            val athleteRepository = it.athleteRepository
+
+            val athlete =
+                athleteRepository.getAthlete(uid) ?: return@run failure(CreateCharacteristicsError.AthleteNotFound)
+            if (athlete.coach != coachId) return@run failure(CreateCharacteristicsError.NotAthletesCoach)
+
+            if (dateLong == null)
+                characteristicsRepository.storeCharacteristicsWithoutDate(
+                    uid,
+                    height,
+                    weight,
+                    calories,
+                    waist,
+                    arm,
+                    thigh,
+                    tricep,
+                    abdominal
+                )
+            else
+                characteristicsRepository.storeCharacteristics(
+                    uid,
+                    dateLong,
+                    height,
+                    weight,
+                    calories,
+                    waist,
+                    arm,
+                    thigh,
+                    tricep,
+                    abdominal
+                )
+
+            success(uid)
+        }
+    }
+
+    fun updateCharacteristics(
+        coachId: Int,
+        uid: Int,
         date: String,
         height: Int?,
         weight: Float?,
@@ -88,20 +154,32 @@ class AthleteServices(
         thigh: Int?,
         tricep: Float?,
         abdominal: Float?
-    ): CreateCharacteristicsResult{
-        val dateLong = dateToLong(date) ?: return failure(CreateCharacteristicsError.InvalidDate)
+    ): UpdateCharacteristicsResult {
+        val dateLong = dateToLong(date) ?: return failure(UpdateCharacteristicsError.InvalidDate)
 
         if (!characteristicsDomain.checkCharacteristics(height, weight, calories, waist, arm, thigh, tricep, abdominal))
-            return failure(CreateCharacteristicsError.InvalidCharacteristics)
+            return failure(UpdateCharacteristicsError.InvalidCharacteristics)
 
         return transactionManager.run {
             val characteristicsRepository = it.characteristicsRepository
             val athleteRepository = it.athleteRepository
 
-            val athlete = athleteRepository.getAthlete(uid) ?: return@run failure(CreateCharacteristicsError.AthleteNotFound)
-            if (athlete.coach != coachId) return@run failure(CreateCharacteristicsError.NotAthletesCoach)
+            val athlete =
+                athleteRepository.getAthlete(uid) ?: return@run failure(UpdateCharacteristicsError.AthleteNotFound)
+            if (athlete.coach != coachId) return@run failure(UpdateCharacteristicsError.NotAthletesCoach)
 
-            characteristicsRepository.storeCharacteristics(uid, dateLong, height, weight, calories, waist, arm, thigh, tricep, abdominal)
+            characteristicsRepository.updateCharacteristics(
+                uid,
+                dateLong,
+                height,
+                weight,
+                calories,
+                waist,
+                arm,
+                thigh,
+                tricep,
+                abdominal
+            )
             success(uid)
         }
     }
