@@ -1,30 +1,15 @@
 package waveCoach.domain
 
 import org.springframework.stereotype.Component
-import java.time.LocalDate
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeParseException
+import kotlin.math.abs
+import kotlin.random.Random
 
 
 @Component
 class AthleteDomain {
-    fun dateToLong(birthDate: String): Long? {
-        return try {
-            val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
-            val date = LocalDate.parse(birthDate, formatter)
+    fun isNameValid(name: String) = name.length in 1..64
 
-            if (date.isBefore(LocalDate.now())) {
-                date.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
-            } else {
-                null
-            }
-        } catch (e: DateTimeParseException) {
-            null
-        }
-    }
+    fun createAthleteUsername() = "Athlete_${abs(Random.nextLong())}"
 
-    fun nameValid(name: String): Boolean {
-        return name.length in 1..64
-    }
+    val athleteDefaultPassword = "changeit"
 }

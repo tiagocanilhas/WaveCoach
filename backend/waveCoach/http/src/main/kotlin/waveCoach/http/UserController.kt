@@ -1,7 +1,5 @@
 package waveCoach.http
 
-import kotlinx.datetime.Clock
-import org.springframework.http.ResponseCookie
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -12,7 +10,7 @@ import waveCoach.http.model.input.CreateUserInputModel
 import waveCoach.http.model.output.LoginOutputModel
 import waveCoach.http.model.output.Problem
 import waveCoach.services.CreateUserError
-import waveCoach.services.LoginError
+import waveCoach.services.CheckCredentialsError
 import waveCoach.services.UserServices
 import waveCoach.utils.Failure
 import waveCoach.utils.Success
@@ -34,6 +32,7 @@ class UserController(
                 .build<Unit>()
 
             is Failure -> when (result.value) {
+                CreateUserError.InvalidUsername -> Problem.response(400, Problem.invalidUsername)
                 CreateUserError.InsecurePassword -> Problem.response(400, Problem.insecurePassword)
                 CreateUserError.UsernameAlreadyExists -> Problem.response(400, Problem.usernameAlreadyExists)
             }
@@ -44,16 +43,16 @@ class UserController(
     fun login(
         @RequestBody input: LoginInputModel
     ): ResponseEntity<*> {
-        val result = userServices.login(input.username, input.password)
+        val result = userServices.checkCredentials(input.username, input.password)
 
         return when (result) {
             is Success -> ResponseEntity.status(200)
                 .body(LoginOutputModel(result.value.id, result.value.username, result.value.tokenValue))
 
             is Failure -> when (result.value) {
-                LoginError.UsernameIsBlank -> Problem.response(400, Problem.usernameIsBlank)
-                LoginError.PasswordIsBlank -> Problem.response(400, Problem.passwordIsBlank)
-                LoginError.InvalidLogin -> Problem.response(400, Problem.invalidLogin)
+                CheckCredentialsError.UsernameIsBlank -> Problem.response(400, Problem.usernameIsBlank)
+                CheckCredentialsError.PasswordIsBlank -> Problem.response(400, Problem.passwordIsBlank)
+                CheckCredentialsError.InvalidLogin -> Problem.response(400, Problem.invalidLogin)
             }
         }
     }
@@ -62,15 +61,8 @@ class UserController(
     fun logout(
         user: AuthenticatedUser,
     ): ResponseEntity<*> {
-        val result = userServices.logout(user.token)
+        userServices.revokeToken(user.token)
 
-        return when (result) {
-            is Success -> ResponseEntity.status(200).build<Unit>()
-
-            is Failure -> {
-                Problem.response(400, Problem.invalidToken)
-                Problem.response(400, Problem.tokenNotFound)
-            }
-        }
+        return ResponseEntity.status(200).build<Unit>()
     }
 }

@@ -21,14 +21,11 @@ class JdbiCharacteristicsRepository(
         tricep: Float?,
         abdominal: Float?
     ) {
-        val query = """
-            insert into waveCoach.characteristics (
-                uid, date, height, weight, calories, waist, arm, thigh, tricep, abdominal
-            ) values (
-                :uid, :date, :height, :weight, :calories, :waist, :arm, :thigh, :tricep, :abdominal
-            )
-        """.trimIndent()
-        handle.createUpdate(query)
+        handle.createUpdate("""
+            insert into waveCoach.characteristics 
+                (uid, date, height, weight, calories, waist, arm, thigh, tricep, abdominal) 
+            values (:uid, :date, :height, :weight, :calories, :waist, :arm, :thigh, :tricep, :abdominal)
+        """.trimIndent())
             .bind("uid", uid)
             .bind("date", date)
             .bind("height", height)
@@ -42,15 +39,10 @@ class JdbiCharacteristicsRepository(
             .execute()
     }
 
-    override fun getCharacteristics(uid: Int, date: Long): Characteristics? {
-        val query = """
-            select * from waveCoach.characteristics where uid = :uid and date = :date
-        """.trimIndent()
-        return handle.createQuery(query)
+    override fun getCharacteristics(uid: Int, date: Long): Characteristics? =
+        handle.createQuery("select * from waveCoach.characteristics where uid = :uid and date = :date")
             .bind("uid", uid)
             .bind("date", date)
             .mapTo<Characteristics>()
-            .findFirst()
-            .orElse(null)
-    }
+            .singleOrNull()
 }

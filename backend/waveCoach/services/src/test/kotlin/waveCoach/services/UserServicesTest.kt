@@ -81,19 +81,21 @@ class UserServicesTest {
         }
     }
 
+    
+    
     /**
-     * Login Tests
+     * checkCredentials Tests
      */
 
     @Test
-    fun `login - success`() {
+    fun `checkCredentials - success`() {
         val testClock = TestClock()
         val userService = createUserServices(testClock)
 
         val username = USERNAME_OF_ADMIN
         val password = PASSWORD_OF_ADMIN
 
-        val result = userService.login(username, password)
+        val result = userService.checkCredentials(username, password)
         when (result) {
             is Failure -> fail("Unexpected $result")
             is Success -> {
@@ -105,37 +107,37 @@ class UserServicesTest {
     }
 
     @Test
-    fun `login - username is blank`() {
+    fun `checkCredentials - username is blank`() {
         val testClock = TestClock()
         val userService = createUserServices(testClock)
 
         val username = ""
         val password = PASSWORD_OF_ADMIN
 
-        val result = userService.login(username, password)
+        val result = userService.checkCredentials(username, password)
         when (result) {
-            is Failure -> assertTrue(result.value is LoginError.UsernameIsBlank)
+            is Failure -> assertTrue(result.value is CheckCredentialsError.UsernameIsBlank)
             is Success -> fail("Unexpected $result")
         }
     }
 
     @Test
-    fun `login - password is blank`() {
+    fun `checkCredentials - password is blank`() {
         val testClock = TestClock()
         val userService = createUserServices(testClock)
 
         val username = USERNAME_OF_ADMIN
         val password = ""
 
-        val result = userService.login(username, password)
+        val result = userService.checkCredentials(username, password)
         when (result) {
-            is Failure -> assertTrue(result.value is LoginError.PasswordIsBlank)
+            is Failure -> assertTrue(result.value is CheckCredentialsError.PasswordIsBlank)
             is Success -> fail("Unexpected $result")
         }
     }
 
     @Test
-    fun `login - invalid login`() {
+    fun `checkCredentials - invalid login`() {
         val testClock = TestClock()
         val userService = createUserServices(testClock)
 
@@ -146,14 +148,16 @@ class UserServicesTest {
         )
 
         invalidLogins.forEach { (username, password) ->
-            val result = userService.login(username, password)
+            val result = userService.checkCredentials(username, password)
             when (result) {
-                is Failure -> assertTrue(result.value is LoginError.InvalidLogin)
+                is Failure -> assertTrue(result.value is CheckCredentialsError.InvalidLogin)
                 is Success -> fail("Unexpected $result")
             }
         }
     }
 
+    
+    
     /**
      * GetUserByToken Tests
      */
@@ -190,6 +194,83 @@ class UserServicesTest {
                 is Failure -> assertTrue(result.value is GetUserByTokenError.InvalidToken)
                 is Success -> fail("Unexpected $result")
             }
+        }
+    }
+
+
+
+    /**
+     * RevokeToken Tests
+     */
+
+    @Test
+    fun `revoke token - success`() {
+        val testClock = TestClock()
+        val userService = createUserServices(testClock)
+
+        val token = (userService.checkCredentials(USERNAME_OF_ADMIN, PASSWORD_OF_ADMIN) as Success).value.tokenValue
+
+        val result = userService.getUserByToken(token)
+        when (result) {
+            is Failure -> fail("Unexpected $result")
+            is Success -> {
+                assertEquals(ID_OF_ADMIN, result.value.id)
+                assertEquals(USERNAME_OF_ADMIN, result.value.username)
+            }
+        }
+
+        userService.revokeToken(token)
+
+        val result2 = userService.getUserByToken(token)
+        when (result2) {
+            is Failure -> assertTrue(result2.value is GetUserByTokenError.TokenNotFound)
+            is Success -> fail("Unexpected $result")
+        }
+
+    }
+
+    @Test
+    fun `revoke token - invalid token`() {
+        val testClock = TestClock()
+        val userService = createUserServices(testClock)
+
+        val invalidTokens = listOf(
+            "",
+            "invalid",
+            randomString(),
+        )
+
+        invalidTokens.forEach { token ->
+            val result = userService.revokeToken(token)
+            when (result) {
+                is Failure -> assertTrue(result.value is RevokeTokenError.InvalidToken)
+                is Success -> fail("Unexpected $result")
+            }
+        }
+    }
+
+    @Test
+    fun `revoke token - token not found`() {
+        val testClock = TestClock()
+        val userService = createUserServices(testClock)
+
+        val token = (userService.checkCredentials(USERNAME_OF_ADMIN, PASSWORD_OF_ADMIN) as Success).value.tokenValue
+
+        val result = userService.getUserByToken(token)
+        when (result) {
+            is Failure -> fail("Unexpected $result")
+            is Success -> {
+                assertEquals(ID_OF_ADMIN, result.value.id)
+                assertEquals(USERNAME_OF_ADMIN, result.value.username)
+            }
+        }
+
+        userService.revokeToken(token)
+
+        val result2 = userService.revokeToken(token)
+        when (result2) {
+            is Failure -> assertTrue(result2.value is RevokeTokenError.TokenNotFound)
+            is Success -> fail("Unexpected $result")
         }
     }
 

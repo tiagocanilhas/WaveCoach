@@ -23,7 +23,7 @@ class AthleteController(
     private val athleteServices: AthleteServices,
 ) {
     @PostMapping(Uris.Athletes.CREATE)
-    fun createAthlete(
+    fun create(
         coach: AuthenticatedUser,
         @RequestBody input: AthleteCreateInputModel
     ): ResponseEntity<*> {
@@ -42,7 +42,7 @@ class AthleteController(
     }
 
     @DeleteMapping(Uris.Athletes.REMOVE)
-    fun removeAthlete(
+    fun remove(
         coach: AuthenticatedUser,
         @PathVariable aid: String
     ): ResponseEntity<*> {

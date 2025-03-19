@@ -47,6 +47,33 @@ class UserControllerTest {
     }
 
     @Test
+    fun `create a user - invalid username`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val invalidUsernames = listOf(
+            "", // empty
+            "aaa", // smaller than 4 characters
+            "a".repeat(64), // bigger than 63 characters
+        )
+
+        invalidUsernames.forEach { username ->
+            val body = mapOf(
+                "username" to username,
+                "password" to randomString(),
+            )
+
+            client.post().uri("/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(body)
+                .exchange()
+                .expectStatus().isBadRequest
+                .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+                .expectBody()
+                .jsonPath("type").isEqualTo(Problem.invalidUsername.type.toString())
+        }
+    }
+
+    @Test
     fun `create a user - insecure password`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
@@ -55,7 +82,7 @@ class UserControllerTest {
             "abc123!", // missing uppercase letter
             "ABC123!", // missing lowercase letter
             "Abc!@#", // missing number
-            "Abc123", // smaller than 6 characters
+            "Abc12!", // smaller than 6 characters
         )
 
         insecurePasswords.forEach { password ->

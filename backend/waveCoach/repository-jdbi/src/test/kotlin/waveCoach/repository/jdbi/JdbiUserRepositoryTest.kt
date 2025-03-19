@@ -1,9 +1,14 @@
 package waveCoach.repository.jdbi
 
-import org.junit.jupiter.api.Assertions.assertNotNull
-import org.junit.jupiter.api.Assertions.assertNull
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
+import org.jdbi.v3.core.statement.UnableToExecuteStatementException
+import org.junit.jupiter.api.Assertions.*
 import org.postgresql.util.PSQLException
 import waveCoach.domain.PasswordValidationInfo
+import waveCoach.domain.Token
+import waveCoach.domain.TokenValidationInfo
+import waveCoach.domain.UserDomain
 import kotlin.math.abs
 import kotlin.random.Random
 import kotlin.test.Test
@@ -31,10 +36,17 @@ class JdbiUserRepositoryTest {
 
         try {
             userRepository.storeUser(USERNAME, PasswordValidationInfo(PASSWORD))
-        } catch (e: PSQLException) {
-            // Expected
+        } catch (e: UnableToExecuteStatementException) {
+            assertTrue(e.cause is PSQLException)
+            assertTrue(e.message!!.contains("duplicate key value violates unique constraint"))
         }
     }
+
+
+
+    /**
+     * Remove User Tests
+     */
 
     @Test
     fun `remove user`() = testWithHandleAndRollback { handle ->
@@ -49,6 +61,32 @@ class JdbiUserRepositoryTest {
         assertNull(user)
     }
 
+
+
+    /**
+     * Get User By Username Tests
+     */
+
+    @Test
+    fun `get user by username`() = testWithHandleAndRollback { handle ->
+        val userRepository = JdbiUserRepository(handle)
+
+        val user = userRepository.getUserByUsername(USERNAME)
+
+        assertNotNull(user)
+    }
+
+    @Test
+    fun `get user by non-existing username`() = testWithHandleAndRollback { handle ->
+        val userRepository = JdbiUserRepository(handle)
+
+        val user = userRepository.getUserByUsername(randomString())
+
+        assertNull(user)
+    }
+
+
+
     /**
      * Check Username Tests
      */
@@ -59,8 +97,18 @@ class JdbiUserRepositoryTest {
 
         val exists = userRepository.checkUsername(USERNAME)
 
-        assertNotNull(exists)
+        assertTrue(exists)
     }
+
+    @Test
+    fun `check non-existing username`() = testWithHandleAndRollback { handle ->
+        val userRepository = JdbiUserRepository(handle)
+
+        val exists = userRepository.checkUsername(randomString())
+
+        assertFalse(exists)
+    }
+
 
     companion object {
         private fun randomString() = "String_${abs(Random.nextLong())}"

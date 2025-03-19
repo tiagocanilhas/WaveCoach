@@ -29,6 +29,11 @@ class Problem(
             URI("$BASE_URI/invalid-login")
         )
 
+        val invalidUsername = Problem(
+            "Invalid username",
+            URI("$BASE_URI/invalid-username")
+        )
+
         val invalidToken = Problem(
             "Invalid token",
             URI("$BASE_URI/invalid-token")

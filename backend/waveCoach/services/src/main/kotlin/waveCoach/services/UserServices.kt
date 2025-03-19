@@ -19,17 +19,18 @@ data class LoginExternalInfo(
 )
 
 sealed class CreateUserError {
+    data object InvalidUsername : CreateUserError()
     data object InsecurePassword : CreateUserError()
     data object UsernameAlreadyExists : CreateUserError()
 }
 typealias CreateUserResult = Either<CreateUserError, Int>
 
-sealed class LoginError {
-    data object UsernameIsBlank : LoginError()
-    data object PasswordIsBlank : LoginError()
-    data object InvalidLogin : LoginError()
+sealed class CheckCredentialsError {
+    data object UsernameIsBlank : CheckCredentialsError()
+    data object PasswordIsBlank : CheckCredentialsError()
+    data object InvalidLogin : CheckCredentialsError()
 }
-typealias LoginResult = Either<LoginError, LoginExternalInfo>
+typealias CheckCredentialsResult = Either<CheckCredentialsError, LoginExternalInfo>
 
 sealed class GetUserByTokenError {
     data object InvalidToken : GetUserByTokenError()
@@ -37,13 +38,11 @@ sealed class GetUserByTokenError {
 }
 typealias GetUserByTokenResult = Either<GetUserByTokenError, User>
 
-sealed class LogoutError {
-    data object InvalidToken : LogoutError()
-    data object TokenNotFound : LogoutError()
+sealed class RevokeTokenError {
+    data object InvalidToken : RevokeTokenError()
+    data object TokenNotFound : RevokeTokenError()
 }
-typealias LogoutResult = Either<LogoutError, Boolean>
-
-
+typealias RevokeTokenResult = Either<RevokeTokenError, Boolean>
 
 @Component
 class UserServices(
@@ -55,6 +54,7 @@ class UserServices(
         username: String,
         password: String
     ): CreateUserResult {
+        if (!userDomain.isUsernameValid(username)) return failure(CreateUserError.InvalidUsername)
         if (!userDomain.isSafePassword(password)) return failure(CreateUserError.InsecurePassword)
 
         val passwordValidationInfo = userDomain.createPasswordValidationInformation(password)
@@ -68,19 +68,19 @@ class UserServices(
         }
     }
 
-    fun login(
+    fun checkCredentials(
         username: String,
         password: String
-    ): LoginResult {
-        if (username.isBlank()) return failure(LoginError.UsernameIsBlank)
-        if (password.isBlank()) return failure(LoginError.PasswordIsBlank)
+    ): CheckCredentialsResult {
+        if (username.isBlank()) return failure(CheckCredentialsError.UsernameIsBlank)
+        if (password.isBlank()) return failure(CheckCredentialsError.PasswordIsBlank)
 
         return transactionManager.run {
             val userRepository = it.userRepository
 
-            val user = userRepository.getUserByUsername(username) ?: return@run failure(LoginError.InvalidLogin)
+            val user = userRepository.getUserByUsername(username) ?: return@run failure(CheckCredentialsError.InvalidLogin)
             if (!userDomain.validatePassword(password, user.password))
-                return@run failure(LoginError.InvalidLogin)
+                return@run failure(CheckCredentialsError.InvalidLogin)
 
             val value = userDomain.generateTokenValue()
             val tokenValidationInfo = userDomain.createTokenValidationInformation(value)
@@ -110,15 +110,14 @@ class UserServices(
         }
     }
 
-    fun logout(token: String): LogoutResult {
-//        if (!userDomain.canBeToken(token)) return failure(LogoutError.InvalidToken)
-
+    fun revokeToken(token: String): RevokeTokenResult {
+        if (!userDomain.canBeToken(token)) return failure(RevokeTokenError.InvalidToken)
         val tokenValidationInfo = userDomain.createTokenValidationInformation(token)
 
         return transactionManager.run {
             val userRepository = it.userRepository
 
-//            userRepository.getToken(tokenValidationInfo) ?: return@run failure(LogoutError.TokenNotFound)
+            userRepository.getToken(tokenValidationInfo) ?: return@run failure(RevokeTokenError.TokenNotFound)
 
             userRepository.removeToken(tokenValidationInfo)
             success(true)

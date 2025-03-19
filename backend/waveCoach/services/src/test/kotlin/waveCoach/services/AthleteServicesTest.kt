@@ -18,6 +18,9 @@ import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.minutes
 
 class AthleteServicesTest {
+    /**
+     * Create Athlete Tests
+     */
 
     @Test
     fun `create athlete - success`() {
@@ -67,6 +70,12 @@ class AthleteServicesTest {
         }
     }
 
+
+
+    /**
+     * Remove Athlete Tests
+     */
+
     @Test
     fun `remove athlete - success`() {
         val athleteServices = createAthleteServices(maxTokensPerUser = MAX_TOKENS_PER_USER)
@@ -96,6 +105,12 @@ class AthleteServicesTest {
             is Success -> fail("Unexpected $removeResult")
         }
     }
+
+
+
+    /**
+     * Create Characteristics Tests
+     */
 
     @Test
     fun `create characteristics - success`() {

@@ -8,8 +8,10 @@ import waveCoach.repository.TransactionManager
 import waveCoach.utils.Either
 import waveCoach.utils.failure
 import waveCoach.utils.success
-import kotlin.math.abs
-import kotlin.random.Random
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 
 sealed class CreateAthleteError {
     data object InvalidBirthDate : CreateAthleteError()
@@ -43,17 +45,17 @@ class AthleteServices(
         coachId: Int,
         birthDate: String
     ): CreateAthleteResult {
-        val passwordValidationInfo = userDomain.createPasswordValidationInformation("changeit")
+        val username = athleteDomain.createAthleteUsername()
+        val passwordValidationInfo = userDomain.createPasswordValidationInformation(athleteDomain.athleteDefaultPassword)
 
-        val date = athleteDomain.dateToLong(birthDate) ?: return failure(CreateAthleteError.InvalidBirthDate)
-
-        if (!athleteDomain.nameValid(name)) return failure(CreateAthleteError.InvalidName)
+        if (!athleteDomain.isNameValid(name)) return failure(CreateAthleteError.InvalidName)
+        val date = dateToLong(birthDate) ?: return failure(CreateAthleteError.InvalidBirthDate)
 
         return transactionManager.run {
             val userRepository = it.userRepository
             val athleteRepository = it.athleteRepository
 
-            val aid = userRepository.storeUser("Athlete_${abs(Random.nextLong())}", passwordValidationInfo)
+            val aid = userRepository.storeUser(username, passwordValidationInfo)
             athleteRepository.storeAthlete(aid, coachId, name, date)
             success(aid)
         }
@@ -77,7 +79,7 @@ class AthleteServices(
     fun createCharacteristics(
         coachId: Int,
         uid: Int,
-        date: String?,
+        date: String,
         height: Int?,
         weight: Float?,
         calories: Int?,
@@ -87,7 +89,7 @@ class AthleteServices(
         tricep: Float?,
         abdominal: Float?
     ): CreateCharacteristicsResult{
-        val dateLong = date?.let { athleteDomain.dateToLong(it) } ?: return failure(CreateCharacteristicsError.InvalidDate)
+        val dateLong = dateToLong(date) ?: return failure(CreateCharacteristicsError.InvalidDate)
 
         if (!characteristicsDomain.checkCharacteristics(height, weight, calories, waist, arm, thigh, tricep, abdominal))
             return failure(CreateCharacteristicsError.InvalidCharacteristics)
@@ -101,6 +103,21 @@ class AthleteServices(
 
             characteristicsRepository.storeCharacteristics(uid, dateLong, height, weight, calories, waist, arm, thigh, tricep, abdominal)
             success(uid)
+        }
+    }
+
+    private fun dateToLong(birthDate: String): Long? {
+        return try {
+            val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+            val date = LocalDate.parse(birthDate, formatter)
+
+            if (date.isBefore(LocalDate.now())) {
+                date.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+            } else {
+                null
+            }
+        } catch (e: DateTimeParseException) {
+            null
         }
     }
 }

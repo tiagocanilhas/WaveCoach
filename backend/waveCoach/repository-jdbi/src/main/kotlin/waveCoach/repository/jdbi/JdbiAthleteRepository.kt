@@ -9,7 +9,10 @@ class JdbiAthleteRepository(
     private val handle: Handle,
 ) : AthleteRepository {
     override fun storeAthlete(uid: Int, coachId: Int, name: String, birthDate: Long): Int =
-        handle.createUpdate("insert into waveCoach.athlete (uid, coach, name, birth_date) values (:uid, :coach, :name, :birth_date)")
+        handle.createUpdate("""
+            insert into waveCoach.athlete (uid, coach, name, birth_date) 
+            values (:uid, :coach, :name, :birth_date)
+        """.trimIndent())
             .bind("uid", uid)
             .bind("coach", coachId)
             .bind("name", name)
@@ -22,8 +25,7 @@ class JdbiAthleteRepository(
         handle.createQuery("select * from waveCoach.athlete where uid = :uid")
             .bind("uid", uid)
             .mapTo<Athlete>()
-            .findFirst()
-            .orElse(null)
+            .singleOrNull()
 
     override fun removeAthlete(uid: Int) {
         handle.createUpdate("delete from waveCoach.athlete where uid = :uid")
