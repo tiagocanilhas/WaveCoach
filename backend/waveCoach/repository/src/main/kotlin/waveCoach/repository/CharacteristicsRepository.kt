@@ -46,4 +46,6 @@ interface CharacteristicsRepository {
     )
 
     fun removeCharacteristics(uid: Int, date: Long)
+
+    fun removeCharacteristicsWithoutDate(uid: Int)
 }

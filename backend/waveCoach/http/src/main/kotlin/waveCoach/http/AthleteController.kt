@@ -2,6 +2,7 @@ package waveCoach.http
 
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
@@ -11,6 +12,8 @@ import waveCoach.domain.AuthenticatedUser
 import waveCoach.http.model.input.AthleteCreateCharacteristicsInputModel
 import waveCoach.http.model.input.AthleteUpdateCharacteristicsInputModel
 import waveCoach.http.model.input.AthleteCreateInputModel
+import waveCoach.http.model.output.CharacteristicsListOutputModel
+import waveCoach.http.model.output.CharacteristicsOutputModel
 import waveCoach.http.model.output.CreateCharacteristicsOutputModel
 import waveCoach.http.model.output.Problem
 import waveCoach.services.*
@@ -86,6 +89,75 @@ class AthleteController(
 
                 CreateCharacteristicsError.InvalidDate -> Problem.response(400, Problem.invalidDate)
                 CreateCharacteristicsError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
+            }
+        }
+    }
+
+    @GetMapping(Uris.Athletes.GET_CHARACTERISTICS)
+    fun getCharacteristics(
+        coach: AuthenticatedUser,
+        @PathVariable aid: String,
+        @PathVariable date: String
+    ): ResponseEntity<*> {
+        val uid = aid.toIntOrNull() ?: return Problem.response(400, Problem.invalidAthleteId)
+        val result = athleteServices.getCharacteristics(coach.info.id, uid, date)
+
+        return when (result) {
+            is Success -> ResponseEntity.status(200)
+                .body(
+                   CharacteristicsOutputModel(
+                          result.value.date,
+                          result.value.uid,
+                          result.value.height,
+                          result.value.weight,
+                          result.value.calories,
+                          result.value.waist,
+                          result.value.arm,
+                          result.value.thigh,
+                          result.value.tricep,
+                          result.value.abdominal
+                    )
+                )
+            is Failure -> when (result.value) {
+                GetCharacteristicsError.InvalidDate -> Problem.response(400, Problem.invalidDate)
+                GetCharacteristicsError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
+                GetCharacteristicsError.CharacteristicsNotFound -> Problem.response(404, Problem.characteristicsNotFound)
+                GetCharacteristicsError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
+            }
+        }
+    }
+
+    @GetMapping(Uris.Athletes.GET_CHARACTERISTICS_LIST)
+    fun getCharacteristicsList(
+        coach: AuthenticatedUser,
+        @PathVariable aid: String
+    ): ResponseEntity<*> {
+        val uid = aid.toIntOrNull() ?: return Problem.response(400, Problem.invalidAthleteId)
+        val result = athleteServices.getCharacteristicsList(coach.info.id, uid)
+
+        return when (result) {
+            is Success -> ResponseEntity.status(200)
+                .body(
+                    CharacteristicsListOutputModel(
+                        result.value.map {
+                            CharacteristicsOutputModel(
+                                it.date,
+                                it.uid,
+                                it.height,
+                                it.weight,
+                                it.calories,
+                                it.waist,
+                                it.arm,
+                                it.thigh,
+                                it.tricep,
+                                it.abdominal
+                            )
+                        }
+                    )
+                )
+            is Failure -> when (result.value) {
+                GetCharacteristicsListError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
+                GetCharacteristicsListError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
             }
         }
     }

@@ -28,6 +28,8 @@ object Uris {
         const val GET_BY_ID = "$ATHLETES/{aid}"
 
         const val CREATE_CHARACTERISTICS = "$ATHLETES/{aid}/characteristics"
+        const val GET_CHARACTERISTICS = "$ATHLETES/{aid}/characteristics/{date}"
+        const val GET_CHARACTERISTICS_LIST = "$ATHLETES/{aid}/characteristics"
         const val UPDATE_CHARACTERISTICS = "$ATHLETES/{aid}/characteristics/{date}"
         const val REMOVE_CHARACTERISTICS = "$ATHLETES/{aid}/characteristics/{date}"
 

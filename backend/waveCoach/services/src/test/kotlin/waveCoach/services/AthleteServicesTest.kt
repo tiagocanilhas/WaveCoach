@@ -254,6 +254,115 @@ class AthleteServicesTest {
     }
 
     /**
+     * Get Characteristics Tests
+     */
+
+    @Test
+    fun `get characteristics - success`() {
+        val athleteServices = createAthleteServices(maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (val result =
+            athleteServices.getCharacteristics(FIRST_COACH_ID, FIRST_ATHLETE_ID, ATHLETE_CHARACTERISTICS_FIRST_DATE)) {
+            is Failure -> fail("Unexpected $result")
+            is Success -> assertTrue(
+                result.value.uid == FIRST_ATHLETE_ID
+                        && result.value.date == ATHLETE_CHARACTERISTICS_FIRST_DATE_LONG
+                        && result.value.height == ATHLETE_HEIGHT
+                        && result.value.weight == ATHLETE_WEIGHT
+                        && result.value.calories == ATHLETE_CALORIES
+                        && result.value.waist == ATHLETE_WAIST
+                        && result.value.arm == ATHLETE_ARM
+                        && result.value.thigh == ATHLETE_THIGH
+                        && result.value.tricep == ATHLETE_TRICEP
+                        && result.value.abdominal == ATHLETE_ABDOMINAL
+            )
+        }
+    }
+
+    @Test
+    fun `get characteristics - invalid date`() {
+        val athleteServices = createAthleteServices(maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        val invalidDates = listOf(
+            "32-01-2000",
+            "2000-01-01",
+            "01-01-2200",
+        )
+
+        invalidDates.forEach { date ->
+            when (val result = athleteServices.getCharacteristics(FIRST_COACH_ID, FIRST_ATHLETE_ID, date)) {
+                is Failure -> assertTrue(result.value is GetCharacteristicsError.InvalidDate)
+                is Success -> fail("Unexpected $result")
+            }
+        }
+    }
+
+    @Test
+    fun `get characteristics - athlete not found`() {
+        val athleteServices = createAthleteServices(maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (val result = athleteServices.getCharacteristics(FIRST_COACH_ID, 0, ATHLETE_CHARACTERISTICS_FIRST_DATE)) {
+            is Failure -> assertTrue(result.value is GetCharacteristicsError.AthleteNotFound)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
+    @Test
+    fun `get characteristics - characteristics not found`() {
+        val athleteServices = createAthleteServices(maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (val result = athleteServices.getCharacteristics(FIRST_COACH_ID, FIRST_ATHLETE_ID, VALID_DATE)) {
+            is Failure -> assertTrue(result.value is GetCharacteristicsError.CharacteristicsNotFound)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
+    @Test
+    fun `get characteristics - not athlete's coach`() {
+        val athleteServices = createAthleteServices(maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (val result =
+            athleteServices.getCharacteristics(SECOND_COACH_ID, FIRST_ATHLETE_ID, ATHLETE_CHARACTERISTICS_FIRST_DATE)) {
+            is Failure -> assertTrue(result.value is GetCharacteristicsError.NotAthletesCoach)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
+    /**
+     * Get Characteristics List Tests
+     */
+
+    @Test
+    fun `get characteristics list - success`() {
+        val athleteServices = createAthleteServices(maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (val result = athleteServices.getCharacteristicsList(FIRST_COACH_ID, FIRST_ATHLETE_ID)) {
+            is Failure -> fail("Unexpected $result")
+            is Success -> assertTrue(result.value.isNotEmpty())
+        }
+    }
+
+    @Test
+    fun `get characteristics list - athlete not found`() {
+        val athleteServices = createAthleteServices(maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (val result = athleteServices.getCharacteristicsList(FIRST_COACH_ID, 0)) {
+            is Failure -> assertTrue(result.value is GetCharacteristicsListError.AthleteNotFound)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
+    @Test
+    fun `get characteristics list - not athlete's coach`() {
+        val athleteServices = createAthleteServices(maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (val result = athleteServices.getCharacteristicsList(SECOND_COACH_ID, FIRST_ATHLETE_ID)) {
+            is Failure -> assertTrue(result.value is GetCharacteristicsListError.NotAthletesCoach)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
+    /**
      * Update Characteristics Tests
      */
 
@@ -466,7 +575,17 @@ class AthleteServicesTest {
         private const val FIRST_ATHLETE_ID = 3
         private const val SECOND_ATHLETE_ID = 4
         private const val ATHLETE_CHARACTERISTICS_FIRST_DATE = "25-01-2000" // date long = 948758400000
+        private const val ATHLETE_CHARACTERISTICS_FIRST_DATE_LONG = 948758400000
         private const val ATHLETE_CHARACTERISTICS_SECOND_DATE = "10-01-2000" // date long = 947462400000
+
+        private const val ATHLETE_HEIGHT = 1
+        private const val ATHLETE_WEIGHT = 1.0f
+        private const val ATHLETE_CALORIES = 1
+        private const val ATHLETE_WAIST = 1
+        private const val ATHLETE_ARM = 1
+        private const val ATHLETE_THIGH = 1
+        private const val ATHLETE_TRICEP = 1.0f
+        private const val ATHLETE_ABDOMINAL = 1.0f
 
         private const val MAX_TOKENS_PER_USER = 5
 

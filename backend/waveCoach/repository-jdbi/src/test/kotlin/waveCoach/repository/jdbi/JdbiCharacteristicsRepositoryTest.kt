@@ -124,6 +124,30 @@ class JdbiCharacteristicsRepositoryTest {
         assertNull(characteristics)
     }
 
+    @Test
+    fun `remove characteristics without date`() = testWithHandleAndRollback { handle ->
+        val characteristicsRepository = JdbiCharacteristicsRepository(handle)
+
+        characteristicsRepository.storeCharacteristics(
+            ATHLETE_ID,
+            DATE,
+            HEIGHT,
+            WEIGHT,
+            CALORIES,
+            WAIST,
+            ARM,
+            THIGH,
+            TRICEP,
+            ABDOMINAL
+        )
+
+        characteristicsRepository.removeCharacteristicsWithoutDate(ATHLETE_ID)
+
+        val characteristicsList = characteristicsRepository.getCharacteristicsList(ATHLETE_ID)
+
+        assert(characteristicsList.isEmpty())
+    }
+
     companion object {
         private const val ATHLETE_ID = 3
         private const val ATHLETE_CHARACTERISTICS_FIRST_DATE = 948758400000 // 25-01-2000

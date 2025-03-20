@@ -133,4 +133,13 @@ class JdbiCharacteristicsRepository(
             .bind("date", date)
             .execute()
     }
+
+    override fun removeCharacteristicsWithoutDate(uid: Int) {
+        val query = """
+            delete from waveCoach.characteristics where uid = :uid
+        """.trimIndent()
+        handle.createUpdate(query)
+            .bind("uid", uid)
+            .execute()
+    }
 }

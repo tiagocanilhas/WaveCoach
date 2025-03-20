@@ -2,12 +2,14 @@ package waveCoach.services
 
 import org.springframework.stereotype.Component
 import waveCoach.domain.AthleteDomain
+import waveCoach.domain.Characteristics
 import waveCoach.domain.CharacteristicsDomain
 import waveCoach.domain.UserDomain
 import waveCoach.repository.TransactionManager
 import waveCoach.utils.Either
 import waveCoach.utils.failure
 import waveCoach.utils.success
+import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -33,6 +35,20 @@ sealed class CreateCharacteristicsError {
     data object NotAthletesCoach : CreateCharacteristicsError()
 }
 typealias CreateCharacteristicsResult = Either<CreateCharacteristicsError, Int>
+
+sealed class GetCharacteristicsError {
+    data object InvalidDate : GetCharacteristicsError()
+    data object AthleteNotFound : GetCharacteristicsError()
+    data object NotAthletesCoach : GetCharacteristicsError()
+    data object CharacteristicsNotFound : GetCharacteristicsError()
+}
+typealias GetCharacteristicsResult = Either<GetCharacteristicsError, Characteristics>
+
+sealed class GetCharacteristicsListError {
+    data object AthleteNotFound : GetCharacteristicsListError()
+    data object NotAthletesCoach : GetCharacteristicsListError()
+}
+typealias GetCharacteristicsListResult = Either<GetCharacteristicsListError, List<Characteristics>>
 
 sealed class UpdateCharacteristicsError {
     data object InvalidDate : UpdateCharacteristicsError()
@@ -80,7 +96,7 @@ class AthleteServices(
     }
 
     fun removeAthlete(coachId: Int, aid: Int): RemoveAthleteResult {
-        return transactionManager.run { it ->
+        return transactionManager.run {
             val athleteRepository = it.athleteRepository
             val userRepository = it.userRepository
             val characteristicsRepository = it.characteristicsRepository
@@ -88,11 +104,7 @@ class AthleteServices(
             val athlete = athleteRepository.getAthlete(aid) ?: return@run failure(RemoveAthleteError.AthleteNotFound)
             if (athlete.coach != coachId) return@run failure(RemoveAthleteError.NotAthletesCoach)
 
-            val athleteCharacteristics = characteristicsRepository.getCharacteristicsList(aid)
-
-            athleteCharacteristics.forEach { characteristic ->
-                characteristicsRepository.removeCharacteristics(aid, characteristic.date)
-            }
+            characteristicsRepository.removeCharacteristicsWithoutDate(aid)
 
             athleteRepository.removeAthlete(aid)
             userRepository.removeUser(aid)
@@ -160,6 +172,40 @@ class AthleteServices(
                 )
             }
             success(uid)
+        }
+    }
+
+    fun getCharacteristics(coachId: Int, uid: Int, date: String): GetCharacteristicsResult {
+        val dateLong = dateToLong(date) ?: return failure(GetCharacteristicsError.InvalidDate)
+
+        return transactionManager.run {
+            val characteristicsRepository = it.characteristicsRepository
+            val athleteRepository = it.athleteRepository
+
+            val athlete =
+                athleteRepository.getAthlete(uid) ?: return@run failure(GetCharacteristicsError.AthleteNotFound)
+
+            if (athlete.coach != coachId) return@run failure(GetCharacteristicsError.NotAthletesCoach)
+
+            val characteristics = characteristicsRepository.getCharacteristics(uid, dateLong)
+                ?: return@run failure(GetCharacteristicsError.CharacteristicsNotFound)
+
+            success(characteristics)
+        }
+    }
+
+    fun getCharacteristicsList(coachId: Int, uid: Int): GetCharacteristicsListResult {
+        return transactionManager.run {
+            val characteristicsRepository = it.characteristicsRepository
+            val athleteRepository = it.athleteRepository
+
+            val athlete =
+                athleteRepository.getAthlete(uid) ?: return@run failure(GetCharacteristicsListError.AthleteNotFound)
+
+            if (athlete.coach != coachId) return@run failure(GetCharacteristicsListError.NotAthletesCoach)
+
+            val characteristicsList = characteristicsRepository.getCharacteristicsList(uid)
+            success(characteristicsList)
         }
     }
 
