@@ -74,6 +74,11 @@ class AthleteController(
 
             is Failure -> when (result.value) {
                 CreateCharacteristicsError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
+                CreateCharacteristicsError.CharacteristicsAlreadyExists -> Problem.response(
+                    409,
+                    Problem.characteristicsAlreadyExists
+                )
+
                 CreateCharacteristicsError.InvalidCharacteristics -> Problem.response(
                     400,
                     Problem.invalidCharacteristics
@@ -89,11 +94,12 @@ class AthleteController(
     fun updateCharacteristics(
         coach: AuthenticatedUser,
         @PathVariable aid: String,
+        @PathVariable date: String,
         @RequestBody input: AthleteUpdateCharacteristicsInputModel
     ): ResponseEntity<*> {
         val uid = aid.toIntOrNull() ?: return Problem.response(400, Problem.invalidAthleteId)
         val result = athleteServices.updateCharacteristics(
-            coach.info.id, uid, input.date, input.height, input.weight, input.calories,
+            coach.info.id, uid, date, input.height, input.weight, input.calories,
             input.waist, input.arm, input.thigh, input.tricep, input.abdominal
         )
 
@@ -109,6 +115,31 @@ class AthleteController(
 
                 UpdateCharacteristicsError.InvalidDate -> Problem.response(400, Problem.invalidDate)
                 UpdateCharacteristicsError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
+            }
+        }
+    }
+
+    @DeleteMapping(Uris.Athletes.REMOVE_CHARACTERISTICS)
+    fun removeCharacteristics(
+        coach: AuthenticatedUser,
+        @PathVariable aid: String,
+        @PathVariable date: String
+    ): ResponseEntity<*> {
+        val uid = aid.toIntOrNull() ?: return Problem.response(400, Problem.invalidAthleteId)
+        val result = athleteServices.removeCharacteristics(coach.info.id, uid, date)
+
+        return when (result) {
+            is Success -> ResponseEntity.status(204).build<Unit>()
+
+            is Failure -> when (result.value) {
+                RemoveCharacteristicsError.InvalidDate -> Problem.response(400, Problem.invalidDate)
+                RemoveCharacteristicsError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
+                RemoveCharacteristicsError.CharacteristicsNotFound -> Problem.response(
+                    404,
+                    Problem.characteristicsNotFound
+                )
+
+                RemoveCharacteristicsError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
             }
         }
     }

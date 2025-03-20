@@ -41,6 +41,7 @@ class JdbiAthleteRepositoryTest {
     fun `remove athlete`() = testWithHandleAndRollback { handle ->
         val athleteRepository = JdbiAthleteRepository(handle)
         val userRepository = JdbiUserRepository(handle)
+        val characteristicsRepository = JdbiCharacteristicsRepository(handle)
 
         val uid = userRepository.storeUser(USERNAME, PasswordValidationInfo(PASSWORD))
 
@@ -52,6 +53,10 @@ class JdbiAthleteRepositoryTest {
         val athlete = athleteRepository.getAthlete(aid)
 
         assertNull(athlete)
+
+        val characteristics = characteristicsRepository.getCharacteristicsList(aid)
+
+        assert(characteristics.isEmpty())
     }
 
     companion object {

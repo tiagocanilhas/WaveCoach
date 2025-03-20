@@ -27,6 +27,7 @@ typealias RemoveAthleteResult = Either<RemoveAthleteError, Int>
 
 sealed class CreateCharacteristicsError {
     data object InvalidDate : CreateCharacteristicsError()
+    data object CharacteristicsAlreadyExists : CreateCharacteristicsError()
     data object InvalidCharacteristics : CreateCharacteristicsError()
     data object AthleteNotFound : CreateCharacteristicsError()
     data object NotAthletesCoach : CreateCharacteristicsError()
@@ -40,6 +41,14 @@ sealed class UpdateCharacteristicsError {
     data object NotAthletesCoach : UpdateCharacteristicsError()
 }
 typealias UpdateCharacteristicsResult = Either<UpdateCharacteristicsError, Int>
+
+sealed class RemoveCharacteristicsError {
+    data object InvalidDate : RemoveCharacteristicsError()
+    data object AthleteNotFound : RemoveCharacteristicsError()
+    data object CharacteristicsNotFound : RemoveCharacteristicsError()
+    data object NotAthletesCoach : RemoveCharacteristicsError()
+}
+typealias RemoveCharacteristicsResult = Either<RemoveCharacteristicsError, Int>
 
 @Component
 class AthleteServices(
@@ -71,12 +80,19 @@ class AthleteServices(
     }
 
     fun removeAthlete(coachId: Int, aid: Int): RemoveAthleteResult {
-        return transactionManager.run {
+        return transactionManager.run { it ->
             val athleteRepository = it.athleteRepository
             val userRepository = it.userRepository
+            val characteristicsRepository = it.characteristicsRepository
 
             val athlete = athleteRepository.getAthlete(aid) ?: return@run failure(RemoveAthleteError.AthleteNotFound)
             if (athlete.coach != coachId) return@run failure(RemoveAthleteError.NotAthletesCoach)
+
+            val athleteCharacteristics = characteristicsRepository.getCharacteristicsList(aid)
+
+            athleteCharacteristics.forEach { characteristic ->
+                characteristicsRepository.removeCharacteristics(aid, characteristic.date)
+            }
 
             athleteRepository.removeAthlete(aid)
             userRepository.removeUser(aid)
@@ -110,6 +126,7 @@ class AthleteServices(
 
             val athlete =
                 athleteRepository.getAthlete(uid) ?: return@run failure(CreateCharacteristicsError.AthleteNotFound)
+
             if (athlete.coach != coachId) return@run failure(CreateCharacteristicsError.NotAthletesCoach)
 
             if (dateLong == null)
@@ -124,7 +141,11 @@ class AthleteServices(
                     tricep,
                     abdominal
                 )
-            else
+            else {
+                val characteristics = characteristicsRepository.getCharacteristics(uid, dateLong)
+
+                if (characteristics != null) return@run failure(CreateCharacteristicsError.CharacteristicsAlreadyExists)
+
                 characteristicsRepository.storeCharacteristics(
                     uid,
                     dateLong,
@@ -137,7 +158,7 @@ class AthleteServices(
                     tricep,
                     abdominal
                 )
-
+            }
             success(uid)
         }
     }
@@ -184,13 +205,33 @@ class AthleteServices(
         }
     }
 
-    private fun dateToLong(birthDate: String): Long? {
+    fun removeCharacteristics(coachId: Int, uid: Int, date: String): RemoveCharacteristicsResult {
+        val dateLong = dateToLong(date) ?: return failure(RemoveCharacteristicsError.InvalidDate)
+
+        return transactionManager.run {
+            val characteristicsRepository = it.characteristicsRepository
+            val athleteRepository = it.athleteRepository
+
+            val athlete =
+                athleteRepository.getAthlete(uid) ?: return@run failure(RemoveCharacteristicsError.AthleteNotFound)
+
+            if (athlete.coach != coachId) return@run failure(RemoveCharacteristicsError.NotAthletesCoach)
+
+            characteristicsRepository.getCharacteristics(uid, dateLong)
+                ?: return@run failure(RemoveCharacteristicsError.CharacteristicsNotFound)
+
+            characteristicsRepository.removeCharacteristics(uid, dateLong)
+            success(uid)
+        }
+    }
+
+    private fun dateToLong(date: String): Long? {
         return try {
             val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
-            val date = LocalDate.parse(birthDate, formatter)
+            val dateParsed = LocalDate.parse(date, formatter)
 
-            if (date.isBefore(LocalDate.now())) {
-                date.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+            if (dateParsed.isBefore(LocalDate.now())) {
+                dateParsed.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
             } else {
                 null
             }

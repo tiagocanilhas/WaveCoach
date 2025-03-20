@@ -253,6 +253,10 @@ class AthleteServicesTest {
         }
     }
 
+    /**
+     * Update Characteristics Tests
+     */
+
     @Test
     fun `update characteristics - success`() {
         val athleteServices = createAthleteServices(maxTokensPerUser = MAX_TOKENS_PER_USER)
@@ -371,6 +375,88 @@ class AthleteServicesTest {
         }
     }
 
+    /**
+     * Remove Characteristics Tests
+     */
+
+    @Test
+    fun `remove characteristics - success`() {
+        val athleteServices = createAthleteServices(maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (val result = athleteServices.removeCharacteristics(
+            FIRST_COACH_ID,
+            FIRST_ATHLETE_ID,
+            ATHLETE_CHARACTERISTICS_SECOND_DATE
+        )) {
+            is Failure -> fail("Unexpected $result")
+            is Success -> assertTrue(result.value == FIRST_ATHLETE_ID)
+        }
+    }
+
+    @Test
+    fun `remove characteristics - invalid date`() {
+        val athleteServices = createAthleteServices(maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        val invalidDates = listOf(
+            "32-01-2000",
+            "2000-01-01",
+            "01-01-2200",
+        )
+
+        invalidDates.forEach { date ->
+            when (val result = athleteServices.removeCharacteristics(
+                FIRST_COACH_ID,
+                FIRST_ATHLETE_ID,
+                date
+            )) {
+                is Failure -> assertTrue(result.value is RemoveCharacteristicsError.InvalidDate)
+                is Success -> fail("Unexpected $result")
+            }
+        }
+    }
+
+    @Test
+    fun `remove characteristics - athlete not found`() {
+        val athleteServices = createAthleteServices(maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (val result = athleteServices.removeCharacteristics(
+            FIRST_COACH_ID,
+            0,
+            ATHLETE_CHARACTERISTICS_FIRST_DATE
+        )) {
+            is Failure -> assertTrue(result.value is RemoveCharacteristicsError.AthleteNotFound)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
+    @Test
+    fun `remove characteristics - characteristics not found`() {
+        val athleteServices = createAthleteServices(maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (val result = athleteServices.removeCharacteristics(
+            FIRST_COACH_ID,
+            FIRST_ATHLETE_ID,
+            VALID_DATE
+        )) {
+            is Failure -> assertTrue(result.value is RemoveCharacteristicsError.CharacteristicsNotFound)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
+    @Test
+    fun `remove characteristics - not athlete's coach`() {
+        val athleteServices = createAthleteServices(maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (val result = athleteServices.removeCharacteristics(
+            SECOND_COACH_ID,
+            FIRST_ATHLETE_ID,
+            ATHLETE_CHARACTERISTICS_FIRST_DATE
+        )) {
+            is Failure -> assertTrue(result.value is RemoveCharacteristicsError.NotAthletesCoach)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
     companion object {
         private fun randomString() = "String_${abs(Random.nextLong())}"
 
@@ -379,6 +465,8 @@ class AthleteServicesTest {
         private const val SECOND_COACH_ID = 2
         private const val FIRST_ATHLETE_ID = 3
         private const val SECOND_ATHLETE_ID = 4
+        private const val ATHLETE_CHARACTERISTICS_FIRST_DATE = "25-01-2000" // date long = 948758400000
+        private const val ATHLETE_CHARACTERISTICS_SECOND_DATE = "10-01-2000" // date long = 947462400000
 
         private const val MAX_TOKENS_PER_USER = 5
 

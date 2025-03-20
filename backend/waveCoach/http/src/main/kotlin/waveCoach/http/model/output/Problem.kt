@@ -93,5 +93,15 @@ class Problem(
             "Invalid date",
             URI.create("$BASE_URI/invalid-date")
         )
+
+        val characteristicsNotFound = Problem(
+            "Characteristics not found",
+            URI.create("$BASE_URI/characteristics-not-found")
+        )
+
+        val characteristicsAlreadyExists = Problem(
+            "Characteristics already exists",
+            URI.create("$BASE_URI/characteristics-already-exists")
+        )
     }
 }

@@ -30,6 +30,8 @@ interface CharacteristicsRepository {
 
     fun getCharacteristics(uid: Int, date: Long): Characteristics?
 
+    fun getCharacteristicsList(uid: Int): List<Characteristics>
+
     fun updateCharacteristics(
         uid: Int,
         date: Long,
@@ -42,4 +44,6 @@ interface CharacteristicsRepository {
         tricep: Float?,
         abdominal: Float?
     )
+
+    fun removeCharacteristics(uid: Int, date: Long)
 }

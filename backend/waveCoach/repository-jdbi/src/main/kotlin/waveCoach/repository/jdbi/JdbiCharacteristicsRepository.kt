@@ -80,6 +80,12 @@ class JdbiCharacteristicsRepository(
             .mapTo<Characteristics>()
             .singleOrNull()
 
+    override fun getCharacteristicsList(uid: Int): List<Characteristics> =
+        handle.createQuery("select * from waveCoach.characteristics where uid = :uid")
+            .bind("uid", uid)
+            .mapTo<Characteristics>()
+            .list()
+
     override fun updateCharacteristics(
         uid: Int,
         date: Long,
@@ -115,6 +121,16 @@ class JdbiCharacteristicsRepository(
             .bind("thigh", thigh)
             .bind("tricep", tricep)
             .bind("abdominal", abdominal)
+            .execute()
+    }
+
+    override fun removeCharacteristics(uid: Int, date: Long) {
+        val query = """
+            delete from waveCoach.characteristics where uid = :uid and date = :date
+        """.trimIndent()
+        handle.createUpdate(query)
+            .bind("uid", uid)
+            .bind("date", date)
             .execute()
     }
 }
