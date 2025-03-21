@@ -606,8 +606,7 @@ class AthleteServicesTest {
                     tokenRollingTtl,
                     maxTokensPerUser = maxTokensPerUser,
                 ),
-
-                )
+            ),
         )
 
         private val jdbi = Jdbi.create(

@@ -72,8 +72,10 @@ class AthleteController(
         )
 
         return when (result) {
-            is Success -> ResponseEntity.status(201)
-                .body(CreateCharacteristicsOutputModel(result.value))
+            is Success -> ResponseEntity
+                .status(201)
+                .header("Location", Uris.Athletes.characteristicsByDate(uid, result.value).toASCIIString())
+                .build<Unit>()
 
             is Failure -> when (result.value) {
                 CreateCharacteristicsError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)

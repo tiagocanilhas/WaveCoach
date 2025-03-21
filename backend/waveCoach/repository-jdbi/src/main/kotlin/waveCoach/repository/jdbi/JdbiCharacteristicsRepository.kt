@@ -20,15 +20,14 @@ class JdbiCharacteristicsRepository(
         thigh: Int?,
         tricep: Float?,
         abdominal: Float?
-    ) {
-        val query = """
+    ): Long =
+        handle.createUpdate("""
             insert into waveCoach.characteristics (
                 uid, date, height, weight, calories, waist, arm, thigh, tricep, abdominal
             ) values (
                 :uid, :date, :height, :weight, :calories, :waist, :arm, :thigh, :tricep, :abdominal
             )
-        """.trimIndent()
-        handle.createUpdate(query)
+        """.trimIndent())
             .bind("uid", uid)
             .bind("date", date)
             .bind("height", height)
@@ -39,8 +38,9 @@ class JdbiCharacteristicsRepository(
             .bind("thigh", thigh)
             .bind("tricep", tricep)
             .bind("abdominal", abdominal)
-            .execute()
-    }
+            .executeAndReturnGeneratedKeys()
+            .mapTo<Long>()
+            .one()
 
     override fun storeCharacteristicsWithoutDate(
         uid: Int,
@@ -52,15 +52,12 @@ class JdbiCharacteristicsRepository(
         thigh: Int?,
         tricep: Float?,
         abdominal: Float?
-    ) {
-        val query = """
-            insert into waveCoach.characteristics (
-                uid, height, weight, calories, waist, arm, thigh, tricep, abdominal
-            ) values (
-                :uid, :height, :weight, :calories, :waist, :arm, :thigh, :tricep, :abdominal
-            )
-        """.trimIndent()
-        handle.createUpdate(query)
+    ): Long  =
+        handle.createUpdate("""
+            insert into waveCoach.characteristics 
+                (uid, height, weight, calories, waist, arm, thigh, tricep, abdominal) 
+            values (:uid, :height, :weight, :calories, :waist, :arm, :thigh, :tricep, :abdominal)
+        """.trimIndent())
             .bind("uid", uid)
             .bind("height", height)
             .bind("weight", weight)
@@ -70,8 +67,9 @@ class JdbiCharacteristicsRepository(
             .bind("thigh", thigh)
             .bind("tricep", tricep)
             .bind("abdominal", abdominal)
-            .execute()
-    }
+            .executeAndReturnGeneratedKeys()
+            .mapTo<Long>()
+            .one()
 
     override fun getCharacteristics(uid: Int, date: Long): Characteristics? =
         handle.createQuery("select * from waveCoach.characteristics where uid = :uid and date = :date")

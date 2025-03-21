@@ -1,5 +1,6 @@
 package waveCoach.services
 
+import kotlinx.datetime.Clock
 import org.springframework.stereotype.Component
 import waveCoach.domain.AthleteDomain
 import waveCoach.domain.Characteristics
@@ -34,7 +35,7 @@ sealed class CreateCharacteristicsError {
     data object AthleteNotFound : CreateCharacteristicsError()
     data object NotAthletesCoach : CreateCharacteristicsError()
 }
-typealias CreateCharacteristicsResult = Either<CreateCharacteristicsError, Int>
+typealias CreateCharacteristicsResult = Either<CreateCharacteristicsError, Long>
 
 sealed class GetCharacteristicsError {
     data object InvalidDate : GetCharacteristicsError()
@@ -71,7 +72,7 @@ class AthleteServices(
     private val transactionManager: TransactionManager,
     private val athleteDomain: AthleteDomain,
     private val characteristicsDomain: CharacteristicsDomain,
-    private val userDomain: UserDomain,
+    private val userDomain: UserDomain
 ) {
     fun createAthlete(
         name: String,
@@ -141,37 +142,21 @@ class AthleteServices(
 
             if (athlete.coach != coachId) return@run failure(CreateCharacteristicsError.NotAthletesCoach)
 
-            if (dateLong == null)
-                characteristicsRepository.storeCharacteristicsWithoutDate(
-                    uid,
-                    height,
-                    weight,
-                    calories,
-                    waist,
-                    arm,
-                    thigh,
-                    tricep,
-                    abdominal
-                )
-            else {
-                val characteristics = characteristicsRepository.getCharacteristics(uid, dateLong)
+            val characteristicsId =
+                if (dateLong == null)
+                    characteristicsRepository.storeCharacteristicsWithoutDate(
+                        uid, height, weight, calories, waist, arm, thigh, tricep, abdominal
+                    )
+                else {
+                    characteristicsRepository.getCharacteristics(uid, dateLong)
+                        ?.let { return@run failure(CreateCharacteristicsError.CharacteristicsAlreadyExists) }
 
-                if (characteristics != null) return@run failure(CreateCharacteristicsError.CharacteristicsAlreadyExists)
+                    characteristicsRepository.storeCharacteristics(
+                        uid, dateLong, height, weight, calories, waist, arm, thigh, tricep, abdominal
+                    )
+                }
 
-                characteristicsRepository.storeCharacteristics(
-                    uid,
-                    dateLong,
-                    height,
-                    weight,
-                    calories,
-                    waist,
-                    arm,
-                    thigh,
-                    tricep,
-                    abdominal
-                )
-            }
-            success(uid)
+            success(characteristicsId)
         }
     }
 

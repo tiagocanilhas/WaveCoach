@@ -174,8 +174,10 @@ class AthleteControllerTest {
             .bodyValue(body)
             .exchange()
             .expectStatus().isCreated
-            .expectBody()
-            .jsonPath("uid").isEqualTo(SECOND_ATHLETE_ID)
+            .expectHeader().exists("Location")
+            .expectHeader().value("location") {
+                assertTrue(it.startsWith("/api/athletes/$SECOND_ATHLETE_ID/characteristics/${946684800000}"))
+            }
     }
 
     @Test

@@ -14,7 +14,7 @@ interface CharacteristicsRepository {
         thigh: Int?,
         tricep: Float?,
         abdominal: Float?
-    )
+    ): Long
 
     fun storeCharacteristicsWithoutDate(
         uid: Int,
@@ -26,7 +26,7 @@ interface CharacteristicsRepository {
         thigh: Int?,
         tricep: Float?,
         abdominal: Float?
-    )
+    ): Long
 
     fun getCharacteristics(uid: Int, date: Long): Characteristics?
 

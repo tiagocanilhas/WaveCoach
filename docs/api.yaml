@@ -11,6 +11,9 @@ servers:
 tags:
   - name: Users
     description: Operations about user
+    
+  - name: Athletes
+    description: Operations about athletes
 
 paths:
   /users:
@@ -48,6 +51,7 @@ paths:
                   $ref: '#/components/examples/InsecurePassword'
                 usernameAlreadyExists:
                   $ref: '#/components/examples/UsernameAlreadyExists'
+  
   /login:
     description: The resource that represents a login
     post:
@@ -105,11 +109,244 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/TokenNotFound' 
+                
+  /athletes:
+    description: The resource that represents the athletes
+    get:
+      tags:
+        - Athletes
+      summary: Get all athletes
+      responses:
+        200:
+          description: The athletes were found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AthletesGetOutputModel'
+    post:
+      tags:
+        - Athletes
+      summary: Create an athlete
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AthleteCreateInputModel'
+      responses:
+        201:
+          description: Athlete was created
+          headers:
+            Location:
+              description: The URL of the created athlete resource
+              schema:
+                type: string
+                example: "/athletes/123"
+        400:
+          description: Failed to create an athlete
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/InvalidBirthdate'
+                  - $ref: '#/components/schemas/InvalidName'
+              examples:
+                usernameIsBlank:
+                  $ref: '#/components/examples/InvalidBirthdate'
+                invalidLogin:
+                  $ref: '#/components/examples/InvalidName'
+      
+  /athletes/{aid}:
+    description: The resource that represents an athlete
+    get:
+      tags:
+        - Athletes
+      summary: Get an athlete
+      parameters:
+        - name: aid
+          in: path
+          required: true
+          description: The ID of the athlete
+          schema:
+            type: string
+      responses:
+        200:
+          description: The athlete was found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AthleteGetOutputModel'
+        404:
+          description: The athlete was not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/AthleteNotFound'
+    put:
+      tags:
+        - Athletes
+      summary: Update an athlete
+      parameters:
+        - name: aid
+          in: path
+          required: true
+          description: The ID of the athlete
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AthleteUpdateInputModel'
+      responses:
+        204:
+          description: The athlete was updated
+        400:
+          description: Failed to update the athlete
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/InvalidBirthdate'
+                  - $ref: '#/components/schemas/InvalidName'
+              examples:
+                usernameIsBlank:
+                  $ref: '#/components/examples/InvalidBirthdate'
+                invalidLogin:
+                  $ref: '#/components/examples/InvalidName'
+    delete:
+      tags:
+        - Athletes
+      summary: Delete an athlete
+      parameters:
+        - name: aid
+          in: path
+          required: true
+          description: The ID of the athlete
+          schema:
+            type: string
+      responses:
+        204:
+          description: The athlete was deleted
+        404:
+          description: The athlete was not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/AthleteNotFound'
+      
+  /athletes/{aid}/characteristics:
+    description: The resource that represents the characteristics of an athlete
+    get:
+      tags:
+        - Athletes
+      summary: Get all characteristics of an athlete
+      parameters:
+        - name: aid
+          in: path
+          required: true
+          description: The ID of the athlete
+          schema:
+            type: string
+      responses:
+        200:
+          description: The characteristics were found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CharacteristicsListOutputModel'
+    post:
+      tags:
+        - Athletes
+      summary: Create a characteristic of an athlete
+      parameters:
+        - name: aid
+          in: path
+          required: true
+          description: The ID of the athlete
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AthleteCreateCharacteristicsInputModel'
+      responses:
+        201:
+          description: Characteristic was created
+          headers:
+            Location:
+              description: The URL of the created characteristic resource
+              schema:
+                type: string
+                example: "/athletes/123/characteristics/123"
+        400:
+          description: Failed to create a characteristic
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/InvalidAthleteId'
+                  - $ref: '#/components/schemas/InvalidDate'
+              examples:
+                invalidAthleteId:
+                  $ref: '#/components/examples/InvalidAthleteId'
+                invalidDate:
+                  $ref: '#/components/examples/InvalidDate'
+        403:
+          description: The coach is not the athlete's coach
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/NotAthletesCoach'
+        404:
+          description: The athlete was not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/AthleteNotFound'
+        409:
+          description: The characteristic already exists
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/CharacteristicAlreadyExists'
+      
+  /athletes/{aid}/characteristics/{date}:
+
       
 components:
   schemas:  
   
     # Input Models
+
+    AthleteCreateInputModel:
+      required:
+        - name
+        - birthdate
+      type: object
+      properties:
+        name:
+          type: string
+          example: "name"
+        birthdate:
+          type: string
+          example: "1970-01-01"
+    
+    AthleteUpdateInputModel:
+      required:
+        - name
+        - birthdate
+      type: object
+      properties:
+        name:
+          type: string
+          example: "name"
+        birthdate:
+          type: string
+          example: "1970-01-01"
     
     UserCreateInputModel:
       required:
@@ -137,7 +374,80 @@ components:
           type: string
           example: "Password123!"
           
+
+
+
     # Output Models
+
+    AthletesGetOutputModel:
+      type: array
+      items:
+        type: object
+        required:
+          - id
+          - username
+          - name
+          - birthdate
+        properties:
+          id:
+            type: string
+            example: 1
+          username:
+            type: string
+            example: "username1"
+          name:
+            type: string
+            example: "name1"
+          birthdate:
+            type: string
+            example: "1970-01-01"
+      example:
+        - id: "1"
+          username: "username1"
+          name: "name1"
+          birthdate: "1970-01-01"
+        - id: "2"
+          username: "username2"
+          name: "name2"
+          birthdate: "1980-02-02"
+
+    AthleteGetOutputModel:
+      required:
+        - id
+        - username
+        - name
+        - birthdate
+      type: object
+      properties:
+        id:
+          type: string
+          example: 1
+        username:
+          type: string
+          example: "username"
+        name:
+          type: string
+          example: "name"
+        birthdate:
+          type: string
+          example: "1970-01-01"
+    
+    CreateCharacteristicsOutputModel:
+      required:
+        - id
+        - date
+        - value
+      type: object
+      properties:
+        id:
+          type: string
+          example: 1
+        date:
+          type: string
+          example: "1970-01-01"
+        value:
+          type: string
+          example: "value"
     
     LoginOutputModel:
       required:
@@ -156,9 +466,30 @@ components:
           type: string
           example: "token"
     
+
+
+
     # Problems
+
+    AthleteNotFound:
+      required:
+        - type
+      type: object
+      properties:
+        type:
+          type: string
+          example: ""
     
     InsecurePassword:
+      required:
+        - type
+      type: object
+      properties:
+        type:
+          type: string
+          example: ""
+
+    InvalidBirthdate:
       required:
         - type
       type: object
@@ -175,8 +506,26 @@ components:
         type:
           type: string
           example: ""
+
+    InvalidName:
+      required:
+        - type
+      type: object
+      properties:
+        type:
+          type: string
+          example: ""
           
     InvalidToken:
+      required:
+        - type
+      type: object
+      properties:
+        type:
+          type: string
+          example: ""
+
+    NotAthletesCoach:
       required:
         - type
       type: object
@@ -226,8 +575,16 @@ components:
     InsecurePassword:
       value:
         type: ""
+
+    InvalidBirthdate:
+      value:
+        type: ""
   
     InvalidLogin:
+      value:
+        type: ""
+
+    InvalidName:
       value:
         type: ""
         
@@ -242,4 +599,3 @@ components:
     UsernameIsBlank:
       value:
         type: ""
-  

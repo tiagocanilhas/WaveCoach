@@ -34,5 +34,7 @@ object Uris {
         const val REMOVE_CHARACTERISTICS = "$ATHLETES/{aid}/characteristics/{date}"
 
         fun byId(id: Int): URI = UriTemplate(GET_BY_ID).expand(id)
+
+        fun characteristicsByDate(aid: Int, date: Long): URI = UriTemplate(GET_CHARACTERISTICS).expand(aid, date)
     }
 }
