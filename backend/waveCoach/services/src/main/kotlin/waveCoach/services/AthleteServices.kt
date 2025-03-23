@@ -112,6 +112,14 @@ class AthleteServices(
         }
     }
 
+    fun getAthletes(coachId: Int): List<Athlete> {
+        return transactionManager.run {
+            val athleteRepository = it.athleteRepository
+
+            athleteRepository.getAthleteList(coachId)
+        }
+    }
+
     fun removeAthlete(coachId: Int, aid: Int): RemoveAthleteResult {
         return transactionManager.run {
             val athleteRepository = it.athleteRepository

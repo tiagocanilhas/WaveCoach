@@ -38,6 +38,15 @@ class JdbiAthleteRepositoryTest {
     }
 
     @Test
+    fun `get athlete list`() = testWithHandleAndRollback { handle ->
+        val athleteRepository = JdbiAthleteRepository(handle)
+
+        val athletes = athleteRepository.getAthleteList(COACH_ID)
+
+        assert(athletes.isNotEmpty())
+    }
+
+    @Test
     fun `remove athlete`() = testWithHandleAndRollback { handle ->
         val athleteRepository = JdbiAthleteRepository(handle)
         val userRepository = JdbiUserRepository(handle)

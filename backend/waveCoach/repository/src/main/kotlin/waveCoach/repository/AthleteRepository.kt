@@ -7,5 +7,7 @@ interface AthleteRepository {
 
     fun getAthlete(uid: Int): Athlete?
 
+    fun getAthleteList(coachId: Int): List<Athlete>
+
     fun removeAthlete(uid: Int)
 }

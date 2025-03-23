@@ -154,6 +154,23 @@ class AthleteControllerTest {
     }
 
     /**
+     * Get Athlete List Tests
+     */
+
+    @Test
+    fun `get athlete list - success`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.get().uri("/athletes")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody()
+            .jsonPath("athletes").exists()
+            .jsonPath("athletes.length()").value<Int> { assertTrue(it > 0) }
+    }
+
+    /**
      * Remove Athlete Tests
      */
 

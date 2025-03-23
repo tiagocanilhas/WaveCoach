@@ -110,6 +110,18 @@ class AthleteServicesTest {
     }
 
     /**
+     * Get Athlete List Tests
+     */
+
+    @Test
+    fun `get athlete list - success`() {
+        val athleteServices = createAthleteServices(maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        val result = athleteServices.getAthletes(FIRST_COACH_ID)
+        assertTrue(result.isNotEmpty())
+    }
+
+    /**
      * Remove Athlete Tests
      */
 

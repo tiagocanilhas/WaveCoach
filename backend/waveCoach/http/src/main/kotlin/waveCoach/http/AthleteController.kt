@@ -12,9 +12,7 @@ import waveCoach.domain.AuthenticatedUser
 import waveCoach.http.model.input.AthleteCreateCharacteristicsInputModel
 import waveCoach.http.model.input.AthleteUpdateCharacteristicsInputModel
 import waveCoach.http.model.input.AthleteCreateInputModel
-import waveCoach.http.model.output.CharacteristicsListOutputModel
-import waveCoach.http.model.output.CharacteristicsOutputModel
-import waveCoach.http.model.output.Problem
+import waveCoach.http.model.output.*
 import waveCoach.services.*
 import waveCoach.utils.Failure
 import waveCoach.utils.Success
@@ -50,12 +48,35 @@ class AthleteController(
         val uid = aid.toIntOrNull() ?: return Problem.response(400, Problem.invalidAthleteId)
         val result = athleteServices.getAthlete(coach.info.id, uid)
         return when (result) {
-            is Success -> ResponseEntity.status(200).body(result.value)
+            is Success -> ResponseEntity.status(200).body(
+                AthleteOutputModel(
+                    result.value.uid,
+                    result.value.coach,
+                    result.value.name,
+                    result.value.birthDate
+                )
+            )
+
             is Failure -> when (result.value) {
                 GetAthleteError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
                 GetAthleteError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
             }
         }
+    }
+
+    @GetMapping(Uris.Athletes.GET_BY_COACH)
+    fun getByCoach(
+        coach: AuthenticatedUser,
+    ): ResponseEntity<*> {
+        val result = athleteServices.getAthletes(coach.info.id)
+        return ResponseEntity.status(200).body(AthleteListOutputModel(result.map {
+            AthleteOutputModel(
+                it.uid,
+                it.coach,
+                it.name,
+                it.birthDate
+            )
+        }))
     }
 
     @DeleteMapping(Uris.Athletes.REMOVE)
