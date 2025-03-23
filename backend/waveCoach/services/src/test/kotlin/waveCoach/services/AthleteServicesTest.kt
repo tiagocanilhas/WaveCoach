@@ -70,6 +70,44 @@ class AthleteServicesTest {
         }
     }
 
+    /**
+     * Get Athlete Tests
+     */
+
+    @Test
+    fun `get athlete - success`() {
+        val athleteServices = createAthleteServices(maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (val result = athleteServices.getAthlete(FIRST_COACH_ID, FIRST_ATHLETE_ID)) {
+            is Failure -> fail("Unexpected $result")
+            is Success -> assertTrue(
+                result.value.uid == FIRST_ATHLETE_ID
+                        && result.value.coach == FIRST_COACH_ID
+                        && result.value.name == FIRST_ATHLETE_NAME
+                        && result.value.birthDate == FIRST_ATHLETE_BIRTH_DATE
+            )
+        }
+    }
+
+    @Test
+    fun `get athlete - athlete not found`() {
+        val athleteServices = createAthleteServices(maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (val result = athleteServices.getAthlete(FIRST_COACH_ID, 0)) {
+            is Failure -> assertTrue(result.value is GetAthleteError.AthleteNotFound)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
+    @Test
+    fun `get athlete - not athlete's coach`() {
+        val athleteServices = createAthleteServices(maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (val result = athleteServices.getAthlete(SECOND_COACH_ID, FIRST_ATHLETE_ID)) {
+            is Failure -> assertTrue(result.value is GetAthleteError.NotAthletesCoach)
+            is Success -> fail("Unexpected $result")
+        }
+    }
 
     /**
      * Remove Athlete Tests
@@ -573,6 +611,8 @@ class AthleteServicesTest {
         private const val FIRST_COACH_ID = 1
         private const val SECOND_COACH_ID = 2
         private const val FIRST_ATHLETE_ID = 3
+        private const val FIRST_ATHLETE_NAME = "John Doe"
+        private const val FIRST_ATHLETE_BIRTH_DATE: Long = 631152000
         private const val SECOND_ATHLETE_ID = 4
         private const val ATHLETE_CHARACTERISTICS_FIRST_DATE = "25-01-2000" // date long = 948758400000
         private const val ATHLETE_CHARACTERISTICS_FIRST_DATE_LONG = 948758400000

@@ -14,7 +14,6 @@ import waveCoach.http.model.input.AthleteUpdateCharacteristicsInputModel
 import waveCoach.http.model.input.AthleteCreateInputModel
 import waveCoach.http.model.output.CharacteristicsListOutputModel
 import waveCoach.http.model.output.CharacteristicsOutputModel
-import waveCoach.http.model.output.CreateCharacteristicsOutputModel
 import waveCoach.http.model.output.Problem
 import waveCoach.services.*
 import waveCoach.utils.Failure
@@ -39,6 +38,22 @@ class AthleteController(
             is Failure -> when (result.value) {
                 CreateAthleteError.InvalidBirthDate -> Problem.response(400, Problem.invalidBirthDate)
                 CreateAthleteError.InvalidName -> Problem.response(400, Problem.invalidName)
+            }
+        }
+    }
+
+    @GetMapping(Uris.Athletes.GET_BY_ID)
+    fun getById(
+        coach: AuthenticatedUser,
+        @PathVariable aid: String
+    ): ResponseEntity<*> {
+        val uid = aid.toIntOrNull() ?: return Problem.response(400, Problem.invalidAthleteId)
+        val result = athleteServices.getAthlete(coach.info.id, uid)
+        return when (result) {
+            is Success -> ResponseEntity.status(200).body(result.value)
+            is Failure -> when (result.value) {
+                GetAthleteError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
+                GetAthleteError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
             }
         }
     }
@@ -107,23 +122,28 @@ class AthleteController(
         return when (result) {
             is Success -> ResponseEntity.status(200)
                 .body(
-                   CharacteristicsOutputModel(
-                          result.value.date,
-                          result.value.uid,
-                          result.value.height,
-                          result.value.weight,
-                          result.value.calories,
-                          result.value.waist,
-                          result.value.arm,
-                          result.value.thigh,
-                          result.value.tricep,
-                          result.value.abdominal
+                    CharacteristicsOutputModel(
+                        result.value.date,
+                        result.value.uid,
+                        result.value.height,
+                        result.value.weight,
+                        result.value.calories,
+                        result.value.waist,
+                        result.value.arm,
+                        result.value.thigh,
+                        result.value.tricep,
+                        result.value.abdominal
                     )
                 )
+
             is Failure -> when (result.value) {
                 GetCharacteristicsError.InvalidDate -> Problem.response(400, Problem.invalidDate)
                 GetCharacteristicsError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
-                GetCharacteristicsError.CharacteristicsNotFound -> Problem.response(404, Problem.characteristicsNotFound)
+                GetCharacteristicsError.CharacteristicsNotFound -> Problem.response(
+                    404,
+                    Problem.characteristicsNotFound
+                )
+
                 GetCharacteristicsError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
             }
         }
@@ -157,6 +177,7 @@ class AthleteController(
                         }
                     )
                 )
+
             is Failure -> when (result.value) {
                 GetCharacteristicsListError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
                 GetCharacteristicsListError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)

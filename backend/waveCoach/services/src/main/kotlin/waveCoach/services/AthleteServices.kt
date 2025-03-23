@@ -1,16 +1,15 @@
 package waveCoach.services
 
-import kotlinx.datetime.Clock
 import org.springframework.stereotype.Component
 import waveCoach.domain.AthleteDomain
 import waveCoach.domain.Characteristics
 import waveCoach.domain.CharacteristicsDomain
 import waveCoach.domain.UserDomain
+import waveCoach.domain.Athlete
 import waveCoach.repository.TransactionManager
 import waveCoach.utils.Either
 import waveCoach.utils.failure
 import waveCoach.utils.success
-import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -21,6 +20,12 @@ sealed class CreateAthleteError {
     data object InvalidName : CreateAthleteError()
 }
 typealias CreateAthleteResult = Either<CreateAthleteError, Int>
+
+sealed class GetAthleteError {
+    data object AthleteNotFound : GetAthleteError()
+    data object NotAthletesCoach : GetAthleteError()
+}
+typealias GetAthleteResult = Either<GetAthleteError, Athlete>
 
 sealed class RemoveAthleteError {
     data object AthleteNotFound : RemoveAthleteError()
@@ -93,6 +98,17 @@ class AthleteServices(
             val aid = userRepository.storeUser(username, passwordValidationInfo)
             athleteRepository.storeAthlete(aid, coachId, name, date)
             success(aid)
+        }
+    }
+
+    fun getAthlete(coachId: Int, aid: Int): GetAthleteResult {
+        return transactionManager.run {
+            val athleteRepository = it.athleteRepository
+
+            val athlete = athleteRepository.getAthlete(aid) ?: return@run failure(GetAthleteError.AthleteNotFound)
+            if (athlete.coach != coachId) return@run failure(GetAthleteError.NotAthletesCoach)
+
+            success(athlete)
         }
     }
 

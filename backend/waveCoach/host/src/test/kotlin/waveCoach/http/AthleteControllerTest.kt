@@ -92,6 +92,68 @@ class AthleteControllerTest {
     }
 
     /**
+     * Get Athlete Tests
+     */
+
+    @Test
+    fun `get an athlete - success`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.get().uri("/athletes/$FIRST_ATHLETE_ID")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody()
+            .jsonPath("uid").isEqualTo(FIRST_ATHLETE_ID)
+            .jsonPath("coach").isEqualTo(FIRST_COACH_ID)
+            .jsonPath("name").isEqualTo(FIRST_ATHLETE_NAME)
+            .jsonPath("birthDate").isEqualTo(FIRST_ATHLETE_BIRTH_DATE)
+    }
+
+    @Test
+    fun `get an athlete - invalid athlete id`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val id = "invalid"
+
+        client.get().uri("/athletes/$id")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidAthleteId.type.toString())
+    }
+
+    @Test
+    fun `get an athlete - athlete not found`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val id = 0
+
+        client.get().uri("/athletes/$id")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .exchange()
+            .expectStatus().isNotFound
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.athleteNotFound.type.toString())
+    }
+
+    @Test
+    fun `get an athlete - not athlete's coach`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.get().uri("/athletes/$FIRST_ATHLETE_ID")
+            .header("Authorization", "Bearer $SECOND_COACH_TOKEN")
+            .exchange()
+            .expectStatus().isForbidden
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.notAthletesCoach.type.toString())
+    }
+
+    /**
      * Remove Athlete Tests
      */
 
@@ -777,11 +839,14 @@ class AthleteControllerTest {
         private const val ANOTHER_VALID_DATE = "10-01-2000"
         private const val INVALID_DATE = "32-01-2000"
         private const val FIRST_ATHLETE_ID = 3
+        private const val FIRST_ATHLETE_NAME = "John Doe"
+        private const val FIRST_ATHLETE_BIRTH_DATE = 631152000
         private const val SECOND_ATHLETE_ID = 4
         private const val ATHLETE_CHARACTERISTICS_FIRST_DATE = "25-01-2000" // date long = 948758400000
         private const val ATHLETE_CHARACTERISTICS_FIRST_DATE_LONG = 948758400000
         private const val ATHLETE_CHARACTERISTICS_SECOND_DATE = "10-01-2000" // date long = 947462400000
         private const val FIRST_COACH_TOKEN = "i_aY-4lpMqAIMuhkimTbKy4xYEuyvgFPaaTpVS0lctQ="
+        private const val FIRST_COACH_ID = 1
         private const val SECOND_COACH_TOKEN = "fM5JjtPOUqtnZg1lB7jnJhXBP5gI2WbIIBoO3JhYM5M="
 
         private const val ATHLETE_HEIGHT = 1
