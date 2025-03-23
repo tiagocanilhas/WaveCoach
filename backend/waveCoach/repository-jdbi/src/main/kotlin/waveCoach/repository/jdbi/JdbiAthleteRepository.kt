@@ -35,6 +35,20 @@ class JdbiAthleteRepository(
             .mapTo<Athlete>()
             .list()
 
+    override fun updateAthlete(uid: Int, name: String, birthDate: Long) {
+        handle.createUpdate(
+            """
+            update waveCoach.athlete 
+            set name = :name, birth_date = :birth_date 
+            where uid = :uid
+        """.trimIndent()
+        )
+            .bind("uid", uid)
+            .bind("name", name)
+            .bind("birth_date", birthDate)
+            .execute()
+    }
+
     override fun removeAthlete(uid: Int) {
         handle.createUpdate("delete from waveCoach.athlete where uid = :uid")
             .bind("uid", uid)

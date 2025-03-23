@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController
 import waveCoach.domain.AuthenticatedUser
 import waveCoach.http.model.input.AthleteCreateCharacteristicsInputModel
 import waveCoach.http.model.input.AthleteUpdateCharacteristicsInputModel
-import waveCoach.http.model.input.AthleteCreateInputModel
+import waveCoach.http.model.input.AthleteInputModel
 import waveCoach.http.model.output.*
 import waveCoach.services.*
 import waveCoach.utils.Failure
@@ -24,7 +24,7 @@ class AthleteController(
     @PostMapping(Uris.Athletes.CREATE)
     fun create(
         coach: AuthenticatedUser,
-        @RequestBody input: AthleteCreateInputModel
+        @RequestBody input: AthleteInputModel
     ): ResponseEntity<*> {
         val result = athleteServices.createAthlete(input.name, coach.info.id, input.birthDate)
         return when (result) {
@@ -77,6 +77,25 @@ class AthleteController(
                 it.birthDate
             )
         }))
+    }
+
+    @PutMapping(Uris.Athletes.UPDATE)
+    fun update(
+        coach: AuthenticatedUser,
+        @PathVariable aid: String,
+        @RequestBody input: AthleteInputModel
+    ): ResponseEntity<*> {
+        val uid = aid.toIntOrNull() ?: return Problem.response(400, Problem.invalidAthleteId)
+        val result = athleteServices.updateAthlete(coach.info.id, uid, input.name, input.birthDate)
+        return when (result) {
+            is Success -> ResponseEntity.status(204).build<Unit>()
+            is Failure -> when (result.value) {
+                UpdateAthleteError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
+                UpdateAthleteError.InvalidBirthDate -> Problem.response(400, Problem.invalidBirthDate)
+                UpdateAthleteError.InvalidName -> Problem.response(400, Problem.invalidName)
+                UpdateAthleteError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
+            }
+        }
     }
 
     @DeleteMapping(Uris.Athletes.REMOVE)

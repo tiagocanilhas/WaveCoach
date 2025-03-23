@@ -171,6 +171,138 @@ class AthleteControllerTest {
     }
 
     /**
+     * Update Athlete Tests
+     */
+
+    @Test
+    fun `update an athlete - success`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body = mapOf(
+            "name" to randomString(),
+            "birthDate" to VALID_DATE,
+        )
+
+        client.put().uri("/athletes/$FIRST_ATHLETE_ID")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isNoContent
+    }
+
+    @Test
+    fun `update an athlete - invalid birth date`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body = mapOf(
+            "name" to randomString(),
+            "birthDate" to INVALID_DATE,
+        )
+
+        client.put().uri("/athletes/$FIRST_ATHLETE_ID")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidBirthDate.type.toString())
+    }
+
+    @Test
+    fun `update an athlete - invalid name`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val invalidNames = listOf(
+            "",
+            "a".repeat(65),
+        )
+
+        invalidNames.forEach { name ->
+            val body = mapOf(
+                "name" to name,
+                "birthDate" to VALID_DATE,
+            )
+
+            client.put().uri("/athletes/$FIRST_ATHLETE_ID")
+                .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(body)
+                .exchange()
+                .expectStatus().isBadRequest
+                .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+                .expectBody()
+                .jsonPath("type").isEqualTo(Problem.invalidName.type.toString())
+        }
+    }
+
+    @Test
+    fun `update an athlete - invalid athlete id`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val id = "invalid"
+
+        val body = mapOf(
+            "name" to randomString(),
+            "birthDate" to VALID_DATE,
+        )
+
+        client.put().uri("/athletes/$id")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidAthleteId.type.toString())
+    }
+
+    @Test
+    fun `update an athlete - athlete not found`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val id = 0
+
+        val body = mapOf(
+            "name" to randomString(),
+            "birthDate" to VALID_DATE,
+        )
+
+        client.put().uri("/athletes/$id")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isNotFound
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.athleteNotFound.type.toString())
+    }
+
+    @Test
+    fun `update an athlete - not athlete's coach`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body = mapOf(
+            "name" to randomString(),
+            "birthDate" to VALID_DATE,
+        )
+
+        client.put().uri("/athletes/$FIRST_ATHLETE_ID")
+            .header("Authorization", "Bearer $SECOND_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isForbidden
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.notAthletesCoach.type.toString())
+    }
+
+    /**
      * Remove Athlete Tests
      */
 

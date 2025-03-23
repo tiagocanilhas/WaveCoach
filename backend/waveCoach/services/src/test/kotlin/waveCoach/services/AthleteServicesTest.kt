@@ -122,6 +122,83 @@ class AthleteServicesTest {
     }
 
     /**
+     * Update Athlete Tests
+     */
+
+    @Test
+    fun `update athlete - success`() {
+        val athleteServices = createAthleteServices(maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        val name = randomString()
+
+        when (val result = athleteServices.updateAthlete(SECOND_COACH_ID, THIRD_ATHLETE_ID, name, VALID_DATE)) {
+            is Failure -> fail("Unexpected $result")
+            is Success -> assertTrue(result.value == THIRD_ATHLETE_ID)
+        }
+    }
+
+    @Test
+    fun `update athlete - invalid name`() {
+        val athleteServices = createAthleteServices(maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        val invalidNames = listOf(
+            "",
+            "a".repeat(65),
+        )
+
+        invalidNames.forEach { name ->
+            when (val result = athleteServices.updateAthlete(FIRST_COACH_ID, FIRST_ATHLETE_ID, name, VALID_DATE)) {
+                is Failure -> assertTrue(result.value is UpdateAthleteError.InvalidName)
+                is Success -> fail("Unexpected $result")
+            }
+        }
+    }
+
+    @Test
+    fun `update athlete - invalid birth date`() {
+        val athleteServices = createAthleteServices(maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        val name = randomString()
+        val invalidBirthDays = listOf(
+            "32-01-2000",
+            "2000-01-01",
+            "01-01-2200",
+        )
+
+        invalidBirthDays.forEach { birthDate ->
+            when (val result = athleteServices.updateAthlete(FIRST_COACH_ID, FIRST_ATHLETE_ID, name, birthDate)) {
+                is Failure -> assertTrue(result.value is UpdateAthleteError.InvalidBirthDate)
+                is Success -> fail("Unexpected $result")
+            }
+        }
+    }
+
+    @Test
+    fun `update athlete - athlete not found`() {
+        val athleteServices = createAthleteServices(maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        val name = randomString()
+        val aid = 0
+
+        when (val result = athleteServices.updateAthlete(FIRST_COACH_ID, aid, name, VALID_DATE)) {
+            is Failure -> assertTrue(result.value is UpdateAthleteError.AthleteNotFound)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
+    @Test
+    fun `update athlete - not athlete's coach`() {
+        val athleteServices = createAthleteServices(maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        val name = randomString()
+
+        when (val result = athleteServices.updateAthlete(SECOND_COACH_ID, FIRST_ATHLETE_ID, name, VALID_DATE)) {
+            is Failure -> assertTrue(result.value is UpdateAthleteError.NotAthletesCoach)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
+    /**
      * Remove Athlete Tests
      */
 
@@ -626,6 +703,7 @@ class AthleteServicesTest {
         private const val FIRST_ATHLETE_NAME = "John Doe"
         private const val FIRST_ATHLETE_BIRTH_DATE: Long = 631152000
         private const val SECOND_ATHLETE_ID = 4
+        private const val THIRD_ATHLETE_ID = 5
         private const val ATHLETE_CHARACTERISTICS_FIRST_DATE = "25-01-2000" // date long = 948758400000
         private const val ATHLETE_CHARACTERISTICS_FIRST_DATE_LONG = 948758400000
         private const val ATHLETE_CHARACTERISTICS_SECOND_DATE = "10-01-2000" // date long = 947462400000

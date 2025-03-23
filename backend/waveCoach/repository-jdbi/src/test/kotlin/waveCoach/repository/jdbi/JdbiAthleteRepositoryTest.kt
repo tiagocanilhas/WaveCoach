@@ -47,6 +47,19 @@ class JdbiAthleteRepositoryTest {
     }
 
     @Test
+    fun `update athlete`() = testWithHandleAndRollback { handle ->
+        val athleteRepository = JdbiAthleteRepository(handle)
+
+        val updatedName = randomString()
+        athleteRepository.updateAthlete(ATHLETE_ID, updatedName, BIRTHDATE)
+
+        val athlete = athleteRepository.getAthlete(ATHLETE_ID)
+
+        assertNotNull(athlete)
+        assert(athlete!!.name == updatedName)
+    }
+
+    @Test
     fun `remove athlete`() = testWithHandleAndRollback { handle ->
         val athleteRepository = JdbiAthleteRepository(handle)
         val userRepository = JdbiUserRepository(handle)
@@ -75,5 +88,6 @@ class JdbiAthleteRepositoryTest {
         private const val COACH_ID = 1
         private const val USERNAME = "athlete test"
         private const val PASSWORD = "changeit"
+        private const val ATHLETE_ID = 3
     }
 }

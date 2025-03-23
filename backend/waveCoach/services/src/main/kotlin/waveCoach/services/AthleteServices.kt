@@ -27,6 +27,14 @@ sealed class GetAthleteError {
 }
 typealias GetAthleteResult = Either<GetAthleteError, Athlete>
 
+sealed class UpdateAthleteError {
+    data object InvalidBirthDate : UpdateAthleteError()
+    data object InvalidName : UpdateAthleteError()
+    data object AthleteNotFound : UpdateAthleteError()
+    data object NotAthletesCoach : UpdateAthleteError()
+}
+typealias UpdateAthleteResult = Either<UpdateAthleteError, Int>
+
 sealed class RemoveAthleteError {
     data object AthleteNotFound : RemoveAthleteError()
     data object NotAthletesCoach : RemoveAthleteError()
@@ -117,6 +125,27 @@ class AthleteServices(
             val athleteRepository = it.athleteRepository
 
             athleteRepository.getAthleteList(coachId)
+        }
+    }
+
+    fun updateAthlete(
+        coachId: Int,
+        aid: Int,
+        name: String,
+        birthDate: String
+    ): UpdateAthleteResult {
+        val date = dateToLong(birthDate) ?: return failure(UpdateAthleteError.InvalidBirthDate)
+
+        if (!athleteDomain.isNameValid(name)) return failure(UpdateAthleteError.InvalidName)
+
+        return transactionManager.run {
+            val athleteRepository = it.athleteRepository
+
+            val athlete = athleteRepository.getAthlete(aid) ?: return@run failure(UpdateAthleteError.AthleteNotFound)
+            if (athlete.coach != coachId) return@run failure(UpdateAthleteError.NotAthletesCoach)
+
+            athleteRepository.updateAthlete(aid, name, date)
+            success(aid)
         }
     }
 

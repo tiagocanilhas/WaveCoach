@@ -26,6 +26,7 @@ object Uris {
         const val CREATE = ATHLETES
         const val GET_BY_ID = "$ATHLETES/{aid}"
         const val GET_BY_COACH = ATHLETES
+        const val UPDATE = "$ATHLETES/{aid}"
         const val REMOVE = "$ATHLETES/{aid}"
 
         const val CREATE_CHARACTERISTICS = "$ATHLETES/{aid}/characteristics"
