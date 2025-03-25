@@ -174,16 +174,30 @@ class AthleteServices(
         height: Int?,
         weight: Float?,
         calories: Int?,
-        waist: Int?,
-        arm: Int?,
-        thigh: Int?,
-        tricep: Float?,
-        abdominal: Float?
+        bodyFat: Float?,
+        waistSize: Int?,
+        armSize: Int?,
+        thighSize: Int?,
+        tricepFat: Int?,
+        abdomenFat: Int?,
+        thighFat: Int?
     ): CreateCharacteristicsResult {
         val dateLong = date?.let { dateToLong(it) }
             ?: if (date != null) return failure(CreateCharacteristicsError.InvalidDate) else null
 
-        if (!characteristicsDomain.checkCharacteristics(height, weight, calories, waist, arm, thigh, tricep, abdominal))
+        if (!characteristicsDomain.checkCharacteristics(
+                height,
+                weight,
+                calories,
+                bodyFat,
+                waistSize,
+                armSize,
+                thighSize,
+                tricepFat,
+                abdomenFat,
+                thighFat
+            )
+        )
             return failure(CreateCharacteristicsError.InvalidCharacteristics)
 
         return transactionManager.run {
@@ -198,14 +212,35 @@ class AthleteServices(
             val characteristicsId =
                 if (dateLong == null)
                     characteristicsRepository.storeCharacteristicsWithoutDate(
-                        uid, height, weight, calories, waist, arm, thigh, tricep, abdominal
+                        uid,
+                        height,
+                        weight,
+                        calories,
+                        bodyFat,
+                        waistSize,
+                        armSize,
+                        thighSize,
+                        tricepFat,
+                        abdomenFat,
+                        thighFat
                     )
                 else {
                     characteristicsRepository.getCharacteristics(uid, dateLong)
                         ?.let { return@run failure(CreateCharacteristicsError.CharacteristicsAlreadyExists) }
 
                     characteristicsRepository.storeCharacteristics(
-                        uid, dateLong, height, weight, calories, waist, arm, thigh, tricep, abdominal
+                        uid,
+                        dateLong,
+                        height,
+                        weight,
+                        calories,
+                        bodyFat,
+                        waistSize,
+                        armSize,
+                        thighSize,
+                        tricepFat,
+                        abdomenFat,
+                        thighFat
                     )
                 }
 
@@ -254,15 +289,29 @@ class AthleteServices(
         height: Int?,
         weight: Float?,
         calories: Int?,
-        waist: Int?,
-        arm: Int?,
-        thigh: Int?,
-        tricep: Float?,
-        abdominal: Float?
+        bodyFat: Float?,
+        waistSize: Int?,
+        armSize: Int?,
+        thighSize: Int?,
+        tricepFat: Int?,
+        abdomenFat: Int?,
+        thighFat: Int?
     ): UpdateCharacteristicsResult {
         val dateLong = dateToLong(date) ?: return failure(UpdateCharacteristicsError.InvalidDate)
 
-        if (!characteristicsDomain.checkCharacteristics(height, weight, calories, waist, arm, thigh, tricep, abdominal))
+        if (!characteristicsDomain.checkCharacteristics(
+                height,
+                weight,
+                calories,
+                bodyFat,
+                waistSize,
+                armSize,
+                thighSize,
+                tricepFat,
+                abdomenFat,
+                thighFat
+            )
+        )
             return failure(UpdateCharacteristicsError.InvalidCharacteristics)
 
         return transactionManager.run {
@@ -279,11 +328,13 @@ class AthleteServices(
                 height,
                 weight,
                 calories,
-                waist,
-                arm,
-                thigh,
-                tricep,
-                abdominal
+                bodyFat,
+                waistSize,
+                armSize,
+                thighSize,
+                tricepFat,
+                abdomenFat,
+                thighFat
             )
             success(uid)
         }

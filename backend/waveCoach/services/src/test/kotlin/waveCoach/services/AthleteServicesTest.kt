@@ -248,11 +248,13 @@ class AthleteServicesTest {
             1,
             1.1f,
             1,
+            1.0f,
             1,
             1,
             1,
-            1.1f,
-            1.1f,
+            1,
+            1,
+            1
         )) {
             is Failure -> fail("Unexpected $result")
             is Success -> assertTrue(result.value > 0)
@@ -270,11 +272,13 @@ class AthleteServicesTest {
             1,
             1.1f,
             1,
+            1.0f,
             1,
             1,
             1,
-            1.1f,
-            1.1f,
+            1,
+            1,
+            1
         )) {
             is Failure -> fail("Unexpected $result")
             is Success -> assertTrue(result.value > 0)
@@ -299,11 +303,13 @@ class AthleteServicesTest {
                 1,
                 1.1f,
                 1,
+                1.0f,
                 1,
                 1,
                 1,
-                1.1f,
-                1.1f,
+                1,
+                1,
+                1
             )) {
                 is Failure -> assertTrue(result.value is CreateCharacteristicsError.InvalidDate)
                 is Success -> fail("Unexpected $result")
@@ -322,11 +328,13 @@ class AthleteServicesTest {
             -1,
             -1f,
             -1,
+            -1.0f,
             -1,
             -1,
             -1,
-            -1f,
-            -1f,
+            -1,
+            -1,
+            -1
         )
         ) {
             is Failure -> assertTrue(result.value is CreateCharacteristicsError.InvalidCharacteristics)
@@ -345,11 +353,13 @@ class AthleteServicesTest {
             1,
             1.1f,
             1,
+            1.0f,
             1,
             1,
             1,
-            1.1f,
-            1.1f,
+            1,
+            1,
+            1
         )
         ) {
             is Failure -> assertTrue(result.value is CreateCharacteristicsError.AthleteNotFound)
@@ -368,11 +378,13 @@ class AthleteServicesTest {
             1,
             1.1f,
             1,
+            1.0f,
             1,
             1,
             1,
-            1.1f,
-            1.1f,
+            1,
+            1,
+            1
         )
         ) {
             is Failure -> assertTrue(result.value is CreateCharacteristicsError.NotAthletesCoach)
@@ -396,12 +408,15 @@ class AthleteServicesTest {
                         && result.value.date == ATHLETE_CHARACTERISTICS_FIRST_DATE_LONG
                         && result.value.height == ATHLETE_HEIGHT
                         && result.value.weight == ATHLETE_WEIGHT
+                        && result.value.bmi == ATHLETE_BMI
                         && result.value.calories == ATHLETE_CALORIES
-                        && result.value.waist == ATHLETE_WAIST
-                        && result.value.arm == ATHLETE_ARM
-                        && result.value.thigh == ATHLETE_THIGH
-                        && result.value.tricep == ATHLETE_TRICEP
-                        && result.value.abdominal == ATHLETE_ABDOMINAL
+                        && result.value.bodyFat == ATHLETE_BODY_FAT
+                        && result.value.waistSize == ATHLETE_WAIST_SIZE
+                        && result.value.armSize == ATHLETE_ARM_SIZE
+                        && result.value.thighSize == ATHLETE_THIGH_SIZE
+                        && result.value.tricepFat == ATHLETE_TRICEP_FAT
+                        && result.value.abdomenFat == ATHLETE_ABDOMEN_FAT
+                        && result.value.thighFat == ATHLETE_THIGH_FAT
             )
         }
     }
@@ -504,11 +519,13 @@ class AthleteServicesTest {
             1,
             1.1f,
             1,
-            1,
-            1,
-            1,
             1.1f,
-            1.1f,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
         )) {
             is Failure -> fail("Unexpected $result")
             is Success -> assertTrue(result.value == FIRST_ATHLETE_ID)
@@ -533,11 +550,13 @@ class AthleteServicesTest {
                 1,
                 1.1f,
                 1,
-                1,
-                1,
-                1,
                 1.1f,
-                1.1f,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1
             )) {
                 is Failure -> assertTrue(result.value is UpdateCharacteristicsError.InvalidDate)
                 is Success -> fail("Unexpected $result")
@@ -556,11 +575,13 @@ class AthleteServicesTest {
             -1,
             -1f,
             -1,
+            -1.0f,
             -1,
             -1,
             -1,
-            -1f,
-            -1f,
+            -1,
+            -1,
+            -1
         )) {
             is Failure -> assertTrue(result.value is UpdateCharacteristicsError.InvalidCharacteristics)
             is Success -> fail("Unexpected $result")
@@ -578,11 +599,13 @@ class AthleteServicesTest {
             1,
             1.1f,
             1,
-            1,
-            1,
-            1,
             1.1f,
-            1.1f,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
         )) {
             is Failure -> assertTrue(result.value is UpdateCharacteristicsError.AthleteNotFound)
             is Success -> fail("Unexpected $result")
@@ -600,11 +623,13 @@ class AthleteServicesTest {
             1,
             1.1f,
             1,
-            1,
-            1,
-            1,
             1.1f,
-            1.1f,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
         )) {
             is Failure -> assertTrue(result.value is UpdateCharacteristicsError.NotAthletesCoach)
             is Success -> fail("Unexpected $result")
@@ -708,14 +733,17 @@ class AthleteServicesTest {
         private const val ATHLETE_CHARACTERISTICS_FIRST_DATE_LONG = 948758400000
         private const val ATHLETE_CHARACTERISTICS_SECOND_DATE = "10-01-2000" // date long = 947462400000
 
-        private const val ATHLETE_HEIGHT = 1
-        private const val ATHLETE_WEIGHT = 1.0f
+        private const val ATHLETE_HEIGHT = 181
+        private const val ATHLETE_WEIGHT = 74.0f
+        private const val ATHLETE_BMI = 22.587833f
         private const val ATHLETE_CALORIES = 1
-        private const val ATHLETE_WAIST = 1
-        private const val ATHLETE_ARM = 1
-        private const val ATHLETE_THIGH = 1
-        private const val ATHLETE_TRICEP = 1.0f
-        private const val ATHLETE_ABDOMINAL = 1.0f
+        private const val ATHLETE_BODY_FAT = 1.0f
+        private const val ATHLETE_WAIST_SIZE = 1
+        private const val ATHLETE_ARM_SIZE = 1
+        private const val ATHLETE_THIGH_SIZE = 1
+        private const val ATHLETE_TRICEP_FAT = 1
+        private const val ATHLETE_ABDOMEN_FAT = 1
+        private const val ATHLETE_THIGH_FAT = 1
 
         private const val MAX_TOKENS_PER_USER = 5
 

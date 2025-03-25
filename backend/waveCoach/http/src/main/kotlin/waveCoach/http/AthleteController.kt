@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.RestController
 import waveCoach.domain.AuthenticatedUser
 import waveCoach.http.model.input.AthleteCreateCharacteristicsInputModel
 import waveCoach.http.model.input.AthleteUpdateCharacteristicsInputModel
-import waveCoach.http.model.input.AthleteInputModel
+import waveCoach.http.model.input.AthleteCreateInputModel
+import waveCoach.http.model.input.AthleteUpdateInputModel
 import waveCoach.http.model.output.*
 import waveCoach.services.*
 import waveCoach.utils.Failure
@@ -24,7 +25,7 @@ class AthleteController(
     @PostMapping(Uris.Athletes.CREATE)
     fun create(
         coach: AuthenticatedUser,
-        @RequestBody input: AthleteInputModel
+        @RequestBody input: AthleteCreateInputModel
     ): ResponseEntity<*> {
         val result = athleteServices.createAthlete(input.name, coach.info.id, input.birthDate)
         return when (result) {
@@ -83,7 +84,7 @@ class AthleteController(
     fun update(
         coach: AuthenticatedUser,
         @PathVariable aid: String,
-        @RequestBody input: AthleteInputModel
+        @RequestBody input: AthleteUpdateInputModel
     ): ResponseEntity<*> {
         val uid = aid.toIntOrNull() ?: return Problem.response(400, Problem.invalidAthleteId)
         val result = athleteServices.updateAthlete(coach.info.id, uid, input.name, input.birthDate)
@@ -122,8 +123,8 @@ class AthleteController(
     ): ResponseEntity<*> {
         val uid = aid.toIntOrNull() ?: return Problem.response(400, Problem.invalidAthleteId)
         val result = athleteServices.createCharacteristics(
-            coach.info.id, uid, input.date, input.height, input.weight, input.calories,
-            input.waist, input.arm, input.thigh, input.tricep, input.abdominal
+            coach.info.id, uid, input.date, input.height, input.weight, input.calories, input.bodyFat,
+            input.waistSize, input.armSize, input.thighSize, input.tricepFat, input.abdomenFat, input.thighFat
         )
 
         return when (result) {
@@ -165,14 +166,17 @@ class AthleteController(
                     CharacteristicsOutputModel(
                         result.value.date,
                         result.value.uid,
-                        result.value.height,
                         result.value.weight,
+                        result.value.height,
+                        result.value.bmi,
                         result.value.calories,
-                        result.value.waist,
-                        result.value.arm,
-                        result.value.thigh,
-                        result.value.tricep,
-                        result.value.abdominal
+                        result.value.bodyFat,
+                        result.value.waistSize,
+                        result.value.armSize,
+                        result.value.thighSize,
+                        result.value.tricepFat,
+                        result.value.abdomenFat,
+                        result.value.thighFat
                     )
                 )
 
@@ -205,14 +209,17 @@ class AthleteController(
                             CharacteristicsOutputModel(
                                 it.date,
                                 it.uid,
-                                it.height,
                                 it.weight,
+                                it.height,
+                                it.bmi,
                                 it.calories,
-                                it.waist,
-                                it.arm,
-                                it.thigh,
-                                it.tricep,
-                                it.abdominal
+                                it.bodyFat,
+                                it.waistSize,
+                                it.armSize,
+                                it.thighSize,
+                                it.tricepFat,
+                                it.abdomenFat,
+                                it.thighFat
                             )
                         }
                     )
@@ -234,8 +241,8 @@ class AthleteController(
     ): ResponseEntity<*> {
         val uid = aid.toIntOrNull() ?: return Problem.response(400, Problem.invalidAthleteId)
         val result = athleteServices.updateCharacteristics(
-            coach.info.id, uid, date, input.height, input.weight, input.calories,
-            input.waist, input.arm, input.thigh, input.tricep, input.abdominal
+            coach.info.id, uid, date, input.height, input.weight, input.calories, input.bodyFat,
+            input.waistSize, input.armSize, input.thighSize, input.tricepFat, input.abdomenFat, input.thighFat
         )
 
         return when (result) {
@@ -278,4 +285,29 @@ class AthleteController(
             }
         }
     }
+
+    /*@PostMapping(Uris.Athletes.CREATE_WATER_ACTIVITY)
+    fun createWaterActivity(
+        coach: AuthenticatedUser,
+        @PathVariable aid: String,
+        @RequestBody input: AthleteCreateWaterActivityInputModel
+    ): ResponseEntity<*> {
+        val uid = aid.toIntOrNull() ?: return Problem.response(400, Problem.invalidAthleteId)
+        val result = athleteServices.createWaterActivity(
+            coach.info.id, uid, input.date, input.duration, input.distance, input.calories
+        )
+
+        return when (result) {
+            is Success -> ResponseEntity
+                .status(201)
+                .header("Location", Uris.Athletes.characteristicsByDate(uid, result.value).toASCIIString())
+                .build<Unit>()
+
+            is Failure -> when (result.value) {
+                CreateWaterActivityError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
+                CreateWaterActivityError.InvalidDate -> Problem.response(400, Problem.invalidDate)
+                CreateWaterActivityError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
+            }
+        }
+    }*/
 }

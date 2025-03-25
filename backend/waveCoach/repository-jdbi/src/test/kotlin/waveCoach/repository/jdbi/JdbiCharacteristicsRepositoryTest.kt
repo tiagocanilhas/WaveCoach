@@ -26,11 +26,13 @@ class JdbiCharacteristicsRepositoryTest {
             HEIGHT,
             WEIGHT,
             CALORIES,
-            WAIST,
-            ARM,
-            THIGH,
-            TRICEP,
-            ABDOMINAL
+            BODY_FAT,
+            WAIST_SIZE,
+            ARM_SIZE,
+            THIGH_SIZE,
+            TRICEP_FAT,
+            ABDOMEN_FAT,
+            THIGH_FAT
         )
 
         val characteristics = characteristicsRepository.getCharacteristics(ATHLETE_ID, DATE)
@@ -57,21 +59,25 @@ class JdbiCharacteristicsRepositoryTest {
             HEIGHT,
             WEIGHT,
             CALORIES,
-            WAIST,
-            ARM,
-            THIGH,
-            TRICEP,
-            ABDOMINAL
+            BODY_FAT,
+            WAIST_SIZE,
+            ARM_SIZE,
+            THIGH_SIZE,
+            TRICEP_FAT,
+            ABDOMEN_FAT,
+            THIGH_FAT
         )
 
         val newHeight = 185
         val newWeight = 85.0f
         val newCalories = 2100
-        val newWaist = 95
-        val newArm = 35
-        val newThigh = 55
-        val newTricep = 15.0f
-        val newAbdominal = 25.0f
+        val newBodyFat = 17.0f
+        val newWaistSize = 95
+        val newArmSize = 35
+        val newThighSize = 55
+        val newTricepFat = 15
+        val newAbdomenFat = 25
+        val newThighFat = 35
 
         characteristicsRepository.updateCharacteristics(
             ATHLETE_ID,
@@ -79,11 +85,13 @@ class JdbiCharacteristicsRepositoryTest {
             newHeight,
             newWeight,
             newCalories,
-            newWaist,
-            newArm,
-            newThigh,
-            newTricep,
-            newAbdominal
+            newBodyFat,
+            newWaistSize,
+            newArmSize,
+            newThighSize,
+            newTricepFat,
+            newAbdomenFat,
+            newThighFat
         )
 
         val characteristics = characteristicsRepository.getCharacteristics(ATHLETE_ID, DATE)
@@ -93,11 +101,12 @@ class JdbiCharacteristicsRepositoryTest {
         assert(characteristics.height == newHeight)
         assert(characteristics.weight == newWeight)
         assert(characteristics.calories == newCalories)
-        assert(characteristics.waist == newWaist)
-        assert(characteristics.arm == newArm)
-        assert(characteristics.thigh == newThigh)
-        assert(characteristics.tricep == newTricep)
-        assert(characteristics.abdominal == newAbdominal)
+        assert(characteristics.waistSize == newWaistSize)
+        assert(characteristics.armSize == newArmSize)
+        assert(characteristics.thighSize == newThighSize)
+        assert(characteristics.tricepFat == newTricepFat)
+        assert(characteristics.abdomenFat == newAbdomenFat)
+        assert(characteristics.thighFat == newThighFat)
     }
 
     @Test
@@ -110,11 +119,13 @@ class JdbiCharacteristicsRepositoryTest {
             HEIGHT,
             WEIGHT,
             CALORIES,
-            WAIST,
-            ARM,
-            THIGH,
-            TRICEP,
-            ABDOMINAL
+            BODY_FAT,
+            WAIST_SIZE,
+            ARM_SIZE,
+            THIGH_SIZE,
+            TRICEP_FAT,
+            ABDOMEN_FAT,
+            THIGH_FAT
         )
 
         characteristicsRepository.removeCharacteristics(ATHLETE_ID, DATE)
@@ -134,11 +145,13 @@ class JdbiCharacteristicsRepositoryTest {
             HEIGHT,
             WEIGHT,
             CALORIES,
-            WAIST,
-            ARM,
-            THIGH,
-            TRICEP,
-            ABDOMINAL
+            BODY_FAT,
+            WAIST_SIZE,
+            ARM_SIZE,
+            THIGH_SIZE,
+            TRICEP_FAT,
+            ABDOMEN_FAT,
+            THIGH_FAT
         )
 
         characteristicsRepository.removeCharacteristicsWithoutDate(ATHLETE_ID)
@@ -155,10 +168,12 @@ class JdbiCharacteristicsRepositoryTest {
         private const val HEIGHT = 180
         private const val WEIGHT = 80.0f
         private const val CALORIES = 2000
-        private const val WAIST = 90
-        private const val ARM = 30
-        private const val THIGH = 50
-        private const val TRICEP = 10.0f
-        private const val ABDOMINAL = 20.0f
+        private const val BODY_FAT = 15.0f
+        private const val WAIST_SIZE = 90
+        private const val ARM_SIZE = 30
+        private const val THIGH_SIZE = 50
+        private const val TRICEP_FAT = 10
+        private const val ABDOMEN_FAT = 20
+        private const val THIGH_FAT = 30
     }
 }

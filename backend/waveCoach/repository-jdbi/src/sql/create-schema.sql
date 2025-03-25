@@ -55,14 +55,15 @@ CREATE TABLE waveCoach.characteristics (
     uid INTEGER REFERENCES waveCoach.athlete(uid),
     weight FLOAT,
     height INTEGER,
+    bmi FLOAT GENERATED ALWAYS AS (weight / ((height / 100.0) * (height / 100.0))) STORED,
     calories INTEGER,
---    %MG FLOAT,
-    waist INTEGER,
-   arm INTEGER,
-    thigh INTEGER,
-    tricep FLOAT,
-    abdominal FLOAT,
-    --waist FLOAT
+    body_fat FLOAT,
+    waist_size INTEGER,
+    arm_size INTEGER,
+    thigh_size INTEGER,
+    tricep_fat INTEGER,
+    abdomen_fat INTEGER,
+    thigh_fat INTEGER,
     PRIMARY KEY (date, uid)
 );
 

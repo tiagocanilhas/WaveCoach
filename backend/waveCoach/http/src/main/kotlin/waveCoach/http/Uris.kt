@@ -35,6 +35,8 @@ object Uris {
         const val UPDATE_CHARACTERISTICS = "$ATHLETES/{aid}/characteristics/{date}"
         const val REMOVE_CHARACTERISTICS = "$ATHLETES/{aid}/characteristics/{date}"
 
+        const val CREATE_WATER_ACTIVITY = "$ATHLETES/{aid}/water"
+
         fun byId(id: Int): URI = UriTemplate(GET_BY_ID).expand(id)
 
         fun characteristicsByDate(aid: Int, date: Long): URI = UriTemplate(GET_CHARACTERISTICS).expand(aid, date)

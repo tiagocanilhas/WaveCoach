@@ -9,11 +9,13 @@ interface CharacteristicsRepository {
         height: Int?,
         weight: Float?,
         calories: Int?,
-        waist: Int?,
-        arm: Int?,
-        thigh: Int?,
-        tricep: Float?,
-        abdominal: Float?
+        bodyFat: Float?,
+        waistSize: Int?,
+        armSize: Int?,
+        thighSize: Int?,
+        tricepFat: Int?,
+        abdomenFat: Int?,
+        thighFat: Int?
     ): Long
 
     fun storeCharacteristicsWithoutDate(
@@ -21,11 +23,13 @@ interface CharacteristicsRepository {
         height: Int?,
         weight: Float?,
         calories: Int?,
-        waist: Int?,
-        arm: Int?,
-        thigh: Int?,
-        tricep: Float?,
-        abdominal: Float?
+        bodyFat: Float?,
+        waistSize: Int?,
+        armSize: Int?,
+        thighSize: Int?,
+        tricepFat: Int?,
+        abdomenFat: Int?,
+        thighFat: Int?
     ): Long
 
     fun getCharacteristics(uid: Int, date: Long): Characteristics?
@@ -38,11 +42,13 @@ interface CharacteristicsRepository {
         height: Int?,
         weight: Float?,
         calories: Int?,
-        waist: Int?,
-        arm: Int?,
-        thigh: Int?,
-        tricep: Float?,
-        abdominal: Float?
+        bodyFat: Float?,
+        waistSize: Int?,
+        armSize: Int?,
+        thighSize: Int?,
+        tricepFat: Int?,
+        abdomenFat: Int?,
+        thighFat: Int?
     )
 
     fun removeCharacteristics(uid: Int, date: Long)

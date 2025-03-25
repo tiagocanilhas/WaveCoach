@@ -1,6 +1,6 @@
 package waveCoach.http.model.input
 
-data class AthleteInputModel(
+data class AthleteUpdateInputModel(
     val name: String,
     val birthDate: String
 )

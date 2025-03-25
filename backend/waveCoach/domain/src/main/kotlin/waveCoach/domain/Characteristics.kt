@@ -1,14 +1,17 @@
 package waveCoach.domain
 
 data class Characteristics(
-    val uid: Int,
     val date: Long,
-    val height: Int?,
+    val uid: Int,
     val weight: Float?,
+    val height: Int?,
+    val bmi: Float?,
     val calories: Int?,
-    val waist: Int?,
-    val arm: Int?,
-    val thigh: Int?,
-    val tricep: Float?,
-    val abdominal: Float?
+    val bodyFat: Float?,
+    val waistSize: Int?,
+    val armSize: Int?,
+    val thighSize: Int?,
+    val tricepFat: Int?,
+    val abdomenFat: Int?,
+    val thighFat: Int?
 )

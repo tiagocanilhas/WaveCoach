@@ -372,11 +372,13 @@ class AthleteControllerTest {
             "height" to 1,
             "weight" to 1.0,
             "calories" to 1,
-            "waist" to 1,
-            "arm" to 1,
-            "thigh" to 1,
-            "tricep" to 1.0,
-            "abdominal" to 1.0,
+            "bodyFat" to 1.0,
+            "waistSize" to 1,
+            "armSize" to 1,
+            "thighSize" to 1,
+            "tricepFat" to 1,
+            "abdominalFat" to 1,
+            "thighFat" to 1,
         )
 
         client.post().uri("/athletes/$SECOND_ATHLETE_ID/characteristics")
@@ -400,11 +402,13 @@ class AthleteControllerTest {
             "height" to 1,
             "weight" to 1.0,
             "calories" to 1,
-            "waist" to 1,
-            "arm" to 1,
-            "thigh" to 1,
-            "tricep" to 1.0,
-            "abdominal" to 1.0,
+            "bodyFat" to 1.0,
+            "waistSize" to 1,
+            "armSize" to 1,
+            "thighSize" to 1,
+            "tricepFat" to 1,
+            "abdominalFat" to 1,
+            "thighFat" to 1,
         )
 
         client.post().uri("/athletes/$SECOND_ATHLETE_ID/characteristics")
@@ -427,22 +431,26 @@ class AthleteControllerTest {
             "height" to 1,
             "weight" to 1.0,
             "calories" to 1,
-            "waist" to 1,
-            "arm" to 1,
-            "thigh" to 1,
-            "tricep" to 1.0,
-            "abdominal" to 1.0,
+            "bodyFat" to 1.0,
+            "waistSize" to 1,
+            "armSize" to 1,
+            "thighSize" to 1,
+            "tricepFat" to 1,
+            "abdominalFat" to 1,
+            "thighFat" to 1,
         )
 
         val invalidCharacteristics = listOf(
             body + ("height" to -1),
             body + ("weight" to -1.0),
             body + ("calories" to -1),
-            body + ("waist" to -1),
-            body + ("arm" to -1),
-            body + ("thigh" to -1),
-            body + ("tricep" to -1.0),
-            body + ("abdominal" to -1.0),
+            body + ("bodyFat" to -1.0),
+            body + ("waistSize" to -1),
+            body + ("armSize" to -1),
+            body + ("thighSize" to -1),
+            body + ("tricepFat" to -1),
+            body + ("abdomenFat" to -1),
+            body + ("thighFat" to -1),
         )
 
         invalidCharacteristics.forEach { characteristics ->
@@ -469,11 +477,13 @@ class AthleteControllerTest {
             "height" to 1,
             "weight" to 1.0,
             "calories" to 1,
-            "waist" to 1,
-            "arm" to 1,
-            "thigh" to 1,
-            "tricep" to 1.0,
-            "abdominal" to 1.0,
+            "bodyFat" to 1.0,
+            "waistSize" to 1,
+            "armSize" to 1,
+            "thighSize" to 1,
+            "tricepFat" to 1,
+            "abdominalFat" to 1,
+            "thighFat" to 1,
         )
 
         client.post().uri("/athletes/$id/characteristics")
@@ -498,11 +508,13 @@ class AthleteControllerTest {
             "height" to 1,
             "weight" to 1.0,
             "calories" to 1,
-            "waist" to 1,
-            "arm" to 1,
-            "thigh" to 1,
-            "tricep" to 1.0,
-            "abdominal" to 1.0,
+            "bodyFat" to 1.0,
+            "waistSize" to 1,
+            "armSize" to 1,
+            "thighSize" to 1,
+            "tricepFat" to 1,
+            "abdominalFat" to 1,
+            "thighFat" to 1,
         )
 
         client.post().uri("/athletes/$id/characteristics")
@@ -525,11 +537,13 @@ class AthleteControllerTest {
             "height" to 1,
             "weight" to 1.0,
             "calories" to 1,
-            "waist" to 1,
-            "arm" to 1,
-            "thigh" to 1,
-            "tricep" to 1.0,
-            "abdominal" to 1.0,
+            "bodyFat" to 1.0,
+            "waistSize" to 1,
+            "armSize" to 1,
+            "thighSize" to 1,
+            "tricepFat" to 1,
+            "abdominalFat" to 1,
+            "thighFat" to 1,
         )
 
         client.post().uri("/athletes/$SECOND_ATHLETE_ID/characteristics")
@@ -552,11 +566,13 @@ class AthleteControllerTest {
             "height" to 1,
             "weight" to 1.0,
             "calories" to 1,
-            "waist" to 1,
-            "arm" to 1,
-            "thigh" to 1,
-            "tricep" to 1.0,
-            "abdominal" to 1.0,
+            "bodyFat" to 1.0,
+            "waistSize" to 1,
+            "armSize" to 1,
+            "thighSize" to 1,
+            "tricepFat" to 1,
+            "abdominalFat" to 1,
+            "thighFat" to 1,
         )
 
         client.post().uri("/athletes/$SECOND_ATHLETE_ID/characteristics")
@@ -587,12 +603,15 @@ class AthleteControllerTest {
             .jsonPath("uid").isEqualTo(SECOND_ATHLETE_ID)
             .jsonPath("height").isEqualTo(ATHLETE_HEIGHT)
             .jsonPath("weight").isEqualTo(ATHLETE_WEIGHT)
+            .jsonPath("bmi").isEqualTo(ATHLETE_BMI)
             .jsonPath("calories").isEqualTo(ATHLETE_CALORIES)
-            .jsonPath("waist").isEqualTo(ATHLETE_WAIST)
-            .jsonPath("arm").isEqualTo(ATHLETE_ARM)
-            .jsonPath("thigh").isEqualTo(ATHLETE_THIGH)
-            .jsonPath("tricep").isEqualTo(ATHLETE_TRICEP)
-            .jsonPath("abdominal").isEqualTo(ATHLETE_ABDOMINAL)
+            .jsonPath("bodyFat").isEqualTo(ATHLETE_BODY_FAT)
+            .jsonPath("waistSize").isEqualTo(ATHLETE_WAIST_SIZE)
+            .jsonPath("armSize").isEqualTo(ATHLETE_ARM_SIZE)
+            .jsonPath("thighSize").isEqualTo(ATHLETE_THIGH_SIZE)
+            .jsonPath("tricepFat").isEqualTo(ATHLETE_TRICEP_FAT)
+            .jsonPath("abdomenFat").isEqualTo(ATHLETE_ABDOMEN_FAT)
+            .jsonPath("thighFat").isEqualTo(ATHLETE_THIGH_FAT)
     }
 
     @Test
@@ -736,11 +755,13 @@ class AthleteControllerTest {
             "height" to 1,
             "weight" to 1.0,
             "calories" to 1,
-            "waist" to 1,
-            "arm" to 1,
-            "thigh" to 1,
-            "tricep" to 1.0,
-            "abdominal" to 1.0,
+            "bodyFat" to 1.0,
+            "waistSize" to 1,
+            "armSize" to 1,
+            "thighSize" to 1,
+            "tricepFat" to 1,
+            "abdominalFat" to 1,
+            "thighFat" to 1,
         )
 
         client.put().uri("/athletes/$SECOND_ATHLETE_ID/characteristics/$VALID_DATE")
@@ -759,11 +780,13 @@ class AthleteControllerTest {
             "height" to 1,
             "weight" to 1.0,
             "calories" to 1,
-            "waist" to 1,
-            "arm" to 1,
-            "thigh" to 1,
-            "tricep" to 1.0,
-            "abdominal" to 1.0,
+            "bodyFat" to 1.0,
+            "waistSize" to 1,
+            "armSize" to 1,
+            "thighSize" to 1,
+            "tricepFat" to 1,
+            "abdominalFat" to 1,
+            "thighFat" to 1,
         )
 
         client.put().uri("/athletes/$SECOND_ATHLETE_ID/characteristics/$INVALID_DATE")
@@ -785,22 +808,26 @@ class AthleteControllerTest {
             "height" to 1,
             "weight" to 1.0,
             "calories" to 1,
-            "waist" to 1,
-            "arm" to 1,
-            "thigh" to 1,
-            "tricep" to 1.0,
-            "abdominal" to 1.0,
+            "bodyFat" to 1.0,
+            "waistSize" to 1,
+            "armSize" to 1,
+            "thighSize" to 1,
+            "tricepFat" to 1,
+            "abdominalFat" to 1,
+            "thighFat" to 1,
         )
 
         val invalidCharacteristics = listOf(
             body + ("height" to -1),
             body + ("weight" to -1.0),
             body + ("calories" to -1),
-            body + ("waist" to -1),
-            body + ("arm" to -1),
-            body + ("thigh" to -1),
-            body + ("tricep" to -1.0),
-            body + ("abdominal" to -1.0),
+            body + ("bodyFat" to -1.0),
+            body + ("waistSize" to -1),
+            body + ("armSize" to -1),
+            body + ("thighSize" to -1),
+            body + ("tricepFat" to -1),
+            body + ("abdomenFat" to -1),
+            body + ("thighFat" to -1),
         )
 
         invalidCharacteristics.forEach { characteristics ->
@@ -826,11 +853,13 @@ class AthleteControllerTest {
             "height" to 1,
             "weight" to 1.0,
             "calories" to 1,
-            "waist" to 1,
-            "arm" to 1,
-            "thigh" to 1,
-            "tricep" to 1.0,
-            "abdominal" to 1.0,
+            "bodyFat" to 1.0,
+            "waistSize" to 1,
+            "armSize" to 1,
+            "thighSize" to 1,
+            "tricepFat" to 1,
+            "abdominalFat" to 1,
+            "thighFat" to 1,
         )
 
         client.put().uri("/athletes/$id/characteristics/$VALID_DATE")
@@ -854,11 +883,13 @@ class AthleteControllerTest {
             "height" to 1,
             "weight" to 1.0,
             "calories" to 1,
-            "waist" to 1,
-            "arm" to 1,
-            "thigh" to 1,
-            "tricep" to 1.0,
-            "abdominal" to 1.0,
+            "bodyFat" to 1.0,
+            "waistSize" to 1,
+            "armSize" to 1,
+            "thighSize" to 1,
+            "tricepFat" to 1,
+            "abdominalFat" to 1,
+            "thighFat" to 1,
         )
 
         client.put().uri("/athletes/$id/characteristics/$VALID_DATE")
@@ -880,11 +911,13 @@ class AthleteControllerTest {
             "height" to 1,
             "weight" to 1.0,
             "calories" to 1,
-            "waist" to 1,
-            "arm" to 1,
-            "thigh" to 1,
-            "tricep" to 1.0,
-            "abdominal" to 1.0,
+            "bodyFat" to 1.0,
+            "waistSize" to 1,
+            "armSize" to 1,
+            "thighSize" to 1,
+            "tricepFat" to 1,
+            "abdominalFat" to 1,
+            "thighFat" to 1,
         )
 
         client.put().uri("/athletes/$SECOND_ATHLETE_ID/characteristics/$VALID_DATE")
@@ -998,13 +1031,16 @@ class AthleteControllerTest {
         private const val FIRST_COACH_ID = 1
         private const val SECOND_COACH_TOKEN = "fM5JjtPOUqtnZg1lB7jnJhXBP5gI2WbIIBoO3JhYM5M="
 
-        private const val ATHLETE_HEIGHT = 1
-        private const val ATHLETE_WEIGHT = 1.0f
+        private const val ATHLETE_HEIGHT = 181
+        private const val ATHLETE_WEIGHT = 74.0f
+        private const val ATHLETE_BMI = 22.587833f
         private const val ATHLETE_CALORIES = 1
-        private const val ATHLETE_WAIST = 1
-        private const val ATHLETE_ARM = 1
-        private const val ATHLETE_THIGH = 1
-        private const val ATHLETE_TRICEP = 1.0f
-        private const val ATHLETE_ABDOMINAL = 1.0f
+        private const val ATHLETE_BODY_FAT = 1.0f
+        private const val ATHLETE_WAIST_SIZE = 1
+        private const val ATHLETE_ARM_SIZE = 1
+        private const val ATHLETE_THIGH_SIZE = 1
+        private const val ATHLETE_TRICEP_FAT = 1
+        private const val ATHLETE_ABDOMEN_FAT = 1
+        private const val ATHLETE_THIGH_FAT = 1
     }
 }

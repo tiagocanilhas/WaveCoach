@@ -4,9 +4,11 @@ data class AthleteUpdateCharacteristicsInputModel (
     val weight: Float?,
     val height: Int?,
     val calories: Int?,
-    val waist: Int?,
-    val arm: Int?,
-    val thigh: Int?,
-    val tricep: Float?,
-    val abdominal: Float?
+    val bodyFat: Float?,
+    val waistSize: Int?,
+    val armSize: Int?,
+    val thighSize: Int?,
+    val tricepFat: Int?,
+    val abdomenFat: Int?,
+    val thighFat: Int?
 )
