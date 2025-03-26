@@ -28,6 +28,7 @@ class AthleteController(
         @RequestBody input: AthleteCreateInputModel
     ): ResponseEntity<*> {
         val result = athleteServices.createAthlete(input.name, coach.info.id, input.birthDate)
+
         return when (result) {
             is Success -> ResponseEntity
                 .status(201)
@@ -48,15 +49,18 @@ class AthleteController(
     ): ResponseEntity<*> {
         val uid = aid.toIntOrNull() ?: return Problem.response(400, Problem.invalidAthleteId)
         val result = athleteServices.getAthlete(coach.info.id, uid)
+
         return when (result) {
-            is Success -> ResponseEntity.status(200).body(
-                AthleteOutputModel(
-                    result.value.uid,
-                    result.value.coach,
-                    result.value.name,
-                    result.value.birthDate
+            is Success -> ResponseEntity
+                .status(200)
+                .body(
+                    AthleteOutputModel(
+                        result.value.uid,
+                        result.value.coach,
+                        result.value.name,
+                        result.value.birthDate
+                    )
                 )
-            )
 
             is Failure -> when (result.value) {
                 GetAthleteError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
@@ -70,14 +74,17 @@ class AthleteController(
         coach: AuthenticatedUser,
     ): ResponseEntity<*> {
         val result = athleteServices.getAthletes(coach.info.id)
-        return ResponseEntity.status(200).body(AthleteListOutputModel(result.map {
-            AthleteOutputModel(
-                it.uid,
-                it.coach,
-                it.name,
-                it.birthDate
-            )
-        }))
+
+        return ResponseEntity
+            .status(200)
+            .body(AthleteListOutputModel(result.map {
+                AthleteOutputModel(
+                    it.uid,
+                    it.coach,
+                    it.name,
+                    it.birthDate
+                )
+            }))
     }
 
     @PutMapping(Uris.Athletes.UPDATE)
@@ -88,8 +95,12 @@ class AthleteController(
     ): ResponseEntity<*> {
         val uid = aid.toIntOrNull() ?: return Problem.response(400, Problem.invalidAthleteId)
         val result = athleteServices.updateAthlete(coach.info.id, uid, input.name, input.birthDate)
+
         return when (result) {
-            is Success -> ResponseEntity.status(204).build<Unit>()
+            is Success -> ResponseEntity
+                .status(204)
+                .build<Unit>()
+
             is Failure -> when (result.value) {
                 UpdateAthleteError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
                 UpdateAthleteError.InvalidBirthDate -> Problem.response(400, Problem.invalidBirthDate)
@@ -106,8 +117,12 @@ class AthleteController(
     ): ResponseEntity<*> {
         val uid = aid.toIntOrNull() ?: return Problem.response(400, Problem.invalidAthleteId)
         val result = athleteServices.removeAthlete(coach.info.id, uid)
+
         return when (result) {
-            is Success -> ResponseEntity.status(204).build<Unit>()
+            is Success -> ResponseEntity
+                .status(204)
+                .build<Unit>()
+
             is Failure -> when (result.value) {
                 RemoveAthleteError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
                 RemoveAthleteError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
@@ -135,15 +150,11 @@ class AthleteController(
 
             is Failure -> when (result.value) {
                 CreateCharacteristicsError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
-                CreateCharacteristicsError.CharacteristicsAlreadyExists -> Problem.response(
-                    409,
-                    Problem.characteristicsAlreadyExists
-                )
+                CreateCharacteristicsError.CharacteristicsAlreadyExists ->
+                    Problem.response(409, Problem.characteristicsAlreadyExists)
 
-                CreateCharacteristicsError.InvalidCharacteristics -> Problem.response(
-                    400,
-                    Problem.invalidCharacteristics
-                )
+                CreateCharacteristicsError.InvalidCharacteristics ->
+                    Problem.response(400, Problem.invalidCharacteristics)
 
                 CreateCharacteristicsError.InvalidDate -> Problem.response(400, Problem.invalidDate)
                 CreateCharacteristicsError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
@@ -161,11 +172,12 @@ class AthleteController(
         val result = athleteServices.getCharacteristics(coach.info.id, uid, date)
 
         return when (result) {
-            is Success -> ResponseEntity.status(200)
+            is Success -> ResponseEntity
+                .status(200)
                 .body(
                     CharacteristicsOutputModel(
-                        result.value.date,
                         result.value.uid,
+                        result.value.date,
                         result.value.weight,
                         result.value.height,
                         result.value.bmi,
@@ -183,10 +195,8 @@ class AthleteController(
             is Failure -> when (result.value) {
                 GetCharacteristicsError.InvalidDate -> Problem.response(400, Problem.invalidDate)
                 GetCharacteristicsError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
-                GetCharacteristicsError.CharacteristicsNotFound -> Problem.response(
-                    404,
-                    Problem.characteristicsNotFound
-                )
+                GetCharacteristicsError.CharacteristicsNotFound ->
+                    Problem.response(404, Problem.characteristicsNotFound)
 
                 GetCharacteristicsError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
             }
@@ -202,28 +212,25 @@ class AthleteController(
         val result = athleteServices.getCharacteristicsList(coach.info.id, uid)
 
         return when (result) {
-            is Success -> ResponseEntity.status(200)
-                .body(
-                    CharacteristicsListOutputModel(
-                        result.value.map {
-                            CharacteristicsOutputModel(
-                                it.date,
-                                it.uid,
-                                it.weight,
-                                it.height,
-                                it.bmi,
-                                it.calories,
-                                it.bodyFat,
-                                it.waistSize,
-                                it.armSize,
-                                it.thighSize,
-                                it.tricepFat,
-                                it.abdomenFat,
-                                it.thighFat
-                            )
-                        }
+            is Success -> ResponseEntity
+                .status(200)
+                .body(CharacteristicsListOutputModel(result.value.map {
+                    CharacteristicsOutputModel(
+                        it.uid,
+                        it.date,
+                        it.weight,
+                        it.height,
+                        it.bmi,
+                        it.calories,
+                        it.bodyFat,
+                        it.waistSize,
+                        it.armSize,
+                        it.thighSize,
+                        it.tricepFat,
+                        it.abdomenFat,
+                        it.thighFat
                     )
-                )
+                }))
 
             is Failure -> when (result.value) {
                 GetCharacteristicsListError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
@@ -246,14 +253,14 @@ class AthleteController(
         )
 
         return when (result) {
-            is Success -> ResponseEntity.status(204).build<Unit>()
+            is Success -> ResponseEntity
+                .status(204)
+                .build<Unit>()
 
             is Failure -> when (result.value) {
                 UpdateCharacteristicsError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
-                UpdateCharacteristicsError.InvalidCharacteristics -> Problem.response(
-                    400,
-                    Problem.invalidCharacteristics
-                )
+                UpdateCharacteristicsError.InvalidCharacteristics ->
+                    Problem.response(400, Problem.invalidCharacteristics)
 
                 UpdateCharacteristicsError.InvalidDate -> Problem.response(400, Problem.invalidDate)
                 UpdateCharacteristicsError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
@@ -271,15 +278,15 @@ class AthleteController(
         val result = athleteServices.removeCharacteristics(coach.info.id, uid, date)
 
         return when (result) {
-            is Success -> ResponseEntity.status(204).build<Unit>()
+            is Success -> ResponseEntity
+                .status(204)
+                .build<Unit>()
 
             is Failure -> when (result.value) {
                 RemoveCharacteristicsError.InvalidDate -> Problem.response(400, Problem.invalidDate)
                 RemoveCharacteristicsError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
-                RemoveCharacteristicsError.CharacteristicsNotFound -> Problem.response(
-                    404,
-                    Problem.characteristicsNotFound
-                )
+                RemoveCharacteristicsError.CharacteristicsNotFound ->
+                    Problem.response(404, Problem.characteristicsNotFound)
 
                 RemoveCharacteristicsError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
             }

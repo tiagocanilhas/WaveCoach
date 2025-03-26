@@ -23,11 +23,15 @@ class JdbiCharacteristicsRepository(
         abdomenFat: Int?,
         thighFat: Int?
     ): Long =
-        handle.createUpdate(
-            """
-            insert into waveCoach.characteristics 
-                (uid, date, height, weight, calories, body_fat, waist_size, arm_size, thigh_size, tricep_fat, abdomen_fat, thigh_fat) 
-            values (:uid, :date, :height, :weight, :calories, :body_fat, :waist_size, :arm_size, :thigh_size, :tricep_fat, :abdomen_fat, :thigh_fat)
+        handle.createUpdate("""
+            insert into waveCoach.characteristics (
+                uid, date, height, weight, calories, body_fat, 
+                waist_size, arm_size, thigh_size, tricep_fat, abdomen_fat, thigh_fat
+            ) 
+            values (
+                :uid, :date, :height, :weight, :calories, :body_fat, :waist_size, 
+                :arm_size, :thigh_size, :tricep_fat, :abdomen_fat, :thigh_fat
+            )
         """.trimIndent()
         )
             .bind("uid", uid)
@@ -59,11 +63,15 @@ class JdbiCharacteristicsRepository(
         abdomenFat: Int?,
         thighFat: Int?
     ): Long =
-        handle.createUpdate(
-            """
-            insert into waveCoach.characteristics 
-                (uid, height, weight, calories, body_fat, waist_size, arm_size, thigh_size, tricep_fat, abdomen_fat, thigh_fat) 
-            values (:uid, :height, :weight, :calories, :body_fat, :waist_size, :arm_size, :thigh_size, :tricep_fat, :abdomen_fat, :thigh_fat)
+        handle.createUpdate("""
+            insert into waveCoach.characteristics (
+                uid, height, weight, calories, body_fat, 
+                waist_size, arm_size, thigh_size, tricep_fat, abdomen_fat, thigh_fat
+            ) 
+            values (
+                :uid, :height, :weight, :calories, :body_fat, :waist_size, 
+                :arm_size, :thigh_size, :tricep_fat, :abdomen_fat, :thigh_fat
+            )
         """.trimIndent()
         )
             .bind("uid", uid)

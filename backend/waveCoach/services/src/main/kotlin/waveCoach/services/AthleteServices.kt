@@ -159,7 +159,6 @@ class AthleteServices(
             if (athlete.coach != coachId) return@run failure(RemoveAthleteError.NotAthletesCoach)
 
             characteristicsRepository.removeCharacteristicsWithoutDate(aid)
-
             athleteRepository.removeAthlete(aid)
             userRepository.removeUser(aid)
 
@@ -186,18 +185,9 @@ class AthleteServices(
             ?: if (date != null) return failure(CreateCharacteristicsError.InvalidDate) else null
 
         if (!characteristicsDomain.checkCharacteristics(
-                height,
-                weight,
-                calories,
-                bodyFat,
-                waistSize,
-                armSize,
-                thighSize,
-                tricepFat,
-                abdomenFat,
-                thighFat
-            )
-        )
+                height, weight, calories, bodyFat, waistSize,
+                armSize, thighSize, tricepFat, abdomenFat, thighFat
+        ))
             return failure(CreateCharacteristicsError.InvalidCharacteristics)
 
         return transactionManager.run {
@@ -210,37 +200,17 @@ class AthleteServices(
             if (athlete.coach != coachId) return@run failure(CreateCharacteristicsError.NotAthletesCoach)
 
             val characteristicsId =
-                if (dateLong == null)
-                    characteristicsRepository.storeCharacteristicsWithoutDate(
-                        uid,
-                        height,
-                        weight,
-                        calories,
-                        bodyFat,
-                        waistSize,
-                        armSize,
-                        thighSize,
-                        tricepFat,
-                        abdomenFat,
-                        thighFat
-                    )
+                if (dateLong == null) characteristicsRepository.storeCharacteristicsWithoutDate(
+                    uid, height, weight, calories, bodyFat, waistSize, armSize,
+                    thighSize, tricepFat, abdomenFat, thighFat
+                )
                 else {
                     characteristicsRepository.getCharacteristics(uid, dateLong)
                         ?.let { return@run failure(CreateCharacteristicsError.CharacteristicsAlreadyExists) }
 
                     characteristicsRepository.storeCharacteristics(
-                        uid,
-                        dateLong,
-                        height,
-                        weight,
-                        calories,
-                        bodyFat,
-                        waistSize,
-                        armSize,
-                        thighSize,
-                        tricepFat,
-                        abdomenFat,
-                        thighFat
+                        uid, dateLong, height, weight, calories, bodyFat, waistSize,
+                        armSize, thighSize, tricepFat, abdomenFat, thighFat
                     )
                 }
 
@@ -255,8 +225,8 @@ class AthleteServices(
             val characteristicsRepository = it.characteristicsRepository
             val athleteRepository = it.athleteRepository
 
-            val athlete =
-                athleteRepository.getAthlete(uid) ?: return@run failure(GetCharacteristicsError.AthleteNotFound)
+            val athlete = athleteRepository.getAthlete(uid)
+                ?: return@run failure(GetCharacteristicsError.AthleteNotFound)
 
             if (athlete.coach != coachId) return@run failure(GetCharacteristicsError.NotAthletesCoach)
 

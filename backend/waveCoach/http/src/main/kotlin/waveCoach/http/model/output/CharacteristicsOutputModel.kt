@@ -1,8 +1,8 @@
 package waveCoach.http.model.output
 
 data class CharacteristicsOutputModel(
-    val date: Long,
     val uid: Int,
+    val date: Long,
     val weight: Float?,
     val height: Int?,
     val bmi: Float?,
