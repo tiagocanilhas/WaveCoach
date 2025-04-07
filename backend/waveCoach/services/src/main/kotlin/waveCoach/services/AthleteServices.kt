@@ -80,6 +80,13 @@ sealed class RemoveCharacteristicsError {
 }
 typealias RemoveCharacteristicsResult = Either<RemoveCharacteristicsError, Int>
 
+sealed class CreateGymActivityError {
+    data object InvalidDate : CreateGymActivityError()
+    data object AthleteNotFound : CreateGymActivityError()
+    data object NotAthletesCoach : CreateGymActivityError()
+}
+typealias CreateGymActivityResult = Either<CreateGymActivityError, Int>
+
 @Component
 class AthleteServices(
     private val transactionManager: TransactionManager,
@@ -327,6 +334,25 @@ class AthleteServices(
 
             characteristicsRepository.removeCharacteristics(uid, dateLong)
             success(uid)
+        }
+    }
+
+    fun createGymActivity(coachId: Int, uid: Int, date: String): CreateGymActivityResult {
+        val dateLong = dateToLong(date) ?: return failure(CreateGymActivityError.InvalidDate)
+
+        return transactionManager.run {
+            val athleteRepository = it.athleteRepository
+            val activityRepository = it.activityRepository
+            val gymActivityRepository = it.gymActivityRepository
+            val athlete =
+                athleteRepository.getAthlete(uid) ?: return@run failure(CreateGymActivityError.AthleteNotFound)
+
+            if (athlete.coach != coachId) return@run failure(CreateGymActivityError.NotAthletesCoach)
+
+            val activityID = activityRepository.storeActivity(uid, dateLong)
+
+            gymActivityRepository.storeGymActivity(activityID)
+            success(activityID)
         }
     }
 

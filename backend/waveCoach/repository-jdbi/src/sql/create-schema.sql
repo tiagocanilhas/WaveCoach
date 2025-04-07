@@ -83,7 +83,7 @@ CREATE TABLE waveCoach.microcycle(
 
 CREATE TABLE waveCoach.activity(
     id SERIAL PRIMARY KEY,
-    microcycle INTEGER REFERENCES waveCoach.microcycle(id),
+    uid INTEGER REFERENCES waveCoach.athlete(uid),
     date BIGINT DEFAULT EXTRACT(EPOCH FROM CURRENT_TIMESTAMP) NOT NULL
 );
 

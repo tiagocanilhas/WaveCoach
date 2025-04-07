@@ -1,6 +1,6 @@
 package waveCoach.http.model.input
 
-data class AthleteUpdateCharacteristicsInputModel (
+data class AthleteUpdateCharacteristicsInputModel(
     val weight: Float?,
     val height: Int?,
     val calories: Int?,

@@ -1014,11 +1014,35 @@ class AthleteControllerTest {
             .jsonPath("type").isEqualTo(Problem.characteristicsNotFound.type.toString())
     }
 
+    /**
+     * create gym activity tests
+     */
+
+    @Test
+    fun `create gym activity - success`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body = mapOf(
+            "date" to VALID_DATE
+        )
+
+        client.post().uri("/athletes/$THIRD_ATHLETE_ID/gym")
+            .header("Authorization", "Bearer $SECOND_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isCreated
+            .expectHeader().exists("Location")
+            .expectHeader().value("location") {
+                assertTrue(it.startsWith("/api/athletes/$THIRD_ATHLETE_ID/gym/$GYM_ID"))
+            }
+    }
+
     companion object {
         private fun randomString() = "String_${abs(Random.nextLong())}"
 
         private const val VALID_DATE = "01-01-2000"
-        private const val ANOTHER_VALID_DATE = "10-01-2000"
+        private const val ANOTHER_VALID_DATE = "11-01-2000"
         private const val INVALID_DATE = "32-01-2000"
         private const val FIRST_ATHLETE_ID = 3
         private const val FIRST_ATHLETE_NAME = "John Doe"
@@ -1030,6 +1054,8 @@ class AthleteControllerTest {
         private const val FIRST_COACH_TOKEN = "i_aY-4lpMqAIMuhkimTbKy4xYEuyvgFPaaTpVS0lctQ="
         private const val FIRST_COACH_ID = 1
         private const val SECOND_COACH_TOKEN = "fM5JjtPOUqtnZg1lB7jnJhXBP5gI2WbIIBoO3JhYM5M="
+        private const val THIRD_ATHLETE_ID = 5
+        private const val GYM_ID = 1
 
         private const val ATHLETE_HEIGHT = 181
         private const val ATHLETE_WEIGHT = 74.0f

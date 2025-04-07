@@ -12,6 +12,9 @@ class JdbiTransaction(
     override val userRepository: UserRepository = JdbiUserRepository(handle)
     override val athleteRepository: AthleteRepository = JdbiAthleteRepository(handle)
     override val characteristicsRepository: CharacteristicsRepository = JdbiCharacteristicsRepository(handle)
+    override val activityRepository: JdbiActivityRepository = JdbiActivityRepository(handle)
+    override val gymActivityRepository: JdbiGymActivityRepository = JdbiGymActivityRepository(handle)
+
 
     override fun rollback() {
         handle.rollback()

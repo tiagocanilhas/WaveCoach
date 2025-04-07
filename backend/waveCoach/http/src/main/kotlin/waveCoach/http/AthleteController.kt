@@ -9,10 +9,7 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import waveCoach.domain.AuthenticatedUser
-import waveCoach.http.model.input.AthleteCreateCharacteristicsInputModel
-import waveCoach.http.model.input.AthleteUpdateCharacteristicsInputModel
-import waveCoach.http.model.input.AthleteCreateInputModel
-import waveCoach.http.model.input.AthleteUpdateInputModel
+import waveCoach.http.model.input.*
 import waveCoach.http.model.output.*
 import waveCoach.services.*
 import waveCoach.utils.Failure
@@ -289,6 +286,29 @@ class AthleteController(
                     Problem.response(404, Problem.characteristicsNotFound)
 
                 RemoveCharacteristicsError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
+            }
+        }
+    }
+
+    @PostMapping(Uris.Athletes.CREATE_GYM_ACTIVITY)
+    fun createGymActivity(
+        coach: AuthenticatedUser,
+        @PathVariable aid: String,
+        @RequestBody input: CreateGymActivityInputModel
+    ): ResponseEntity<*> {
+        val uid = aid.toIntOrNull() ?: return Problem.response(400, Problem.invalidAthleteId)
+        val result = athleteServices.createGymActivity(coach.info.id, uid, input.date)
+
+        return when (result) {
+            is Success -> ResponseEntity
+                .status(201)
+                .header("Location", Uris.Athletes.gymActivityById(uid, result.value).toASCIIString())
+                .build<Unit>()
+
+            is Failure -> when (result.value) {
+                CreateGymActivityError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
+                CreateGymActivityError.InvalidDate -> Problem.response(400, Problem.invalidDate)
+                CreateGymActivityError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
             }
         }
     }
