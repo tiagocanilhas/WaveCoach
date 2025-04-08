@@ -161,11 +161,15 @@ class AthleteServices(
             val athleteRepository = it.athleteRepository
             val userRepository = it.userRepository
             val characteristicsRepository = it.characteristicsRepository
+            val activityRepository = it.activityRepository
+            val gymActivityRepository = it.gymActivityRepository
 
             val athlete = athleteRepository.getAthlete(aid) ?: return@run failure(RemoveAthleteError.AthleteNotFound)
             if (athlete.coach != coachId) return@run failure(RemoveAthleteError.NotAthletesCoach)
 
             characteristicsRepository.removeCharacteristicsWithoutDate(aid)
+            gymActivityRepository.removeGymActivities(aid)
+            activityRepository.removeActivities(aid)
             athleteRepository.removeAthlete(aid)
             userRepository.removeUser(aid)
 
