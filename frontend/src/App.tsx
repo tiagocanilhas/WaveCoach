@@ -14,15 +14,15 @@ import { Characteristics } from './pages/Characterisitcs'
 const router = createBrowserRouter([
   { path: '/login', element: <Login /> },
   { path: '/register', element: <RegisterSelect /> },
-  { path: '/register/coach', element: <RegisterCoach /> }, 
+  { path: '/register/coach', element: <RegisterCoach /> },
   { path: '/register/athlete-code', element: <RegisterAthleteCode /> },
   { path: '/register/athlete', element: <RegisterAthlete /> },
 
   { path: '/', element: <Home /> },
 
   { path: '/athlete/:aid', element: <Athlete /> },
-  { path: '/athlete/:aid/characterisitcs', element: <Characteristics /> },
-  
+  { path: '/athlete/:aid/characteristics', element: <Characteristics /> },
+
   { path: '*', element: <NotFound /> },
 ])
 

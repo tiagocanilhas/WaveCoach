@@ -1,11 +1,13 @@
 import * as React from 'react'
 import { useReducer } from 'react'
-import { Link, Navigate } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 
 import { Card } from '../components/Card'
 
+import { validatePassword } from '../utils/validatePassword'
+
 type State =
-  | { tag: 'editing'; error?: string; inputs: { username: string; password: string } }
+  | { tag: 'editing'; error?: string; inputs: { username: string; password: string; confirmPassword: string } }
   | { tag: 'submitting'; username: string }
   | { tag: 'redirecting' }
 
@@ -30,7 +32,7 @@ function reducer(state: State, action: Action): State {
     case 'submitting':
       switch (action.type) {
         case 'error':
-          return { tag: 'editing', error: action.error, inputs: { username: state.username, password: '' } }
+          return { tag: 'editing', error: action.error, inputs: { username: state.username, password: '', confirmPassword: '' } }
         case 'success':
           return { tag: 'redirecting' }
         default:
@@ -42,18 +44,23 @@ function reducer(state: State, action: Action): State {
   }
 }
 
-const initialState: State = {
-  tag: 'editing',
-  inputs: { username: '', password: '' },
-}
-
 const errorMessageStyle: React.CSSProperties = {
   color: 'red',
   fontSize: '14px',
 }
 
-export function Login() {
-  const [state, dispatch] = useReducer(reducer, initialState)
+type RegisterFormProps = {
+  title: string
+  initialUsername: string
+  buttonText: string
+  onSubmit: (username: string, password: string, confirmPassword: string) => Promise<void>
+}
+
+export function RegisterForm({ title, initialUsername, buttonText, onSubmit }: RegisterFormProps) {
+  const [state, dispatch] = useReducer(reducer, {
+    tag: 'editing',
+    inputs: { username: initialUsername, password: '', confirmPassword: '' },
+  })
 
   async function handleOnSubmit(ev: React.FormEvent<HTMLFormElement>) {
     ev.preventDefault()
@@ -61,13 +68,13 @@ export function Login() {
     if (state.tag !== 'editing') return
 
     dispatch({ type: 'submit' })
-    const { username, password } = state.inputs
+    const { username, password, confirmPassword } = state.inputs
 
     try {
-      const res = await (() => Promise.reject())()
+      await onSubmit(username, password, confirmPassword)
       dispatch({ type: 'success' })
     } catch (error) {
-      dispatch({ type: 'error', error: 'Invalid credentials' })
+      dispatch({ type: 'error', error: 'An error occurred while registering. Please try again.' })
       return
     }
   }
@@ -76,27 +83,51 @@ export function Login() {
     dispatch({ type: 'edit', name: ev.currentTarget.name, value: ev.currentTarget.value })
   }
 
-  if (state.tag === 'redirecting') return <Navigate to="/" />
+  if (state.tag === 'redirecting') return <Navigate to="/login" />
 
   const username = state.tag === 'submitting' ? state.username : state.inputs.username
   const password = state.tag === 'submitting' ? '' : state.inputs.password
-  const disabled = state.tag === 'submitting' || state.inputs.username.trim() === '' || state.inputs.password.trim() === ''
+  const confirmPassword = state.tag === 'submitting' ? '' : state.inputs.confirmPassword
+
+  const passwordValidation = validatePassword(password)
+  const passwordsMatch = password === confirmPassword
+  const disabled =
+    state.tag === 'submitting' ||
+    state.inputs.username.trim() === '' ||
+    state.inputs.password.trim() === '' ||
+    state.inputs.confirmPassword.trim() === '' ||
+    !passwordValidation ||
+    !passwordsMatch ||
+    !Object.values(passwordValidation).every(v => v.valid)
 
   return (
     <Card
       content={
         <>
-          <h1>Login</h1>
+          <h1>{title}</h1>
           <form onSubmit={handleOnSubmit}>
             <input name="username" type="text" placeholder="Username" value={username} onChange={handleOnChange} required />
             <input name="password" type="password" placeholder="Password" value={password} onChange={handleOnChange} required />
+            <p>Password must match the following criteria:</p>
+            <ul>
+              {Object.values(passwordValidation).map((validation, idx) => (
+                <li key={idx} style={{ color: validation.valid ? 'green' : 'grey' }}>
+                  {validation.text}
+                </li>
+              ))}
+            </ul>
+            <input
+              name="confirmPassword"
+              type="password"
+              placeholder="Confirm Password"
+              value={confirmPassword}
+              onChange={handleOnChange}
+              required
+            />
             <button type="submit" disabled={disabled}>
-              Login
+              {buttonText}
             </button>
           </form>
-          <p>
-            Don't have an account? <Link to="/register">Register</Link>
-          </p>
           {state.tag === 'editing' && state.error && <p style={errorMessageStyle}>{state.error}</p>}
         </>
       }

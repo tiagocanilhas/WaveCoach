@@ -1,9 +1,9 @@
-import * as React from 'react';
+import * as React from 'react'
 
 export function Athlete() {
-    return (
-        <div>
-            <p>Athlete</p>
-        </div>
-    )
+  return (
+    <div>
+      <p>Athlete</p>
+    </div>
+  )
 }
