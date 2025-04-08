@@ -718,6 +718,70 @@ class AthleteServicesTest {
         }
     }
 
+    @Test
+    fun `create gym activity - success`() {
+        val athleteServices = createAthleteServices(maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (val result = athleteServices.createGymActivity(
+            FIRST_COACH_ID,
+            FIRST_ATHLETE_ID,
+            ATHLETE_CHARACTERISTICS_FIRST_DATE
+        )) {
+            is Failure -> fail("Unexpected $result")
+            is Success -> assertTrue(result.value > 0)
+        }
+    }
+
+    @Test
+    fun `create gym activity - invalid date`() {
+        val athleteServices = createAthleteServices(maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        val invalidDates = listOf(
+            "32-01-2000",
+            "2000-01-01",
+            "01-01-2200",
+        )
+
+        invalidDates.forEach { date ->
+            when (val result = athleteServices.createGymActivity(
+                FIRST_COACH_ID,
+                FIRST_ATHLETE_ID,
+                date
+            )) {
+                is Failure -> assertTrue(result.value is CreateGymActivityError.InvalidDate)
+                is Success -> fail("Unexpected $result")
+            }
+        }
+    }
+
+    @Test
+    fun `create gym activity - athlete not found`() {
+        val athleteServices = createAthleteServices(maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (val result = athleteServices.createGymActivity(
+            FIRST_COACH_ID,
+            0,
+            ATHLETE_CHARACTERISTICS_FIRST_DATE
+        )) {
+            is Failure -> assertTrue(result.value is CreateGymActivityError.AthleteNotFound)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
+    @Test
+    fun `create gym activity - not athlete's coach`() {
+        val athleteServices = createAthleteServices(maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (val result = athleteServices.createGymActivity(
+            SECOND_COACH_ID,
+            FIRST_ATHLETE_ID,
+            ATHLETE_CHARACTERISTICS_FIRST_DATE
+        )) {
+            is Failure -> assertTrue(result.value is CreateGymActivityError.NotAthletesCoach)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
     companion object {
         private fun randomString() = "String_${abs(Random.nextLong())}"
 
