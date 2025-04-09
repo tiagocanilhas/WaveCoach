@@ -26,7 +26,6 @@ class JdbiActivityRepositoryTest {
     }
 
 
-
     @Test
     fun `remove activities`() = testWithHandleAndRollback { handle ->
         val activityRepository = JdbiActivityRepository(handle)

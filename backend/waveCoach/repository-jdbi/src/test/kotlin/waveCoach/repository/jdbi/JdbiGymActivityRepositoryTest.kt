@@ -11,7 +11,7 @@ class JdbiGymActivityRepositoryTest {
         val gymActivityRepository = JdbiGymActivityRepository(handle)
         val activityRepository = JdbiActivityRepository(handle)
 
-        val activityId=activityRepository.storeActivity(FIRST_ATHLETE_ID, DATE)
+        val activityId = activityRepository.storeActivity(FIRST_ATHLETE_ID, DATE)
 
         val gymActivityId = gymActivityRepository.storeGymActivity(activityId)
 

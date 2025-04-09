@@ -17,17 +17,21 @@ class JdbiGymActivityRepository(
             )
 
     override fun getGymActivities(uid: Int): List<GymActivity> =
-        handle.createQuery("""
+        handle.createQuery(
+            """
         select * from waveCoach.gym where activity in (select id from waveCoach.activity where uid = :uid)
-        """.trimIndent())
+        """.trimIndent()
+        )
             .bind("uid", uid)
             .mapTo<GymActivity>()
             .list()
 
     override fun removeGymActivities(uid: Int) {
-        handle.createUpdate("""
+        handle.createUpdate(
+            """
         delete from waveCoach.gym where activity in (select id from waveCoach.activity where uid = :uid)
-        """.trimIndent())
+        """.trimIndent()
+        )
             .bind("uid", uid)
             .execute()
     }
