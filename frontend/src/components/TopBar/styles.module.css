@@ -10,15 +10,15 @@
 
 .menuBars {
   position: absolute;
-  left: 16px;
+  left: 30px;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 2rem;
+  font-size: 50px;
   background: none;
   cursor: pointer;
 }
 
 .title {
-  font-size: 36px;
+  font-size: 50px;
   margin: 0;
 }

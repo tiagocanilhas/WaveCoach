@@ -13,15 +13,15 @@
   --button-disabled-hover-color: #cccccc;
 
   /* Top Bar */
-  --top-bar-color: #82d7ff;
-  --top-bar-height: 80px;
+  --top-bar-color: #8b5e3c;
+  --top-bar-height: 110px;
 
   /* Side Bar */
-  --side-bar-color: #d0ebf7;
+  --side-bar-color: #dfe0df;
   --side-bar-width: 250px;
 
   /* Background */
-  --background-color: #f3f3ec;
+  --background-color: #baa89b;
 }
 
 body {

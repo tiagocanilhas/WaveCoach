@@ -13,12 +13,13 @@
   flex-direction: column;
   justify-content: space-between;
   position: fixed;
-  top: 80px;
+  top: var(--top-bar-height);
   left: 0;
   width: var(--side-bar-width);
   height: calc(100vh - var(--top-bar-height));
   background-color: var(--side-bar-color);
   z-index: 999;
+  overflow-y: auto;
 }
 
 .sidebarShown {
