@@ -2,7 +2,13 @@ import * as React from 'react'
 import { useReducer } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 
-import { Card } from '../components/Card'
+import { TextField } from '@mui/material'
+import { Card } from '../../components/Card'
+
+import { login } from '../../services/userServices'
+import { handleError } from '../../utils/handleError'
+
+import styles from './styles.module.css'
 
 type State =
   | { tag: 'editing'; error?: string; inputs: { username: string; password: string } }
@@ -64,10 +70,10 @@ export function Login() {
     const { username, password } = state.inputs
 
     try {
-      const res = await (() => Promise.reject())()
+      await login(username, password)
       dispatch({ type: 'success' })
     } catch (error) {
-      dispatch({ type: 'error', error: 'Invalid credentials' })
+      dispatch({ type: 'error', error: handleError(error) })
       return
     }
   }
@@ -83,23 +89,25 @@ export function Login() {
   const disabled = state.tag === 'submitting' || state.inputs.username.trim() === '' || state.inputs.password.trim() === ''
 
   return (
-    <Card
-      content={
-        <>
-          <h1>Login</h1>
-          <form onSubmit={handleOnSubmit}>
-            <input name="username" type="text" placeholder="Username" value={username} onChange={handleOnChange} required />
-            <input name="password" type="password" placeholder="Password" value={password} onChange={handleOnChange} required />
-            <button type="submit" disabled={disabled}>
-              Login
-            </button>
-          </form>
-          <p>
-            Don't have an account? <Link to="/register">Register</Link>
-          </p>
-          {state.tag === 'editing' && state.error && <p style={errorMessageStyle}>{state.error}</p>}
-        </>
-      }
-    />
+    <div className={styles.container}>
+      <Card
+        content={
+          <>
+            <h1>Login</h1>
+            <form onSubmit={handleOnSubmit} className={styles.form}>
+              <TextField name="username" type="text" label="Username" value={username} onChange={handleOnChange} required />
+              <TextField name="password" type="password" label="Password" value={password} onChange={handleOnChange} required />
+              <button type="submit" disabled={disabled}>
+                Login
+              </button>
+            </form>
+            <p>
+              Don't have an account? <Link to="/register">Register</Link>
+            </p>
+            {state.tag === 'editing' && state.error && <p className={styles.errorMessage}>{state.error}</p>}
+          </>
+        }
+      />
+    </div>
   )
 }

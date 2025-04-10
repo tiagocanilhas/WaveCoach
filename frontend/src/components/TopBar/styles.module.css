@@ -1,0 +1,25 @@
+.topbar {
+  background-color: #82d7ff;
+  height: 80px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.menuBars {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 2rem;
+  background: none;
+  color: #3c2f2f;
+  cursor: pointer;
+}
+
+.title {
+  font-size: 36px;
+  color: #3c2f2f;
+  margin: 0;
+}

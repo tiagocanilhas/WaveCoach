@@ -10,10 +10,8 @@ import { Home } from './pages/Home'
 import { Athlete } from './pages/Athlete'
 import { NotFound } from './pages/NotFound'
 import { Characteristics } from './pages/Characterisitcs'
-import { NoAthleteSelectedLayout } from './pages/NoAthleteSelectedLayout'
-import { AthleteSelectedLayout } from './pages/AthleteSelectedLayout'
-
-import './styles/styles.css'
+import { NoAthleteSelectedLayout } from './layouts/NoAthleteSelectedLayout'
+import { AthleteSelectedLayout } from './layouts/AthleteSelectedLayout'
 
 const router = createBrowserRouter([
   { path: '/login', element: <Login /> },

@@ -1,0 +1,49 @@
+.backButton {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: transparent;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: black;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 10px;
+}
+
+h1 {
+  text-align: center;
+  margin: 15px;
+}
+
+.passwordContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.passwordContainer p {
+  margin: 0px;
+}
+
+.passwordContainer ul {
+  margin: 0px;
+}
+
+.passwordCriteriaValid {
+  color: green;
+}
+
+.passwordCriteriaInvalid {
+  color: grey;
+}
+
+.errorMessage {
+  color: red;
+  font-size: 14px;
+}

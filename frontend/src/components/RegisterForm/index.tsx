@@ -1,10 +1,15 @@
 import * as React from 'react'
 import { useReducer } from 'react'
-import { Navigate } from 'react-router-dom'
+import { Navigate, useNavigate } from 'react-router-dom'
 
-import { Card } from '../components/Card'
+import TextField from '@mui/material/TextField'
+import { Card } from '../Card'
+import { BackButton } from '../BackButton'
 
-import { validatePassword } from '../utils/validatePassword'
+import { validatePassword } from '../../utils/validatePassword'
+import { handleError } from '../../utils/handleError'
+
+import styles from './styles.module.css'
 
 type State =
   | { tag: 'editing'; error?: string; inputs: { username: string; password: string; confirmPassword: string } }
@@ -44,16 +49,11 @@ function reducer(state: State, action: Action): State {
   }
 }
 
-const errorMessageStyle: React.CSSProperties = {
-  color: 'red',
-  fontSize: '14px',
-}
-
 type RegisterFormProps = {
   title: string
   initialUsername: string
   buttonText: string
-  onSubmit: (username: string, password: string, confirmPassword: string) => Promise<void>
+  onSubmit: (username: string, password: string) => Promise<void>
 }
 
 export function RegisterForm({ title, initialUsername, buttonText, onSubmit }: RegisterFormProps) {
@@ -62,19 +62,25 @@ export function RegisterForm({ title, initialUsername, buttonText, onSubmit }: R
     inputs: { username: initialUsername, password: '', confirmPassword: '' },
   })
 
+  const navigate = useNavigate()
+
+  function handleBack() {
+    navigate('/register')
+  }
+
   async function handleOnSubmit(ev: React.FormEvent<HTMLFormElement>) {
     ev.preventDefault()
 
     if (state.tag !== 'editing') return
 
     dispatch({ type: 'submit' })
-    const { username, password, confirmPassword } = state.inputs
+    const { username, password } = state.inputs
 
     try {
-      await onSubmit(username, password, confirmPassword)
+      await onSubmit(username, password)
       dispatch({ type: 'success' })
     } catch (error) {
-      dispatch({ type: 'error', error: 'An error occurred while registering. Please try again.' })
+      dispatch({ type: 'error', error: handleError(error) })
       return
     }
   }
@@ -104,22 +110,25 @@ export function RegisterForm({ title, initialUsername, buttonText, onSubmit }: R
     <Card
       content={
         <>
+          <BackButton onClick={handleBack} />
           <h1>{title}</h1>
-          <form onSubmit={handleOnSubmit}>
-            <input name="username" type="text" placeholder="Username" value={username} onChange={handleOnChange} required />
-            <input name="password" type="password" placeholder="Password" value={password} onChange={handleOnChange} required />
-            <p>Password must match the following criteria:</p>
-            <ul>
-              {Object.values(passwordValidation).map((validation, idx) => (
-                <li key={idx} style={{ color: validation.valid ? 'green' : 'grey' }}>
-                  {validation.text}
-                </li>
-              ))}
-            </ul>
-            <input
+          <form onSubmit={handleOnSubmit} className={styles.form}>
+            <TextField name="username" type="text" label="Username" value={username} onChange={handleOnChange} required />
+            <div className={styles.passwordContainer}>
+              <TextField name="password" type="password" label="Password" value={password} onChange={handleOnChange} required />
+              <p>Password must match the following criteria:</p>
+              <ul>
+                {Object.values(passwordValidation).map((validation, idx) => (
+                  <li key={idx} className={validation.valid ? styles.passwordCriteriaValid : styles.passwordCriteriaInvalid}>
+                    {validation.text}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <TextField
               name="confirmPassword"
               type="password"
-              placeholder="Confirm Password"
+              label="Confirm Password"
               value={confirmPassword}
               onChange={handleOnChange}
               required
@@ -128,7 +137,7 @@ export function RegisterForm({ title, initialUsername, buttonText, onSubmit }: R
               {buttonText}
             </button>
           </form>
-          {state.tag === 'editing' && state.error && <p style={errorMessageStyle}>{state.error}</p>}
+          {state.tag === 'editing' && state.error && <p className={styles.errorMessage}>{state.error}</p>}
         </>
       }
     />

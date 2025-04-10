@@ -1,9 +1,16 @@
 import * as React from 'react'
-import { Navigate } from 'react-router-dom'
+import { Navigate, useNavigate } from 'react-router-dom'
 
-import { Card } from '../components/Card'
+import TextField from '@mui/material/TextField'
+import { BackButton } from '../../components/BackButton'
+import { Card } from '../../components/Card'
 
-type State = { tag: 'editing'; error?: string; code: string } | { tag: 'submitting'; code: string } | { tag: 'redirecting' }
+import styles from './styles.module.css'
+
+type State =
+  | { tag: 'editing'; error?: string; code: string }
+  | { tag: 'submitting'; code: string }
+  | { tag: 'redirecting'; code: string }
 
 type Action =
   | { type: 'edit'; name: string; value: string }
@@ -28,7 +35,7 @@ function reducer(state: State, action: Action): State {
         case 'error':
           return { tag: 'editing', error: action.error, code: state.code }
         case 'success':
-          return { tag: 'redirecting' }
+          return { tag: 'redirecting', code: state.code }
         default:
           return state
       }
@@ -43,13 +50,13 @@ const initialState: State = {
   code: '',
 }
 
-const errorMessageStyle: React.CSSProperties = {
-  color: 'red',
-  fontSize: '14px',
-}
-
 export function RegisterAthleteCode() {
   const [state, dispatch] = React.useReducer(reducer, initialState)
+  const navigate = useNavigate()
+
+  function handleBack() {
+    navigate('/register')
+  }
 
   async function handleOnSubmit(ev: React.FormEvent<HTMLFormElement>) {
     ev.preventDefault()
@@ -59,7 +66,7 @@ export function RegisterAthleteCode() {
     dispatch({ type: 'submit' })
 
     try {
-      const res = await (() => Promise.reject())()
+      const res = await (() => Promise.resolve())()
       dispatch({ type: 'success' })
     } catch (error) {
       dispatch({ type: 'error', error: 'Invalid code' })
@@ -71,25 +78,28 @@ export function RegisterAthleteCode() {
     dispatch({ type: 'edit', name: ev.currentTarget.name, value: ev.currentTarget.value })
   }
 
-  if (state.tag === 'redirecting') return <Navigate to="/register/athlete" />
+  if (state.tag === 'redirecting') return <Navigate to={`/register/athlete?code=${state.code}`} />
 
   const code = state.tag === 'editing' ? state.code : state.code
   const disabled = state.tag !== 'editing' || !state.code
 
   return (
-    <Card
-      content={
-        <>
-          <h1>Check Code</h1>
-          <form onSubmit={handleOnSubmit}>
-            <input name="code" type="text" placeholder="Code" value={code} onChange={handleOnChange} required />
-            <button type="submit" disabled={disabled}>
-              Check
-            </button>
-          </form>
-          {state.tag === 'editing' && state.error && <p style={errorMessageStyle}>{state.error}</p>}
-        </>
-      }
-    />
+    <div className={styles.container}>
+      <Card
+        content={
+          <>
+            <BackButton onClick={handleBack} />
+            <h1>Check Code</h1>
+            <form onSubmit={handleOnSubmit} className={styles.form}>
+              <TextField name="code" type="text" label="Code" value={code} onChange={handleOnChange} required />
+              <button type="submit" disabled={disabled}>
+                Check
+              </button>
+            </form>
+            {state.tag === 'editing' && state.error && <p className={styles.error}>{state.error}</p>}
+          </>
+        }
+      />
+    </div>
   )
 }
