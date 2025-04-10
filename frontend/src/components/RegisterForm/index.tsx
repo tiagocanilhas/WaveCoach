@@ -111,7 +111,7 @@ export function RegisterForm({ title, initialUsername, buttonText, onSubmit }: R
       content={
         <>
           <BackButton onClick={handleBack} />
-          <h1>{title}</h1>
+          <h1 className={styles.title}>{title}</h1>
           <form onSubmit={handleOnSubmit} className={styles.form}>
             <TextField name="username" type="text" label="Username" value={username} onChange={handleOnChange} required />
             <div className={styles.passwordContainer}>
@@ -133,7 +133,7 @@ export function RegisterForm({ title, initialUsername, buttonText, onSubmit }: R
               onChange={handleOnChange}
               required
             />
-            <button type="submit" disabled={disabled}>
+            <button type="submit" disabled={disabled} className={styles.btn}>
               {buttonText}
             </button>
           </form>

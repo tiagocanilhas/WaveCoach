@@ -53,11 +53,6 @@ const initialState: State = {
   inputs: { username: '', password: '' },
 }
 
-const errorMessageStyle: React.CSSProperties = {
-  color: 'red',
-  fontSize: '14px',
-}
-
 export function Login() {
   const [state, dispatch] = useReducer(reducer, initialState)
 
@@ -93,15 +88,15 @@ export function Login() {
       <Card
         content={
           <>
-            <h1>Login</h1>
+            <h1 className={styles.title}>Login</h1>
             <form onSubmit={handleOnSubmit} className={styles.form}>
               <TextField name="username" type="text" label="Username" value={username} onChange={handleOnChange} required />
               <TextField name="password" type="password" label="Password" value={password} onChange={handleOnChange} required />
-              <button type="submit" disabled={disabled}>
+              <button type="submit" disabled={disabled} className={styles.btn}>
                 Login
               </button>
             </form>
-            <p>
+            <p className={styles.text}>
               Don't have an account? <Link to="/register">Register</Link>
             </p>
             {state.tag === 'editing' && state.error && <p className={styles.errorMessage}>{state.error}</p>}

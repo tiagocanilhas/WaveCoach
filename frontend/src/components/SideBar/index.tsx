@@ -15,42 +15,47 @@ type Item = {
 type SideBarProps = {
   isOpen: boolean
   sidebarData: Item[]
+  closeSidebar?: () => void
 }
 
-export function SideBar({ isOpen, sidebarData }: SideBarProps) {
+export function SideBar({ isOpen, sidebarData, closeSidebar }: SideBarProps) {
   return (
-    <div className={`${styles.sidebar} ${isOpen ? styles.sidebarShown : styles.sidebarHidden}`}>
-      <ul className={styles.sidebarItems}>
-        {sidebarData.map((item, index) => {
-          return (
-            <li key={index} className={styles.sidebarText}>
-              <Link to={item.path}>
-                {item.icon}
-                <span>{item.title}</span>
-              </Link>
-            </li>
-          )
-        })}
-      </ul>
-      <ul className={styles.sidebarItems}>
-        <li className={styles.sidebarBottomText}>
-          <Link to="/athletes">
-            <span>Athletes</span>
-          </Link>
-        </li>
-        <li className={styles.sidebarBottomText}>
-          <Link to="/account">
-            <FaUser />
-            <span>Account</span>
-          </Link>
-        </li>
-        <li className={styles.sidebarBottomText}>
-          <Link to="/logout">
-            <RiLogoutBoxRFill />
-            <span>Logout</span>
-          </Link>
-        </li>
-      </ul>
-    </div>
+    <>
+      {isOpen && <div className={styles.overlay} onClick={closeSidebar} />}
+
+      <div className={`${styles.sidebar} ${isOpen ? styles.sidebarShown : styles.sidebarHidden}`}>
+        <ul className={styles.sidebarItems} onClick={closeSidebar}>
+          {sidebarData.map((item, index) => {
+            return (
+              <li key={index} className={styles.sidebarText}>
+                <Link to={item.path}>
+                  {item.icon}
+                  <span>{item.title}</span>
+                </Link>
+              </li>
+            )
+          })}
+        </ul>
+        <ul className={styles.sidebarItems} onClick={closeSidebar}>
+          <li className={styles.sidebarBottomText}>
+            <Link to="/">
+              <span>Athletes</span>
+            </Link>
+          </li>
+          <li className={styles.sidebarBottomText}>
+            <Link to="/account">
+              <FaUser />
+              <span>Account</span>
+            </Link>
+          </li>
+          <li className={styles.sidebarBottomText}>
+            <Link to="/logout">
+              <RiLogoutBoxRFill />
+              <span>Logout</span>
+            </Link>
+          </li>
+        </ul>
+      </div>
+    </>
   )
 }

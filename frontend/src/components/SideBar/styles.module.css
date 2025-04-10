@@ -1,71 +1,78 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 998;
+}
+
 .sidebar {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    position: fixed;
-    top: 80px;
-    left: 0;
-    width: 250px;
-    height: calc(100vh - 80px);
-    background-color: #d0ebf7;
-    z-index: 1000;
-  }
-  
-  .sidebarShown {
-    transform: translateX(0);
-    transition: transform 0.5s ease;
-  }
-  
-  .sidebarHidden {
-    transform: translateX(-100%);
-    transition: transform 0.15s ease-in;
-  }
-  
-  
-  .sidebarItems {
-    width: 100%;
-    padding: 0;
-  }
-  
-  .sidebarText,
-  .sidebarBottomText {
-    display: flex;
-    justify-content: start;
-    align-items: center;
-    padding: 8px 0px 8px 16px;
-    list-style: none;
-    height: 60px;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: fixed;
+  top: 80px;
+  left: 0;
+  width: var(--side-bar-width);
+  height: calc(100vh - var(--top-bar-height));
+  background-color: var(--side-bar-color);
+  z-index: 999;
+}
 
-  .sidebarText a,
-  .sidebarBottomText a {
-    text-decoration: none;
-    color: #3c2f2f;
-    font-size: 20px;
-    display: flex;
-    width: 95%;
-    height: 100%;
-    align-items: center;
-    padding: 0 16px;
-    border-radius: 4px;
-    gap: 10px;
-  }
-  
-  .sidebarText span,
-  .sidebarBottomText span {
-    white-space: nowrap;
-    opacity: 0;
-    transition: opacity 1s ease;
-  }
+.sidebarShown {
+  transform: translateX(0);
+  transition: transform 0.5s ease;
+}
 
-    .sidebarText a:hover,
-    .sidebarBottomText a:hover {
-        background: #b1c8d1;
-    }
-  
-  .sidebarShown .sidebarText span,
-  .sidebarShown .sidebarBottomText span {
-    opacity: 1;
-  }
-  
+.sidebarHidden {
+  transform: translateX(-100%);
+  transition: transform 0.15s ease-in;
+}
+
+.sidebarItems {
+  width: 100%;
+  padding: 0;
+}
+
+.sidebarText,
+.sidebarBottomText {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  padding: 8px 0px 8px 16px;
+  list-style: none;
+  height: 60px;
+}
+
+.sidebarText a,
+.sidebarBottomText a {
+  text-decoration: none;
+  color: #3c2f2f;
+  font-size: 20px;
+  display: flex;
+  width: 95%;
+  height: 100%;
+  align-items: center;
+  padding: 0 16px;
+  border-radius: 4px;
+  gap: 10px;
+}
+
+.sidebarText span,
+.sidebarBottomText span {
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+.sidebarText a:hover,
+.sidebarBottomText a:hover {
+  background: #b1c8d1;
+}
+
+.sidebarShown .sidebarText span,
+.sidebarShown .sidebarBottomText span {
+  opacity: 1;
+}

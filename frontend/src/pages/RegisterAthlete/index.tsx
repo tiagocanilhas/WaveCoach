@@ -2,11 +2,10 @@ import * as React from 'react'
 import { useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 
-import { Card } from '../../components/Card'
-
-import { RegisterForm } from '../../components/RegisterForm'
-import { register } from '../../services/userServices'
 import { CircularProgress } from '@mui/material'
+import { RegisterForm } from '../../components/RegisterForm'
+
+import { register } from '../../services/userServices'
 
 import styles from './styles.module.css'
 
@@ -35,7 +34,7 @@ export function RegisterAthlete() {
 
   return username === '' ? (
     <div className={styles.container}>
-      <Card content={<CircularProgress />} />
+      <CircularProgress />
     </div>
   ) : (
     <div className={styles.container}>

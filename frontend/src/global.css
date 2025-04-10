@@ -1,0 +1,41 @@
+/* globals.css */
+
+:root {
+  /* Button */
+  --button-color: #82d7ff;
+  --button-text-color: #000000;
+  --button-hover-color: #78c6eb;
+  --button-text-hover-color: #ffffff;
+  --button-active-color: #91d2f0;
+
+  --button-disabled-color: #dddddd;
+  --button-disabled-text-color: #aaaaaa;
+  --button-disabled-hover-color: #cccccc;
+
+  /* Top Bar */
+  --top-bar-color: #82d7ff;
+  --top-bar-height: 80px;
+
+  /* Side Bar */
+  --side-bar-color: #d0ebf7;
+  --side-bar-width: 250px;
+
+  /* Background */
+  --background-color: #f3f3ec;
+}
+
+body {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  color: #3c2f2f;
+  background-color: var(--background-color);
+  overflow: hidden;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}

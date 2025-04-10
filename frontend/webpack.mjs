@@ -19,11 +19,16 @@ export default {
             loader: 'css-loader',
             options: {
               modules: {
-                namedExport: false
-              }
-            }
-          }
-        ]
+                namedExport: false,
+              },
+            },
+          },
+        ],
+      },
+      {
+        test: /\.css$/,
+        exclude: /\.module\.css$/, 
+        use: ['style-loader', 'css-loader'],
       },
     ],
   },
@@ -37,8 +42,7 @@ export default {
         target: 'http://localhost:8080',
         onProxyRes: (proxyRes, req, res) => {
           proxyRes.on('close', () => {
-            if (!res.writableEnded) 
-              res.end();
+            if (!res.writableEnded) res.end();
           });
 
           res.on('close', () => {
@@ -46,6 +50,6 @@ export default {
           });
         },
       },
-    ]
-  }
+    ],
+  },
 };

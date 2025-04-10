@@ -1,10 +1,11 @@
 .topbar {
-  background-color: #82d7ff;
-  height: 80px;
+  background-color: var(--top-bar-color);
+  height: var(--top-bar-height);
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 1000;
 }
 
 .menuBars {
@@ -14,12 +15,10 @@
   transform: translateY(-50%);
   font-size: 2rem;
   background: none;
-  color: #3c2f2f;
   cursor: pointer;
 }
 
 .title {
   font-size: 36px;
-  color: #3c2f2f;
   margin: 0;
 }

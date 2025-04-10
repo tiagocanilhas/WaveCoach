@@ -13,6 +13,8 @@ import { Characteristics } from './pages/Characterisitcs'
 import { NoAthleteSelectedLayout } from './layouts/NoAthleteSelectedLayout'
 import { AthleteSelectedLayout } from './layouts/AthleteSelectedLayout'
 
+import './global.css'
+
 const router = createBrowserRouter([
   { path: '/login', element: <Login /> },
   { path: '/register', element: <RegisterSelect /> },
@@ -26,8 +28,8 @@ const router = createBrowserRouter([
     path: '/',
     element: <AthleteSelectedLayout />,
     children: [
-      { path: 'athlete/:aid', element: <Athlete /> },
-      { path: 'athlete/:aid/characteristics', element: <Characteristics /> },
+      { path: 'athletes/:aid', element: <Athlete /> },
+      { path: 'athletes/:aid/characteristics', element: <Characteristics /> },
     ],
   },
 

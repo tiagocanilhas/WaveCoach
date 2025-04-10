@@ -21,12 +21,16 @@ export function RegisterSelect() {
       <Card
         content={
           <>
-            <h1>Register</h1>
+            <h1 className={styles.title}>Register</h1>
             <div className={styles.buttons}>
-              <button onClick={handleOnClickCoach}>Coach</button>
-              <button onClick={handleOnClickAthlete}>Athlete</button>
+              <button onClick={handleOnClickCoach} className={styles.btn}>
+                Coach
+              </button>
+              <button onClick={handleOnClickAthlete} className={styles.btn}>
+                Athlete
+              </button>
             </div>
-            <p>
+            <p className={styles.text}>
               Have an account? <Link to="/login">Login</Link>
             </p>
           </>

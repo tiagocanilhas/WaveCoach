@@ -89,10 +89,10 @@ export function RegisterAthleteCode() {
         content={
           <>
             <BackButton onClick={handleBack} />
-            <h1>Check Code</h1>
+            <h1 className={styles.title}>Check Code</h1>
             <form onSubmit={handleOnSubmit} className={styles.form}>
               <TextField name="code" type="text" label="Code" value={code} onChange={handleOnChange} required />
-              <button type="submit" disabled={disabled}>
+              <button type="submit" disabled={disabled} className={styles.btn}>
                 Check
               </button>
             </form>

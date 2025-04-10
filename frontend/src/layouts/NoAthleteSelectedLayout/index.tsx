@@ -6,7 +6,7 @@ import { Outlet } from 'react-router-dom'
 export function NoAthleteSelectedLayout() {
   return (
     <>
-      <Bars title="WaveCoach"sideBarItems={[]} />
+      <Bars title="Wave Coach" sideBarItems={[]} />
       <Outlet />
     </>
   )

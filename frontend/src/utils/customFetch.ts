@@ -14,7 +14,10 @@ export async function customFetch(url: string, method: method, body?: object): P
 
   const res = await fetch(url, options)
 
-  const json = await res.json()
+  const text = await res.text()
+  if (text === '') return null
+
+  const json = JSON.parse(text)
   if (isMediaTypeProblem(res)) throw json
 
   return json

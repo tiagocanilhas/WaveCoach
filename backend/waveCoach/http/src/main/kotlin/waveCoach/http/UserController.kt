@@ -1,5 +1,7 @@
 package waveCoach.http
 
+import kotlinx.datetime.Clock
+import org.springframework.http.ResponseCookie
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -19,6 +21,15 @@ import waveCoach.utils.Success
 class UserController(
     private val userServices: UserServices,
 ) {
+    private fun token(token: String, maxAgeSeconds: Long) =
+        ResponseCookie.from("token", token)
+            .httpOnly(true)
+            .sameSite("Strict")
+            .secure(true)
+            .path("/")
+            .maxAge(maxAgeSeconds)
+            .build()
+
     @PostMapping(Uris.Users.CREATE)
     fun create(
         @RequestBody input: CreateUserInputModel
@@ -47,6 +58,7 @@ class UserController(
 
         return when (result) {
             is Success -> ResponseEntity.status(200)
+                .header("Set-Cookie", token(result.value.tokenValue, result.value.tokenExpiration.epochSeconds - Clock.System.now().epochSeconds).toString())
                 .body(LoginOutputModel(result.value.id, result.value.username, result.value.tokenValue))
 
             is Failure -> when (result.value) {

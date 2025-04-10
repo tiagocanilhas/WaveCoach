@@ -11,8 +11,8 @@ type Item = {
 }
 
 type BarsProps = {
-    title: string
-    sideBarItems: Item[]
+  title: string
+  sideBarItems: Item[]
 }
 
 export function Bars({ title, sideBarItems }: BarsProps) {
@@ -25,7 +25,7 @@ export function Bars({ title, sideBarItems }: BarsProps) {
   return (
     <>
       <TopBar title={title} isOpen={isOpen} handleShowSidebar={handleShowSidebar} />
-      <SideBar isOpen={isOpen} sidebarData={sideBarItems} />
+      <SideBar isOpen={isOpen} sidebarData={sideBarItems} closeSidebar={handleShowSidebar} />
     </>
   )
 }

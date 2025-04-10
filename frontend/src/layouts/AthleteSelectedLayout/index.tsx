@@ -14,25 +14,24 @@ export function AthleteSelectedLayout() {
         const res = 'name'
         setAthleteName(res)
       } catch (error) {
-        setAthleteName('WaveCoach')
+        setAthleteName('Wave Coach')
       }
     }
     fetchAthleteName()
   }, [])
 
   const sidebarItems = [
-    { title: 'Athlete Profile', path: `athlete/${id}` },
-    { title: 'Characteristics', path: `athlete/${id}/characteristics` },
-    { title: 'Gym Workouts', path: `athlete/${id}/gym` },
-    { title: 'Surf Workouts', path: `athlete/${id}/water` },
-    { title: 'Tournaments', path: `athlete/${id}/tournaments` },
+    { title: 'Athlete Profile', path: `athletes/${id}` },
+    { title: 'Characteristics', path: `athletes/${id}/characteristics` },
+    { title: 'Gym Workouts', path: `athletes/${id}/gym` },
+    { title: 'Surf Workouts', path: `athletes/${id}/water` },
+    { title: 'Tournaments', path: `athletes/${id}/tournaments` },
   ]
 
   return (
     <>
-      <Bars title={athleteName} sideBarItems={sidebarItems}/>
+      <Bars title={athleteName} sideBarItems={sidebarItems} />
       <Outlet />
     </>
   )
 }
-
