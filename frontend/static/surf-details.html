@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gym</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+       body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    min-height: 100vh; /* Ensure the body takes up at least the full height of the viewport */
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+}
+
+.top-bar {
+    width: 100%;
+    height: 50px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    display: flex;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+}
+
+.top-bar h1 {
+    margin: 0 auto;
+    font-size: 22px;
+}
+
+.sidebar {
+    position: fixed;
+    top: 50px;
+    left: -250px;
+    width: 250px;
+    height: calc(100% - 50px); /* Fill remaining height below top bar */
+    background-color: #007bff;
+    padding-top: 20px;
+    transition: left 0.3s ease;
+    color: white;
+    z-index: 99;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.sidebar-title {
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.sidebar a {
+    display: block;
+    padding: 15px;
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.sidebar a:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.sidebar.active {
+    left: 0;
+}
+
+.sidebar-bottom {
+    background-color: #0362df;
+    margin-top: auto;
+    padding-bottom: 20px;
+}
+
+.menu-btn {
+    position: fixed;
+    top: 13px;
+    left: 15px;
+    font-size: 22px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: white;
+    z-index: 101;
+}
+
+/* Overlay */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0);
+    visibility: hidden;
+    transition: background 0.3s ease, visibility 0s linear 0.3s;
+    z-index: 98;
+}
+
+.overlay.active {
+    background: rgba(0, 0, 0, 0.5);
+    visibility: visible;
+    transition: background 0.3s ease, visibility 0s linear 0s;
+}
+
+.content {
+    display: flex;
+    margin-top: 60px; /* Add space for fixed top bar */
+    padding: 20px;
+    gap: 20px;
+    flex-wrap: wrap; /* Allow wrapping content */
+    overflow-y: auto; /* Ensure content can scroll */
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+}
+
+.left-section {
+    width: 25%;
+    padding: 20px;
+    border-radius: 8px;
+    background: none;
+    overflow-y: auto; /* Allow left section to scroll if needed */
+}
+
+.right-section {
+    flex-grow: 1;
+    padding: 20px;
+    border-radius: 8px;
+    width: 70vh;
+    margin-right: 20px;
+}
+
+/* Chart Carousel Styles */
+.chart-carousel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background-color: #ffffff;
+    border-radius: 8px;
+    margin: 0 0 20px 0;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.chart-container {
+    display: none; /* Hide all charts by default */
+    width: 80%;
+    max-width: 600px;
+    margin: auto;
+}
+
+.chart-container.active {
+    display: block; /* Display only the active chart */
+}
+
+.nav-button {
+    background-color: #007bff;
+    color: white;
+    font-size: 20px;
+    padding: 10px;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s;
+}
+
+.nav-button:hover {
+    background-color: #0056b3;
+}
+
+.questionnaire {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.workout-details {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.pie-chart {
+    width: 200px !important;
+    height: 200px !important;
+}
+.waves-list {
+    background-color: #ffffff;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.waves-list ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.waves-list li {
+    padding: 5px 0;
+    font-size: 18px;
+}
+
+.waves-list li strong {
+    color: #007bff;
+}
+.buttons-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+.buttons-container button {
+margin-right: 10px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+/* Three dots button */
+        .dropdown {
+            position: relative;
+            font-size: 18px;
+            cursor: pointer;
+            color: #555;
+            float: right;
+            margin-right: 10px;
+        }
+
+        .dropdown-content {
+            display: none; /* Hidden by default */
+            position: absolute;
+            top: 30px;
+            right: 0;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            border-radius: 6px;
+            width: 120px;
+        }
+
+        .dropdown-content a {
+            padding: 10px;
+            text-decoration: none;
+            color: black;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+         /* Modal Styling */
+        
+         .modal {
+            display: none; 
+            position: fixed; 
+            top: 0; 
+            left: 0;
+            width: 100%; 
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5); 
+            justify-content: center; 
+            align-items: center;
+            z-index: 999; /* Highest layer */
+        }
+        .modal-content {
+             background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            z-index: 1000;
+            width: 60%; /* Responsive width */
+            max-height: 80vh; /* Ensure modal doesn't take the full height */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative; /* Needed for absolute close button */
+            padding-top: 40px; /* Space for close button */
+        }
+        /* Close Button (Top-Left) */
+        .close-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #888;
+        }
+
+        .close-button:hover {
+            color: #333;
+        }
+                /* Align labels and inputs in a row */
+        .input-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            gap: 5px; /* Space between label and input */
+        }
+
+        .waves-container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .wave {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+
+        .wave h3 {
+            margin: 0;
+            font-size: 18px;
+            color: #007bff;
+        }
+        .add-wave {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            height: 30px;
+            margin: 0 auto; /* Center the exercise box */
+        }
+
+        .add-wave-button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #ccc;
+            color: white;
+            font-size: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin: 0 auto;
+        }
+        .maneuvers-section {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.maneuvers-section h3 {
+    text-align: center;
+    color: #007bff;
+}
+
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <button class="menu-btn" id="menuBtn">☰</button>
+        <h1>John Doe</h1>
+    </div>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-title">
+            <a href="characteristics.html">Characteristics</a>
+            <a href="gym.html">Gym</a>
+            <a href="surf.html">Surf</a>
+            <a href="competition.html">Competition</a>
+        </div>
+        <div class="sidebar-bottom">
+            <a href="home.html">Athletes</a>
+            <a href="account.html">Account</a>
+            <a href="login.html">Logout</a>
+        </div>
+    </div>
+    
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+
+    <div class="content">
+        <div class="left-section">
+            <div class="workout-details">
+                <div class="dropdown">
+                    <span onclick="toggleDropdown(event)">⋮</span>
+                    <div class="dropdown-content">
+                        <a href="#" onclick="openDetailsModal()">Edit</a>
+                    </div>
+                </div>    
+
+                <h3>Workout Details</h3>
+
+                <br><h4>Internal:</h4>
+                <p><strong>PSE:</strong> 6</p>
+                <p><strong>PSE Session:</strong> 636</p>
+                <p><strong>TRIMP:</strong> 159</p>
+                
+                <br><h4>External:</h4>
+                <p><strong>Time in Water:</strong> 100min</p>
+                <p><strong>Number of Waves:</strong> 15</p>
+                <p><strong>Number of Maneuver Attempts:</strong> 13</p>
+                <p><strong>Waves per Minute:</strong> 0.33</p>
+                <p><strong>Maneuver Attempts per Wave:</strong> 0.67</p>
+            </div>
+    
+            <div class="questionnaire">
+                <div class="dropdown">
+                    <span onclick="toggleDropdown(event)">⋮</span>
+                    <div class="dropdown-content">
+                        <a href="#" onclick="openQuestionnaireModal()">Edit</a>
+                    </div>
+                </div>    
+                <h3>Wellness Questionnaire</h3>
+                <p><strong>Sleep:</strong> 5 </p>
+                <p><strong>Fatigue:</strong> 4 </p>
+                <p><strong>Muscle Pain:</strong> 4 </p>
+                <p><strong>Stress:</strong> 4  </p>
+                <p><strong>Total: 17 </strong></p>
+            </div>
+        </div>
+    
+        <div class="right-section">
+            <div class="buttons-container">
+                <button onclick="openEditModal()">Edit Wave</button>
+                <button onclick="openDeleteModal()">Delete</button>
+            </div>
+            <div class="chart-carousel">
+                <button class="nav-button prev" id="prevBtn">&lt;</button>
+                
+                <!-- First page with charts for right side -->
+                <div class="chart-container">
+                    <canvas id="rightManeuversChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <canvas id="rightAssertivityChart"></canvas>
+                </div>
+                
+                <!-- Second page with charts for left side -->
+                <div class="chart-container">
+                    <canvas id="leftManeuversChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <canvas id="leftAssertivityChart"></canvas>
+                </div>
+                
+                <button class="nav-button next" id="nextBtn">&gt;</button>
+            </div>
+            <div class="maneuvers-section">
+                <h3>Maneuvers Per Wave</h3>
+                <div class="waves-list">
+                    <ul id="maneuvers-list">
+                        <div>
+                            <h3>Wave 1:</h3>
+                            <li><strong>Rollo:</strong> 8</li>
+                            <li><strong>360:</strong> 5</li>
+                            <li><strong>360 Invert:</strong> 7</li>
+                            <li><strong>ARS:</strong> 4</li>
+                            <li><strong>Invert:</strong> 6</li>
+                            <li><strong>Backflip:</strong> 3</li>
+                        </div>
+                        <div style="margin-top: 20px;">
+                            <h3>Wave 2:</h3>
+                            <li><strong>Rollo:</strong> 4</li>
+                            <li><strong>360:</strong> 5</li>
+                            <li><strong>360 Invert:</strong> 6</li>
+                            <li><strong>ARS:</strong> 4</li>
+                            <li><strong>Invert:</strong> 6</li>
+                            <li><strong>Backflip:</strong> 3</li>
+                        </div>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="details-edit-pop-up" class="modal">
+        <div class="modal-content">
+            <button class="close-button" onclick="closeDetailsModal()">✖</button>
+            <div>
+                <h2>Edit Workout Details</h2>
+
+                <br><p>Internal:</p>
+                <div style="display: flex; flex-direction: row; align-items: center; gap: 20px; justify-content: center;">
+                    <div class="input-group">
+                        <label for="pse">PSE:</label><br>
+                        <input type="number" id="pse" name="pse" value="6"><br><br>
+                    </div>
+                    <div class="input-group">
+                        <label for="pse-session">PSE Session:</label><br>
+                        <input type="number" id="pse-session" name="pse-session" value="636"><br><br>
+                    </div>
+                    <div class="input-group">
+                        <label for="trimp">TRIMP:</label><br>
+                    <input type="number" id="trimp" name="trimp" value="159"><br><br>
+                    </div>
+                </div>
+
+                <br><p>External:</p>
+                <div style="display: flex; flex-direction: row; align-items: center; gap: 20px; justify-content: center;">
+                    <div class="input-group">
+                        <label for="time-in-water">Time in Water:</label><br>
+                        <input type="number" id="time-in-water" name="time-in-water" value="100"><br><br>
+                    </div>
+                </div>
+            </div>
+            <button class="ok-button" onclick="confirmDetails()">OK</button>
+        </div>
+    </div>
+
+    <div id="questionnaire-edit-pop-up" class="modal">
+        <div class="modal-content">
+            <button class="close-button" onclick="closeQuestionnaireModal()">✖</button>
+            <div>
+            <h2>Edit Wellness Questionnaire</h2>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; justify-items: center;">
+                    <div class="input-group">
+                        <label for="sleep">Sleep:</label><br>
+                        <input type="number" id="sleep" name="sleep" value="5"><br><br>
+                    </div>
+                    <div class="input-group">
+                        <label for="fatigue">Fatigue:</label><br>
+                        <input type="number" id="fatigue" name="fatigue" value="4"><br><br>
+                    </div>
+                    <div class="input-group">
+                        <label for="muscle-pain">Muscle Pain:</label><br>
+                        <input type="number" id="muscle-pain" name="muscle-pain" value="4"><br><br>
+                    </div>
+                    <div class="input-group">
+                        <label for="stress">Stress:</label><br>
+                        <input type="number" id="stress" name="stress" value="4"><br><br>
+                    </div>
+                </div>
+            </div>
+            <button class="ok-button" onclick="confirmQuestionnaire()">OK</button>
+        </div>
+    </div>
+
+    <div id="edit-pop-up" class="modal">
+        <div class="modal-content">
+            <button class="close-button" onclick="closeDetailsModal()">✖</button>
+            <div class="waves-container">
+                <h2>Edit Waves (Success/Fail)</h2>
+        
+                <!-- Wave 1 -->
+                <div class="wave">
+                    <h3>Wave 1</h3>
+                    <div class="input-group">
+                        <label>Rollo:</label><br>
+                        <input type="number" name="rollo-wave1-success" value="0">
+                        <input type="number" name="rollo-wave1-fail" value="0">
+                    </div>
+                    <div class="input-group">
+                        <label>360:</label><br>
+                        <input type="number" name="360-wave1-success" value="0">
+                        <input type="number" name="360-wave1-fail" value="0">
+                    </div>
+<div class="input-group">
+                        <label>360 Invert:</label><br>
+                        <input type="number" name="360-invert-wave1-success" value="0">
+                        <input type="number" name="360-invert-wave1-fail" value="0">
+                        </div>
+<div class="input-group">
+                    <label>ARS:</label><br>
+                        <input type="number" name="ars-wave1-success" value="0">
+                        <input type="number" name="ars-wave1-fail" value="0">
+                    </div>
+<div class="input-group">
+                        <label>Invert:</label><br>
+                        <input type="number" name="invert-wave1-success" value="0">
+                        <input type="number" name="invert-wave1-fail" value="0">
+                    </div>
+                </div>
+        
+                <!-- Wave 2 -->
+                <div class="wave">
+                    <h3>Wave 2</h3>
+                    <div class="input-group">
+                        <label>Rollo:</label><br>
+                        <input type="number" name="rollo-wave2-success" value="0">
+                        <input type="number" name="rollo-wave2-fail" value="0">
+                    </div>
+                    <div class="input-group">
+                        <label>360:</label><br>
+                        <input type="number" name="360-wave2-success" value="0">
+                        <input type="number" name="360-wave2-fail" value="0">
+                    </div>
+<div class="input-group">
+                        <label>360 Invert:</label><br>
+                        <input type="number" name="360-invert-wave1-success" value="0">
+                        <input type="number" name="360-invert-wave1-fail" value="0">
+                        </div>
+<div class="input-group">
+                    <label>ARS:</label><br>
+                        <input type="number" name="ars-wave1-success" value="0">
+                        <input type="number" name="ars-wave1-fail" value="0">
+                    </div>
+<div class="input-group">
+                        <label>Invert:</label><br>
+                        <input type="number" name="invert-wave1-success" value="0">
+                        <input type="number" name="invert-wave1-fail" value="0">
+                    </div>
+                </div>
+
+
+                <div class="add-wave">
+                    <button class="add-wave-button">+</button>
+                </div>
+            </div>
+            <button class="ok-button" onclick="confirmEdit()">OK</button>
+        </div>
+    </div>
+
+    <div id="delete-pop-up" class="modal">
+        <div class="modal-content">
+            <button class="close-button" onclick="closeDetailsModal()">✖</button>
+            <p>Are you sure you want to delete this?</p>
+            <button class="ok-button" onclick="confirmDelete()">Yes</button>
+        </div>
+</div>
+    
+
+    <script>
+        /* Sidebar and Menu Button */
+        const menuBtn = document.getElementById('menuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+
+        menuBtn.addEventListener('click', function () {
+            const isOpen = sidebar.classList.contains('active');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+            menuBtn.innerHTML = isOpen ? '☰' : '✖';
+        });
+
+        overlay.addEventListener('click', function () {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+            menuBtn.innerHTML = '☰';
+        });
+
+                /* Carousel and Chart Setup */
+                document.addEventListener("DOMContentLoaded", function () {
+            // Get all chart containers and buttons
+            const charts = document.querySelectorAll('.chart-container');
+            let currentChartIndex = 0;
+
+            // Show the first chart by default
+            charts[currentChartIndex].classList.add('active');
+
+            // Next button functionality
+            document.getElementById('nextBtn').addEventListener('click', function () {
+                charts[currentChartIndex].classList.remove('active'); // Hide current chart
+                currentChartIndex = (currentChartIndex + 1) % charts.length; // Move to next chart
+                charts[currentChartIndex].classList.add('active'); // Show next chart
+            });
+
+            // Previous button functionality
+            document.getElementById('prevBtn').addEventListener('click', function () {
+                charts[currentChartIndex].classList.remove('active'); // Hide current chart
+                currentChartIndex = (currentChartIndex - 1 + charts.length) % charts.length; // Move to previous chart
+                charts[currentChartIndex].classList.add('active'); // Show previous chart
+            });
+
+            // Chart.js for right side (Maneuvers and Assertivity)
+            new Chart(document.getElementById('rightManeuversChart').getContext('2d'), {
+                type: 'pie',
+                data: {
+                    labels: ['Rollo', '360', '360 Invert', 'ARS', 'Invert', 'Backflip'],
+                    datasets: [{
+                        label: 'Maneuvers Done',
+                        data: [8, 5, 7, 4, 6, 3],
+                        backgroundColor: ['green', 'blue', 'yellow', 'red', 'orange', 'purple']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top' },
+                        title: { display: true, text: 'Right Side Maneuvers Done' }
+                    }
+                }
+            });
+
+            new Chart(document.getElementById('rightAssertivityChart').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: ['Rollo', '360', '360 Invert', 'ARS', 'Invert', 'Backflip'],
+                    datasets: [{
+                        label: 'Assertivity (%)',
+                        data: [70, 50, 60, 40, 65, 45], // Assertiveness values
+                        backgroundColor: 'rgba(0, 123, 255, 0.6)',
+                        borderColor: 'rgba(0, 123, 255, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top' },
+                        title: { display: true, text: 'Right Side Assertivity' }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, max: 100 }
+                    }
+                }
+            });
+
+            // Chart.js for left side (Maneuvers and Assertivity)
+            new Chart(document.getElementById('leftManeuversChart').getContext('2d'), {
+                type: 'pie',
+                data: {
+                    labels: ['Rollo', '360', '360 Invert', 'ARS', 'Invert', 'Backflip'],
+                    datasets: [{
+                        label: 'Maneuvers Done',
+                        data: [6, 4, 5, 3, 4, 2],
+                        backgroundColor: ['green', 'blue', 'yellow', 'red', 'orange', 'purple']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top' },
+                        title: { display: true, text: 'Left Side Maneuvers Done' }
+                    }
+                }
+            });
+
+            new Chart(document.getElementById('leftAssertivityChart').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: ['Rollo', '360', '360 Invert', 'ARS', 'Invert', 'Backflip'],
+                    datasets: [{
+                        label: 'Assertivity (%)',
+                        data: [80, 60, 75, 50, 70, 65], // Assertiveness values for left side
+                        backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top' },
+                        title: { display: true, text: 'Left Side Assertivity' }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, max: 100 }
+                    }
+                }
+            })
+        });
+
+        function toggleDropdown(event) {
+            // Prevent the click from propagating to the parent elements
+            event.stopPropagation();
+
+            // Get the closest dropdown content element 
+            const dropdownContent = event.target.closest('.dropdown').querySelector('.dropdown-content');
+
+            // Close all dropdowns
+            document.querySelectorAll('.dropdown-content').forEach(function(dropdown) {
+                if (dropdown !== dropdownContent) {
+                    dropdown.style.display = 'none';
+                }
+            });
+
+            // Toggle the clicked dropdown
+            dropdownContent.style.display = (dropdownContent.style.display === 'block') ? 'none' : 'block';
+        }
+
+        // Close dropdown if clicked outside
+        document.addEventListener('click', function() {
+            document.querySelectorAll('.dropdown-content').forEach(function(dropdown) {
+                dropdown.style.display = 'none';
+            });
+        });
+
+
+        const details = document.getElementById("details-edit-pop-up");
+        function openDetailsModal() {details.style.display = "flex";}
+        function closeDetailsModal() { details.style.display = "none"; }
+        function confirmDetails() { closeDetailsModal(); }
+
+        const questionnaire = document.getElementById("questionnaire-edit-pop-up");
+        function openQuestionnaireModal() { questionnaire.style.display = "flex";}
+        function closeQuestionnaireModal() { questionnaire.style.display = "none"; }
+        function confirmQuestionnaire() { closeQuestionnaireModal(); }
+
+        const edit = document.getElementById("edit-pop-up");
+        function openEditModal() { edit.style.display = "flex";}
+        function closeEditModal() { edit.style.display = "none"; }
+        function confirmEdit() { closeEditModal(); }
+
+        const deleteModal = document.getElementById("delete-pop-up");
+        function openDeleteModal() { deleteModal.style.display = "flex";}
+        function closeDeleteModal() { deleteModal.style.display = "none"; }
+        function confirmDelete() { closeDeleteModal(); }
+    </script>
+</body>
+</html>

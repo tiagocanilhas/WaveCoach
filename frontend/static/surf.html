@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gym</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            overflow: hidden;
+        }
+        .top-bar {
+            width: 100%;
+            height: 50px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            display: flex;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
+        }
+        .top-bar h1 {
+            margin: 0 auto;
+            font-size: 22px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 50px; /* Below top bar */
+            left: -250px;
+            width: 250px;
+            height: calc(100% - 50px);
+            background-color: #007bff;
+            padding-top: 20px;
+            transition: left 0.3s ease;
+            color: white;
+            z-index: 99;
+        }
+        .sidebar a {
+            display: block;
+            padding: 15px;
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .sidebar a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        .sidebar.active {
+            left: 0;
+        }
+        .sidebar {
+            position: fixed;
+            top: 50px; /* Below top bar */
+            left: -250px;
+            width: 250px;
+            height: calc(100% - 50px);
+            background-color: #007bff;
+            padding-top: 20px;
+            transition: left 0.3s ease;
+            color: white;
+            z-index: 99;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Pushes bottom items down */
+        }
+        .sidebar-title {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .sidebar a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        .sidebar-bottom {
+            background-color: #0362df;
+            margin-top: auto; /* Pushes items to the bottom */
+            padding-bottom: 20px;
+        }
+
+        /* Menu Button */
+        .menu-btn {
+            position: fixed;
+            top: 13px;
+            left: 15px;
+            font-size: 22px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: white;
+            z-index: 101;
+        }
+
+        .content {
+            display: flex;
+            margin-top: 60px;
+            padding: 20px;
+            gap: 20px;
+        }
+        .left-section {
+            width: 25%;
+            height: 75vh;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .right-section {
+            flex-grow: 1;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+         /* Scrollable User Container */
+
+         .workout-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .workout-controls label {
+            font-weight: bold;
+        }
+
+        .workout-controls select {
+            padding: 5px;
+            font-size: 14px;
+        }
+
+        .workouts-container {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+            width: 100%;
+            max-width: 1200px;
+            height: 70vh; /* Set a fixed height for the workout container */
+            padding: 20px;
+            overflow-y: auto; /* Make the athlete list scrollable */
+        }
+
+        .workout-box {
+            position: relative;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100px;
+            height: 100px;
+        }
+
+        .last-workout {
+            display: flex;
+            flex-direction: column;
+            gap: 15px; /* Reduce gap for better spacing */
+            max-height: calc(75vh - 60px); /* Adjust to fit the container */
+            overflow-y: auto; /* Enable scrolling */
+            padding-right: 10px; /* Avoid cutting off scrollbar */
+        }
+
+        
+
+        .exercise-photo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+
+        .exercise-box {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .exercise-box p {
+            font-size: 26px;
+            margin: 0;
+        }
+
+        .workout-name {
+            font-size: 16px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+         /* Overlay */
+         .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0);
+            visibility: hidden;
+            transition: background 0.3s ease, visibility 0s linear 0.3s;
+            z-index: 98;
+        }
+
+        .overlay.active {
+            background: rgba(0, 0, 0, 0.5);
+            visibility: visible;
+            transition: background 0.3s ease, visibility 0s linear 0s;
+        }
+
+
+       
+
+        /* Close Button (Top-Left) */
+        .close-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #888;
+        }
+
+        .close-button:hover {
+            color: #333;
+        }
+        .modal-grid {
+            display: flex;
+            width: 100%;
+            gap: 20px;
+            justify-content: space-between;
+        }
+         /* Modal Styling */
+        
+         .modal {
+            display: none; 
+            position: fixed; 
+            top: 0; 
+            left: 0;
+            width: 100%; 
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5); 
+            justify-content: center; 
+            align-items: center;
+            z-index: 999; /* Highest layer */
+        }
+        .modal-content {
+             background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            z-index: 1000;
+            width: 60%; /* Responsive width */
+            max-height: 80vh; /* Ensure modal doesn't take the full height */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative; /* Needed for absolute close button */
+            padding-top: 40px; /* Space for close button */
+        }
+        .modal-column {
+            display: flex;
+            flex-direction: column;
+            width: 70%;
+        }
+        .modal-column label {
+            font-size: 14px; /* Make labels slightly smaller */
+            font-weight: bold;
+            margin-right: 10px;
+            width: 120px; /* Set a fixed width for labels */
+            text-align: right;
+        }
+
+        .modal-column input {
+            flex-grow: 1;
+            width: auto;
+            padding: 5px;
+            font-size: 14px;
+        }
+
+        /* Align labels and inputs in a row */
+        .input-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end; /* Pushes the button to the right */
+            margin-top: 10px;
+        }
+        .modal-buttons button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .modal-buttons button:hover {
+            background-color: #0056b3;
+        }
+        .modal-body {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px; /* Add space above */
+            flex-grow: 1;
+            overflow-y: auto; /* Enable scrolling if content exceeds */
+            padding-right: 10px; /* To avoid cutting off scrollbar */
+        }
+        .sidebar, .top-bar { z-index: 100; }
+
+        .add-button {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #ccc;
+            color: white;
+            font-size: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin: 0 auto;
+        }
+        .sidebar, .top-bar { z-index: 100; }
+
+        .add-exercise-to-workout-button {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #ccc;
+            color: white;
+            font-size: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin: 0 auto;
+        }
+
+        .new-exercise-add-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 150px;
+            height: 150px;
+            margin: 0 auto; /* Center the exercise box */
+        }
+
+        .add-new-exercise-button {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #ccc;
+            color: white;
+            font-size: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin: 0 auto;
+        }
+        
+        .exercise-add-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 600px;
+            height: 150px;
+            margin: 0 auto; /* Center the exercise box */
+        }
+        .exercise-left {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 40%;
+        }
+
+        .exercise-photo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .exercise-left p {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .exercise-right {
+            text-align: left;
+            width: 55%;
+        }
+
+        .exercise-right ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .exercise-right li {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+       /* Make the content of the add new exercise modal scrollable */
+        #addExerciseToWorkoutModal .modal-content {
+            max-height: 80vh;  /* Set a maximum height to avoid the modal being too tall */
+            overflow-y: auto;  /* Enable scrolling if content exceeds the height */
+        }
+
+        /* Adjusting the exercise groups to be displayed in a grid layout */
+        .exercise-group {
+            display: grid;  /* Use grid layout */
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));  /* Create flexible grid columns */
+            gap: 15px;  /* Add space between the grid items */
+            align-items: center;  /* Vertically align items */
+            margin-bottom: 20px;  /* Add some space below each group */
+        }
+
+        /* Optional: Adjusting the layout of exercise items in each group */
+        .exercise-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        /* Ensure the exercise items (images and text) are aligned correctly */
+        .exercise-item img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 10px;  /* Add space below the image */
+        }
+
+        .exercise-item p {
+            font-size: 16px;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        /* Sets Grid */
+        .sets-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* Ensure 4 equal columns for set, rep, weight, and rest */
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .grid-header {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* Match the number of columns */
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .set-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* Ensure each row has 4 columns */
+            gap: 10px;
+            width: 100%; /* Ensure the set row takes up full width */
+        }
+
+        .set-input {
+            width: 80%; /* Ensure inputs take up the full width of their respective columns */
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .add-set {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 700px;
+            height: 30px;
+            margin: 0 auto; /* Center the exercise box */
+        }
+
+        .add-set-button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #ccc;
+            color: white;
+            font-size: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin: 0 auto;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <button class="menu-btn" id="menuBtn">☰</button>
+        <h1>John Doe</h1>
+    </div>
+
+    <!-- Sidebar Menu -->
+    <div class="sidebar" id="sidebar">
+        <!-- Top Options -->
+        <div class="sidebar-title">
+            <a href="characteristics.html">Characteristics</a>
+            <a href="gym.html">Gym</a>
+            <a href="surf.html">Surf</a>
+            <a href="competition.html">Competition</a>
+        </div>
+
+        <!-- Bottom Options -->
+        <div class="sidebar-bottom">
+            <a href="home.html">Athletes</a>
+            <a href="account.html">Account</a>
+            <a href="login.html">Logout</a>
+        </div>
+    </div>
+    
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+
+    <div class="content">
+        <div class="left-section">
+            <h2>Last Workout</h2>
+            <div class="last-workout">
+                <img class="exercise-photo" src="surf.png" alt="Exercise photo">
+                <div class="exercise-box">
+                    <div>
+                        <p>Wave 1:</p>
+                        <ul>
+                            <li>Roll: 10 Attempts 7 Success</li>
+                            <li>360: 5 Attempts 3 Success</li>
+                            <li>360í: 5 Attempts 3 Success</li>
+                            <li>Backflip: 2 Attempts 1 Success</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="exercise-box">
+                    <div>
+                        <p>Wave 2:</p>
+                        <ul>
+                            <li>Roll: 10 Attempts 7 Success</li>
+                            <li>360: 5 Attempts 3 Success</li>
+                            <li>Backflip: 2 Attempts 1 Success</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="exercise-box">
+                    <div>
+                        <p>Wave3:</p>
+                        <ul>
+                            <li>Roll: 7 Attempts 5 Success</li>
+                            <li>360: 2 Attempts 3 Success</li>
+                            <li>360í: 5 Attempts 3 Success</li>
+                            <li>Backflip: 2 Attempts 1 Success</li>
+                        </ul>
+                    </div>
+                </div>
+            </div> 
+        </div>
+
+        <div class="right-section">
+            <div class="workout-controls">
+                <label for="select1">Select Cycle:</label>
+                <select id="select1" onchange="updateSelect2()">
+                    <option value="-">-</option>
+                    <option value="mesocycle">Mesocycle</option>
+                    <option value="microcycle">Microcycle</option>
+                </select>
+            
+                <label for="select2">Select:</label>
+                <select id="select2">
+                </select>
+            </div>
+
+            <div class="workouts-container">
+                    <div class="workout-box">
+                        <div class="add-button">+</div>
+                    </div>     
+
+                    <div class="workout-box" onclick="window.location.href='workout-details.html';">
+                        <div class="workout-name">Workout 21</div>
+                        <p>21/01/1970</p>
+                    </div>
+
+                    <div class="workout-box">           
+                        <div class="workout-name">Workout 20</div>
+                        <p>20/01/1970</p>
+                    </div>
+
+                    <div class="workout-box">           
+                        <div class="workout-name">Workout 19</div>
+                        <p>19/01/1970</p>
+                    </div>
+
+                    <div class="workout-box">           
+                        <div class="workout-name">Workout 18</div>
+                        <p>18/01/1970</p>
+                    </div>
+
+                    <div class="workout-box">           
+                        <div class="workout-name">Workout 17</div>
+                        <p>17/01/1970</p>
+                    </div>
+
+                    <div class="workout-box">           
+                        <div class="workout-name">Workout 16</div>
+                        <p>16/01/1970</p>
+                    </div>
+
+                    <div class="workout-box">           
+                        <div class="workout-name">Workout 15</div>
+                        <p>15/01/1970</p>
+                    </div>
+
+                    <div class="workout-box">           
+                        <div class="workout-name">Workout 14</div>
+                        <p>14/01/1970</p>
+                    </div>
+
+                    <div class="workout-box">           
+                        <div class="workout-name">Workout 13</div>
+                        <p>13/01/1970</p>
+                    </div>
+
+                    <div class="workout-box">           
+                        <div class="workout-name">Workout 12</div>
+                        <p>12/01/1970</p>
+                    </div>
+
+                    <div class="workout-box">           
+                        <div class="workout-name">Workout 11</div>
+                        <p>11/01/1970</p>
+                    </div>
+
+                    <div class="workout-box">           
+                        <div class="workout-name">Workout 10</div>
+                        <p>10/01/1970</p>
+                    </div>
+
+                    <div class="workout-box">           
+                        <div class="workout-name">Workout 9</div>
+                        <p>09/01/1970</p>
+                    </div>
+
+                    <div class="workout-box">           
+                        <div class="workout-name">Workout 8</div>
+                        <p>08/01/1970</p>
+                    </div>
+
+                    <div class="workout-box">           
+                        <div class="workout-name">Workout 7</div>
+                        <p>07/01/1970</p>
+                    </div>
+
+                    <div class="workout-box">           
+                        <div class="workout-name">Workout 6</div>
+                        <p>06/01/1970</p>
+                    </div>
+
+                    <div class="workout-box">           
+                        <div class="workout-name">Workout 5</div>
+                        <p>05/01/1970</p>
+                    </div>
+
+                    <div class="workout-box">           
+                        <div class="workout-name">Workout 4</div>
+                        <p>04/01/1970</p>
+                    </div>
+
+                    <div class="workout-box">           
+                        <div class="workout-name">Workout 3</div>
+                        <p>03/01/1970</p>
+                    </div>
+
+                    <div class="workout-box">           
+                        <div class="workout-name">Workout 2</div>
+                        <p>02/01/1970</p>
+                    </div>
+
+                    <div class="workout-box">           
+                        <div class="workout-name">Workout 1</div>
+                        <p>01/01/1970</p>
+                    </div>
+            </div>
+        </div>
+
+        <div id="addModal" class="modal">
+            <div class="modal-content">
+                <button class="close-button" onclick="closeAddModal()">✖</button>
+                
+                <input type="date" id="date" placeholder="Date" required>
+        
+                <div class="modal-body">
+                    <div class="exercise-add-box">
+                        <div class="exercise-left">
+                            <img class="exercise-photo" src="surf.png" alt="Exercise photo">
+                            <p>DeadLift</p>
+                        </div>
+                        <div class="exercise-right">
+                            <ul>
+                                <li>Set 1: 10 x 50kg 2'</li>
+                                <li>Set 2: 10 x 55kg 2'</li>
+                                <li>Set 3: 10 x 60kg 2'</li>
+                            </ul>
+                        </div>
+                    </div>   
+
+                    <div class="exercise-add-box">
+                        <div class="exercise-left">
+                            <img class="exercise-photo" src="surf.png" alt="Exercise photo">
+                            <p>Bench Press</p>
+                        </div>
+                        <div class="exercise-right">
+                            <ul>
+                                <li>Set 1: 10 x 40kg 2'</li>
+                                <li>Set 2: 10 x 45kg 2'</li>
+                            </ul>
+                        </div>
+                    </div>  
+        
+                    <div class="exercise-add-box">
+                        <div class="add-exercise-to-workout-button">+</div>
+                    </div>  
+                </div>
+                    
+                <div class="modal-buttons">
+                    <button onclick="closeAddModal()">OK</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="addExerciseToWorkoutModal" class="modal">
+            <div class="modal-content">
+                <button class="close-button" onclick="closeAddExerciseToWorkoutModal()">✖</button>              
+        
+                <input type="text" id="exerciseName" placeholder="Exercise Name" required>
+        
+                <h3>Chest</h3>
+                <div class="exercise-group">
+                    <div class="new-exercise-add-box">
+                        <div class="add-new-exercise-button">+</div>
+                    </div>
+                    <div class="exercise-item">
+                        <img class="exercise-photo" src="surf.png" alt="Bench Press" onclick="showAddExerciseModal()">
+                        <p>Bench Press</p>
+                    </div>
+                    <div class="exercise-item">
+                        <img class="exercise-photo" src="surf.png" alt="Chest Fly" onclick="showAddExerciseModal()">
+                        <p>Chest Fly</p>
+                    </div>
+                </div>  
+        
+                <h3>Leg</h3>
+                <div class="exercise-group">
+                    <div class="new-exercise-add-box">
+                        <div class="add-new-exercise-button">+</div>
+                    </div>
+                    <div class="exercise-item">
+                        <img class="exercise-photo" src="surf.png" alt="Deadlift" onclick="showAddExerciseModal()">
+                        <p>Deadlift</p>
+                    </div>
+                    <div class="exercise-item">
+                        <img class="exercise-photo" src="surf.png" alt="Squat" onclick="showAddExerciseModal()">
+                        <p>Squat</p>
+                    </div>
+                    <div class="exercise-item">
+                        <img class="exercise-photo" src="surf.png" alt="Lunges" onclick="showAddExerciseModal()">
+                        <p>Lunges</p>
+                    </div>
+                </div>  
+
+                <h3>Back</h3>
+                <div class="exercise-group">
+                    <div class="new-exercise-add-box">
+                        <div class="add-new-exercise-button">+</div>
+                    </div>
+                    <div class="exercise-item">
+                        <img class="exercise-photo" src="surf.png" alt="Pull-Up" onclick="showAddExerciseModal()">
+                        <p>Pull-Up</p>
+                    </div>
+                </div>  
+        
+                <h3>Shoulder</h3>
+                <div class="exercise-group">
+                    <div class="new-exercise-add-box">
+                        <div class="add-new-exercise-button">+</div>
+                    </div>
+                    <div class="exercise-item">
+                        <img class="exercise-photo" src="surf.png" alt="Shoulder Press" onclick="showAddExerciseModal()">
+                        <p>Shoulder Press</p>
+                    </div>
+                    <div class="exercise-item">
+                        <img class="exercise-photo" src="surf.png" alt="Lateral Raises" onclick="showAddExerciseModal()">
+                        <p>Lateral Raises</p>
+                    </div>
+                </div>  
+        
+                <h3>Bicep</h3>
+                <div class="exercise-group">
+                    <div class="new-exercise-add-box">
+                        <div class="add-new-exercise-button">+</div>
+                    </div>
+                    <div class="exercise-item">
+                        <img class="exercise-photo" src="surf.png" alt="Bicep Curl" onclick="showAddExerciseModal()">
+                        <p>Bicep Curl</p>
+                    </div>
+                    <div class="exercise-item">
+                        <img class="exercise-photo" src="surf.png" alt="Hammer Curl" onclick="showAddExerciseModal()">
+                        <p>Hammer Curl</p>
+                    </div>
+                </div>  
+
+                <h3>Tricep</h3>
+                <div class="exercise-group">
+                    <div class="new-exercise-add-box">
+                        <div class="add-new-exercise-button">+</div>
+                    </div>
+                    <div class="exercise-item">
+                        <img class="exercise-photo" src="surf.png" alt="Tricep Dips" onclick="showAddExerciseModal()">
+                        <p>Tricep Dips</p>
+                    </div>
+                    <div class="exercise-item">
+                        <img class="exercise-photo" src="surf.png" alt="Tricep Extension" onclick="showAddExerciseModal()">
+                        <p>Tricep Extension</p>
+                    </div>
+                </div>  
+            </div>
+        </div>
+        
+        
+        <div id="addNewExerciseModal" class="modal">
+            <div class="modal-content">
+                <button class="close-button" onclick="closeAddNewExerciseModal()">✖</button>
+                <img class="exercise-photo" src="surf.png" alt="Exercise photo">
+                <label for="exerciseName">Name:</label>
+                <input type="text" id="exerciseName" placeholder="Exercise Name" required>
+                <label for="exerciseType">Type:</label>
+                <select id="exerciseType">
+                    <option value="chest">Chest</option>
+                    <option value="leg">Leg</option>
+                    <option value="back">Back</option>
+                    <option value="shoulder">Shoulder</option>
+                    <option value="bicep">Bicep</option>
+                    <option value="tricep">Tricep</option>
+                </select>
+                <button class="ok-button" onclick="confirmNewExercise()">OK</button>
+            </div>
+        </div>
+        
+        <div id="addExerciseModal" class="modal">
+            <div class="modal-content">
+                <button class="close-button" onclick="closeAddExerciseModal()">✖</button>
+                
+                <img class="exercise-photo" src="surf.png" alt="Exercise photo">
+                
+                <div class="sets-grid">
+                    <span>Set</span>
+                    <span>Rep</span>
+                    <span>Weight</span>
+                    <span>Rest</span>
+                    <p>1</p>
+                    <input type="number" class="set-input" placeholder="Rep">
+                    <input type="number" class="set-input" placeholder="Weight">
+                    <input type="number" class="set-input" placeholder="Rest (s)">
+                    <p>2</p>
+                    <input type="number" class="set-input" placeholder="Rep">
+                    <input type="number" class="set-input" placeholder="Weight">
+                    <input type="number" class="set-input" placeholder="Rest (s)">
+                </div>
+        
+                <div class="add-set">
+                    <button class="add-set-button">+</button>
+                </div>
+        
+                <button class="ok-button" onclick="confirmAddExercise()">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* Sidebar and Menu Button */
+        const menuBtn = document.getElementById('menuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+
+        menuBtn.addEventListener('click', function () {
+            const isOpen = sidebar.classList.contains('active');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+            menuBtn.innerHTML = isOpen ? '☰' : '✖';
+        });
+
+        overlay.addEventListener('click', function () {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+            menuBtn.innerHTML = '☰';
+        });
+
+        /* Dropdown for Cycle Type and Selection */
+        function updateSelect2() {
+            const select1 = document.getElementById("select1").value;
+            const select2 = document.getElementById("select2");
+            
+            const allOptions = {
+                mesocycle: ["mesocycle 1", "mesocycle 2"],
+                microcycle: ["microcycle 1", "microcycle 2", "microcycle 3", "microcycle 4"]
+            };
+            
+            let allowedOptions = [];
+            
+            if (select1 === "-") {
+                allowedOptions = [];
+            } else if (select1 in allOptions) {
+                allowedOptions = allOptions[select1];
+            }
+            
+            select2.innerHTML = "";
+            allowedOptions.forEach(opt => {
+                const optionElement = document.createElement("option");
+                optionElement.value = opt;
+                optionElement.textContent = opt;
+                select2.appendChild(optionElement);
+            });
+        }
+
+        document.querySelector(".add-set-button").addEventListener("click", function() {
+        const setsGrid = document.querySelector(".sets-grid");
+
+        // Get the number of existing sets to update the set number (starts from 1)
+        const setCount = setsGrid.querySelectorAll("p").length + 1;
+
+        // Create the new elements to insert at the bottom
+        const setNumber = document.createElement("p");
+        setNumber.textContent = setCount;
+
+        const repInput = document.createElement("input");
+        repInput.type = "number";
+        repInput.classList.add("set-input");
+        repInput.placeholder = "Rep";
+
+        const weightInput = document.createElement("input");
+        weightInput.type = "number";
+        weightInput.classList.add("set-input");
+        weightInput.placeholder = "Weight";
+
+        const restInput = document.createElement("input");
+        restInput.type = "number";
+        restInput.classList.add("set-input");
+        restInput.placeholder = "Rest (s)";
+
+        // Append the new elements to the setsGrid
+        setsGrid.appendChild(setNumber);
+        setsGrid.appendChild(repInput);
+        setsGrid.appendChild(weightInput);
+        setsGrid.appendChild(restInput);
+    });
+
+
+        /* Popup Modal */
+
+        const addModal = document.getElementById("addModal");
+        document.querySelector(".add-button").onclick = () => addModal.style.display = "flex";
+        function closeAddModal() { addModal.style.display = "none"; }
+        function confirmWorkout() { closeAddModal(); }
+
+        const addExerciseToWorkoutModal = document.getElementById("addExerciseToWorkoutModal");
+        document.querySelector(".add-exercise-to-workout-button").onclick = () => addExerciseToWorkoutModal.style.display = "flex";
+        function closeAddExerciseToWorkoutModal() { addExerciseToWorkoutModal.style.display = "none"; }
+
+        const addNewExerciseModal = document.getElementById("addNewExerciseModal");
+        document.querySelector(".add-new-exercise-button").onclick = () => addNewExerciseModal.style.display = "flex";
+        function closeAddNewExerciseModal() { addNewExerciseModal.style.display = "none"; }
+        function confirmNewExercise() { closeAddNewExerciseModal(); }
+
+        const addExerciseModal = document.getElementById("addExerciseModal");
+        function showAddExerciseModal() { addExerciseModal.style.display = "flex"; }
+        function closeAddExerciseModal() { addExerciseModal.style.display = "none"; }
+        function confirmAddExercise() { closeAddExerciseModal(); }
+    </script>
+</body>
+</html>

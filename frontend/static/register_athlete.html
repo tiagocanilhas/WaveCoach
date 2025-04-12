@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Login</title>
+    <title>Athlete Register</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -22,35 +22,48 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             width: 280px;
             text-align: center;
+            position: relative;
         }
-        input {
-            width: 90%;
+        .code-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+        .code-input {
+            width: 80%;
             padding: 10px;
-            margin: 10px 0;
             border: 1px solid #ccc;
             border-radius: 6px;
         }
-        button {
+        .code-button {
             background-color: #007bff;
             color: white;
             border: none;
             padding: 10px;
             cursor: pointer;
-            width: 100%;
-            border-radius: 12px;
+            border-radius: 6px;
+            margin-left: 10px;
         }
-        a {
-            display: none;
+        .back-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 20px;
+            text-decoration: none;
+            color: #000000;
         }
     </style>
 </head>
 <body>
-    <div class="container" id="login">
-        <h2>Login</h2>
+    <div class="container">
+        <a href="register_choose.html" class="back-button">←</a>
+        <h2>Athlete Register</h2>
         <form>
-            <input type="text" placeholder="Username" required>
-            <input type="password" placeholder="Password" required>
-            <button type="submit">Login</button>
+            <div class="code-container">
+                <input type="text" class="code-input" placeholder="Enter Code" required>
+                <a href="register_athlete_after_code.html"><button type="button" class="code-button">→</button></a>
+            </div>
         </form>
     </div>
 </body>

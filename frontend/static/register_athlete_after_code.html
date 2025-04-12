@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Athlete Register</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            overflow: hidden;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 280px;
+            text-align: center;
+            position: relative;
+        }
+        input {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+        .password-requirements {
+            text-align: left;
+            font-size: 12px;
+            color: #5a5a5a;
+            margin-top: 5px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            width: 100%;
+            border-radius: 12px;
+        }
+        .back-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 20px;
+            text-decoration: none;
+            color: #000000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="register_choose.html" class="back-button">←</a>
+        <h2>Coach Register</h2>
+        <form>
+            <input type="text" placeholder="Username" value="Athlete_23718237891983" required>
+            <input type="password" placeholder="Password" required>
+            <div class="password-requirements">
+                <ul>
+                    <li>At least 6 characters</li>
+                    <li>At least 1 uppercase letter</li>
+                    <li>At least 1 lowercase letter</li>
+                    <li>At least 1 number</li>
+                    <li>At least 1 special character</li>
+                </ul>
+            </div>
+            <input type="password" placeholder="Confirm Password" required>
+            <button type="submit">Change Credentials</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account</title>
+    <style>
+       body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            overflow: hidden; /* Prevent full page scrolling */
+        }
+
+        /* Top Bar */
+        .top-bar {
+            width: 100%;
+            height: 50px; /* Reduced height */
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            display: flex;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
+        }
+
+        .top-bar h1 {
+            margin: 0 auto;
+            font-size: 22px;
+        }
+
+        /* Overlay */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0);
+            visibility: hidden;
+            transition: background 0.3s ease, visibility 0s linear 0.3s;
+            z-index: 98;
+        }
+
+        .overlay.active {
+            background: rgba(0, 0, 0, 0.5);
+            visibility: visible;
+            transition: background 0.3s ease, visibility 0s linear 0s;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 50px; /* Below top bar */
+            left: -250px;
+            width: 250px;
+            height: calc(100% - 50px);
+            background-color: #007bff;
+            padding-top: 20px;
+            transition: left 0.3s ease;
+            color: white;
+            z-index: 99;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 15px;
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .sidebar a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 50px; /* Below top bar */
+            left: -250px;
+            width: 250px;
+            height: calc(100% - 50px);
+            background-color: #007bff;
+            padding-top: 20px;
+            transition: left 0.3s ease;
+            color: white;
+            z-index: 99;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Pushes bottom items down */
+        }
+
+        /* Sidebar Title */
+        .sidebar-title {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .sidebar a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Bottom Options */
+        .sidebar-bottom {
+            background-color: #0362df;
+            margin-top: auto; /* Pushes items to the bottom */
+            padding-bottom: 20px;
+        }
+
+        /* Menu Button */
+        .menu-btn {
+            position: fixed;
+            top: 13px;
+            left: 15px;
+            font-size: 22px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: white;
+            z-index: 101;
+        }
+
+        /* Content Wrapper */
+        .content {
+            margin-top: 90px;
+            display: flex;
+            height: 80vh; /* Adjusted height */
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <button class="menu-btn" id="menuBtn">☰</button>
+        <h1>Wave Coach</h1>
+    </div>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Sidebar Menu -->
+    <div class="sidebar" id="sidebar">
+        <!-- Sidebar Title -->
+        <div class="sidebar-title">Select an Athlete</div>
+    
+        <!-- Bottom Options -->
+        <div class="sidebar-bottom">
+            <a href="home.html">Athletes</a>
+            <a href="account.html">Account</a>
+            <a href="login.html">Logout</a>
+        </div>
+    </div>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+
+    <script>
+        const menuBtn = document.getElementById('menuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+
+        menuBtn.addEventListener('click', function () {
+            const isOpen = sidebar.classList.contains('active');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+            menuBtn.innerHTML = isOpen ? '☰' : '✖';
+        });
+
+        overlay.addEventListener('click', function () {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+            menuBtn.innerHTML = '☰';
+        });
+    </script>
+
+
+</body>
+</html>

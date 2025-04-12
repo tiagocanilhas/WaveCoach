@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gym</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            overflow: hidden;
+        }
+        .top-bar {
+            width: 100%;
+            height: 50px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            display: flex;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
+        }
+        .top-bar h1 {
+            margin: 0 auto;
+            font-size: 22px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 50px; /* Below top bar */
+            left: -250px;
+            width: 250px;
+            height: calc(100% - 50px);
+            background-color: #007bff;
+            padding-top: 20px;
+            transition: left 0.3s ease;
+            color: white;
+            z-index: 99;
+        }
+        .sidebar a {
+            display: block;
+            padding: 15px;
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .sidebar a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        .sidebar.active {
+            left: 0;
+        }
+        .sidebar {
+            position: fixed;
+            top: 50px; /* Below top bar */
+            left: -250px;
+            width: 250px;
+            height: calc(100% - 50px);
+            background-color: #007bff;
+            padding-top: 20px;
+            transition: left 0.3s ease;
+            color: white;
+            z-index: 99;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Pushes bottom items down */
+        }
+        .sidebar-title {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .sidebar a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        .sidebar-bottom {
+            background-color: #0362df;
+            margin-top: auto; /* Pushes items to the bottom */
+            padding-bottom: 20px;
+        }
+
+        /* Menu Button */
+        .menu-btn {
+            position: fixed;
+            top: 13px;
+            left: 15px;
+            font-size: 22px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: white;
+            z-index: 101;
+        }
+
+        .content {
+            display: flex;
+            justify-content: center; /* Centers horizontally */
+            align-items: center; /* Centers vertically */
+            height: 100vh; /* Full viewport height */
+        }
+        .left-section {
+            width: 25%;
+            height: 75vh;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .right-section {
+            flex-grow: 1;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+         /* Scrollable User Container */
+
+         .workout-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .workout-controls label {
+            font-weight: bold;
+        }
+
+        .workout-controls select {
+            padding: 5px;
+            font-size: 14px;
+        }
+
+        .workouts-container {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+            width: 100%;
+            max-width: 1200px;
+            height: 80vh; /* Set a fixed height for the workout container */
+            padding: 10px;
+            overflow-y: auto; /* Make the athlete list scrollable */
+        }
+
+        .workout-box {
+            position: relative;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100px;
+            height: 100px;
+        }      
+
+        /* Back Button */
+        .back-btn {
+            position: fixed;
+            top: 80px;
+            left: 15px;
+            font-size: 22px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: rgb(0, 0, 0);
+            z-index: 101;
+        }
+
+        /* Container to Center Exercises */
+        .exercises-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            margin-top: 80px; /* Adjust to push content below the top bar */
+            height: 70vh; /* Limit height */
+            overflow-y: auto; /* Enable scrolling */
+            padding: 20px;
+        }
+
+        /* Ensure Exercise Boxes Align Properly */
+        .exercise-box {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 20px;
+            border: 1px solid #ccc;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 600px;
+            height: 150px;
+            margin-bottom: 15px; /* Space between items */
+        }
+
+        .exercise-box p {
+            font-size: 26px;
+            margin: 0;
+        }
+
+        /* Ensure Images are Displayed Correctly */
+        .exercise-photo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+
+        .workout-name {
+            font-size: 16px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+         /* Overlay */
+         .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0);
+            visibility: hidden;
+            transition: background 0.3s ease, visibility 0s linear 0.3s;
+            z-index: 98;
+        }
+
+        .overlay.active {
+            background: rgba(0, 0, 0, 0.5);
+            visibility: visible;
+            transition: background 0.3s ease, visibility 0s linear 0s;
+        }
+
+
+        /* Modal Styling */
+        
+        .modal {
+            display: none; 
+            position: fixed; 
+            top: 0; 
+            left: 0;
+            width: 100%; 
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5); 
+            justify-content: center; 
+            align-items: center;
+            z-index: 999; /* Highest layer */
+        }
+        .modal-content {
+             background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            z-index: 1000;
+            width: 60%; /* Responsive width */
+            max-height: 80vh; /* Ensure modal doesn't take the full height */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative; /* Needed for absolute close button */
+            padding-top: 40px; /* Space for close button */
+        }
+
+        /* Close Button (Top-Left) */
+        .close-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #888;
+        }
+
+        .close-button:hover {
+            color: #333;
+        }
+        .modal-grid {
+            display: flex;
+            width: 100%;
+            gap: 20px;
+            justify-content: space-between;
+        }
+        .modal-column {
+            display: flex;
+            flex-direction: column;
+            width: 70%;
+        }
+        .modal-column label {
+            font-size: 14px; /* Make labels slightly smaller */
+            font-weight: bold;
+            margin-right: 10px;
+            width: 120px; /* Set a fixed width for labels */
+            text-align: right;
+        }
+
+        .modal-column input {
+            flex-grow: 1;
+            width: auto;
+            padding: 5px;
+            font-size: 14px;
+        }
+
+        /* Align labels and inputs in a row */
+        .input-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end; /* Pushes the button to the right */
+            margin-top: 10px;
+        }
+        .modal-buttons button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .modal-buttons button:hover {
+            background-color: #0056b3;
+        }
+        .modal-body {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px; /* Add space above */
+            flex-grow: 1;
+            overflow-y: auto; /* Enable scrolling if content exceeds */
+            padding-right: 10px; /* To avoid cutting off scrollbar */
+        }
+        .sidebar, .top-bar { z-index: 100; }
+
+        .add-button {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #ccc;
+            color: white;
+            font-size: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin: 0 auto;
+        }
+        .sidebar, .top-bar { z-index: 100; }
+
+        .add-exercise-to-workout-button {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #ccc;
+            color: white;
+            font-size: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin: 0 auto;
+        }
+
+        .new-exercise-add-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 150px;
+            height: 150px;
+            margin: 0 auto; /* Center the exercise box */
+        }
+
+        .add-new-exercise-button {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #ccc;
+            color: white;
+            font-size: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin: 0 auto;
+        }
+        
+        .exercise-add-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 600px;
+            height: 150px;
+            margin: 0 auto; /* Center the exercise box */
+        }
+        .exercise-left {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 40%;
+        }
+
+        .exercise-left p {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .exercise-right {
+            text-align: left;
+            width: 55%;
+        }
+
+        .exercise-right ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .exercise-right li {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+       /* Make the content of the add new exercise modal scrollable */
+        #addExerciseToWorkoutModal .modal-content {
+            max-height: 80vh;  /* Set a maximum height to avoid the modal being too tall */
+            overflow-y: auto;  /* Enable scrolling if content exceeds the height */
+        }
+
+        /* Adjusting the exercise groups to be displayed in a grid layout */
+        .exercise-group {
+            display: grid;  /* Use grid layout */
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));  /* Create flexible grid columns */
+            gap: 15px;  /* Add space between the grid items */
+            align-items: center;  /* Vertically align items */
+            margin-bottom: 20px;  /* Add some space below each group */
+        }
+
+        /* Optional: Adjusting the layout of exercise items in each group */
+        .exercise-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        /* Ensure the exercise items (images and text) are aligned correctly */
+        .exercise-item img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 10px;  /* Add space below the image */
+        }
+
+        .exercise-item p {
+            font-size: 16px;
+            font-weight: bold;
+            margin: 0;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <button class="menu-btn" id="menuBtn">☰</button>
+        <h1>John Doe</h1>
+    </div>
+
+    <!-- Sidebar Menu -->
+    <div class="sidebar" id="sidebar">
+        <!-- Top Options -->
+        <div class="sidebar-title">
+            <a href="characteristics.html">Characteristics</a>
+            <a href="gym.html">Gym</a>
+            <a href="surf.html">Surf</a>
+            <a href="competition.html">Competition</a>
+        </div>
+
+        <!-- Bottom Options -->
+        <div class="sidebar-bottom">
+            <a href="home.html">Athletes</a>
+            <a href="account.html">Account</a>
+            <a href="login.html">Logout</a>
+        </div>
+    </div>
+    
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+
+    <div class="content">
+        <!-- Back Button -->
+        <button class="back-btn" onclick="window.location.href='gym.html';">←</button>
+
+        <!-- Container for Exercises -->
+        <div class="exercises-container">
+            <p style="font-size: 26px; font-weight: bold;">01/01/1970</p>
+            <div class="exercise-box">
+                <img class="exercise-photo" src="dumbbell.jpg" alt="Exercise photo">
+                <div>
+                    <p>DeadLift</p>
+                    <ul>
+                        <li>Set 1: 10 x 50kg</li>
+                        <li>Set 2: 10 x 55kg</li>
+                        <li>Set 3: 10 x 60kg</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="exercise-box">
+                <img class="exercise-photo" src="dumbbell.jpg" alt="Exercise photo">
+                <div>
+                    <p>Bench press</p>
+                    <ul>
+                        <li>Set 1: 10 x 40kg</li>
+                        <li>Set 2: 10 x 45kg</li>
+                        <li>Set 3: 10 x 50kg</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="exercise-box">
+                <img class="exercise-photo" src="dumbbell.jpg" alt="Exercise photo">
+                <div>
+                    <p>Lat pulldown</p>
+                    <ul>
+                        <li>Set 1: 10 x 45kg</li>
+                        <li>Set 2: 10 x 50kg</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="exercise-box">
+                <img class="exercise-photo" src="dumbbell.jpg" alt="Exercise photo">
+                <div>
+                    <p>Shoulder Press</p>
+                    <ul>
+                        <li>Set 1: 10 x 7.5kg</li>
+                        <li>Set 2: 10 x 7.5kg</li>
+                        <li>Set 3: 10 x 7.5kg</li>
+                        <li>Set 4: 6 x 10kg</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    <script>
+        /* Sidebar and Menu Button */
+        const menuBtn = document.getElementById('menuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+
+        menuBtn.addEventListener('click', function () {
+            const isOpen = sidebar.classList.contains('active');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+            menuBtn.innerHTML = isOpen ? '☰' : '✖';
+        });
+
+        overlay.addEventListener('click', function () {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+            menuBtn.innerHTML = '☰';
+        });
+    </script>
+</body>
+</html>

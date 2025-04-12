@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Register</title>
+    <title>Login</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -39,47 +39,28 @@
             width: 100%;
             border-radius: 12px;
         }
-        .code-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-top: 15px;
-        }
-        .code-label {
+        .register-link {
+            margin-top: 10px;
             font-size: 14px;
-            color: #5a5a5a;
-            margin-bottom: 5px;
         }
-        .code-input {
-            width: 80%;
+        .register-link a {
+            color: #007bff;
+            text-decoration: none;
         }
-        .code-button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px;
-            cursor: pointer;
-            border-radius: 6px;
-            width: 15%;
-            margin-left: 10px;
-        }
-        a {
-            display: none;
+        .register-link a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <div class="container" id="register">
-        <h2>Register</h2>
-        <form>
+    <div class="container" id="login">
+        <h2>Login</h2>
+        <form action="home.html">
             <input type="text" placeholder="Username" required>
             <input type="password" placeholder="Password" required>
-            <button type="submit">Register</button>
-            <div class="code-container">
-                <input type="text" class="code-input" placeholder="Enter Code" required>
-                <button type="button" class="code-button">→</button>
-            </div>
+            <button type="submit">Login</button>
         </form>
+        <p class="register-link">Don't have an account? <a href="register_choose.html">Register here</a></p>
     </div>
 </body>
 </html>
