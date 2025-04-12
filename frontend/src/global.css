@@ -2,11 +2,11 @@
 
 :root {
   /* Button */
-  --button-color: #82d7ff;
+  --button-color: #aa7248;
   --button-text-color: #000000;
-  --button-hover-color: #78c6eb;
+  --button-hover-color: #92633f;
   --button-text-hover-color: #ffffff;
-  --button-active-color: #91d2f0;
+  --button-active-color: #a7724a;
 
   --button-disabled-color: #dddddd;
   --button-disabled-text-color: #aaaaaa;

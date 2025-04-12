@@ -44,9 +44,12 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
+                  - $ref: '#/components/schemas/InvalidUsername'
                   - $ref: '#/components/schemas/InsecurePassword'
                   - $ref: '#/components/schemas/UsernameAlreadyExists'
               examples:
+                invalidUsername:
+                  $ref: '#/components/examples/InvalidUsername'
                 insecurePassword:
                   $ref: '#/components/examples/InsecurePassword'
                 usernameAlreadyExists:
@@ -67,6 +70,12 @@ paths:
       responses:
         200:
           description: The user logged in
+          headers:
+            Set-Cookie:
+              description: Token cookie
+              schema:
+                type: string
+                example: 'token=Ppwh9UW8J9dahmzttFwSkGkuYwpupcNchHqzbesParY=; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=3600'
           content:
             application/json:
               schema:
@@ -123,6 +132,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AthletesGetOutputModel'
+        401:
+          description: The user is not authenticated
     post:
       tags:
         - Athletes
@@ -155,6 +166,8 @@ paths:
                   $ref: '#/components/examples/InvalidBirthdate'
                 invalidLogin:
                   $ref: '#/components/examples/InvalidName'
+        401:
+          description: The user is not authenticated
       
   /athletes/{aid}:
     description: The resource that represents an athlete
@@ -176,6 +189,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AthleteGetOutputModel'
+        400:
+          description: Invalid athlete ID
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/InvalidAthleteId'
+        401:
+          description: The user is not authenticated
+        403:
+          description: The athlete is not the coach's athlete
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/NotAthletesCoach'
         404:
           description: The athlete was not found
           content:
@@ -198,23 +225,40 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AthleteUpdateInputModel'
+              $ref: '#/components/schemas/AthleteCreateInputModel'
       responses:
         204:
           description: The athlete was updated
         400:
-          description: Failed to update the athlete
+          description: Invalid athlete ID or other input errors
           content:
             application/problem+json:
               schema:
                 oneOf:
+                  - $ref: '#/components/schemas/InvalidAthleteId'
                   - $ref: '#/components/schemas/InvalidBirthdate'
                   - $ref: '#/components/schemas/InvalidName'
               examples:
-                usernameIsBlank:
+                invalidAthleteId:
+                  $ref: '#/components/examples/InvalidAthleteId'
+                invalidBirthdate:
                   $ref: '#/components/examples/InvalidBirthdate'
-                invalidLogin:
+                invalidName:
                   $ref: '#/components/examples/InvalidName'
+        401:
+          description: The user is not authenticated
+        403:
+          description: The athlete is not the coach's athlete
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/NotAthletesCoach'
+        404:
+          description: The athlete was not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/AthleteNotFound'
     delete:
       tags:
         - Athletes
@@ -229,6 +273,20 @@ paths:
       responses:
         204:
           description: The athlete was deleted
+        400:
+          description: Invalid athlete ID
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/InvalidAthleteId'
+        401:
+          description: The user is not authenticated
+        403:
+          description: The athlete is not the coach's athlete
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/NotAthletesCoach'
         404:
           description: The athlete was not found
           content:
@@ -255,7 +313,27 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CharacteristicsListOutputModel'
+                $ref: '#/components/schemas/AthleteCharacteristicsGetOutputModel'
+        400:
+          description: Invalid athlete ID
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/InvalidAthleteId'
+        401:
+          description: The user is not authenticated
+        403:
+          description: The coach is not the athlete's coach
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/NotAthletesCoach'
+        404:
+          description: The athlete was not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/AthleteNotFound'
     post:
       tags:
         - Athletes
@@ -281,7 +359,7 @@ paths:
               description: The URL of the created characteristic resource
               schema:
                 type: string
-                example: "/athletes/123/characteristics/123"
+                example: "/athletes/123/characteristics/01-01-2023"
         400:
           description: Failed to create a characteristic
           content:
@@ -290,11 +368,16 @@ paths:
                 oneOf:
                   - $ref: '#/components/schemas/InvalidAthleteId'
                   - $ref: '#/components/schemas/InvalidDate'
+                  - $ref: '#/components/schemas/InvalidCharacteristics'
               examples:
                 invalidAthleteId:
                   $ref: '#/components/examples/InvalidAthleteId'
                 invalidDate:
                   $ref: '#/components/examples/InvalidDate'
+                invalidCharacteristics:
+                  $ref: '#/components/examples/InvalidCharacteristics'
+        401:
+          description: The user is not authenticated
         403:
           description: The coach is not the athlete's coach
           content:
@@ -312,11 +395,249 @@ paths:
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/CharacteristicAlreadyExists'
+                $ref: '#/components/schemas/CharacteristicsAlreadyExists'
       
   /athletes/{aid}/characteristics/{date}:
+    description: The resource that represents a specific characteristic of an athlete
+    get:
+      tags:
+        - Athletes
+      summary: Get a specific characteristic of an athlete
+      parameters:
+        - name: aid
+          in: path
+          required: true
+          description: The ID of the athlete
+          schema:
+            type: string
+        - name: date
+          in: path
+          required: true
+          description: The date of the characteristic
+          schema:
+            type: string
+      responses:
+        200:
+          description: The characteristic was found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AthleteCharacteristicsGetOutputModel'
+        400:
+          description: Invalid athlete ID or date
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/InvalidAthleteId'
+                  - $ref: '#/components/schemas/InvalidDate'
+              examples:
+                invalidAthleteId:
+                  $ref: '#/components/examples/InvalidAthleteId'
+                invalidDate:
+                  $ref: '#/components/examples/InvalidDate'
+        401:
+          description: The user is not authenticated
+        403:
+          description: The coach is not the athlete's coach
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/NotAthletesCoach'
+        404:
+          description: The characteristic or athlete was not found
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/AthleteNotFound'
+                  - $ref: '#/components/schemas/CharacteristicsNotFound'
+              examples:
+                athleteNotFound:
+                  $ref: '#/components/examples/AthleteNotFound'
+                characteristicsNotFound:
+                  $ref: '#/components/examples/CharacteristicsNotFound'
 
-      
+    put:
+      tags:
+        - Athletes
+      summary: Update a specific characteristic of an athlete
+      parameters:
+        - name: aid
+          in: path
+          required: true
+          description: The ID of the athlete
+          schema:
+            type: string
+        - name: date
+          in: path
+          required: true
+          description: The date of the characteristic
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AthleteUpdateCharacteristicsInputModel'
+            examples:
+              validRequest:
+                value:
+                  weight: 72.0
+                  height: 180
+                  calories: 2200
+                  bodyFat: 16.0
+                  waistSize: 82
+                  armSize: 32
+                  thighSize: 52
+                  tricepFat: 11
+                  abdomenFat: 13
+                  thighFat: 15
+      responses:
+        204:
+          description: The characteristic was updated
+        400:
+          description: Invalid athlete ID, date, or input data
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/InvalidAthleteId'
+                  - $ref: '#/components/schemas/InvalidDate'
+                  - $ref: '#/components/schemas/InvalidCharacteristics'
+              examples:
+                invalidAthleteId:
+                  $ref: '#/components/examples/InvalidAthleteId'
+                invalidDate:
+                  $ref: '#/components/examples/InvalidDate'
+                invalidCharacteristics:
+                  $ref: '#/components/examples/InvalidCharacteristics'
+        401:
+          description: The user is not authenticated
+        403:
+          description: The coach is not the athlete's coach
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/NotAthletesCoach'
+        404:
+          description: The athlete or characteristic was not found
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/AthleteNotFound'
+                  - $ref: '#/components/schemas/CharacteristicsNotFound'
+              examples:
+                athleteNotFound:
+                  $ref: '#/components/examples/AthleteNotFound'
+                characteristicsNotFound:
+                  $ref: '#/components/examples/CharacteristicsNotFound'
+
+    delete:
+      tags:
+        - Athletes
+      summary: Delete a specific characteristic of an athlete
+      parameters:
+        - name: aid
+          in: path
+          required: true
+          description: The ID of the athlete
+          schema:
+            type: string
+        - name: date
+          in: path
+          required: true
+          description: The date of the characteristic
+          schema:
+            type: string
+      responses:
+        204:
+          description: The characteristic was deleted
+        400:
+          description: Invalid athlete ID or date
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/InvalidAthleteId'
+                  - $ref: '#/components/schemas/InvalidDate'
+        401:
+          description: The user is not authenticated
+        403:
+          description: The coach is not the athlete's coach
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/NotAthletesCoach'
+        404:
+          description: The characteristic was not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/CharacteristicsNotFound'
+
+  /athletes/{aid}/gym:
+    description: The resource that represents gym activities of an athlete
+    post:
+      tags:
+        - Athletes
+      summary: Create a gym activity for an athlete
+      parameters:
+        - name: aid
+          in: path
+          required: true
+          description: The ID of the athlete
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateGymActivityInputModel'
+            examples:
+              validRequest:
+                value:
+                  date: "01-01-2023"
+      responses:
+        201:
+          description: Gym activity was created
+          headers:
+            Location:
+              description: The URL of the created gym activity resource
+              schema:
+                type: string
+                example: "/athletes/123/gym/1"
+        400:
+          description: Invalid athlete ID or date
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/InvalidAthleteId'
+                  - $ref: '#/components/schemas/InvalidDate'
+              examples:
+                invalidAthleteId:
+                  $ref: '#/components/examples/InvalidAthleteId'
+                invalidDate:
+                  $ref: '#/components/examples/InvalidDate'
+        401:
+          description: The user is not authenticated
+        403:
+          description: The coach is not the athlete's coach
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/NotAthletesCoach'
+        404:
+          description: The athlete was not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/AthleteNotFound'
+
 components:
   schemas:  
   
@@ -333,20 +654,7 @@ components:
           example: "name"
         birthdate:
           type: string
-          example: "1970-01-01"
-    
-    AthleteUpdateInputModel:
-      required:
-        - name
-        - birthdate
-      type: object
-      properties:
-        name:
-          type: string
-          example: "name"
-        birthdate:
-          type: string
-          example: "1970-01-01"
+          example: "01-01-1970"
     
     UserCreateInputModel:
       required:
@@ -374,42 +682,116 @@ components:
           type: string
           example: "Password123!"
           
+    AthleteCreateCharacteristicsInputModel:
+      required:
+        - date
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+          example: "01-01-2023"
+        weight:
+          type: number
+          format: float
+          example: 70.5
+        height:
+          type: integer
+          example: 175
+        calories:
+          type: integer
+          example: 2000
+        bodyFat:
+          type: number
+          format: float
+          example: 15.5
+        waistSize:
+          type: integer
+          example: 80
+        armSize:
+          type: integer
+          example: 30
+        thighSize:
+          type: integer
+          example: 50
+        tricepFat:
+          type: integer
+          example: 10
+        abdomenFat:
+          type: integer
+          example: 12
+        thighFat:
+          type: integer
+          example: 14
 
+    AthleteUpdateCharacteristicsInputModel:
+      type: object
+      properties:
+        weight:
+          type: number
+          format: float
+          example: 72.0
+        height:
+          type: integer
+          example: 180
+        calories:
+          type: integer
+          example: 2200
+        bodyFat:
+          type: number
+          format: float
+          example: 16.0
+        waistSize:
+          type: integer
+          example: 82
+        armSize:
+          type: integer
+          example: 32
+        thighSize:
+          type: integer
+          example: 52
+        tricepFat:
+          type: integer
+          example: 11
+        abdomenFat:
+          type: integer
+          example: 13
+        thighFat:
+          type: integer
+          example: 15
 
+    CreateGymActivityInputModel:
+      required:
+        - date
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+          example: "01-01-2023"
 
     # Output Models
 
     AthletesGetOutputModel:
-      type: array
-      items:
-        type: object
-        required:
-          - id
-          - username
-          - name
-          - birthdate
-        properties:
-          id:
-            type: string
-            example: 1
-          username:
-            type: string
-            example: "username1"
-          name:
-            type: string
-            example: "name1"
-          birthdate:
-            type: string
-            example: "1970-01-01"
-      example:
-        - id: "1"
-          username: "username1"
-          name: "name1"
-          birthdate: "1970-01-01"
-        - id: "2"
-          username: "username2"
-          name: "name2"
-          birthdate: "1980-02-02"
+      required:
+        - id
+        - username
+        - name
+        - birthdate
+      type: object
+      properties:
+        id:
+          type: string
+          example: 1
+        username:
+          type: string
+          example: "username"
+        name:
+          type: string
+          example: "name"
+        birthdate:
+          type: string
+          example: "1970-01-01"
 
     AthleteGetOutputModel:
       required:
@@ -430,7 +812,7 @@ components:
           example: "name"
         birthdate:
           type: string
-          example: "1970-01-01"
+          example: "01-01-1970"
     
     CreateCharacteristicsOutputModel:
       required:
@@ -444,7 +826,7 @@ components:
           example: 1
         date:
           type: string
-          example: "1970-01-01"
+          example: "01-01-1970"
         value:
           type: string
           example: "value"
@@ -466,12 +848,80 @@ components:
           type: string
           example: "token"
     
+    AthleteCharacteristicsGetOutputModel:
+      required:
+        - uid
+        - date
+        - weight
+        - height
+        - bmi
+        - calories
+        - bodyFat
+        - waistSize
+        - armSize
+        - thighSize
+        - tricepFat
+        - abdomenFat
+        - thighFat
+      type: object
+      properties:
+        uid:
+          type: string
+          example: "123"
+        date:
+          type: string
+          example: "01-01-2023"
+        weight:
+          type: number
+          format: float
+          example: 70.5
+        height:
+          type: integer
+          example: 175
+        bmi:
+          type: number
+          format: float
+          example: 23.0
+        calories:
+          type: integer
+          example: 2000
+        bodyFat:
+          type: number
+          format: float
+          example: 15.5
+        waistSize:
+          type: integer
+          example: 80
+        armSize:
+          type: integer
+          example: 30
+        thighSize:
+          type: integer
+          example: 50
+        tricepFat:
+          type: integer
+          example: 10
+        abdomenFat:
+          type: integer
+          example: 12
+        thighFat:
+          type: integer
+          example: 14
 
 
 
     # Problems
 
     AthleteNotFound:
+      required:
+        - type
+      type: object
+      properties:
+        type:
+          type: string
+          example: ""
+
+    CharacteristicsAlreadyExists:
       required:
         - type
       type: object
@@ -489,7 +939,25 @@ components:
           type: string
           example: ""
 
+    InvalidAthleteId:
+      required:
+        - type
+      type: object
+      properties:
+        type:
+          type: string
+          example: ""
+
     InvalidBirthdate:
+      required:
+        - type
+      type: object
+      properties:
+        type:
+          type: string
+          example: ""
+
+    InvalidDate:
       required:
         - type
       type: object
@@ -515,8 +983,26 @@ components:
         type:
           type: string
           example: ""
+
+    InvalidUsername:
+      required:
+        - type
+      type: object
+      properties:
+        type:
+          type: string
+          example: ""
           
     InvalidToken:
+      required:
+        - type
+      type: object
+      properties:
+        type:
+          type: string
+          example: ""
+
+    InvalidCharacteristics:
       required:
         - type
       type: object
@@ -569,6 +1055,15 @@ components:
         type:
           type: string
           example: ""
+
+    CharacteristicsNotFound:
+      required:
+        - type
+      type: object
+      properties:
+        type:
+          type: string
+          example: ""
   
   examples:
   
@@ -583,8 +1078,20 @@ components:
     InvalidLogin:
       value:
         type: ""
-
+        
     InvalidName:
+      value:
+        type: ""
+
+    InvalidUsername:
+      value:
+        type: ""
+    
+    InvalidCharacteristics:
+      value:
+        type: ""
+
+    NotAthletesCoach:
       value:
         type: ""
         
@@ -597,5 +1104,25 @@ components:
         type: ""
         
     UsernameIsBlank:
+      value:
+        type: ""
+
+    CharacteristicsNotFound:
+      value:
+        type: ""
+
+    InvalidAthleteId:
+      value:
+        type: ""
+
+    InvalidDate:
+      value:
+        type: ""
+
+    AthleteNotFound:
+      value:
+        type: ""
+
+    CharacteristicsAlreadyExists:
       value:
         type: ""

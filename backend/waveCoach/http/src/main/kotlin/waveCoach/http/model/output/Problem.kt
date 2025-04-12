@@ -19,9 +19,44 @@ class Problem(
 
         private const val BASE_URI = ""
 
+        val athleteNotFound = Problem(
+            "Athlete not found",
+            URI.create("$BASE_URI/athlete-not-found")
+        )
+
+        val characteristicsAlreadyExists = Problem(
+            "Characteristics already exists",
+            URI.create("$BASE_URI/characteristics-already-exists")
+        )
+
+        val characteristicsNotFound = Problem(
+            "Characteristics not found",
+            URI.create("$BASE_URI/characteristics-not-found")
+        )
+
         val insecurePassword = Problem(
             "Insecure password",
             URI("$BASE_URI/insecure-password")
+        )
+
+        val invalidAthleteId = Problem(
+            "Invalid athlete id",
+            URI.create("$BASE_URI/invalid-athlete-id")
+        )
+
+        val invalidBirthDate = Problem(
+            "Invalid birth date",
+            URI.create("$BASE_URI/invalid-birth-date")
+        )
+
+        val invalidCharacteristics = Problem(
+            "Invalid characteristics",
+            URI.create("$BASE_URI/invalid-characteristics")
+        )
+
+        val invalidDate = Problem(
+            "Invalid date",
+            URI.create("$BASE_URI/invalid-date")
         )
 
         val invalidLogin = Problem(
@@ -29,14 +64,24 @@ class Problem(
             URI("$BASE_URI/invalid-login")
         )
 
-        val invalidUsername = Problem(
-            "Invalid username",
-            URI("$BASE_URI/invalid-username")
+        val invalidName = Problem(
+            "Invalid name",
+            URI.create("$BASE_URI/invalid-name")
         )
 
         val invalidToken = Problem(
             "Invalid token",
             URI("$BASE_URI/invalid-token")
+        )
+
+        val invalidUsername = Problem(
+            "Invalid username",
+            URI("$BASE_URI/invalid-username")
+        )
+
+        val notAthletesCoach = Problem(
+            "Not athlete's coach",
+            URI.create("$BASE_URI/not-athletes-coach")
         )
 
         val passwordIsBlank = Problem(
@@ -57,51 +102,6 @@ class Problem(
         val usernameIsBlank = Problem(
             "Username is blank",
             URI("$BASE_URI/username-is-blank")
-        )
-
-        val invalidBirthDate = Problem(
-            "Invalid birth date",
-            URI.create("$BASE_URI/invalid-birth-date")
-        )
-
-        val invalidName = Problem(
-            "Invalid name",
-            URI.create("$BASE_URI/invalid-name")
-        )
-
-        val athleteNotFound = Problem(
-            "Athlete not found",
-            URI.create("$BASE_URI/athlete-not-found")
-        )
-
-        val notAthletesCoach = Problem(
-            "Not athlete's coach",
-            URI.create("$BASE_URI/not-athletes-coach")
-        )
-
-        val invalidAthleteId = Problem(
-            "Invalid athlete id",
-            URI.create("$BASE_URI/invalid-athlete-id")
-        )
-
-        val invalidCharacteristics = Problem(
-            "Invalid characteristics",
-            URI.create("$BASE_URI/invalid-characteristics")
-        )
-
-        val invalidDate = Problem(
-            "Invalid date",
-            URI.create("$BASE_URI/invalid-date")
-        )
-
-        val characteristicsNotFound = Problem(
-            "Characteristics not found",
-            URI.create("$BASE_URI/characteristics-not-found")
-        )
-
-        val characteristicsAlreadyExists = Problem(
-            "Characteristics already exists",
-            URI.create("$BASE_URI/characteristics-already-exists")
         )
     }
 }
