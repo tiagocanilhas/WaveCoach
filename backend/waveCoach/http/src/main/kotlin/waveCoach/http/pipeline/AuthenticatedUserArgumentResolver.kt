@@ -11,8 +11,7 @@ import waveCoach.domain.AuthenticatedUser
 
 @Component
 class AuthenticatedUserArgumentResolver : HandlerMethodArgumentResolver {
-    override fun supportsParameter(parameter: MethodParameter) =
-        parameter.parameterType == AuthenticatedUser::class.java
+    override fun supportsParameter(parameter: MethodParameter) = parameter.parameterType == AuthenticatedUser::class.java
 
     override fun resolveArgument(
         parameter: MethodParameter,
@@ -28,10 +27,11 @@ class AuthenticatedUserArgumentResolver : HandlerMethodArgumentResolver {
     companion object {
         private const val KEY = "AuthenticatedUserArgumentResolver"
 
-        fun addUserTo(user: AuthenticatedUser, request: HttpServletRequest) =
-            request.setAttribute(KEY, user)
+        fun addUserTo(
+            user: AuthenticatedUser,
+            request: HttpServletRequest,
+        ) = request.setAttribute(KEY, user)
 
-        fun getUserFrom(request: HttpServletRequest): AuthenticatedUser? =
-            request.getAttribute(KEY)?.let { it as? AuthenticatedUser }
+        fun getUserFrom(request: HttpServletRequest): AuthenticatedUser? = request.getAttribute(KEY)?.let { it as? AuthenticatedUser }
     }
 }

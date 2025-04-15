@@ -8,6 +8,9 @@ import java.sql.SQLException
 
 class PasswordValidationInfoMapper : ColumnMapper<PasswordValidationInfo> {
     @Throws(SQLException::class)
-    override fun map(r: ResultSet, columnNumber: Int, ctx: StatementContext?): PasswordValidationInfo =
-        PasswordValidationInfo(r.getString(columnNumber))
+    override fun map(
+        r: ResultSet,
+        columnNumber: Int,
+        ctx: StatementContext?,
+    ): PasswordValidationInfo = PasswordValidationInfo(r.getString(columnNumber))
 }

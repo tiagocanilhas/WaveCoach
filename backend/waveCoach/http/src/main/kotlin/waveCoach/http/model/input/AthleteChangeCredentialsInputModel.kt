@@ -1,6 +1,7 @@
 package waveCoach.http.model.input
 
-data class CreateUserInputModel(
+data class AthleteChangeCredentialsInputModel(
+    val code: String,
     val username: String,
     val password: String,
 )

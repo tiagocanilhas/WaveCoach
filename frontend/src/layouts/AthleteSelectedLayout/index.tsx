@@ -4,6 +4,10 @@ import { Outlet, useParams } from 'react-router-dom'
 
 import { Bars } from '../../components/Bars'
 
+import { getAthlete } from '../../services/athleteServices'
+
+import styles from './styles.module.css'
+
 export function AthleteSelectedLayout() {
   const [athleteName, setAthleteName] = useState('')
   const id = useParams().aid
@@ -11,8 +15,8 @@ export function AthleteSelectedLayout() {
   useEffect(() => {
     async function fetchAthleteName() {
       try {
-        const res = 'name'
-        setAthleteName(res)
+        const res = await getAthlete(id)
+        setAthleteName(res.name)
       } catch (error) {
         setAthleteName('Wave Coach')
       }
@@ -31,7 +35,9 @@ export function AthleteSelectedLayout() {
   return (
     <>
       <Bars title={athleteName} sideBarItems={sidebarItems} />
-      <Outlet />
+      <div className={styles.container}>
+        <Outlet />
+      </div>
     </>
   )
 }

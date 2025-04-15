@@ -104,7 +104,6 @@ dist
 .tern-port
 
 # Gradle
-
 .gradle
 /build/
 !gradle/wrapper/gradle-wrapper.jar
@@ -129,3 +128,9 @@ dist
 **/playwright-report/
 **/blob-report/
 **/playwright/.cache/
+
+# Ktlint
+**/baseline.xml
+
+# Dia
+**/*.dia~

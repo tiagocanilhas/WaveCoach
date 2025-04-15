@@ -20,6 +20,7 @@
   background-color: var(--side-bar-color);
   z-index: 999;
   overflow-y: auto;
+  flex-shrink: 0;
 }
 
 .sidebarShown {

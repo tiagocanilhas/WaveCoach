@@ -8,6 +8,9 @@ import java.sql.SQLException
 
 class TokenValidationInfoMapper : ColumnMapper<TokenValidationInfo> {
     @Throws(SQLException::class)
-    override fun map(r: ResultSet, columnNumber: Int, ctx: StatementContext?): TokenValidationInfo =
-        TokenValidationInfo(r.getString(columnNumber))
+    override fun map(
+        r: ResultSet,
+        columnNumber: Int,
+        ctx: StatementContext?,
+    ): TokenValidationInfo = TokenValidationInfo(r.getString(columnNumber))
 }

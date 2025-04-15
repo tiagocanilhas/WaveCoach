@@ -21,68 +21,6 @@ import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.minutes
 
 class UserServicesTest {
-
-    /**
-     * Create User Tests
-     */
-
-    @Test
-    fun `create user - success`() {
-        val testClock = TestClock()
-        val maxTokensPerUser = 5
-        val userService = createUserServices(testClock, maxTokensPerUser = maxTokensPerUser)
-
-        val username = randomString()
-        val password = randomString()
-
-        val result = userService.createUser(username, password)
-        when (result) {
-            is Failure -> fail("Unexpected $result")
-            is Success -> assertTrue(result.value > 1)
-        }
-    }
-
-    @Test
-    fun `create user - insecure password`() {
-        val testClock = TestClock()
-        val maxTokensPerUser = 5
-        val userService = createUserServices(testClock, maxTokensPerUser = maxTokensPerUser)
-
-        val insecurePasswords = listOf(
-            "Abc1234", // missing special character
-            "abc123!", // missing uppercase letter
-            "ABC123!", // missing lowercase letter
-            "Abc!@#", // missing number
-            "Abc123", // smaller than 6 characters
-        )
-
-        insecurePasswords.forEach { password ->
-            val result = userService.createUser(randomString(), password)
-            when (result) {
-                is Failure -> assertTrue(result.value is CreateUserError.InsecurePassword)
-                is Success -> fail("Unexpected $result")
-            }
-        }
-    }
-
-    @Test
-    fun `create user - username already exists`() {
-        val testClock = TestClock()
-        val maxTokensPerUser = 5
-        val userService = createUserServices(testClock, maxTokensPerUser = maxTokensPerUser)
-
-        val username = USERNAME_OF_ADMIN
-        val password = randomString()
-
-        val result = userService.createUser(username, password)
-        when (result) {
-            is Failure -> assertTrue(result.value is CreateUserError.UsernameAlreadyExists)
-            is Success -> fail("Unexpected $result")
-        }
-    }
-
-    
-    
     /**
      * checkCredentials Tests
      */
@@ -141,11 +79,12 @@ class UserServicesTest {
         val testClock = TestClock()
         val userService = createUserServices(testClock)
 
-        val invalidLogins = listOf(
-            USERNAME_OF_ADMIN to randomString(),
-            randomString() to PASSWORD_OF_ADMIN,
-            randomString() to randomString(),
-        )
+        val invalidLogins =
+            listOf(
+                USERNAME_OF_ADMIN to randomString(),
+                randomString() to PASSWORD_OF_ADMIN,
+                randomString() to randomString(),
+            )
 
         invalidLogins.forEach { (username, password) ->
             val result = userService.checkCredentials(username, password)
@@ -156,8 +95,6 @@ class UserServicesTest {
         }
     }
 
-    
-    
     /**
      * GetUserByToken Tests
      */
@@ -182,11 +119,12 @@ class UserServicesTest {
         val testClock = TestClock()
         val userService = createUserServices(testClock)
 
-        val invalidTokens = listOf(
-            "",
-            "invalid",
-            randomString(),
-        )
+        val invalidTokens =
+            listOf(
+                "",
+                "invalid",
+                randomString(),
+            )
 
         invalidTokens.forEach { token ->
             val result = userService.getUserByToken(token)
@@ -196,8 +134,6 @@ class UserServicesTest {
             }
         }
     }
-
-
 
     /**
      * RevokeToken Tests
@@ -226,7 +162,6 @@ class UserServicesTest {
             is Failure -> assertTrue(result2.value is GetUserByTokenError.TokenNotFound)
             is Success -> fail("Unexpected $result")
         }
-
     }
 
     @Test
@@ -234,11 +169,12 @@ class UserServicesTest {
         val testClock = TestClock()
         val userService = createUserServices(testClock)
 
-        val invalidTokens = listOf(
-            "",
-            "invalid",
-            randomString(),
-        )
+        val invalidTokens =
+            listOf(
+                "",
+                "invalid",
+                randomString(),
+            )
 
         invalidTokens.forEach { token ->
             val result = userService.revokeToken(token)
@@ -307,10 +243,11 @@ class UserServicesTest {
         private const val LIMIT = 10
         private const val SKIP = 0
 
-        private val jdbi = Jdbi.create(
-            PGSimpleDataSource().apply {
-                setURL("jdbc:postgresql://localhost:5432/db?user=dbuser&password=changeit")
-            },
-        ).configureWithAppRequirements()
+        private val jdbi =
+            Jdbi.create(
+                PGSimpleDataSource().apply {
+                    setURL("jdbc:postgresql://localhost:5432/db?user=dbuser&password=changeit")
+                },
+            ).configureWithAppRequirements()
     }
 }

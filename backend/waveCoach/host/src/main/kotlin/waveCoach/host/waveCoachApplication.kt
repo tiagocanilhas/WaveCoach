@@ -23,11 +23,12 @@ import kotlin.time.Duration.Companion.hours
 @ComponentScan("waveCoach")
 class WaveCoachApplication {
     @Bean
-    fun jdbi() = Jdbi.create(
-        PGSimpleDataSource().apply {
-            setURL(Environment.getDbUrl())
-        },
-    ).configureWithAppRequirements()
+    fun jdbi() =
+        Jdbi.create(
+            PGSimpleDataSource().apply {
+                setURL(Environment.getDbUrl())
+            },
+        ).configureWithAppRequirements()
 
     @Bean
     fun passwordEncoder() = BCryptPasswordEncoder()
@@ -39,12 +40,13 @@ class WaveCoachApplication {
     fun clock() = Clock.System
 
     @Bean
-    fun userDomainConfig() = UserDomainConfig(
-        tokenSizeInBytes = 256 / 8,
-        tokenTtl = 24.hours,
-        tokenRollingTtl = 1.hours,
-        maxTokensPerUser = 3,
-    )
+    fun userDomainConfig() =
+        UserDomainConfig(
+            tokenSizeInBytes = 256 / 8,
+            tokenTtl = 24.hours,
+            tokenRollingTtl = 1.hours,
+            maxTokensPerUser = 3,
+        )
 }
 
 @Configuration

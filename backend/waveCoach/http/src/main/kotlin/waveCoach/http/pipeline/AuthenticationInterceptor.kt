@@ -21,17 +21,19 @@ class AuthenticationInterceptor(
     override fun preHandle(
         request: HttpServletRequest,
         response: HttpServletResponse,
-        handler: Any
+        handler: Any,
     ): Boolean {
         if (
             handler is HandlerMethod &&
             handler.methodParameters.any { it.parameterType == AuthenticatedUser::class.java }
         ) {
-            val userAuthHeader = tokenProcessor
-                .processAuthorizationHeaderValue(request.getHeader(AUTHORIZATION_HEADER))
+            val userAuthHeader =
+                tokenProcessor
+                    .processAuthorizationHeaderValue(request.getHeader(AUTHORIZATION_HEADER))
 
-            val userCookie = tokenProcessor
-                .processAuthorizationCookieValue(request.getHeader(COOKIE_HEADER))
+            val userCookie =
+                tokenProcessor
+                    .processAuthorizationCookieValue(request.getHeader(COOKIE_HEADER))
 
             val authenticatedUser = userAuthHeader ?: userCookie
 
@@ -64,14 +66,16 @@ class AuthenticationInterceptor(
         val authenticatedUser = getUserFrom(request) ?: return
 
         val refreshedTime = usersDomainConfig.tokenRollingTtl.inWholeSeconds
-        val refreshedTokenCookie = ResponseCookie.from("token", authenticatedUser.token)
-            .httpOnly(true).path("/").maxAge(refreshedTime).build()
+        val refreshedTokenCookie =
+            ResponseCookie.from("token", authenticatedUser.token)
+                .httpOnly(true).path("/").maxAge(refreshedTime).build()
 
-        val refreshedUserCookie = ResponseCookie.from(
-            "user",
-            "${authenticatedUser.info.id}:${authenticatedUser.info.username}",
-        )
-            .path("/").maxAge(refreshedTime).build()
+        val refreshedUserCookie =
+            ResponseCookie.from(
+                "user",
+                "${authenticatedUser.info.id}:${authenticatedUser.info.username}",
+            )
+                .path("/").maxAge(refreshedTime).build()
 
         response.addHeader("Set-Cookie", refreshedTokenCookie.toString())
         response.addHeader("Set-Cookie", refreshedUserCookie.toString())
@@ -82,6 +86,5 @@ class AuthenticationInterceptor(
         const val COOKIE_HEADER = "Cookie"
 
         private const val WWW_AUTHENTICATE_HEADER = "WWW-Authenticate"
-
     }
 }

@@ -12,13 +12,34 @@ import waveCoach.repository.UserRepository
 class JdbiUserRepository(
     private val handle: Handle,
 ) : UserRepository {
-    override fun storeUser(username: String, passwordValidationInfo: PasswordValidationInfo): Int =
+    override fun storeUser(
+        username: String,
+        passwordValidationInfo: PasswordValidationInfo,
+    ): Int =
         handle.createUpdate("insert into waveCoach.user (username, password) values (:username, :password)")
             .bind("username", username)
             .bind("password", passwordValidationInfo.value)
             .executeAndReturnGeneratedKeys()
             .mapTo<Int>()
             .one()
+
+    override fun updateUser(
+        uid: Int,
+        username: String,
+        passwordValidationInfo: PasswordValidationInfo,
+    ) {
+        handle.createUpdate(
+            """
+            update waveCoach.user 
+            set username = :username, password = :password 
+            where id = :id
+            """.trimIndent(),
+        )
+            .bind("id", uid)
+            .bind("username", username)
+            .bind("password", passwordValidationInfo.value)
+            .execute()
+    }
 
     override fun removeUser(uid: Int) {
         handle.createUpdate("delete from waveCoach.user where id = :id")
@@ -38,7 +59,10 @@ class JdbiUserRepository(
             .mapTo<Int>()
             .single() == 1
 
-    override fun storeToken(token: Token, maxTokens: Int) {
+    override fun storeToken(
+        token: Token,
+        maxTokens: Int,
+    ) {
         handle.createUpdate(
             """
             delete from waveCoach.token 
@@ -86,13 +110,17 @@ class JdbiUserRepository(
         val usedTime: Long,
     ) {
         val userAndToken: Pair<User, Token>
-            get() = Pair(
-                User(id, username, password),
-                Token(token, id, Instant.fromEpochSeconds(createdTime), Instant.fromEpochSeconds(usedTime)),
-            )
+            get() =
+                Pair(
+                    User(id, username, password),
+                    Token(token, id, Instant.fromEpochSeconds(createdTime), Instant.fromEpochSeconds(usedTime)),
+                )
     }
 
-    override fun updateTokenLastUsed(token: Token, now: Instant) {
+    override fun updateTokenLastUsed(
+        token: Token,
+        now: Instant,
+    ) {
         handle.createUpdate("update waveCoach.token set used_time = :used_time where token = :token")
             .bind("used_time", now.epochSeconds)
             .bind("token", token.tokenValidationInfo.value)

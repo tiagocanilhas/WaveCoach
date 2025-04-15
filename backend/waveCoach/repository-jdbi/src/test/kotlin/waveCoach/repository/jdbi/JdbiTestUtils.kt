@@ -6,30 +6,30 @@ import org.postgresql.ds.PGSimpleDataSource
 import waveCoach.repository.Transaction
 import waveCoach.repository.TransactionManager
 
-private val jdbi = Jdbi.create(
-    PGSimpleDataSource().apply {
-        setURL("jdbc:postgresql://localhost:5432/db?user=dbuser&password=changeit")
-    },
-).configureWithAppRequirements()
+private val jdbi =
+    Jdbi.create(
+        PGSimpleDataSource().apply {
+            setURL("jdbc:postgresql://localhost:5432/db?user=dbuser&password=changeit")
+        },
+    ).configureWithAppRequirements()
 
-fun testWithHandleAndRollback(
-    block: (Handle) -> Unit
-) = jdbi.useTransaction<Exception> { handle ->
-    block(handle)
-    handle.rollback()
-}
-
-fun testWithTransactionManagerAndRollback(
-    block: (TransactionManager) -> Unit
-) = jdbi.useTransaction<Exception> { handle ->
-    val transaction = JdbiTransaction(handle)
-
-    val transactionManager = object : TransactionManager {
-        override fun <R> run(block: (Transaction) -> R): R {
-            return block(transaction)
-        }
+fun testWithHandleAndRollback(block: (Handle) -> Unit) =
+    jdbi.useTransaction<Exception> { handle ->
+        block(handle)
+        handle.rollback()
     }
-    block(transactionManager)
 
-    handle.rollback()
-}
+fun testWithTransactionManagerAndRollback(block: (TransactionManager) -> Unit) =
+    jdbi.useTransaction<Exception> { handle ->
+        val transaction = JdbiTransaction(handle)
+
+        val transactionManager =
+            object : TransactionManager {
+                override fun <R> run(block: (Transaction) -> R): R {
+                    return block(transaction)
+                }
+            }
+        block(transactionManager)
+
+        handle.rollback()
+    }

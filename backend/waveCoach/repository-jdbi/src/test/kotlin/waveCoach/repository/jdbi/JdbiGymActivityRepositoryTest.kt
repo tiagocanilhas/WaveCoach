@@ -5,38 +5,40 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class JdbiGymActivityRepositoryTest {
+    @Test
+    fun `store Gym activity`() =
+        testWithHandleAndRollback { handle ->
+            val gymActivityRepository = JdbiGymActivityRepository(handle)
+            val activityRepository = JdbiActivityRepository(handle)
+
+            val activityId = activityRepository.storeActivity(FIRST_ATHLETE_ID, DATE)
+
+            val gymActivityId = gymActivityRepository.storeGymActivity(activityId)
+
+            assertEquals(activityId, gymActivityId)
+        }
 
     @Test
-    fun `store Gym activity`() = testWithHandleAndRollback { handle ->
-        val gymActivityRepository = JdbiGymActivityRepository(handle)
-        val activityRepository = JdbiActivityRepository(handle)
+    fun `get Gym activities`() =
+        testWithHandleAndRollback { handle ->
+            val gymActivityRepository = JdbiGymActivityRepository(handle)
 
-        val activityId = activityRepository.storeActivity(FIRST_ATHLETE_ID, DATE)
+            val gymActivityList = gymActivityRepository.getGymActivities(FIRST_ATHLETE_ID)
 
-        val gymActivityId = gymActivityRepository.storeGymActivity(activityId)
-
-        assertEquals(activityId, gymActivityId)
-    }
+            assertTrue { gymActivityList.isNotEmpty() }
+        }
 
     @Test
-    fun `get Gym activities`() = testWithHandleAndRollback { handle ->
-        val gymActivityRepository = JdbiGymActivityRepository(handle)
+    fun `remove Gym activities`() =
+        testWithHandleAndRollback { handle ->
+            val gymActivityRepository = JdbiGymActivityRepository(handle)
 
-        val gymActivityList = gymActivityRepository.getGymActivities(FIRST_ATHLETE_ID)
+            gymActivityRepository.removeGymActivities(FIRST_ATHLETE_ID)
 
-        assertTrue { gymActivityList.isNotEmpty() }
-    }
+            val gymActivityList = gymActivityRepository.getGymActivities(FIRST_ATHLETE_ID)
 
-    @Test
-    fun `remove Gym activities`() = testWithHandleAndRollback { handle ->
-        val gymActivityRepository = JdbiGymActivityRepository(handle)
-
-        gymActivityRepository.removeGymActivities(FIRST_ATHLETE_ID)
-
-        val gymActivityList = gymActivityRepository.getGymActivities(FIRST_ATHLETE_ID)
-
-        assertTrue { gymActivityList.isEmpty() }
-    }
+            assertTrue { gymActivityList.isEmpty() }
+        }
 
     companion object {
         private const val DATE = 948758400000 // (15-05-2000)

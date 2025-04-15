@@ -5,9 +5,8 @@ import org.jdbi.v3.core.kotlin.mapTo
 import waveCoach.domain.Characteristics
 import waveCoach.repository.CharacteristicsRepository
 
-
 class JdbiCharacteristicsRepository(
-    private val handle: Handle
+    private val handle: Handle,
 ) : CharacteristicsRepository {
     override fun storeCharacteristics(
         uid: Int,
@@ -21,9 +20,10 @@ class JdbiCharacteristicsRepository(
         thighSize: Int?,
         tricepFat: Int?,
         abdomenFat: Int?,
-        thighFat: Int?
+        thighFat: Int?,
     ): Long =
-        handle.createUpdate("""
+        handle.createUpdate(
+            """
             insert into waveCoach.characteristics (
                 uid, date, height, weight, calories, body_fat, 
                 waist_size, arm_size, thigh_size, tricep_fat, abdomen_fat, thigh_fat
@@ -32,7 +32,7 @@ class JdbiCharacteristicsRepository(
                 :uid, :date, :height, :weight, :calories, :body_fat, :waist_size, 
                 :arm_size, :thigh_size, :tricep_fat, :abdomen_fat, :thigh_fat
             )
-        """.trimIndent()
+            """.trimIndent(),
         )
             .bind("uid", uid)
             .bind("date", date)
@@ -61,9 +61,10 @@ class JdbiCharacteristicsRepository(
         thighSize: Int?,
         tricepFat: Int?,
         abdomenFat: Int?,
-        thighFat: Int?
+        thighFat: Int?,
     ): Long =
-        handle.createUpdate("""
+        handle.createUpdate(
+            """
             insert into waveCoach.characteristics (
                 uid, height, weight, calories, body_fat, 
                 waist_size, arm_size, thigh_size, tricep_fat, abdomen_fat, thigh_fat
@@ -72,7 +73,7 @@ class JdbiCharacteristicsRepository(
                 :uid, :height, :weight, :calories, :body_fat, :waist_size, 
                 :arm_size, :thigh_size, :tricep_fat, :abdomen_fat, :thigh_fat
             )
-        """.trimIndent()
+            """.trimIndent(),
         )
             .bind("uid", uid)
             .bind("height", height)
@@ -89,7 +90,10 @@ class JdbiCharacteristicsRepository(
             .mapTo<Long>()
             .one()
 
-    override fun getCharacteristics(uid: Int, date: Long): Characteristics? =
+    override fun getCharacteristics(
+        uid: Int,
+        date: Long,
+    ): Characteristics? =
         handle.createQuery("select * from waveCoach.characteristics where uid = :uid and date = :date")
             .bind("uid", uid)
             .bind("date", date)
@@ -114,7 +118,7 @@ class JdbiCharacteristicsRepository(
         thighSize: Int?,
         tricepFat: Int?,
         abdomenFat: Int?,
-        thighFat: Int?
+        thighFat: Int?,
     ) {
         handle.createUpdate(
             """
@@ -123,7 +127,7 @@ class JdbiCharacteristicsRepository(
                 waist_size = :waist_size, arm_size = :arm_size, thigh_size = :thigh_size, tricep_fat = :tricep_fat, 
                 abdomen_fat = :abdomen_fat, thigh_fat = :thigh_fat
             where uid = :uid and date = :date
-        """.trimIndent()
+            """.trimIndent(),
         )
             .bind("uid", uid)
             .bind("date", date)
@@ -140,7 +144,10 @@ class JdbiCharacteristicsRepository(
             .execute()
     }
 
-    override fun removeCharacteristics(uid: Int, date: Long) {
+    override fun removeCharacteristics(
+        uid: Int,
+        date: Long,
+    ) {
         handle.createUpdate("delete from waveCoach.characteristics where uid = :uid and date = :date")
             .bind("uid", uid)
             .bind("date", date)

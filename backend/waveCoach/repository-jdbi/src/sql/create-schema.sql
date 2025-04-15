@@ -38,9 +38,14 @@ CREATE TABLE waveCoach.athlete (
     coach INTEGER,
     name VARCHAR(64) NOT NULL,
     birth_date BIGINT NOT NULL,
-    --code VARCHAR(64) UNIQUE NOT NULL,
     FOREIGN KEY (coach) REFERENCES waveCoach.coach(uid),
     FOREIGN KEY (uid) REFERENCES waveCoach.user(id)
+);
+
+CREATE TABLE waveCoach.code (
+    code VARCHAR(256) PRIMARY KEY,
+    uid INTEGER UNIQUE REFERENCES waveCoach.athlete(uid),
+    created_time BIGINT DEFAULT EXTRACT(EPOCH FROM CURRENT_TIMESTAMP) NOT NULL
 );
 
 CREATE TABLE waveCoach.token (

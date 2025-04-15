@@ -77,7 +77,7 @@ task<Exec>("buildImageNginx") {
 }
 
 task<Exec>("buildImagePostgresTest") {
-    commandLine("docker", "build", "-t", postgresTestTag, "-f", "tests/Dockerfile-postgres-test", "../repository-jdbi",)
+    commandLine("docker", "build", "-t", postgresTestTag, "-f", "tests/Dockerfile-postgres-test", "../repository-jdbi")
 }
 
 task<Exec>("buildImageUbuntu") {

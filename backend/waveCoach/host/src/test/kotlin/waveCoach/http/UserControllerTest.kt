@@ -1,11 +1,9 @@
 package waveCoach.http
 
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.http.MediaType
 import org.springframework.test.web.reactive.server.WebTestClient
-import org.springframework.test.web.reactive.server.returnResult
 import waveCoach.host.WaveCoachApplication
 import waveCoach.http.model.output.Problem
 import kotlin.math.abs
@@ -20,109 +18,6 @@ class UserControllerTest {
     val BASE_URL: String
         get() = "http://localhost:$port/api"
 
-
-
-    /**
-     * Create User Tests
-     */
-
-    @Test
-    fun `create a user - success`() {
-        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
-
-        val body = mapOf(
-            "username" to randomString(),
-            "password" to randomString(),
-        )
-
-        client.post().uri("/users")
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(body)
-            .exchange()
-            .expectStatus().isCreated
-            .expectHeader().exists("Location")
-            .expectHeader().value("location") {
-                assertTrue(it.startsWith("/api/users/"))
-            }
-    }
-
-    @Test
-    fun `create a user - invalid username`() {
-        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
-
-        val invalidUsernames = listOf(
-            "", // empty
-            "aaa", // smaller than 4 characters
-            "a".repeat(64), // bigger than 63 characters
-        )
-
-        invalidUsernames.forEach { username ->
-            val body = mapOf(
-                "username" to username,
-                "password" to randomString(),
-            )
-
-            client.post().uri("/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(body)
-                .exchange()
-                .expectStatus().isBadRequest
-                .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
-                .expectBody()
-                .jsonPath("type").isEqualTo(Problem.invalidUsername.type.toString())
-        }
-    }
-
-    @Test
-    fun `create a user - insecure password`() {
-        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
-
-        val insecurePasswords = listOf(
-            "Abc1234", // missing special character
-            "abc123!", // missing uppercase letter
-            "ABC123!", // missing lowercase letter
-            "Abc!@#", // missing number
-            "Abc12!", // smaller than 6 characters
-        )
-
-        insecurePasswords.forEach { password ->
-            val body = mapOf(
-                "username" to randomString(),
-                "password" to password,
-            )
-
-            client.post().uri("/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(body)
-                .exchange()
-                .expectStatus().isBadRequest
-                .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
-                .expectBody()
-                .jsonPath("type").isEqualTo(Problem.insecurePassword.type.toString())
-        }
-    }
-
-    @Test
-    fun `create a user - username already exists`() {
-        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
-
-        val body = mapOf(
-            "username" to USERNAME_OF_ADMIN,
-            "password" to randomString(),
-        )
-
-        client.post().uri("/users")
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(body)
-            .exchange()
-            .expectStatus().isBadRequest
-            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
-            .expectBody()
-            .jsonPath("type").isEqualTo(Problem.usernameAlreadyExists.type.toString())
-    }
-
-
-
     /**
      * Login Tests
      */
@@ -131,10 +26,11 @@ class UserControllerTest {
     fun `login - success`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val body = mapOf(
-            "username" to USERNAME_OF_ADMIN,
-            "password" to PASSWORD_OF_ADMIN,
-        )
+        val body =
+            mapOf(
+                "username" to USERNAME_OF_ADMIN,
+                "password" to PASSWORD_OF_ADMIN,
+            )
 
         client.post().uri("/login")
             .contentType(MediaType.APPLICATION_JSON)
@@ -151,10 +47,11 @@ class UserControllerTest {
     fun `login - username is blank`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val body = mapOf(
-            "username" to "",
-            "password" to PASSWORD_OF_ADMIN,
-        )
+        val body =
+            mapOf(
+                "username" to "",
+                "password" to PASSWORD_OF_ADMIN,
+            )
 
         client.post().uri("/login")
             .contentType(MediaType.APPLICATION_JSON)
@@ -170,10 +67,11 @@ class UserControllerTest {
     fun `login - password is blank`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val body = mapOf(
-            "username" to USERNAME_OF_ADMIN,
-            "password" to "",
-        )
+        val body =
+            mapOf(
+                "username" to USERNAME_OF_ADMIN,
+                "password" to "",
+            )
 
         client.post().uri("/login")
             .contentType(MediaType.APPLICATION_JSON)
@@ -189,10 +87,11 @@ class UserControllerTest {
     fun `login - invalid login`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val body = mapOf(
-            "username" to randomString(),
-            "password" to randomString()
-        )
+        val body =
+            mapOf(
+                "username" to randomString(),
+                "password" to randomString(),
+            )
 
         client.post().uri("/login")
             .contentType(MediaType.APPLICATION_JSON)
@@ -204,8 +103,6 @@ class UserControllerTest {
             .jsonPath("type").isEqualTo(Problem.invalidLogin.type.toString())
     }
 
-
-
     /**
      * Logout Tests
      */
@@ -214,10 +111,11 @@ class UserControllerTest {
     fun `logout (authorization header) - success`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val body = mapOf(
-            "username" to USERNAME_OF_ADMIN,
-            "password" to PASSWORD_OF_ADMIN,
-        )
+        val body =
+            mapOf(
+                "username" to USERNAME_OF_ADMIN,
+                "password" to PASSWORD_OF_ADMIN,
+            )
 
         client.post().uri("/login").bodyValue(body).exchange().expectBody()
             .jsonPath("$.token").value<String> { token ->
@@ -228,15 +126,15 @@ class UserControllerTest {
             }
     }
 
-
     @Test
     fun `logout (cookie) - success`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val body = mapOf(
-            "username" to USERNAME_OF_ADMIN,
-            "password" to PASSWORD_OF_ADMIN,
-        )
+        val body =
+            mapOf(
+                "username" to USERNAME_OF_ADMIN,
+                "password" to PASSWORD_OF_ADMIN,
+            )
 
         client.post().uri("/login").bodyValue(body).exchange().expectBody()
             .jsonPath("$.token").value<String> { token ->
@@ -268,10 +166,9 @@ class UserControllerTest {
             .expectStatus().isUnauthorized
     }
 
-
     companion object {
-        val USERNAME_OF_ADMIN = "admin"
-        val PASSWORD_OF_ADMIN = "Admin123!"
+        private val USERNAME_OF_ADMIN = "admin"
+        private val PASSWORD_OF_ADMIN = "Admin123!"
 
         private fun randomString() = "String_${abs(Random.nextLong())}"
     }

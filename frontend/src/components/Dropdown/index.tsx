@@ -3,10 +3,14 @@ import { useEffect, useRef, useState } from 'react'
 
 import styles from './styles.module.css'
 
-type DropdownProps = {
-  options: string[]
+type DropdownOption = {
+  label: string
+  onClick: () => void
 }
 
+type DropdownProps = {
+  options: DropdownOption[]
+}
 export function Dropdown({ options }: DropdownProps) {
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement | null>(null)
@@ -35,8 +39,15 @@ export function Dropdown({ options }: DropdownProps) {
       {isOpen && (
         <ul className={styles.dropdownMenu}>
           {options.map((option, index) => (
-            <li key={index} className={styles.dropdownItem}>
-              {option}
+            <li
+              key={index}
+              className={styles.dropdownItem}
+              onClick={() => {
+                option.onClick()
+                setIsOpen(false)
+              }}
+            >
+              {option.label}
             </li>
           ))}
         </ul>

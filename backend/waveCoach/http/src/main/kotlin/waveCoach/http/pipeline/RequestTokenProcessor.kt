@@ -22,11 +22,12 @@ class RequestTokenProcessor(
     fun processAuthorizationCookieValue(value: String?): AuthenticatedUser? {
         if (value == null) return null
 
-        val token = value
-            .split("; ")
-            .find { it.startsWith("$COOKIE=") }
-            ?.substringAfter("$COOKIE=")
-            ?: return null
+        val token =
+            value
+                .split("; ")
+                .find { it.startsWith("$COOKIE=") }
+                ?.substringAfter("$COOKIE=")
+                ?: return null
 
         return validateToken(token)
     }
@@ -34,7 +35,7 @@ class RequestTokenProcessor(
     private fun validateToken(token: String): AuthenticatedUser? =
         when (val result = userServices.getUserByToken(token)) {
             is Success -> AuthenticatedUser(result.value, token)
-            is Failure-> null
+            is Failure -> null
         }
 
     companion object {

@@ -13,5 +13,5 @@ data class CharacteristicsOutputModel(
     val thighSize: Int?,
     val tricepFat: Int?,
     val abdomenFat: Int?,
-    val thighFat: Int?
+    val thighFat: Int?,
 )

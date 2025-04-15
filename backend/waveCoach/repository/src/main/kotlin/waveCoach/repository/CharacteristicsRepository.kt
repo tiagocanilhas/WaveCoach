@@ -15,7 +15,7 @@ interface CharacteristicsRepository {
         thighSize: Int?,
         tricepFat: Int?,
         abdomenFat: Int?,
-        thighFat: Int?
+        thighFat: Int?,
     ): Long
 
     fun storeCharacteristicsWithoutDate(
@@ -29,10 +29,13 @@ interface CharacteristicsRepository {
         thighSize: Int?,
         tricepFat: Int?,
         abdomenFat: Int?,
-        thighFat: Int?
+        thighFat: Int?,
     ): Long
 
-    fun getCharacteristics(uid: Int, date: Long): Characteristics?
+    fun getCharacteristics(
+        uid: Int,
+        date: Long,
+    ): Characteristics?
 
     fun getCharacteristicsList(uid: Int): List<Characteristics>
 
@@ -48,10 +51,13 @@ interface CharacteristicsRepository {
         thighSize: Int?,
         tricepFat: Int?,
         abdomenFat: Int?,
-        thighFat: Int?
+        thighFat: Int?,
     )
 
-    fun removeCharacteristics(uid: Int, date: Long)
+    fun removeCharacteristics(
+        uid: Int,
+        date: Long,
+    )
 
     fun removeCharacteristicsWithoutDate(uid: Int)
 }

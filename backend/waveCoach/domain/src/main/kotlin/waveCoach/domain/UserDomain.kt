@@ -13,21 +13,21 @@ class UserDomain(
     private val tokenEncoder: TokenEncoder,
     private val config: UserDomainConfig,
 ) {
-    fun isUsernameValid(username: String): Boolean =
-        username.length in 4..63
+    fun isUsernameValid(username: String): Boolean = username.length in 4..63
 
     fun isSafePassword(password: String): Boolean =
         password.length > 6 &&
-                password.any { it.isUpperCase() } &&
-                password.any { it.isLowerCase() } &&
-                password.any { it.isDigit() } &&
-                password.any { !it.isLetterOrDigit() }
+            password.any { it.isUpperCase() } &&
+            password.any { it.isLowerCase() } &&
+            password.any { it.isDigit() } &&
+            password.any { !it.isLetterOrDigit() }
 
-    fun createPasswordValidationInformation(password: String) =
-        PasswordValidationInfo(passwordEncoder.encode(password))
+    fun createPasswordValidationInformation(password: String) = PasswordValidationInfo(passwordEncoder.encode(password))
 
-    fun validatePassword(password: String, validationInfo: PasswordValidationInfo) =
-        passwordEncoder.matches(password, validationInfo.value)
+    fun validatePassword(
+        password: String,
+        validationInfo: PasswordValidationInfo,
+    ) = passwordEncoder.matches(password, validationInfo.value)
 
     fun generateTokenValue(): String =
         ByteArray(config.tokenSizeInBytes).let { byteArray ->
@@ -35,8 +35,7 @@ class UserDomain(
             Base64.getUrlEncoder().encodeToString(byteArray)
         }
 
-    fun createTokenValidationInformation(token: String): TokenValidationInfo =
-        tokenEncoder.createValidationInformation(token)
+    fun createTokenValidationInformation(token: String): TokenValidationInfo = tokenEncoder.createValidationInformation(token)
 
     fun canBeToken(token: String): Boolean =
         try {

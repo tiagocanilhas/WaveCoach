@@ -11,50 +11,14 @@ servers:
 tags:
   - name: Users
     description: Operations about user
+
+  - name: Coaches
+    description: Operations about coaches
     
   - name: Athletes
     description: Operations about athletes
 
 paths:
-  /users:
-    description: The resource that represents the users
-    post:
-      tags:
-      - Users
-      summary: Create an User
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserCreateInputModel'
-      responses:
-        201:
-          description: User was created
-          headers:
-            Location:
-              description: The URL of the created user resource
-              schema:
-                type: string
-                example: "/users/123"
-                  
-        400:
-          description: Failed to create a user
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                  - $ref: '#/components/schemas/InvalidUsername'
-                  - $ref: '#/components/schemas/InsecurePassword'
-                  - $ref: '#/components/schemas/UsernameAlreadyExists'
-              examples:
-                invalidUsername:
-                  $ref: '#/components/examples/InvalidUsername'
-                insecurePassword:
-                  $ref: '#/components/examples/InsecurePassword'
-                usernameAlreadyExists:
-                  $ref: '#/components/examples/UsernameAlreadyExists'
-  
   /login:
     description: The resource that represents a login
     post:
@@ -118,6 +82,45 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/TokenNotFound' 
+
+  /coaches:
+    description: The resource that represents the coaches
+    post:
+      tags:
+      - Coaches
+      summary: Create a Coach
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CoachCreateInputModel'
+      responses:
+        201:
+          description: Coach was created
+          headers:
+            Location:
+              description: The URL of the created coach resource
+              schema:
+                type: string
+                example: "/coaches/123"
+                  
+        400:
+          description: Failed to create a coach
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/InvalidUsername'
+                  - $ref: '#/components/schemas/InsecurePassword'
+                  - $ref: '#/components/schemas/UsernameAlreadyExists'
+              examples:
+                invalidUsername:
+                  $ref: '#/components/examples/InvalidUsername'
+                insecurePassword:
+                  $ref: '#/components/examples/InsecurePassword'
+                usernameAlreadyExists:
+                  $ref: '#/components/examples/UsernameAlreadyExists'
                 
   /athletes:
     description: The resource that represents the athletes
@@ -293,6 +296,104 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/AthleteNotFound'
+  
+  /athletes/{aid}/code:
+    description: The resource that represents the code of an athlete
+    post:
+      tags:
+        - Athletes
+      summary: Create a code for an athlete
+      parameters:
+        - name: aid
+          in: path
+          required: true
+          description: The ID of the athlete
+          schema:
+            type: string
+      responses:
+        201:
+          description: Code was created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AthleteCodeOutputModel'
+        400:
+          description: Failed to create a code
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/InvalidAthleteId'
+        401:
+          description: The user is not authenticated
+        403:
+          description: The coach is not the athlete's coach
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/NotAthletesCoach'
+        404:
+          description: The athlete was not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/AthleteNotFound'
+  
+  /athletes/code/{code}:
+    description: The resource that represents the athlete by code
+    get:
+      tags:
+        - Athletes
+      summary: Get an athlete by code
+      parameters:
+        - name: code
+          in: path
+          required: true
+          description: The code of the athlete
+          schema:
+            type: string
+      responses:
+        200:
+          description: The athlete was found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AthleteGetOutputModel'
+        400:
+          description: Invalid code
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/InvalidCode'
+  
+  /athletes/credentials:
+    description: The resource that represents the credentials of an athlete
+    post:
+      tags:
+        - Athletes
+      summary: Update the credentials of an athlete
+      responses:
+        204:
+          description: The credentials were updated
+        400:
+          description: Invalid credentials
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/InvalidUsername'
+                  - $ref: '#/components/schemas/UsernameAlreadyExists'
+                  - $ref: '#/components/schemas/InsecurePassword'
+                  - $ref: '#/components/schemas/InvalidCode'
+              examples:
+                invalidUsername:
+                  $ref: '#/components/examples/InvalidUsername'
+                usernameAlreadyExists:
+                  $ref: '#/components/examples/UsernameAlreadyExists'
+                insecurePassword:
+                  $ref: '#/components/examples/InsecurePassword'
+                invalidCode:
+                  $ref: '#/components/examples/InvalidCode'
+
       
   /athletes/{aid}/characteristics:
     description: The resource that represents the characteristics of an athlete
@@ -656,7 +757,7 @@ components:
           type: string
           example: "01-01-1970"
     
-    UserCreateInputModel:
+    CoachCreateInputModel:
       required:
         - username
         - password
@@ -772,6 +873,19 @@ components:
 
     # Output Models
 
+    AthleteCodeOutputModel:
+      required:
+        - code
+        - expirationDate
+      type: object
+      properties:
+        code:
+          type: string
+          example: "1234567890"
+        expirationDate:
+          type: integer
+          example: 1672531199
+        
     AthletesGetOutputModel:
       required:
         - id
@@ -956,6 +1070,15 @@ components:
         type:
           type: string
           example: ""
+    
+    InvalidCode:
+      required:
+        - type
+      type: object
+      properties:
+        type:
+          type: string
+          example: ""
 
     InvalidDate:
       required:
@@ -1072,6 +1195,10 @@ components:
         type: ""
 
     InvalidBirthdate:
+      value:
+        type: ""
+
+    InvalidCode:
       value:
         type: ""
   

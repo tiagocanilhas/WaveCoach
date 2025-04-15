@@ -1,25 +1,25 @@
 import * as React from 'react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 
 import { CircularProgress } from '@mui/material'
 import { RegisterForm } from '../../components/RegisterForm'
 
-import { register } from '../../services/userServices'
+import { getAthleteByCode, changeAthleteCredentials } from '../../services/athleteServices'
 
 import styles from './styles.module.css'
 
 export function RegisterAthlete() {
-  const [username, setUsername] = React.useState('')
+  const [username, setUsername] = useState('')
 
   const navigate = useNavigate()
-  const [params] = useSearchParams()
+  const [params, _] = useSearchParams()
   const code = params.get('code')
 
   useEffect(() => {
     async function getUsername() {
       try {
-        const res = await getUserByCode(code)
+        const res = await getAthleteByCode(code)
         setUsername(res.username)
       } catch (e) {
         navigate('/register/athlete-code')
@@ -29,7 +29,7 @@ export function RegisterAthlete() {
   }, [])
 
   async function handleOnSubmit(username: string, password: string) {
-    return await register(username, password)
+    return await changeAthleteCredentials(code, username, password)
   }
 
   return username === '' ? (
@@ -46,16 +46,4 @@ export function RegisterAthlete() {
       />
     </div>
   )
-}
-
-async function getUserByCode(code: string): Promise<{ username: string }> {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      if (code === 'valid-code') {
-        resolve({ username: 'Athlete_1231231' })
-      } else {
-        reject(new Error('Invalid code'))
-      }
-    }, 2000)
-  })
 }

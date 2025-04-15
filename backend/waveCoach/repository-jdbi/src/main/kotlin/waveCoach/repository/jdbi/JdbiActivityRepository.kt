@@ -8,7 +8,10 @@ import waveCoach.repository.ActivityRepository
 class JdbiActivityRepository(
     private val handle: Handle,
 ) : ActivityRepository {
-    override fun storeActivity(uid: Int, date: Long): Int =
+    override fun storeActivity(
+        uid: Int,
+        date: Long,
+    ): Int =
         handle.createUpdate("insert into waveCoach.activity (uid, date) values (:uid, :date)")
             .bind("uid", uid)
             .bind("date", date)

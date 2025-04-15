@@ -1,0 +1,40 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+.athleteCard {
+}
+
+.athlete {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  gap: 5px;
+}
+
+.athlete img {
+  width: 300px;
+  height: auto;
+  border-radius: 20%;
+  margin-bottom: 20px;
+}
+
+.name {
+}
+
+.age {
+  color: #888;
+}
+
+.calendar {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.workoutsContainer {
+  gap: 20px;
+}

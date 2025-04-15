@@ -8,6 +8,9 @@ import java.sql.SQLException
 
 class InstantMapper : ColumnMapper<Instant> {
     @Throws(SQLException::class)
-    override fun map(rs: ResultSet, columnNumber: Int, ctx: StatementContext): Instant =
-        Instant.fromEpochSeconds(rs.getLong(columnNumber))
+    override fun map(
+        rs: ResultSet,
+        columnNumber: Int,
+        ctx: StatementContext,
+    ): Instant = Instant.fromEpochSeconds(rs.getLong(columnNumber))
 }

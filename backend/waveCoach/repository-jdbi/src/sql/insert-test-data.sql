@@ -20,6 +20,8 @@ insert into waveCoach.characteristics (date, uid, weight, height, calories, body
 insert into waveCoach.characteristics (date, uid, weight, height, calories, body_fat, waist_size, arm_size, thigh_size, tricep_fat, abdomen_fat, thigh_fat) values (947462400000, 3, 74.0, 181, 1, 1.0, 1, 1, 1, 1, 1, 1);
 insert into waveCoach.activity (uid, date) values (3, 948758400000);
 insert into waveCoach.gym (activity) values (1);
+insert into waveCoach.code (code, uid) values ('mGi_ziXh1QK26wim_2Eq3fTbK-2UYOQwGat8keR69EA=', 3);
+-- code: lnAEN21Ohq4cuorzGxMSZMKhCj2mXXSFXCO6UKzSluU=
 
 --Second Athlete
 insert into waveCoach.user (username, password) values ('athlete2', '$2a$10$6wZjBBzU2G1H7rK5VeFNIu.toyRHL.ULP1R2IMjpPy7xB8HhF/h0q');

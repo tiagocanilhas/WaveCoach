@@ -5,161 +5,166 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
 class JdbiCharacteristicsRepositoryTest {
+    @Test
+    fun `get characteristics`() =
+        testWithHandleAndRollback { handle ->
+            val characteristicsRepository = JdbiCharacteristicsRepository(handle)
+
+            val characteristics =
+                characteristicsRepository.getCharacteristics(ATHLETE_ID, ATHLETE_CHARACTERISTICS_FIRST_DATE)
+
+            assertNotNull(characteristics)
+        }
 
     @Test
-    fun `get characteristics`() = testWithHandleAndRollback { handle ->
-        val characteristicsRepository = JdbiCharacteristicsRepository(handle)
+    fun `store characteristics`() =
+        testWithHandleAndRollback { handle ->
+            val characteristicsRepository = JdbiCharacteristicsRepository(handle)
 
-        val characteristics =
-            characteristicsRepository.getCharacteristics(ATHLETE_ID, ATHLETE_CHARACTERISTICS_FIRST_DATE)
+            characteristicsRepository.storeCharacteristics(
+                ATHLETE_ID,
+                DATE,
+                HEIGHT,
+                WEIGHT,
+                CALORIES,
+                BODY_FAT,
+                WAIST_SIZE,
+                ARM_SIZE,
+                THIGH_SIZE,
+                TRICEP_FAT,
+                ABDOMEN_FAT,
+                THIGH_FAT,
+            )
 
-        assertNotNull(characteristics)
-    }
+            val characteristics = characteristicsRepository.getCharacteristics(ATHLETE_ID, DATE)
 
-    @Test
-    fun `store characteristics`() = testWithHandleAndRollback { handle ->
-        val characteristicsRepository = JdbiCharacteristicsRepository(handle)
-
-        characteristicsRepository.storeCharacteristics(
-            ATHLETE_ID,
-            DATE,
-            HEIGHT,
-            WEIGHT,
-            CALORIES,
-            BODY_FAT,
-            WAIST_SIZE,
-            ARM_SIZE,
-            THIGH_SIZE,
-            TRICEP_FAT,
-            ABDOMEN_FAT,
-            THIGH_FAT
-        )
-
-        val characteristics = characteristicsRepository.getCharacteristics(ATHLETE_ID, DATE)
-
-        assertNotNull(characteristics)
-    }
+            assertNotNull(characteristics)
+        }
 
     @Test
-    fun `get characteristics list`() = testWithHandleAndRollback { handle ->
-        val characteristicsRepository = JdbiCharacteristicsRepository(handle)
+    fun `get characteristics list`() =
+        testWithHandleAndRollback { handle ->
+            val characteristicsRepository = JdbiCharacteristicsRepository(handle)
 
-        val characteristicsList = characteristicsRepository.getCharacteristicsList(ATHLETE_ID)
+            val characteristicsList = characteristicsRepository.getCharacteristicsList(ATHLETE_ID)
 
-        assert(characteristicsList.isNotEmpty() && characteristicsList.size == 2)
-    }
-
-    @Test
-    fun `update characteristics`() = testWithHandleAndRollback { handle ->
-        val characteristicsRepository = JdbiCharacteristicsRepository(handle)
-
-        characteristicsRepository.storeCharacteristics(
-            ATHLETE_ID,
-            DATE,
-            HEIGHT,
-            WEIGHT,
-            CALORIES,
-            BODY_FAT,
-            WAIST_SIZE,
-            ARM_SIZE,
-            THIGH_SIZE,
-            TRICEP_FAT,
-            ABDOMEN_FAT,
-            THIGH_FAT
-        )
-
-        val newHeight = 185
-        val newWeight = 85.0f
-        val newCalories = 2100
-        val newBodyFat = 17.0f
-        val newWaistSize = 95
-        val newArmSize = 35
-        val newThighSize = 55
-        val newTricepFat = 15
-        val newAbdomenFat = 25
-        val newThighFat = 35
-
-        characteristicsRepository.updateCharacteristics(
-            ATHLETE_ID,
-            DATE,
-            newHeight,
-            newWeight,
-            newCalories,
-            newBodyFat,
-            newWaistSize,
-            newArmSize,
-            newThighSize,
-            newTricepFat,
-            newAbdomenFat,
-            newThighFat
-        )
-
-        val characteristics = characteristicsRepository.getCharacteristics(ATHLETE_ID, DATE)
-
-        assertNotNull(characteristics)
-
-        assert(characteristics.height == newHeight)
-        assert(characteristics.weight == newWeight)
-        assert(characteristics.calories == newCalories)
-        assert(characteristics.waistSize == newWaistSize)
-        assert(characteristics.armSize == newArmSize)
-        assert(characteristics.thighSize == newThighSize)
-        assert(characteristics.tricepFat == newTricepFat)
-        assert(characteristics.abdomenFat == newAbdomenFat)
-        assert(characteristics.thighFat == newThighFat)
-    }
+            assert(characteristicsList.isNotEmpty() && characteristicsList.size == 2)
+        }
 
     @Test
-    fun `remove characteristics`() = testWithHandleAndRollback { handle ->
-        val characteristicsRepository = JdbiCharacteristicsRepository(handle)
+    fun `update characteristics`() =
+        testWithHandleAndRollback { handle ->
+            val characteristicsRepository = JdbiCharacteristicsRepository(handle)
 
-        characteristicsRepository.storeCharacteristics(
-            ATHLETE_ID,
-            DATE,
-            HEIGHT,
-            WEIGHT,
-            CALORIES,
-            BODY_FAT,
-            WAIST_SIZE,
-            ARM_SIZE,
-            THIGH_SIZE,
-            TRICEP_FAT,
-            ABDOMEN_FAT,
-            THIGH_FAT
-        )
+            characteristicsRepository.storeCharacteristics(
+                ATHLETE_ID,
+                DATE,
+                HEIGHT,
+                WEIGHT,
+                CALORIES,
+                BODY_FAT,
+                WAIST_SIZE,
+                ARM_SIZE,
+                THIGH_SIZE,
+                TRICEP_FAT,
+                ABDOMEN_FAT,
+                THIGH_FAT,
+            )
 
-        characteristicsRepository.removeCharacteristics(ATHLETE_ID, DATE)
+            val newHeight = 185
+            val newWeight = 85.0f
+            val newCalories = 2100
+            val newBodyFat = 17.0f
+            val newWaistSize = 95
+            val newArmSize = 35
+            val newThighSize = 55
+            val newTricepFat = 15
+            val newAbdomenFat = 25
+            val newThighFat = 35
 
-        val characteristics = characteristicsRepository.getCharacteristics(ATHLETE_ID, DATE)
+            characteristicsRepository.updateCharacteristics(
+                ATHLETE_ID,
+                DATE,
+                newHeight,
+                newWeight,
+                newCalories,
+                newBodyFat,
+                newWaistSize,
+                newArmSize,
+                newThighSize,
+                newTricepFat,
+                newAbdomenFat,
+                newThighFat,
+            )
 
-        assertNull(characteristics)
-    }
+            val characteristics = characteristicsRepository.getCharacteristics(ATHLETE_ID, DATE)
+
+            assertNotNull(characteristics)
+
+            assert(characteristics.height == newHeight)
+            assert(characteristics.weight == newWeight)
+            assert(characteristics.calories == newCalories)
+            assert(characteristics.waistSize == newWaistSize)
+            assert(characteristics.armSize == newArmSize)
+            assert(characteristics.thighSize == newThighSize)
+            assert(characteristics.tricepFat == newTricepFat)
+            assert(characteristics.abdomenFat == newAbdomenFat)
+            assert(characteristics.thighFat == newThighFat)
+        }
 
     @Test
-    fun `remove characteristics without date`() = testWithHandleAndRollback { handle ->
-        val characteristicsRepository = JdbiCharacteristicsRepository(handle)
+    fun `remove characteristics`() =
+        testWithHandleAndRollback { handle ->
+            val characteristicsRepository = JdbiCharacteristicsRepository(handle)
 
-        characteristicsRepository.storeCharacteristics(
-            ATHLETE_ID,
-            DATE,
-            HEIGHT,
-            WEIGHT,
-            CALORIES,
-            BODY_FAT,
-            WAIST_SIZE,
-            ARM_SIZE,
-            THIGH_SIZE,
-            TRICEP_FAT,
-            ABDOMEN_FAT,
-            THIGH_FAT
-        )
+            characteristicsRepository.storeCharacteristics(
+                ATHLETE_ID,
+                DATE,
+                HEIGHT,
+                WEIGHT,
+                CALORIES,
+                BODY_FAT,
+                WAIST_SIZE,
+                ARM_SIZE,
+                THIGH_SIZE,
+                TRICEP_FAT,
+                ABDOMEN_FAT,
+                THIGH_FAT,
+            )
 
-        characteristicsRepository.removeCharacteristicsWithoutDate(ATHLETE_ID)
+            characteristicsRepository.removeCharacteristics(ATHLETE_ID, DATE)
 
-        val characteristicsList = characteristicsRepository.getCharacteristicsList(ATHLETE_ID)
+            val characteristics = characteristicsRepository.getCharacteristics(ATHLETE_ID, DATE)
 
-        assert(characteristicsList.isEmpty())
-    }
+            assertNull(characteristics)
+        }
+
+    @Test
+    fun `remove characteristics without date`() =
+        testWithHandleAndRollback { handle ->
+            val characteristicsRepository = JdbiCharacteristicsRepository(handle)
+
+            characteristicsRepository.storeCharacteristics(
+                ATHLETE_ID,
+                DATE,
+                HEIGHT,
+                WEIGHT,
+                CALORIES,
+                BODY_FAT,
+                WAIST_SIZE,
+                ARM_SIZE,
+                THIGH_SIZE,
+                TRICEP_FAT,
+                ABDOMEN_FAT,
+                THIGH_FAT,
+            )
+
+            characteristicsRepository.removeCharacteristicsWithoutDate(ATHLETE_ID)
+
+            val characteristicsList = characteristicsRepository.getCharacteristicsList(ATHLETE_ID)
+
+            assert(characteristicsList.isEmpty())
+        }
 
     companion object {
         private const val ATHLETE_ID = 3
