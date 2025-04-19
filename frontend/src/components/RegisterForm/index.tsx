@@ -4,6 +4,7 @@ import { Navigate, useNavigate } from 'react-router-dom'
 
 import TextField from '@mui/material/TextField'
 import { Card } from '../Card'
+import { Button } from '../Button'
 import { BackButton } from '../BackButton'
 
 import { validatePassword } from '../../utils/validatePassword'
@@ -133,9 +134,7 @@ export function RegisterForm({ title, initialUsername, buttonText, onSubmit }: R
               onChange={handleOnChange}
               required
             />
-            <button type="submit" disabled={disabled} className={styles.btn}>
-              {buttonText}
-            </button>
+            <Button text={buttonText} type="submit" width="100%" height="25px" disabled={disabled} />
           </form>
           {state.tag === 'editing' && state.error && <p className={styles.errorMessage}>{state.error}</p>}
         </>

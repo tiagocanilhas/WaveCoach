@@ -9,7 +9,7 @@ import { getAthlete } from '../../services/athleteServices'
 import styles from './styles.module.css'
 
 export function AthleteSelectedLayout() {
-  const [athleteName, setAthleteName] = useState('')
+  const [athleteName, setAthleteName] = useState('Wave Coach')
   const id = useParams().aid
 
   useEffect(() => {
@@ -18,7 +18,7 @@ export function AthleteSelectedLayout() {
         const res = await getAthlete(id)
         setAthleteName(res.name)
       } catch (error) {
-        setAthleteName('Wave Coach')
+        // Handle error if needed
       }
     }
     fetchAthleteName()

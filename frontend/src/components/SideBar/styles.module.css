@@ -49,7 +49,8 @@
 }
 
 .sidebarText a,
-.sidebarBottomText a {
+.sidebarBottomText a,
+.logout {
   text-decoration: none;
   color: #3c2f2f;
   font-size: 20px;
@@ -70,7 +71,8 @@
 }
 
 .sidebarText a:hover,
-.sidebarBottomText a:hover {
+.sidebarBottomText a:hover,
+.logout:hover {
   background: #cccccc;
 }
 

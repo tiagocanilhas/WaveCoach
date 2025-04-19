@@ -79,6 +79,7 @@ class CoachControllerTest {
 
         val insecurePasswords =
             listOf(
+                "", // empty
                 "Abc1234", // missing special character
                 "abc123!", // missing uppercase letter
                 "ABC123!", // missing lowercase letter

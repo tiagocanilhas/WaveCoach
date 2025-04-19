@@ -165,10 +165,191 @@ class UserControllerTest {
             .exchange()
             .expectStatus().isUnauthorized
     }
+    
+    
+    
+    /**
+     * Auth Check Tests
+     */
+    
+    @Test
+    fun `auth check (authorization header) - success`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "username" to USERNAME_OF_ADMIN,
+                "password" to PASSWORD_OF_ADMIN,
+            )
+
+        client.post().uri("/login").bodyValue(body).exchange().expectBody()
+            .jsonPath("$.token").value<String> { token ->
+                client.get().uri("/me")
+                    .header("Authorization", "Bearer $token")
+                    .exchange()
+                    .expectStatus().isOk
+                    .expectBody()
+                    .jsonPath("id").isEqualTo(1)
+                    .jsonPath("username").isEqualTo(USERNAME_OF_ADMIN)
+            }
+    }
+    
+    @Test
+    fun `auth check (cookie) - success`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "username" to USERNAME_OF_ADMIN,
+                "password" to PASSWORD_OF_ADMIN,
+            )
+
+        client.post().uri("/login").bodyValue(body).exchange().expectBody()
+            .jsonPath("$.token").value<String> { token ->
+                client.get().uri("/me")
+                    .cookie("token", token)
+                    .exchange()
+                    .expectStatus().isOk
+                    .expectBody()
+                    .jsonPath("id").isEqualTo(1)
+                    .jsonPath("username").isEqualTo(USERNAME_OF_ADMIN)
+            }
+    }
+    
+    @Test
+    fun `auth check - unauthorized`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val token = randomString()
+
+        client.get().uri("/me")
+            .header("Authorization", "Bearer $token")
+            .exchange()
+            .expectStatus().isUnauthorized
+
+        // Cookie
+        client.get().uri("/me")
+            .cookie("token", token)
+            .exchange()
+            .expectStatus().isUnauthorized
+    }
+
+
+
+    /**
+     * Update User Tests
+     */
+
+    @Test
+    fun `update user - success`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "username" to randomString(),
+                "password" to randomString(),
+            )
+
+        client.put().uri("/me")
+            .header("Authorization", "Bearer $TOKEN_OF_SECOND_COACH")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isNoContent
+            .expectBody()
+    }
+
+    @Test
+    fun `update user - invalid username`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val invalidUsernames =
+            listOf(
+                "", // empty
+                "aaa", // smaller than 4 characters
+                "a".repeat(64), // bigger than 63 characters
+            )
+
+        invalidUsernames.forEach { username ->
+            val body =
+                mapOf(
+                    "username" to username,
+                    "password" to randomString(),
+                )
+
+            client.put().uri("/me")
+                .header("Authorization", "Bearer $TOKEN_OF_SECOND_COACH")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(body)
+                .exchange()
+                .expectStatus().isBadRequest
+                .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+                .expectBody()
+                .jsonPath("type").isEqualTo(Problem.invalidUsername.type.toString())
+        }
+    }
+
+    @Test
+    fun `update user - insecure password`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val insecurePasswords =
+            listOf(
+                "", // empty
+                "Abc1234", // missing special character
+                "abc123!", // missing uppercase letter
+                "ABC123!", // missing lowercase letter
+                "Abc!@#", // missing number
+                "Abc12!", // smaller than 6 characters
+            )
+
+        insecurePasswords.forEach { password ->
+            val body =
+                mapOf(
+                    "username" to randomString(),
+                    "password" to password,
+                )
+
+            client.put().uri("/me")
+                .header("Authorization", "Bearer $TOKEN_OF_SECOND_COACH")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(body)
+                .exchange()
+                .expectStatus().isBadRequest
+                .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+                .expectBody()
+                .jsonPath("type").isEqualTo(Problem.insecurePassword.type.toString())
+        }
+    }
+
+    @Test
+    fun `update user - username already exists`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "username" to USERNAME_OF_ADMIN,
+                "password" to randomString(),
+            )
+
+        client.put().uri("/me")
+            .header("Authorization", "Bearer $TOKEN_OF_SECOND_COACH")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.usernameAlreadyExists.type.toString())
+    }
+
 
     companion object {
         private val USERNAME_OF_ADMIN = "admin"
         private val PASSWORD_OF_ADMIN = "Admin123!"
+
+        private val USERNAME_OF_SECOND_COACH = "user2"
+        private val TOKEN_OF_SECOND_COACH = "fM5JjtPOUqtnZg1lB7jnJhXBP5gI2WbIIBoO3JhYM5M="
 
         private fun randomString() = "String_${abs(Random.nextLong())}"
     }

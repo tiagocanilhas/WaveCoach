@@ -48,3 +48,23 @@ body {
   height: 100vh;
   overflow: hidden;
 }
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #d6d6d6;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #999999;
+  border-radius: 10px;
+  border: 1px solid #aaaaaa;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

@@ -1,0 +1,26 @@
+.btn {
+  background-color: var(--button-color);
+  color: var(--button-text-color);
+  border: none;
+  border-radius: 5px;
+}
+
+.btn:hover {
+  background-color: var(--button-hover-color);
+  color: var(--button-text-hover-color);
+}
+
+.btn:active {
+  background-color: var(--button-active-color);
+  color: var(--button-text-hover-color);
+}
+
+.btn:disabled {
+  background-color: var(--button-disabled-color);
+  color: var(--button-disabled-text-color);
+  cursor: not-allowed;
+}
+
+.btn:disabled:hover {
+  background-color: var(--button-disabled-hover-color);
+}

@@ -1,15 +1,17 @@
 import * as React from 'react'
-import { useEffect } from 'react'
+import { useEffect, useReducer } from 'react'
 import { Link } from 'react-router-dom'
 
 import { CircularProgress } from '@mui/material'
 import { TextField } from '@mui/material'
 import { Card } from '../../components/Card'
 import { AddAthletePopup } from '../../components/AddAthletePopup'
-import { ObjectListWithAdd } from '../../components/ObjectListWithAdd'
+import { ObjectList } from '../../components/ObjectList'
 import { Dropdown } from '../../components/Dropdown'
 
 import { getAthletes } from '../../services/athleteServices'
+import { generateCode } from '../../services/athleteServices'
+import { deleteAthlete } from '../../services/athleteServices'
 
 import { Athlete } from '../../types/athlete'
 
@@ -43,9 +45,9 @@ const initialState: State = {
 }
 
 export function Home() {
-  const [state, dispatch] = React.useReducer(reducer, initialState)
+  const [state, dispatch] = useReducer(reducer, initialState)
 
-  async function refetchAthletes() {
+  async function fetchAthletes() {
     try {
       const res = await getAthletes()
       dispatch({ type: 'setAthletes', athletes: res.athletes })
@@ -55,11 +57,33 @@ export function Home() {
   }
 
   useEffect(() => {
-    refetchAthletes()
+    fetchAthletes()
   }, [])
 
   function handleSearch(ev: React.ChangeEvent<HTMLInputElement>) {
     dispatch({ type: 'edit', search: ev.target.value })
+  }
+
+  async function handleGetCode(id: number) {
+    try {
+      const res = await generateCode(id.toString())
+      await navigator.clipboard.writeText(res.code)
+      alert('Code was copied to clipboard!')
+    } catch (error) {
+      alert('Error generating code')
+    }
+  }
+
+  async function handleDelete(id: number) {
+    if (confirm('Are you sure you want to delete this athlete?')) {
+      try {
+        await deleteAthlete(id.toString())
+        alert('Athlete deleted successfully')
+        fetchAthletes()
+      } catch (error) {
+        alert('Error deleting athlete')
+      }
+    }
   }
 
   function handlePopup() {
@@ -85,14 +109,15 @@ export function Home() {
           width="500px"
         />
 
-        <ObjectListWithAdd
+        <ObjectList
           items={athletes}
+          getKey={athlete => athlete.uid}
           renderItem={athlete => (
             <div className={styles.athlete}>
               <Dropdown
                 options={[
-                  { label: 'Edit', onClick: () => console.log('Edit') },
-                  { label: 'Delete', onClick: () => console.log('Delete') },
+                  { label: 'Generate Code', onClick: () => handleGetCode(athlete.uid) },
+                  { label: 'Delete', onClick: () => handleDelete(athlete.uid) },
                 ]}
               />
               <Link to={`/athletes/${athlete.uid}`} className={styles.link}>
@@ -105,7 +130,7 @@ export function Home() {
         />
       </div>
 
-      <AddAthletePopup open={state.popupOpen} onClose={handlePopup} onSuccess={refetchAthletes} />
+      <AddAthletePopup open={state.popupOpen} onClose={handlePopup} onSuccess={fetchAthletes} />
     </>
   )
 }

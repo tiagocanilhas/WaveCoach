@@ -4,6 +4,8 @@ const USERS_URL = `${BASE_URL}/users`
 const USERS = {
   login: `${BASE_URL}/login`,
   logout: `${BASE_URL}/logout`,
+  checkAuth: `${BASE_URL}/me`,
+  update: `${BASE_URL}/me`,
 }
 
 const COACHES_URL = `${BASE_URL}/coaches`

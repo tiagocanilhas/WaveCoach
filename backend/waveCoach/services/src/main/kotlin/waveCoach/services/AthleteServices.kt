@@ -302,6 +302,7 @@ class AthleteServices(
             if (userRepository.checkUsername(username)) return@run failure(ChangeCredentialsError.UsernameAlreadyExists)
 
             userRepository.updateUser(athlete.uid, username, passwordValidationInfo)
+            athleteRepository.removeCode(athlete.uid)
             success(athlete.uid)
         }
     }

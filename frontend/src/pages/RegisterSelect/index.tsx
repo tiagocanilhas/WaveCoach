@@ -2,6 +2,7 @@ import * as React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { Card } from '../../components/Card'
+import { Button } from '../../components/Button'
 
 import styles from './styles.module.css'
 
@@ -23,12 +24,8 @@ export function RegisterSelect() {
           <>
             <h1 className={styles.title}>Register</h1>
             <div className={styles.buttons}>
-              <button onClick={handleOnClickCoach} className={styles.btn}>
-                Coach
-              </button>
-              <button onClick={handleOnClickAthlete} className={styles.btn}>
-                Athlete
-              </button>
+              <Button text="Coach" onClick={handleOnClickCoach} width="100%" height="25px" />
+              <Button text="Athlete" onClick={handleOnClickAthlete} width="100%" height="25px" />
             </div>
             <p className={styles.text}>
               Have an account? <Link to="/login">Login</Link>

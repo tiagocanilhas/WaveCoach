@@ -301,7 +301,9 @@ class AthleteServicesTest {
         val testClock = TestClock()
         val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
 
-        when (val result = athleteServices.getUsernameByCode(FIRST_ATHLETE_CODE)) {
+        val code = (athleteServices.generateCode(FIRST_COACH_ID, FIRST_ATHLETE_ID) as Success).value.code
+
+        when (val result = athleteServices.getUsernameByCode(code)) {
             is Failure -> fail("Unexpected $result")
             is Success -> assertTrue(result.value == FIRST_ATHLETE_USERNAME)
         }
@@ -329,7 +331,9 @@ class AthleteServicesTest {
         val testClock = TestClock()
         val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
 
-        when (val result = athleteServices.changeCredentials(FIRST_ATHLETE_CODE, randomString(), randomString())) {
+        val code = (athleteServices.generateCode(FIRST_COACH_ID, FIRST_ATHLETE_ID) as Success).value.code
+
+        when (val result = athleteServices.changeCredentials(code, randomString(), randomString())) {
             is Failure -> fail("Unexpected $result")
             is Success -> assertTrue(result.value == FIRST_ATHLETE_ID)
         }
@@ -346,8 +350,10 @@ class AthleteServicesTest {
                 "a".repeat(65),
             )
 
+        val code = (athleteServices.generateCode(FIRST_COACH_ID, FIRST_ATHLETE_ID) as Success).value.code
+
         invalidUsernames.forEach { username ->
-            when (val result = athleteServices.changeCredentials(FIRST_ATHLETE_CODE, username, randomString())) {
+            when (val result = athleteServices.changeCredentials(code, username, randomString())) {
                 is Failure -> assertTrue(result.value is ChangeCredentialsError.InvalidUsername)
                 is Success -> fail("Unexpected $result")
             }
@@ -359,11 +365,23 @@ class AthleteServicesTest {
         val testClock = TestClock()
         val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
 
-        val password = "1234"
+        val insecurePasswords =
+            listOf(
+                "", // empty
+                "Abc1234", // missing special character
+                "abc123!", // missing uppercase letter
+                "ABC123!", // missing lowercase letter
+                "Abc!@#", // missing number
+                "Abc12!", // smaller than 6 characters
+            )
 
-        when (val result = athleteServices.changeCredentials(FIRST_ATHLETE_CODE, randomString(), password)) {
-            is Failure -> assertTrue(result.value is ChangeCredentialsError.InsecurePassword)
-            is Success -> fail("Unexpected $result")
+        val code = (athleteServices.generateCode(FIRST_COACH_ID, FIRST_ATHLETE_ID) as Success).value.code
+
+        insecurePasswords.forEach { password ->
+            when (val result = athleteServices.changeCredentials(code, randomString(), password)) {
+                is Failure -> assertTrue(result.value is ChangeCredentialsError.InsecurePassword)
+                is Success -> fail("Unexpected $result")
+            }
         }
     }
 
@@ -372,7 +390,14 @@ class AthleteServicesTest {
         val testClock = TestClock()
         val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
 
-        when (val result = athleteServices.changeCredentials("invalid_code", randomString(), randomString())) {
+        val code = (athleteServices.generateCode(FIRST_COACH_ID, FIRST_ATHLETE_ID) as Success).value.code
+
+        when (val result = athleteServices.changeCredentials(code, randomString(), randomString())) {
+            is Failure -> fail("Unexpected $result")
+            is Success -> assertTrue(result.value == FIRST_ATHLETE_ID)
+        }
+
+        when (val result = athleteServices.changeCredentials(code, randomString(), randomString())) {
             is Failure -> assertTrue(result.value is ChangeCredentialsError.InvalidCode)
             is Success -> fail("Unexpected $result")
         }
@@ -383,7 +408,10 @@ class AthleteServicesTest {
         val testClock = TestClock()
         val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
 
-        when (val result = athleteServices.changeCredentials(FIRST_ATHLETE_CODE, THIRD_ATHLETE_USERNAME, randomString())) {
+        val code = (athleteServices.generateCode(FIRST_COACH_ID, FIRST_ATHLETE_ID) as Success).value.code
+
+
+        when (val result = athleteServices.changeCredentials(code, THIRD_ATHLETE_USERNAME, randomString())) {
             is Failure -> assertTrue(result.value is ChangeCredentialsError.UsernameAlreadyExists)
             is Success -> fail("Unexpected $result")
         }

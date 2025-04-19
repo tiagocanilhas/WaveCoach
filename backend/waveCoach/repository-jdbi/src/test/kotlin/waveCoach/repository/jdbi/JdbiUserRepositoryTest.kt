@@ -39,6 +39,26 @@ class JdbiUserRepositoryTest {
         }
 
     /**
+     * Update User Tests
+     */
+
+    @Test
+    fun `update user`() =
+        testWithHandleAndRollback { handle ->
+            val userRepository = JdbiUserRepository(handle)
+
+            val username = randomString()
+            val password = randomString()
+
+            userRepository.updateUser(USER2_ID, username, PasswordValidationInfo(password))
+
+            val user = userRepository.getUserByUsername(username)
+
+            assertNotNull(user)
+            assertEquals(username, user?.username)
+        }
+
+    /**
      * Remove User Tests
      */
 
@@ -110,5 +130,7 @@ class JdbiUserRepositoryTest {
         private const val UID = 1
         private const val USERNAME = "admin"
         private const val PASSWORD = "\$2a\$10\$6wZjBBzU2G1H7rK5VeFNIu.toyRHL.ULP1R2IMjpPy7xB8HhF/h0q"
+
+        private const val USER2_ID = 2
     }
 }

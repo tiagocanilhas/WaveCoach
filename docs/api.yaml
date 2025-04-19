@@ -82,6 +82,53 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/TokenNotFound' 
+  
+  /me:
+    description: The resource that represents the authenticated user
+    get:
+      tags:
+        - Users
+      summary: Get the authenticated user
+      responses:
+        200:
+          description: The user is authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthCheckOutputModel'
+        401:
+          description: The user is not authenticated
+    put:
+      tags:
+        - Users
+      summary: Update the authenticated user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthCheckInputModel'
+      responses:
+        204:
+          description: The user was updated
+        400:
+          description: Invalid input data
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/InvalidUsername'
+                  - $ref: '#/components/schemas/InsecurePassword'
+                  - $ref: '#/components/schemas/UsernameAlreadyExists'
+              examples:
+                invalidUsername:
+                  $ref: '#/components/examples/InvalidUsername'
+                insecurePassword:
+                  $ref: '#/components/examples/InsecurePassword'
+                usernameAlreadyExists:
+                  $ref: '#/components/examples/UsernameAlreadyExists'
+        401:
+          description: The user is not authenticated
 
   /coaches:
     description: The resource that represents the coaches
@@ -871,97 +918,10 @@ components:
           format: date
           example: "01-01-2023"
 
+
+
     # Output Models
 
-    AthleteCodeOutputModel:
-      required:
-        - code
-        - expirationDate
-      type: object
-      properties:
-        code:
-          type: string
-          example: "1234567890"
-        expirationDate:
-          type: integer
-          example: 1672531199
-        
-    AthletesGetOutputModel:
-      required:
-        - id
-        - username
-        - name
-        - birthdate
-      type: object
-      properties:
-        id:
-          type: string
-          example: 1
-        username:
-          type: string
-          example: "username"
-        name:
-          type: string
-          example: "name"
-        birthdate:
-          type: string
-          example: "1970-01-01"
-
-    AthleteGetOutputModel:
-      required:
-        - id
-        - username
-        - name
-        - birthdate
-      type: object
-      properties:
-        id:
-          type: string
-          example: 1
-        username:
-          type: string
-          example: "username"
-        name:
-          type: string
-          example: "name"
-        birthdate:
-          type: string
-          example: "01-01-1970"
-    
-    CreateCharacteristicsOutputModel:
-      required:
-        - id
-        - date
-        - value
-      type: object
-      properties:
-        id:
-          type: string
-          example: 1
-        date:
-          type: string
-          example: "01-01-1970"
-        value:
-          type: string
-          example: "value"
-    
-    LoginOutputModel:
-      required:
-        - id
-        - username
-        - token
-      type: object
-      properties:
-        id:
-          type: string
-          example: 1
-        username:
-          type: string
-          example: "username"
-        token:
-          type: string
-          example: "token"
-    
     AthleteCharacteristicsGetOutputModel:
       required:
         - uid
@@ -1021,6 +981,108 @@ components:
         thighFat:
           type: integer
           example: 14
+
+    AthleteCodeOutputModel:
+      required:
+        - code
+        - expirationDate
+      type: object
+      properties:
+        code:
+          type: string
+          example: "1234567890"
+        expirationDate:
+          type: integer
+          example: 1672531199
+        
+    AthletesGetOutputModel:
+      required:
+        - id
+        - username
+        - name
+        - birthdate
+      type: object
+      properties:
+        id:
+          type: string
+          example: 1
+        username:
+          type: string
+          example: "username"
+        name:
+          type: string
+          example: "name"
+        birthdate:
+          type: string
+          example: "1970-01-01"
+
+    AthleteGetOutputModel:
+      required:
+        - id
+        - username
+        - name
+        - birthdate
+      type: object
+      properties:
+        id:
+          type: string
+          example: 1
+        username:
+          type: string
+          example: "username"
+        name:
+          type: string
+          example: "name"
+        birthdate:
+          type: string
+          example: "01-01-1970"
+    
+    AuthCheckOutputModel:
+      required:
+        - id
+        - username
+      type: object
+      properties:
+        id:
+          type: string
+          example: 1
+        username:
+          type: string
+          example: "username"
+    
+    CreateCharacteristicsOutputModel:
+      required:
+        - id
+        - date
+        - value
+      type: object
+      properties:
+        id:
+          type: string
+          example: 1
+        date:
+          type: string
+          example: "01-01-1970"
+        value:
+          type: string
+          example: "value"
+    
+    LoginOutputModel:
+      required:
+        - id
+        - username
+        - token
+      type: object
+      properties:
+        id:
+          type: string
+          example: 1
+        username:
+          type: string
+          example: "username"
+        token:
+          type: string
+          example: "token"
 
 
 

@@ -41,6 +41,15 @@ sealed class RevokeTokenError {
 }
 typealias RevokeTokenResult = Either<RevokeTokenError, Boolean>
 
+sealed class UserUpdateError {
+    data object InvalidUsername : UserUpdateError()
+
+    data object InsecurePassword : UserUpdateError()
+
+    data object UsernameAlreadyExists : UserUpdateError()
+}
+typealias UserUpdateResult = Either<UserUpdateError, Boolean>
+
 @Component
 class UserServices(
     private val transactionManager: TransactionManager,
@@ -101,6 +110,25 @@ class UserServices(
             userRepository.getToken(tokenValidationInfo) ?: return@run failure(RevokeTokenError.TokenNotFound)
 
             userRepository.removeToken(tokenValidationInfo)
+            success(true)
+        }
+    }
+
+    fun updateCredentials(
+        userId: Int,
+        newUsername: String,
+        newPassword: String,
+    ): UserUpdateResult {
+        if (!userDomain.isUsernameValid(newUsername)) return failure(UserUpdateError.InvalidUsername)
+        if (!userDomain.isSafePassword(newPassword)) return failure(UserUpdateError.InsecurePassword)
+
+        return transactionManager.run {
+            val userRepository = it.userRepository
+
+            if (userRepository.checkUsername(newUsername)) return@run failure(UserUpdateError.UsernameAlreadyExists)
+
+            val passwordValidationInfo = userDomain.createPasswordValidationInformation(newPassword)
+            userRepository.updateUser(userId, newUsername, passwordValidationInfo)
             success(true)
         }
     }

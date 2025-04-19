@@ -4,6 +4,7 @@ import { Navigate, useNavigate } from 'react-router-dom'
 import TextField from '@mui/material/TextField'
 import { BackButton } from '../../components/BackButton'
 import { Card } from '../../components/Card'
+import { Button } from '../../components/Button'
 
 import styles from './styles.module.css'
 
@@ -92,9 +93,7 @@ export function RegisterAthleteCode() {
             <h1 className={styles.title}>Check Code</h1>
             <form onSubmit={handleOnSubmit} className={styles.form}>
               <TextField name="code" type="text" label="Code" value={code} onChange={handleOnChange} required />
-              <button type="submit" disabled={disabled} className={styles.btn}>
-                Check
-              </button>
+              <Button text="Check" type="submit" disabled={disabled} width="100%" height="25px" />
             </form>
             {state.tag === 'editing' && state.error && <p className={styles.error}>{state.error}</p>}
           </>

@@ -210,11 +210,91 @@ class UserServicesTest {
         }
     }
 
+    /**
+     * UpdateCredentials Tests
+     */
+
+    @Test
+    fun `update credentials - success`() {
+        val testClock = TestClock()
+        val userService = createUserServices(testClock)
+
+        val newUsername = randomString()
+        val newPassword = randomString()
+
+        val result = userService.updateCredentials(ID_OF_SECOND_COACH, newUsername, newPassword)
+        when (result) {
+            is Failure -> fail("Unexpected $result")
+            is Success -> {
+                // No assertion here, just checking that the update was successful
+            }
+        }
+    }
+
+    @Test
+    fun `update credentials - invalid username`() {
+        val testClock = TestClock()
+        val userService = createUserServices(testClock)
+
+        val newUsername = ""
+        val newPassword = randomString()
+
+        val result = userService.updateCredentials(ID_OF_SECOND_COACH, newUsername, newPassword)
+        when (result) {
+            is Failure -> assertTrue(result.value is UserUpdateError.InvalidUsername)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
+    @Test
+    fun `update credentials - insecure password`() {
+        val testClock = TestClock()
+        val userService = createUserServices(testClock)
+
+        val insecurePasswords =
+            listOf(
+                "Abc1234", // missing special character
+                "abc123!", // missing uppercase letter
+                "ABC123!", // missing lowercase letter
+                "Abc!@#", // missing number
+                "Abc123", // smaller than 6 characters
+            )
+
+        insecurePasswords.forEach { password ->
+            val newUsername = randomString()
+
+            val result = userService.updateCredentials(ID_OF_SECOND_COACH, newUsername, password)
+            when (result) {
+                is Failure -> assertTrue(result.value is UserUpdateError.InsecurePassword)
+                is Success -> fail("Unexpected $result")
+            }
+        }
+    }
+
+    @Test
+    fun `update credentials - username already exists`() {
+        val testClock = TestClock()
+        val userService = createUserServices(testClock)
+
+        val newUsername = USERNAME_OF_ADMIN
+        val newPassword = randomString()
+
+        val result = userService.updateCredentials(ID_OF_SECOND_COACH, newUsername, newPassword)
+        when (result) {
+            is Failure -> assertTrue(result.value is UserUpdateError.UsernameAlreadyExists)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
     companion object {
-        val ID_OF_ADMIN = 1
-        val USERNAME_OF_ADMIN = "admin"
-        val PASSWORD_OF_ADMIN = "Admin123!"
-        val TOKEN_OF_ADMIN = "i_aY-4lpMqAIMuhkimTbKy4xYEuyvgFPaaTpVS0lctQ="
+        private val ID_OF_ADMIN = 1
+        private val USERNAME_OF_ADMIN = "admin"
+        private val PASSWORD_OF_ADMIN = "Admin123!"
+        private val TOKEN_OF_ADMIN = "i_aY-4lpMqAIMuhkimTbKy4xYEuyvgFPaaTpVS0lctQ="
+
+        private val ID_OF_SECOND_COACH = 2
+        private val TOKEN_OF_SECOND_COACH = "fM5JjtPOUqtnZg1lB7jnJhXBP5gI2WbIIBoO3JhYM5M="
+
 
         private fun createUserServices(
             testClock: TestClock,

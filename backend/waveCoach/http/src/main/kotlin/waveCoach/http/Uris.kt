@@ -13,6 +13,8 @@ object Uris {
 
         const val LOGIN = "$PREFIX/login"
         const val LOGOUT = "$PREFIX/logout"
+
+        const val AUTH_CHECK = "$PREFIX/me"
         const val UPDATE = "$PREFIX/me"
 
         const val GET_BY_ID = "$USERS/{uid}"

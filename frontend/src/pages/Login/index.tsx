@@ -4,9 +4,13 @@ import { Link, Navigate } from 'react-router-dom'
 
 import { TextField } from '@mui/material'
 import { Card } from '../../components/Card'
+import { Button } from '../../components/Button'
 
 import { login } from '../../services/userServices'
+
 import { handleError } from '../../utils/handleError'
+
+import { useAuthentication } from '../../hooks/useAuthentication'
 
 import styles from './styles.module.css'
 
@@ -55,6 +59,7 @@ const initialState: State = {
 
 export function Login() {
   const [state, dispatch] = useReducer(reducer, initialState)
+  const [_, setUser] = useAuthentication()
 
   async function handleOnSubmit(ev: React.FormEvent<HTMLFormElement>) {
     ev.preventDefault()
@@ -65,7 +70,8 @@ export function Login() {
     const { username, password } = state.inputs
 
     try {
-      await login(username, password)
+      const res = await login(username, password)
+      setUser({ id: res.id, username: res.username })
       dispatch({ type: 'success' })
     } catch (error) {
       dispatch({ type: 'error', error: handleError(error) })
@@ -92,9 +98,7 @@ export function Login() {
             <form onSubmit={handleOnSubmit} className={styles.form}>
               <TextField name="username" type="text" label="Username" value={username} onChange={handleOnChange} required />
               <TextField name="password" type="password" label="Password" value={password} onChange={handleOnChange} required />
-              <button type="submit" disabled={disabled} className={styles.btn}>
-                Login
-              </button>
+              <Button text="Login" disabled={disabled} type="submit" width="100%" height="25px" />
             </form>
             <p className={styles.text}>
               Don't have an account? <Link to="/register">Register</Link>
