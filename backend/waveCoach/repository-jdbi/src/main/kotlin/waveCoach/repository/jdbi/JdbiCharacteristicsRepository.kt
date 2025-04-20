@@ -101,7 +101,7 @@ class JdbiCharacteristicsRepository(
             .singleOrNull()
 
     override fun getCharacteristicsList(uid: Int): List<Characteristics> =
-        handle.createQuery("select * from waveCoach.characteristics where uid = :uid")
+        handle.createQuery("select * from waveCoach.characteristics where uid = :uid order by date asc")
             .bind("uid", uid)
             .mapTo<Characteristics>()
             .list()

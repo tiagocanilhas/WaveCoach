@@ -39,3 +39,36 @@ export async function getAthleteByCode(code: string) {
 export async function changeAthleteCredentials(code: string, username: string, password: string) {
   return await customFetch(URIS.ATHLETES.changeCredentials, 'POST', { code, username, password })
 }
+
+export async function getCharacteristics(id: string) {
+  return await customFetch(URIS.ATHLETES.getCharacteristicsList(id), 'GET')
+}
+
+export async function createCharacteristics(
+  id: string, 
+  date: string, 
+  height: number,
+   weight: number, 
+   calories: number, 
+   bodyFat: number, 
+   waistSize: number, 
+   armSize: number, 
+   thighSize: number, 
+   tricepFat: number, 
+   abdomenFat: number,
+   thighFat: number
+  ) {
+  return await customFetch(URIS.ATHLETES.createCharacteristics(id), 'POST', { 
+    date: toDisplayFormat(date), 
+    height, 
+    weight, 
+    calories,
+    bodyFat, 
+    waistSize, 
+    armSize, 
+    thighSize, 
+    tricepFat, 
+    abdomenFat, 
+    thighFat
+  })
+}
