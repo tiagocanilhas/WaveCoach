@@ -166,7 +166,6 @@ export function Athlete() {
 
       {isEditPopupOpen && (
         <EditAthletePopup
-          open={isEditPopupOpen}
           onClose={handleEdit}
           onSuccess={onSuccess}
           initialValues={{

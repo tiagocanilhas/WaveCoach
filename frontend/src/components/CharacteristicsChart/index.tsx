@@ -1,37 +1,20 @@
-import * as React from 'react';
-import { Line } from 'react-chartjs-2';
-import { 
-    Chart as ChartJS, 
-    CategoryScale, 
-    LinearScale, 
-    PointElement, 
-    LineElement,
-    Title,
-    Tooltip,
-    Legend,
- } from 'chart.js';
-import { CharacteristicsData } from '../../pages/Characterisitcs/index';
+import * as React from 'react'
+import { Line } from 'react-chartjs-2'
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
+import { CharacteristicsData } from '../../pages/Characterisitcs/index'
 
- ChartJS.register(
-    CategoryScale, 
-    LinearScale, 
-    PointElement, 
-    LineElement,
-    Title,
-    Tooltip,
-    Legend,
- );
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
 
 type CharacteristicsChartProps = {
-    labels: string[],
-    dataSetsData: CharacteristicsData[],
-    onPointClick: (index: number) => void,
+  labels: string[]
+  dataSetsData: CharacteristicsData[]
+  onPointClick: (index: number) => void
 }
 
-export function CharacteristicsChart( { labels, dataSetsData, onPointClick }: CharacteristicsChartProps) {
+export function CharacteristicsChart({ labels, dataSetsData, onPointClick }: CharacteristicsChartProps) {
   const data = {
     labels: labels,
-    datasets: dataSetsData.map((dataSet) => ({
+    datasets: dataSetsData.map(dataSet => ({
       label: dataSet.label,
       data: dataSet.data,
       backgroundColor: dataSet.backgroundColor,
@@ -51,7 +34,7 @@ export function CharacteristicsChart( { labels, dataSetsData, onPointClick }: Ch
         display: true,
         text: 'Characteristics',
         font: {
-            size: 20,
+          size: 20,
         },
       },
     },
@@ -61,14 +44,14 @@ export function CharacteristicsChart( { labels, dataSetsData, onPointClick }: Ch
         //const datasetIndex = elements[0].datasetIndex;
         //const dataset = data.datasets[datasetIndex];
         //const label = dataset.label;
-        onPointClick(index);
+        onPointClick(index)
       }
-    }
+    },
   }
 
   return (
     <>
-        <Line options={options} data={data} />
+      <Line options={options} data={data} />
     </>
-  );
+  )
 }

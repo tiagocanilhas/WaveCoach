@@ -12,8 +12,8 @@ export function RequireNoAuthentication() {
   const location = useLocation()
 
   if (loading) return <CircularProgress className={styles.waiting} />
-  
+
   if (!user) return <Outlet />
-  
+
   return <Navigate to="/" state={{ source: location.state?.source || '/' }} replace={true} />
 }

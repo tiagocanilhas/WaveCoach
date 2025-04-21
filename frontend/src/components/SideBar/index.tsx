@@ -40,7 +40,7 @@ export function SideBar({ isOpen, sidebarData, closeSidebar }: SideBarProps) {
   }
 
   function handlePopup() {
-    setLogoutPopup((prev) => !prev)
+    setLogoutPopup(prev => !prev)
   }
 
   return (
@@ -73,7 +73,13 @@ export function SideBar({ isOpen, sidebarData, closeSidebar }: SideBarProps) {
             </Link>
           </li>
           <li className={styles.sidebarBottomText}>
-            <div onClick={(e) => { e.preventDefault(); handlePopup() }} className={styles.logout}>
+            <div
+              onClick={e => {
+                e.preventDefault()
+                handlePopup()
+              }}
+              className={styles.logout}
+            >
               <RiLogoutBoxRFill />
               <span>Logout</span>
             </div>

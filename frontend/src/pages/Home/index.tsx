@@ -95,6 +95,8 @@ export function Home() {
     return athlete.name.toLowerCase().includes(state.search.toLowerCase())
   })
 
+  const isPopupOpen = state.popupOpen
+
   if (state.athletes === undefined) {
     return <CircularProgress className={styles.waiting} />
   }
@@ -130,7 +132,7 @@ export function Home() {
         />
       </div>
 
-      <AddAthletePopup open={state.popupOpen} onClose={handlePopup} onSuccess={fetchAthletes} />
+      {isPopupOpen && <AddAthletePopup onClose={handlePopup} onSuccess={fetchAthletes} />}
     </>
   )
 }

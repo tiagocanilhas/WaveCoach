@@ -1,0 +1,84 @@
+@token = GGxvuCVHYVRPCV59Ph6riqRfAqTPkVOeyOkSRrxJ7LM=
+
+### Create Coach
+POST http://localhost:8080/api/coaches
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "username": "test",
+  "password": "Test123!",
+}
+
+
+### Login
+POST http://localhost:8080/api/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "Admin123!"
+}
+
+### Logout
+POST http://localhost:8080/api/logout
+Authorization: Bearer {{token}}
+
+
+
+### Create Characteristic
+POST http://localhost:8080/api/athletes/3/characteristics
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "date": "01-01-2000",
+  "weight" : 1.0,
+  "height" : 1,
+  "calories" : 1,
+  "waist" : 1,
+  "arm" : 1,
+  "thigh" : 1,
+  "tricep" : 1.0,
+  "abdominal" : 1.0
+}
+
+
+### Remove
+DELETE http://localhost:8080/api/athletes/3/characteristics/01-01-2000
+Authorization: Bearer {{token}}
+
+
+
+
+### Get Characteristic
+GET http://localhost:8080/api/athletes/1/characteristics/946684800000
+Authorization: Bearer {{token}}
+
+
+
+### Get athletes
+GET http://localhost:8080/api/athletes
+Authorization: Bearer {{token}}
+
+### Get athlete
+GET http://localhost:8080/api/athletes/3
+Authorization: Bearer {{token}}
+
+
+### create Athlete
+POST http://localhost:8080/api/athletes
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "asdasdasdasd",
+  "birthDate": "01-01-2025"
+}
+
+### Generate Code
+POST http://localhost:8080/api/athletes/6/code
+Authorization: Bearer {{token}}
+
+
+

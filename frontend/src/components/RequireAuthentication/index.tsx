@@ -12,8 +12,8 @@ export function RequireAuthentication() {
   const location = useLocation()
 
   if (loading) return <CircularProgress className={styles.waiting} />
-  
+
   if (!user) return <Navigate to="/login" state={{ source: location.pathname }} replace />
-  
+
   return <Outlet />
 }

@@ -3,7 +3,6 @@ import * as React from 'react'
 import { AthletePopup } from '../AthletePopup'
 
 type EditAthletePopupProps = {
-  open: boolean
   onClose: () => void
   onSuccess: () => void
   initialValues?: {
@@ -13,6 +12,6 @@ type EditAthletePopupProps = {
   }
 }
 
-export function EditAthletePopup({ open, onClose, onSuccess, initialValues }: EditAthletePopupProps) {
-  return <AthletePopup open={open} onClose={onClose} onSuccess={onSuccess} initialValues={initialValues} />
+export function EditAthletePopup({ onClose, onSuccess, initialValues }: EditAthletePopupProps) {
+  return <AthletePopup onClose={onClose} onSuccess={onSuccess} initialValues={initialValues} />
 }

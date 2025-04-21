@@ -57,7 +57,6 @@ function reducer(state: State, action: Action): State {
 }
 
 type AthletePopupProps = {
-  open: boolean
   onClose: () => void
   onSuccess: () => void
   initialValues?: {
@@ -67,7 +66,7 @@ type AthletePopupProps = {
   }
 }
 
-export function AthletePopup({ open, onClose, onSuccess, initialValues }: AthletePopupProps) {
+export function AthletePopup({ onClose, onSuccess, initialValues }: AthletePopupProps) {
   const isEditing = initialValues ? true : false
   const initialRef = useRef(initialValues)
   const [state, dispatch] = useReducer(reducer, {
@@ -107,8 +106,6 @@ export function AthletePopup({ open, onClose, onSuccess, initialValues }: Athlet
     name.trim() === '' ||
     birthdate.trim() === '' ||
     (isEditing && name === initialRef.current?.name && birthdate === initialRef.current?.birthdate)
-
-  if (!open) return null
 
   return (
     <Popup

@@ -1,44 +1,19 @@
 .characteristics {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start; /* Alinha as características à esquerda */
-    gap: 10px;
-  }
-  
-  .characteristics p {
-    margin: 0;
-    font-size: 14px;
-  }
-  
-  .actions {
-    display: flex;
-    justify-content: center; /* Centraliza os botões */
-    gap: 15px; /* Espaçamento entre os botões */
-    margin-top: 20px; /* Adiciona espaço acima dos botões */
-    width: 100%; /* Faz os botões ocuparem toda a largura disponível */
-  }
-  
-  .btn {
-    background-color: var(--button-color);
-    color: var(--button-text-color);
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    width: 100%;
-  }
-  
-  .btn:hover {
-    background-color: var(--button-hover-color);
-  }
-  
-  .btn:active {
-    background-color: var(--button-active-color);
-  }
-  
-  .btn:disabled {
-    background-color: var(--button-disabled-color);
-    color: var(--button-disabled-text-color);
-    cursor: not-allowed;
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.characteristics p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 20px;
+  width: 100%;
+}

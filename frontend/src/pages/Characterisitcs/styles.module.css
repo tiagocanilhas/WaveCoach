@@ -9,37 +9,21 @@
   display: flex;
   flex-direction: column;
   margin-top: 40px;
-  gap: 40px; /* Espaçamento entre o botão e as últimas características */
-  flex: 1; /* Ajusta o tamanho da coluna esquerda */
-  height: 100%; /* Garante que a coluna ocupe o mesmo comprimento da tabela */
-}
-
-.btn {
-  width: 100%; /* Faz o botão ocupar toda a largura da coluna */
-  height: 50px; /* Aumenta a altura do botão */
-  font-size: 20px; /* Aumenta o tamanho do texto no botão */
-  background-color: var(--button-color);
-  color: var(--button-text-color);
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.btn:hover {
-  background-color: var(--button-hover-color);
-  color: var(--button-text-hover-color);
+  gap: 40px;
+  flex: 1;
+  height: 100%;
 }
 
 .characteristics {
   display: flex;
   flex-direction: column;
-  gap: 25px; /* Espaçamento entre as características */
+  gap: 25px;
 }
 
 .characteristic {
   display: flex;
   flex-direction: column;
-  gap: 10px; /* Espaçamento entre os itens de cada característica */
+  gap: 10px;
 }
 
 .chart {
@@ -48,10 +32,10 @@
 }
 
 .characteristicCard {
-  position: absolute; /* Posiciona o card de forma absoluta */
-  top: 50%; /* Centraliza verticalmente */
-  left: 50%; /* Centraliza horizontalmente */
-  transform: translate(-50%, -50%); /* Ajusta o deslocamento para centralizar */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
   flex-direction: column;
   gap: 15px;
@@ -59,10 +43,10 @@
   border: 1px solid #ccc;
   border-radius: 5px;
   background-color: #fff;
-  z-index: 10; /* Garante que o card fique acima de outros elementos */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Adiciona uma sombra para destaque */
+  z-index: 10;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .chartContainer {
-  position: relative; /* Define o contêiner do gráfico como referência para o posicionamento absoluto */
+  position: relative;
 }
