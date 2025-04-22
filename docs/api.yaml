@@ -107,7 +107,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AuthCheckInputModel'
+              $ref: '#/components/schemas/UserUpdateInputModel'
       responses:
         204:
           description: The user was updated
@@ -726,6 +726,47 @@ paths:
               schema:
                 $ref: '#/components/schemas/CharacteristicsNotFound'
 
+  /athletes/{aid}/activities:
+    description: The resource that represents activities of an athlete
+    get:
+      tags:
+        - Athletes
+      summary: Get all activities of an athlete
+      parameters:
+        - name: aid
+          in: path
+          required: true
+          description: The ID of the athlete
+          schema:
+            type: string
+      responses:
+        200:
+          description: The activities were found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActivityListOutputModel'
+        400:
+          description: Invalid athlete ID
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/InvalidAthleteId'
+        401:
+          description: The user is not authenticated
+        403:
+          description: The coach is not the athlete's coach
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/NotAthletesCoach'
+        404:
+          description: The athlete was not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/AthleteNotFound'
+
   /athletes/{aid}/gym:
     description: The resource that represents gym activities of an athlete
     post:
@@ -917,10 +958,50 @@ components:
           type: string
           format: date
           example: "01-01-2023"
+    
+    UserUpdateInputModel:
+      required:
+        - username
+        - password
+      type: object
+      properties:
+        username:
+          type: string
+          example: "new_username"
+        password:
+          type: string
+          example: "NewPassword123!"
 
 
 
     # Output Models
+
+    ActivityListOutputModel:
+      type: array
+      items:
+        $ref: '#/components/schemas/ActivityOutputModel'
+
+    ActivityOutputModel:
+      type: object
+      required:
+        - id
+        - uid
+        - date 
+        - type
+      properties:
+        id:
+          type: integer
+          example: 1
+        uid:
+          type: integer
+          example: 1
+        date:
+          type: integer
+          example: 1672531199
+        type:
+          type: string 
+          example: "gym"
+
 
     AthleteCharacteristicsGetOutputModel:
       required:

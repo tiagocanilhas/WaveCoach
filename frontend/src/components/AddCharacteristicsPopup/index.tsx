@@ -218,7 +218,7 @@ export function AddCharacteristicsPopup({ onClose, onSuccess }: AddCharacteristi
           <TextField name="tricepFat" type="number" label="Tricep Fat" value={tricepFat} onChange={handleChange} />
           <TextField name="abdomenFat" type="number" label="Abdomen Fat" value={abdomenFat} onChange={handleChange} />
           <TextField name="thighFat" type="number" label="Thigh Fat" value={thighFat} onChange={handleChange} />
-          <Button text="Add" type="submit" disabled={disabled} width="100%" height="25px"/>
+          <Button text="Add" type="submit" disabled={disabled} width="100%" height="25px" />
           {state.tag === 'editing' && state.error && <div className={styles.error}>{state.error}</div>}
         </form>
       }

@@ -32,6 +32,8 @@ const ATHLETES = {
   deleteCharacteristics: (id: string, date: string) => `${ATHLETES_URL}/${id}/characteristics/${date}`,
 
   createGymActivity: (id: string) => `${ATHLETES_URL}/${id}/gym`,
+
+  getActivities: (id: string) => `${ATHLETES_URL}/${id}/activities`,
 }
 
 export const URIS = {

@@ -72,3 +72,7 @@ export async function createCharacteristics(
     thighFat,
   })
 }
+
+export async function getActivities(id: string) {
+  return await customFetch(URIS.ATHLETES.getActivities(id), 'GET')
+}

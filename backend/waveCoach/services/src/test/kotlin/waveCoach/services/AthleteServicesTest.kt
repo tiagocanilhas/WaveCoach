@@ -1061,6 +1061,43 @@ class AthleteServicesTest {
         }
     }
 
+    /**
+     * Get Activities Tests
+     */
+
+    @Test
+    fun `get activities - success`() {
+        val testClock = TestClock()
+        val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (val result = athleteServices.getActivities(FIRST_COACH_ID, FIRST_ATHLETE_ID)) {
+            is Failure -> fail("Unexpected $result")
+            is Success -> assertTrue(result.value.isNotEmpty())
+        }
+    }
+
+    @Test
+    fun `get activities - athlete not found`() {
+        val testClock = TestClock()
+        val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (val result = athleteServices.getActivities(FIRST_COACH_ID, 0)) {
+            is Failure -> assertTrue(result.value is GetActivitiesError.AthleteNotFound)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
+    @Test
+    fun `get activities - not athlete's coach`() {
+        val testClock = TestClock()
+        val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (val result = athleteServices.getActivities(SECOND_COACH_ID, FIRST_ATHLETE_ID)) {
+            is Failure -> assertTrue(result.value is GetActivitiesError.NotAthletesCoach)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
     companion object {
         private fun randomString() = "String_${abs(Random.nextLong())}"
 

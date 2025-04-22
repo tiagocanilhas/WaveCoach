@@ -89,7 +89,8 @@ CREATE TABLE waveCoach.microcycle(
 CREATE TABLE waveCoach.activity(
     id SERIAL PRIMARY KEY,
     uid INTEGER REFERENCES waveCoach.athlete(uid),
-    date BIGINT DEFAULT EXTRACT(EPOCH FROM CURRENT_TIMESTAMP) NOT NULL
+    date BIGINT DEFAULT EXTRACT(EPOCH FROM CURRENT_TIMESTAMP) NOT NULL,
+    type VARCHAR(64)
 );
 
 CREATE TABLE waveCoach.gym(
@@ -165,5 +166,32 @@ CREATE TABLE waveCoach.athlete_competition(
 CREATE TABLE waveCoach.heat(
 );
 
+CREATE OR REPLACE FUNCTION set_activity_type_gym()
+RETURNS TRIGGER AS $$
+BEGIN
+    UPDATE waveCoach.activity
+    SET type = 'gym'
+    WHERE id = NEW.activity;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
 
+CREATE TRIGGER trigger_set_activity_type_gym
+AFTER INSERT ON waveCoach.gym
+FOR EACH ROW
+EXECUTE FUNCTION set_activity_type_gym();
 
+CREATE OR REPLACE FUNCTION set_activity_type_water()
+RETURNS TRIGGER AS $$
+BEGIN
+    UPDATE waveCoach.activity
+    SET type = 'water'
+    WHERE id = NEW.activity;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_set_activity_type_water
+AFTER INSERT ON waveCoach.water
+FOR EACH ROW
+EXECUTE FUNCTION set_activity_type_water();

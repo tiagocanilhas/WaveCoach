@@ -3,6 +3,7 @@ package waveCoach.services
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import org.springframework.stereotype.Component
+import waveCoach.domain.Activity
 import waveCoach.domain.Athlete
 import waveCoach.domain.AthleteCode
 import waveCoach.domain.AthleteDomain
@@ -139,6 +140,13 @@ sealed class CreateGymActivityError {
     data object NotAthletesCoach : CreateGymActivityError()
 }
 typealias CreateGymActivityResult = Either<CreateGymActivityError, Int>
+
+sealed class GetActivitiesError {
+    data object AthleteNotFound : GetActivitiesError()
+
+    data object NotAthletesCoach : GetActivitiesError()
+}
+typealias GetActivitiesResult = Either<GetActivitiesError, List<Activity>>
 
 @Component
 class AthleteServices(
@@ -509,6 +517,22 @@ class AthleteServices(
 
             gymActivityRepository.storeGymActivity(activityID)
             success(activityID)
+        }
+    }
+
+    fun getActivities(
+        cid: Int,
+        uid: Int,
+    ): GetActivitiesResult {
+        return transactionManager.run {
+            val athleteRepository = it.athleteRepository
+            val activityRepository = it.activityRepository
+
+            val athlete = athleteRepository.getAthlete(uid) ?: return@run failure(GetActivitiesError.AthleteNotFound)
+            if (athlete.coach != cid) return@run failure(GetActivitiesError.NotAthletesCoach)
+
+            val activities = activityRepository.getAthleteActivityList(uid)
+            success(activities)
         }
     }
 

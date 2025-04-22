@@ -1323,6 +1323,67 @@ class AthleteControllerTest {
             .jsonPath("type").isEqualTo(Problem.notAthletesCoach.type.toString())
     }
 
+
+    /**
+     * Get activities tests
+     */
+
+    @Test
+    fun `get activities - success`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.get().uri("/athletes/$THIRD_ATHLETE_ID/activities")
+            .header("Authorization", "Bearer $SECOND_COACH_TOKEN")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody()
+            .jsonPath("activities").exists()
+            .jsonPath("activities.length()").value<Int> { assertTrue(it > 0) }
+    }
+
+    @Test
+    fun `get activities - invalid athlete id`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val id = "invalid"
+
+        client.get().uri("/athletes/$id/activities")
+            .header("Authorization", "Bearer $SECOND_COACH_TOKEN")
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidAthleteId.type.toString())
+    }
+
+    @Test
+    fun `get activities - athlete not found`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val id = 0
+
+        client.get().uri("/athletes/$id/activities")
+            .header("Authorization", "Bearer $SECOND_COACH_TOKEN")
+            .exchange()
+            .expectStatus().isNotFound
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.athleteNotFound.type.toString())
+    }
+
+    @Test
+    fun `get activities - not athlete's coach`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.get().uri("/athletes/$THIRD_ATHLETE_ID/activities")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .exchange()
+            .expectStatus().isForbidden
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.notAthletesCoach.type.toString())
+    }
+
     companion object {
         private fun randomString() = "String_${abs(Random.nextLong())}"
 

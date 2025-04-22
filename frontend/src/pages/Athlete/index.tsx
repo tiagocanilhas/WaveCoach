@@ -7,6 +7,7 @@ import { Dropdown } from '../../components/Dropdown'
 import { Card } from '../../components/Card'
 import { ObjectList } from '../../components/ObjectList'
 import { EditAthletePopup } from '../../components/EditAthletePopup'
+import { Divisor } from '../../components/Divisor'
 
 import { Activity } from '../../types/activity'
 import { Athlete } from '../../types/athlete'
@@ -18,6 +19,7 @@ import { generateCode } from '../../services/athleteServices'
 
 import { getAthlete } from '../../services/athleteServices'
 import { deleteAthlete } from '../../services/athleteServices'
+import { getActivities } from '../../services/athleteServices'
 
 import styles from './styles.module.css'
 
@@ -67,17 +69,7 @@ export function Athlete() {
     }
     async function fetchActivities() {
       try {
-        const res = {
-          activities: [
-            { id: 1, date: 1744884381000 },
-            { id: 2, date: 1744884382000 },
-            { id: 3, date: 1744884383000 },
-            { id: 4, date: 1744884384000 },
-            { id: 5, date: 1744884385000 },
-            { id: 6, date: 1744884386000 },
-            { id: 7, date: 1744884387000 },
-          ],
-        }
+        const res = await getActivities(id)
         dispatch({ type: 'setActivities', activities: res.activities })
       } catch (error) {
         console.error('Error fetching Activities:', error)
@@ -128,8 +120,8 @@ export function Athlete() {
 
   return (
     <>
-      <div className={styles.container}>
-        <div className={styles.athleteCard}>
+      <Divisor
+        left={
           <Card
             content={
               <div className={styles.athlete}>
@@ -141,28 +133,35 @@ export function Athlete() {
                   ]}
                 />
                 <img src={/*athlete.img ||*/ '/images/anonymous-user.webp'} alt={athlete.name || 'Anonymous'} />
-                <h2 className={styles.name}>{athlete.name}</h2>
+                <h2>{athlete.name}</h2>
                 <p className={styles.age}>{epochConverterToAge(athlete.birthDate)} years</p>
               </div>
             }
+            width="100%"
           />
-        </div>
-
-        <div className={styles.calendar}>
-          <div className={styles.calendarContent}>
-            <h2>Calendar</h2>
+        }
+        right={
+          <div className={styles.calendar}>
             <ObjectList
               items={activities}
-              getKey={workout => workout.date}
-              renderItem={workout => (
-                <>
-                  <h3>{epochConverter(workout.date, 'dd-mm-yyyy')}</h3>
-                </>
+              getKey={activity => activity.id}
+              renderItem={activity => (
+                <div className={styles.activity}>
+                  <div className={styles.imageContainer}>
+                    <img 
+                      src={`/images/${activity.type || 'no_image'}.svg`}
+                      alt={activity.type || 'No Image'}
+                      onError={(e) => {e.currentTarget.src = '/images/no_image.svg'}}
+                    />
+                    <span>{activity.type && activity.type !== 'null' ? activity.type.charAt(0).toUpperCase() + activity.type.slice(1) : ''}</span>
+                  </div>
+                  <h3>{epochConverter(activity.date, 'dd-mm-yyyy')}</h3>
+                </div>
               )}
             />
           </div>
-        </div>
-      </div>
+        }
+      />
 
       {isEditPopupOpen && (
         <EditAthletePopup

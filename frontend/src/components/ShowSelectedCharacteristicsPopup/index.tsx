@@ -13,7 +13,6 @@ type ShowSelectedCharacteristicsPopupProps = {
 }
 
 export function ShowSelectedCharacteristicsPopup({ data, onClose, onSuccess }: ShowSelectedCharacteristicsPopupProps) {
-
   function handleUpdate() {
     // Handle update logic here
   }

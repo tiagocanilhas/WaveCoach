@@ -433,4 +433,37 @@ class AthleteController(
             }
         }
     }*/
+
+    @GetMapping(Uris.Athletes.GET_ACTIVITIES)
+    fun getActivities(
+        coach: AuthenticatedUser,
+        @PathVariable aid: String,
+    ): ResponseEntity<*> {
+        val uid = aid.toIntOrNull() ?: return Problem.response(400, Problem.invalidAthleteId)
+        val result = athleteServices.getActivities(coach.info.id, uid)
+
+        return when (result) {
+            is Success ->
+                ResponseEntity
+                    .status(200)
+                    .body(
+                        ActivityListOutputModel(
+                            result.value.map {
+                                ActivityOutputModel(
+                                    it.id,
+                                    it.uid,
+                                    it.date,
+                                    it.type.toString(),
+                                )
+                            },
+                        ),
+                    )
+
+            is Failure ->
+                when (result.value) {
+                    GetActivitiesError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
+                    GetActivitiesError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
+                }
+        }
+    }
 }

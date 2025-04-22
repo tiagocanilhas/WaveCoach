@@ -1,12 +1,3 @@
-.container {
-  display: flex;
-  flex-direction: row;
-  gap: 20px;
-}
-
-.athleteCard {
-}
-
 .athlete {
   display: flex;
   flex-direction: column;
@@ -22,9 +13,6 @@
   margin-bottom: 20px;
 }
 
-.name {
-}
-
 .age {
   color: #888;
 }
@@ -35,6 +23,31 @@
   width: 100%;
 }
 
-.workoutsContainer {
-  gap: 20px;
+.activity {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.imageContainer {
+  position: relative;
+  width: 90%;
+  margin: 0 auto;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.imageContainer img {
+  display: block;
+}
+
+.imageContainer span {
+  position: absolute;
+  bottom: 0;
+  padding: 2px 0 2px 0;
+  width: 100%;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.4);
+  color: white;
 }

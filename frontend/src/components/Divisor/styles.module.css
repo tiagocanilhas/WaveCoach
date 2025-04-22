@@ -1,0 +1,13 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+.left {
+  width: 400px;
+}
+
+.right {
+  flex-grow: 1;
+}
