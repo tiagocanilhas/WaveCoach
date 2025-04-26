@@ -71,7 +71,7 @@ The project has already been initiated, and certain functionalities have already
 \subsubsection{Backend Organization}
 \begin{figure}[H]
 \centering
-\includegraphics[width=5in]{BackendDiagram.png}
+\includegraphics[width=6in]{BackendDiagram.png}
 \caption{Backend Diagram}
 \end{figure}
 
@@ -104,26 +104,46 @@ Finally, some functionalities related to the athlete were developed, such as the
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=5in]{ViewsDiagram.png}
+\includegraphics[width=6in]{ViewsDiagram.png}
 \caption{Views Diagram}
 \end{figure}
+
+The diagram provides an overview of the application's main navigation flow.  
+It is divided into two major sections:
+
+\begin{itemize}
+\item \textbf{Registration Section}, which includes the Login, Register Selection, Register Coach, Register Athlete Code, and Register Athlete views.
+  
+\item \textbf{Main Application Section}, which starts with the Home view. From there, the Sidebar component plays a central role in the navigation of the application.  
+The Sidebar serves as the main navigation tool, allowing users to easily move between different views.  
+Initially, it provides access to the Account view. After an athlete is selected and the user is redirected to the Athlete view, the Sidebar dynamically updates to offer access to views focused on the management of the selected athlete, including Characteristics, Gym Workouts, Surf Workouts, and Competitions.
+\end{itemize}
+
 
 \subsubsection{Functionalities:}
 \begin{itemize}
 \item User Registration and Login - 
-A primeira vista a ser realizada foi então a do login e a do registo, sendo esta, como anteriormente referido, diferente entre treinador e atleta.
+The user registration functionality involves several views: Login, Register Selection, Register Coach, Register Athlete Code, and Register Athlete.
+In the Register Selection view, the user chooses between registering as a coach or an athlete.
+If the user selects coach, they are redirected directly to the coach registration page.
+If the user selects athlete, they are first taken to a page where they must insert their registration code before proceeding to complete their athlete registration.
 
 \item Athlete management - 
+The Athlete management functionality is intended for the Home view, meaning the main page. We decided to place athlete management on the main page to provide easier and faster access to athletes, allowing actions such as adding, removing, generating the registration code, and accessing the Athlete view by clicking on their photo, where the athlete’s name and birthdate can then be edited, and also the removing and the generation of the registration code remaining possible. 
 
 \item Athlete Profile - 
-The last view to be developed was the characteristics view. It consists of a chart where it is possible to visualize the athlete’s progress across different aspects, such as height, weight, calories, among others. The chart is clickable, and by clicking on it, users can view the characteristics for the selected date, where they can then edit or delete them. In addition to the chart, the view also displays the most recent characteristics, making it easier for the coach to quickly assess the athlete's current condition if they only need a quick overview.
+This functionality it is related to the Characteristics view. It consists of a chart where it is possible to visualize the athlete’s progress across different aspects, such as height, weight, calories, among others. The chart is clickable, and by clicking on it, users can view the characteristics for the selected date, where they can then edit or delete them. In addition to the chart, the view also displays the most recent characteristics, making it easier for the coach to quickly access the athlete's current condition if they only need a quick overview.
+
+\item Athletes' training records -
+In the Athlete view it also provides a quick overview of all workouts, users can browse through all training records and filter them by selecting a specific mesocycle or microcycle, allowing them to view only the workouts within a particular time period.
+
 \end{itemize}
 
 \section{Pending Tasks}
 At this stage, among the proposed functional requirements, the remaining tasks are the implementation of athlete training records, that is, water and gym trainings, athlete summaries, and competition records. In addition to these functionalities, an optional feature was also considered: a mobile app that would allow coaches to input athlete records more easily.
 
 \begin{itemize}
-\item Athletes' training records - For the implementation of the training records, both gym and water, it is necessary to create backend functionalities to retrieve, create, update, and delete trainings. On the frontend, two views need to be created, one for each type of training. The gym training view will include the record of the most recent training session, a table listing all gym trainings, where it will be possible to edit and delete them, and a button to add a new training session. In the water training view...
+\item Athletes' training records - For the implementation of the training records, both gym and water, it is necessary to create backend functionalities to retrieve, create, update, and delete workouts. On the frontend, two views need to be created, one for each type of workout. The Gym Workouts view will include the record of the most recent training session, a table listing all gym workouts — where it will be possible to edit, delete, and navigate to the Gym Workout Details view to access complete workout details — and a button to add a new training session. Similar to the Characteristics view, a quick overview of the latest workout will also be available. In the Surf Workouts view, the structure will be similar to that of the Gym Workouts view, with the addition of the Surf Workout Details view, which will be more detailed, including charts to allow for a more precise analysis of each wave, maneuver, and other surf performance aspects.
 
 \item Athletes' summaries - 
 
