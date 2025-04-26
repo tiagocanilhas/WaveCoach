@@ -14,6 +14,7 @@ import { getCharacteristics } from '../../services/athleteServices'
 import { handleError } from '../../utils/handleError'
 
 import styles from './styles.module.css'
+import { epochConverter } from '../../utils/epochConverter'
 
 export type Characteristics = {
   date?: string
@@ -92,11 +93,6 @@ export function Characteristics() {
     dispatch({ type: 'togglePopup' })
   }
 
-  function formatDate(longDate: number): string {
-    const date = new Date(longDate)
-    return date.toLocaleDateString('pt-BR')
-  }
-
   function handleShowSelectedCharacteristicsPopup(index?: number) {
     if (index === undefined || !state.characteristics[index]) {
       dispatch({ type: 'toggleShowCharacteristicsPopup', selectedCharacteristic: undefined })
@@ -105,7 +101,7 @@ export function Characteristics() {
 
     const selectedCharacteristic = {
       ...state.characteristics[index],
-      date: state.characteristics[index].date ? formatDate(Number(state.characteristics[index].date)) : 'N/A',
+      date: state.characteristics[index].date ? epochConverter(Number(state.characteristics[index].date), 'dd-mm-yyyy') : 'N/A',
     }
     dispatch({ type: 'toggleShowCharacteristicsPopup', selectedCharacteristic: selectedCharacteristic })
   }
@@ -191,7 +187,7 @@ export function Characteristics() {
                 <h2 className={styles.header}>Last Characteristics</h2>
                 {state.characteristics.slice(-1).map((characteristic, index) => (
                   <div key={index} className={styles.characteristic}>
-                    <span>Date: {characteristic.date ? formatDate(Number(characteristic.date)) : 'N/A'}</span>
+                    <span>Date: {characteristic.date ? epochConverter(Number(characteristic.date), 'dd-mm-yyyy') : 'N/A'}</span>
                     <span>Height: {characteristic.height ? characteristic.height : 'N/A'}</span>
                     <span>Weight: {characteristic.weight ? characteristic.weight : 'N/A'}</span>
                     <span>Calories: {characteristic.calories ? characteristic.calories : 'N/A'}</span>
@@ -211,7 +207,7 @@ export function Characteristics() {
         <div className={styles.chart}>
           <CharacteristicsChart
             labels={state.characteristics.map(characteristic =>
-              characteristic.date ? formatDate(Number(characteristic.date)) : 'N/A'
+              characteristic.date ? epochConverter(Number(characteristic.date), 'dd-mm-yyyy') : 'N/A'
             )}
             dataSetsData={characteristicsData}
             onPointClick={handleShowSelectedCharacteristicsPopup}

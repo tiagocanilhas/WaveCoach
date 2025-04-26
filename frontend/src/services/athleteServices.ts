@@ -73,6 +73,39 @@ export async function createCharacteristics(
   })
 }
 
+export async function updateCharacteristics(
+  id: string,
+  date: string,
+  height: number,
+  weight: number,
+  calories: number,
+  bodyFat: number,
+  waistSize: number,
+  armSize: number,
+  thighSize: number,
+  tricepFat: number,
+  abdomenFat: number,
+  thighFat: number
+) {
+  return await customFetch(URIS.ATHLETES.updateCharacteristics(id, date), 'PUT', {
+    date: toDisplayFormat(date),
+    height,
+    weight,
+    calories,
+    bodyFat,
+    waistSize,
+    armSize,
+    thighSize,
+    tricepFat,
+    abdomenFat,
+    thighFat,
+  })
+}
+
+export async function deleteCharacteristics(id: string, date: string) {
+  return await customFetch(URIS.ATHLETES.deleteCharacteristics(id, date), 'DELETE')
+}
+
 export async function getActivities(id: string) {
   return await customFetch(URIS.ATHLETES.getActivities(id), 'GET')
 }

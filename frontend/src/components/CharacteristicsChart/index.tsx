@@ -2,6 +2,7 @@ import * as React from 'react'
 import { Line } from 'react-chartjs-2'
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
 import { CharacteristicsData } from '../../pages/Characterisitcs/index'
+import { getRelativePosition } from 'chart.js/helpers'
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
 
@@ -12,6 +13,8 @@ type CharacteristicsChartProps = {
 }
 
 export function CharacteristicsChart({ labels, dataSetsData, onPointClick }: CharacteristicsChartProps) {
+  const chartRef = React.useRef<any>(null);
+  
   const data = {
     labels: labels,
     datasets: dataSetsData.map(dataSet => ({
@@ -38,20 +41,27 @@ export function CharacteristicsChart({ labels, dataSetsData, onPointClick }: Cha
         },
       },
     },
-    onClick: (e: any, elements: any) => {
-      if (elements.length > 0) {
-        const index = elements[0].index
-        //const datasetIndex = elements[0].datasetIndex;
-        //const dataset = data.datasets[datasetIndex];
-        //const label = dataset.label;
-        onPointClick(index)
+    onClick: (e: any) => {
+      const chart = chartRef.current;
+      if (!chart) return;
+
+      // Obtém a posição do clique relativo ao gráfico
+      const position = getRelativePosition(e, chart);
+
+      // Verifica se o clique ocorreu próximo a uma label no eixo X
+      const xAxis = chart.scales['x'];
+      const labelIndex = xAxis.getValueForPixel(position.x);
+
+      if (labelIndex !== undefined && labelIndex >= 0 && labelIndex < labels.length) {
+        console.log(`Label clicked: ${labels[labelIndex]}`);
+        onPointClick(labelIndex);
       }
     },
   }
 
   return (
     <>
-      <Line options={options} data={data} />
+      <Line ref={chartRef} options={options} data={data} />
     </>
   )
 }
