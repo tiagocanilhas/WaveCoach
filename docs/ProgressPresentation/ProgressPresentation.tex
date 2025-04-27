@@ -68,6 +68,11 @@ The project has already been initiated, and certain functionalities have already
 \caption{Entity Relationship Model}
 \end{figure}
 
+It is important to highlight several aspects of the entity-relationship model, such as the token, which serves the purpose of authenticating the user,that is, when a user logs in, a token is generated, and if this token expires, the user is no longer authenticated.
+Another important aspect to consider is the concept of a Heat, which consists of a period of time during which surfers compete against each other to achieve the best waves. The two best waves of each surfer are summed to determine their final score.
+An additional point to note is the concept of mesocycle and microcycle. A mesocycle and a microcycle are undefined periods of time intended to organize athletes' training sessions. A mesocycle is composed of several microcycles.
+Finally, it is important to mention gym exercises and water maneuvers, which are two entities created to store the exercises and maneuvers of the workouts, respectively.
+
 \subsubsection{Backend Organization}
 \begin{figure}[H]
 \centering
@@ -146,7 +151,7 @@ At this stage, among the proposed functional requirements, the remaining tasks a
 
 \item Athletes' summaries - 
 
-\item Athletes' competition records - For the implementation of competition records, it is important to consider the concept of a Heat, which consists of a period of time during which surfers compete against each other to achieve the best waves. The two best waves of each surfer are summed to determine their final score. On the backend, it will be necessary to create functionalities to retrieve, create, update, and delete both the competitions and the Heats within each competition. On the frontend, two views will need to be created: one displaying the athlete’s different competitions, and another, which will show the Heats and their respective scores if the user selects a competition.
+\item Athletes' competition records - For the implementation of competition records, it will be necessary to create backend functionalities to retrieve, create, update, and delete both competitions and their respective Heats. On the frontend, two views will need to be developed: one to display the athlete’s competitions, and another to show the Heats and their respective scores, when a competition is selected.
 
 \item Mobile App (new) - 
 \end{itemize}
