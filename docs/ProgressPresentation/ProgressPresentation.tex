@@ -119,7 +119,6 @@ The Sidebar serves as the main navigation tool, allowing users to easily move be
 Initially, it provides access to the Account view. After an athlete is selected and the user is redirected to the Athlete view, the Sidebar dynamically updates to offer access to views focused on the management of the selected athlete, including Characteristics, Gym Workouts, Surf Workouts, and Competitions.
 \end{itemize}
 
-
 \subsubsection{Functionalities:}
 \begin{itemize}
 \item User Registration and Login - 
@@ -143,13 +142,13 @@ In the Athlete view it also provides a quick overview of all workouts, users can
 At this stage, among the proposed functional requirements, the remaining tasks are the implementation of athlete training records, that is, water and gym trainings, athlete summaries, and competition records. In addition to these functionalities, an optional feature was also considered: a mobile app that would allow coaches to input athlete records more easily.
 
 \begin{itemize}
-\item Athletes' training records - For the implementation of the training records, both gym and water, it is necessary to create backend functionalities to retrieve, create, update, and delete workouts. On the frontend, two views need to be created, one for each type of workout. The Gym Workouts view will include the record of the most recent training session, a table listing all gym workouts — where it will be possible to edit, delete, and navigate to the Gym Workout Details view to access complete workout details — and a button to add a new training session. Similar to the Characteristics view, a quick overview of the latest workout will also be available. In the Surf Workouts view, the structure will be similar to that of the Gym Workouts view, with the addition of the Surf Workout Details view, which will be more detailed, including charts to allow for a more precise analysis of each wave, maneuver, and other surf performance aspects.
+\item Athletes' training records - For the implementation of the training records, both gym and water, it is necessary to create backend functionalities to retrieve, create, update, and delete workouts. On the frontend, two views need to be created, one for each type of workout. The Gym Workouts view will include the record of the most recent training session, a table listing all gym workouts, where it will be possible to edit, delete, and navigate to the Gym Workout Details view where full workout details can be accessed, and a button to add a new training session. In the Surf Workouts view, the structure will be similar to that of the Gym Workouts view, with the addition of the Surf Workout Details view, which will be more detailed, including charts to allow for a more precise analysis of each wave, maneuver, and other surf performance aspects.
 
 \item Athletes' summaries - 
 
-\item Athletes' competition records - Para a implementação dos registos das competições, é tambem necessário 
+\item Athletes' competition records - For the implementation of competition records, it is important to consider the concept of a Heat, which consists of a period of time during which surfers compete against each other to achieve the best waves. The two best waves of each surfer are summed to determine their final score. On the backend, it will be necessary to create functionalities to retrieve, create, update, and delete both the competitions and the Heats within each competition. On the frontend, two views will need to be created: one displaying the athlete’s different competitions, and another, which will show the Heats and their respective scores if the user selects a competition.
 
-\item Mobile App (new)
+\item Mobile App (new) - 
 \end{itemize}
 
 % \bibliographystyle{unsrt}
