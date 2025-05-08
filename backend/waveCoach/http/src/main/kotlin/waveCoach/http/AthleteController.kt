@@ -100,10 +100,7 @@ class AthleteController(
         val result = athleteServices.updateAthlete(coach.info.id, uid, input.name, input.birthDate)
 
         return when (result) {
-            is Success ->
-                ResponseEntity
-                    .status(204)
-                    .build<Unit>()
+            is Success -> ResponseEntity.status(204).build<Unit>()
 
             is Failure ->
                 when (result.value) {
@@ -124,10 +121,7 @@ class AthleteController(
         val result = athleteServices.removeAthlete(coach.info.id, uid)
 
         return when (result) {
-            is Success ->
-                ResponseEntity
-                    .status(204)
-                    .build<Unit>()
+            is Success -> ResponseEntity.status(204).build<Unit>()
 
             is Failure ->
                 when (result.value) {
@@ -391,8 +385,17 @@ class AthleteController(
         @RequestBody input: CreateGymActivityInputModel,
     ): ResponseEntity<*> {
         val uid = aid.toIntOrNull() ?: return Problem.response(400, Problem.invalidAthleteId)
-        val result = athleteServices.createGymActivity(coach.info.id, uid, input.date)
-
+        val result = athleteServices.createGymActivity(
+            coach.info.id,
+            uid,
+            input.date,
+            input.exercises.map { inputModel ->
+                ExerciseInputInfo(
+                    sets = inputModel.sets.map { SetInputInfo(it.reps, it.weight, it.rest) },
+                    gymExerciseId = inputModel.gymExerciseId
+                )
+            }
+        )
         return when (result) {
             is Success ->
                 ResponseEntity
@@ -405,6 +408,58 @@ class AthleteController(
                     CreateGymActivityError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
                     CreateGymActivityError.InvalidDate -> Problem.response(400, Problem.invalidDate)
                     CreateGymActivityError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
+                    CreateGymActivityError.InvalidGymExercise -> Problem.response(400, Problem.invalidGymExercise)
+                    CreateGymActivityError.InvalidSet -> Problem.response(400, Problem.invalidSets)
+                }
+        }
+    }
+
+    @GetMapping(Uris.Athletes.GET_BY_ID_GYM_ACTIVITY)
+    fun getGymActivityList(
+        coach: AuthenticatedUser,
+        @PathVariable aid: String,
+        @PathVariable activityId: String,
+    ): ResponseEntity<*> {
+        val uid = aid.toIntOrNull() ?: return Problem.response(400, Problem.invalidAthleteId)
+        val activityIdInt = activityId.toIntOrNull() ?: return Problem.response(400, Problem.invalidGymActivityId)
+        val result = athleteServices.getGymActivity(coach.info.id, uid, activityIdInt)
+
+        return when (result) {
+            is Success ->
+                ResponseEntity
+                    .status(200)
+                    .body(
+                        ActivityWithExercisesOutputModel(
+                            result.value.id,
+                            result.value.uid,
+                            result.value.date,
+                            result.value.type.toString(),
+                            result.value.exercises.map { exercise ->
+                                ExerciseWithSetsOutputModel(
+                                    exercise.id,
+                                    exercise.activity,
+                                    exercise.exercise,
+                                    exercise.exerciseOrder,
+                                    exercise.sets.map { set ->
+                                        SetOutputModel(
+                                            set.id,
+                                            set.reps,
+                                            set.weight,
+                                            set.restTime,
+                                            set.setOrder,
+                                        )
+                                    },
+                                )
+                            },
+                        ),
+                    )
+
+            is Failure ->
+                when (result.value) {
+                    GetGymActivityError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
+                    GetGymActivityError.ActivityNotFound -> Problem.response(404, Problem.gymActivityNotFound)
+                    GetGymActivityError.NotAthletesActivity -> Problem.response(403, Problem.notAthletesActivity)
+                    GetGymActivityError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
                 }
         }
     }

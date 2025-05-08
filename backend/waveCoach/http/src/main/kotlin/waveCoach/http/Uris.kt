@@ -31,6 +31,18 @@ object Uris {
         fun byId(id: Int): URI = UriTemplate(GET_BY_ID).expand(id)
     }
 
+    object GymExercise {
+        private const val GYM_EXERCISE = "$PREFIX/gym/exercise"
+
+        const val CREATE = GYM_EXERCISE
+        const val GET_BY_ID = "$GYM_EXERCISE/{geid}"
+        const val GET_ALL = GYM_EXERCISE
+        const val UPDATE = "$GYM_EXERCISE/{geid}"
+        const val REMOVE = "$GYM_EXERCISE/{geid}"
+
+        fun byId(id: Int): URI = UriTemplate(GET_BY_ID).expand(id)
+    }
+
     object Athletes {
         private const val ATHLETES = "$PREFIX/athletes"
 

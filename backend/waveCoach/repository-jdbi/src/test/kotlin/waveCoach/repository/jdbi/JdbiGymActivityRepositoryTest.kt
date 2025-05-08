@@ -1,7 +1,9 @@
 package waveCoach.repository.jdbi
 
+import waveCoach.domain.Category
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class JdbiGymActivityRepositoryTest {
@@ -11,7 +13,7 @@ class JdbiGymActivityRepositoryTest {
             val gymActivityRepository = JdbiGymActivityRepository(handle)
             val activityRepository = JdbiActivityRepository(handle)
 
-            val activityId = activityRepository.storeActivity(FIRST_ATHLETE_ID, DATE)
+            val activityId = activityRepository.storeActivity(FIRST_ATHLETE_ID, DATE, TYPE)
 
             val gymActivityId = gymActivityRepository.storeGymActivity(activityId)
 
@@ -23,7 +25,7 @@ class JdbiGymActivityRepositoryTest {
         testWithHandleAndRollback { handle ->
             val gymActivityRepository = JdbiGymActivityRepository(handle)
 
-            val gymActivityList = gymActivityRepository.getGymActivities(FIRST_ATHLETE_ID)
+            val gymActivityList = gymActivityRepository.getGymActivityList(FIRST_ATHLETE_ID)
 
             assertTrue { gymActivityList.isNotEmpty() }
         }
@@ -33,15 +35,180 @@ class JdbiGymActivityRepositoryTest {
         testWithHandleAndRollback { handle ->
             val gymActivityRepository = JdbiGymActivityRepository(handle)
 
-            gymActivityRepository.removeGymActivities(FIRST_ATHLETE_ID)
+            gymActivityRepository.removeGymActivities(THIRD_ATHLETE_ID)
 
-            val gymActivityList = gymActivityRepository.getGymActivities(FIRST_ATHLETE_ID)
+            val gymActivityList = gymActivityRepository.getGymActivityList(THIRD_ATHLETE_ID)
 
             assertTrue { gymActivityList.isEmpty() }
+        }
+
+    @Test
+    fun `store and get exercise`() =
+        testWithHandleAndRollback { handle ->
+            val gymActivityRepository = JdbiGymActivityRepository(handle)
+            val activityRepository = JdbiActivityRepository(handle)
+
+            val activityId = activityRepository.storeActivity(FIRST_ATHLETE_ID, DATE, TYPE)
+
+            val gymActivityId = gymActivityRepository.storeGymActivity(activityId)
+
+            val exerciseId = gymActivityRepository.storeExercise(gymActivityId, 1, 1)
+
+            val exerciseList = gymActivityRepository.getExercises(gymActivityId)
+
+            assertTrue { exerciseList.isNotEmpty() }
+
+            assertEquals(exerciseId, exerciseList[0].id)
+
+        }
+
+    @Test
+    fun `get exercises `() =
+        testWithHandleAndRollback { handle ->
+            val gymActivityRepository = JdbiGymActivityRepository(handle)
+
+            val exerciseList = gymActivityRepository.getExercises(FIRST_GYM_ACTIVITY_ID)
+
+            assertTrue { exerciseList.isNotEmpty() }
+        }
+
+    @Test
+    fun `remove exercises by athlete`() =
+        testWithHandleAndRollback { handle ->
+            val gymActivityRepository = JdbiGymActivityRepository(handle)
+
+            gymActivityRepository.removeExercisesByAthlete(THIRD_ATHLETE_ID)
+
+            val exerciseList = gymActivityRepository.getExercises(SECOND_GYM_ACTIVITY_ID)
+
+            assertTrue { exerciseList.isEmpty() }
+        }
+
+    @Test
+    fun `store and get sets`() =
+        testWithHandleAndRollback { handle ->
+            val gymActivityRepository = JdbiGymActivityRepository(handle)
+            val activityRepository = JdbiActivityRepository(handle)
+
+            val activityId = activityRepository.storeActivity(FIRST_ATHLETE_ID, DATE, TYPE)
+
+            val gymActivityId = gymActivityRepository.storeGymActivity(activityId)
+
+            val exerciseId = gymActivityRepository.storeExercise(gymActivityId, 1, 1)
+
+            val setId = gymActivityRepository.storeSet(exerciseId, 10, 20f, 30f, 1)
+            val setId2 = gymActivityRepository.storeSet(exerciseId, 15, 25f, 35f, 2)
+
+            val setList = gymActivityRepository.getSets(exerciseId)
+
+            assertTrue { setList.isNotEmpty() }
+
+            assertEquals(setId, setList[0].id)
+            assertEquals(setId2, setList[1].id)
+        }
+
+    @Test
+    fun `get sets`() =
+        testWithHandleAndRollback { handle ->
+            val gymActivityRepository = JdbiGymActivityRepository(handle)
+
+            val setList = gymActivityRepository.getSets(FIRST_EXERCISE_ID)
+
+            assertTrue { setList.isNotEmpty() }
+        }
+
+    @Test
+    fun `remove sets by athlete`() =
+        testWithHandleAndRollback { handle ->
+            val gymActivityRepository = JdbiGymActivityRepository(handle)
+
+            gymActivityRepository.removeSetsByAthlete(FIRST_ATHLETE_ID)
+
+            val setList = gymActivityRepository.getSets(FIRST_EXERCISE_ID)
+
+            assertTrue { setList.isEmpty() }
+        }
+
+    @Test
+    fun `store and get Gym exercise`() =
+        testWithHandleAndRollback { handle ->
+            val gymActivityRepository = JdbiGymActivityRepository(handle)
+
+            val gymExerciseId = gymActivityRepository.storeGymExercise("Bench Press", "Chest")
+
+            val gymExercise = gymActivityRepository.getGymExerciseByName("Bench Press")
+
+            assertTrue { gymExercise != null }
+            assertEquals(gymExerciseId, gymExercise?.id)
+        }
+
+    @Test
+    fun `get Gym exercise by name`() =
+        testWithHandleAndRollback { handle ->
+            val gymActivityRepository = JdbiGymActivityRepository(handle)
+
+            val gymExercise = gymActivityRepository.getGymExerciseByName("Pull Up")
+
+            assertTrue { gymExercise != null }
+            assertEquals(3, gymExercise?.id)
+            assertEquals("Pull Up", gymExercise?.name)
+            assertEquals(Category.BACK, gymExercise?.category)
+        }
+
+    @Test
+    fun `get all Gym exercises`() =
+        testWithHandleAndRollback { handle ->
+            val gymActivityRepository = JdbiGymActivityRepository(handle)
+
+            val gymExerciseList = gymActivityRepository.getAllGymExercises()
+
+            assertTrue { gymExerciseList.isNotEmpty() }
+        }
+
+    @Test
+    fun `update Gym exercise`() =
+        testWithHandleAndRollback { handle ->
+            val gymActivityRepository = JdbiGymActivityRepository(handle)
+
+            gymActivityRepository.updateGymExercise(GYM_EXERCISE_ID, "Push Up", "Chest")
+
+            val updatedGymExercise = gymActivityRepository.getGymExerciseByName("Push Up")
+
+            assertTrue { updatedGymExercise != null }
+        }
+
+    @Test
+    fun `remove Gym exercise`() =
+        testWithHandleAndRollback { handle ->
+            val gymActivityRepository = JdbiGymActivityRepository(handle)
+
+            gymActivityRepository.removeGymExercise(GYM_EXERCISE_ID)
+
+            val removedGymExercise = gymActivityRepository.getGymExerciseByName("Pull Up")
+
+            assertTrue { removedGymExercise == null }
+        }
+
+    @Test
+    fun `is Gym exercise valid`() =
+        testWithHandleAndRollback { handle ->
+            val gymActivityRepository = JdbiGymActivityRepository(handle)
+
+            val isValid = gymActivityRepository.isGymExerciseValid(1)
+            val isNotValid = gymActivityRepository.isGymExerciseValid(-1)
+
+            assertTrue { isValid }
+            assertFalse { isNotValid }
         }
 
     companion object {
         private const val DATE = 948758400000 // (15-05-2000)
         private const val FIRST_ATHLETE_ID = 3
+        private const val THIRD_ATHLETE_ID = 5
+        private const val GYM_EXERCISE_ID = 3
+        private const val TYPE = "gym"
+        private const val FIRST_GYM_ACTIVITY_ID = 1
+        private const val FIRST_EXERCISE_ID = 1
+        private const val SECOND_GYM_ACTIVITY_ID = 2
     }
 }

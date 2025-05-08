@@ -129,5 +129,53 @@ class Problem(
                 "Username is blank",
                 URI("$BASE_URI/username-is-blank"),
             )
+
+        val invalidGymActivityId =
+            Problem(
+                "Invalid activity id",
+                URI("$BASE_URI/invalid-activity-id"),
+            )
+
+        val gymActivityNotFound =
+            Problem(
+                "Activity not found",
+                URI("$BASE_URI/activity-not-found"),
+            )
+
+        val notAthletesActivity =
+            Problem(
+                "Not athlete's activity",
+                URI("$BASE_URI/not-athletes-activity"),
+            )
+
+        val invalidGymExercise =
+            Problem(
+                "Invalid gym exercise",
+                URI("$BASE_URI/invalid-gym-exercise"),
+            )
+
+        val gymExerciseNotFound =
+            Problem(
+                "Gym exercise not found",
+                URI("$BASE_URI/gym-exercise-not-found"),
+            )
+
+        val nameAlreadyExists =
+            Problem(
+                "Name already exists",
+                URI("$BASE_URI/name-already-exists"),
+            )
+
+        val invalidCategory =
+            Problem(
+                "Invalid category",
+                URI("$BASE_URI/invalid-category"),
+            )
+
+        val invalidSets =
+            Problem(
+                "Invalid set",
+                URI("$BASE_URI/invalid-set"),
+            )
     }
 }

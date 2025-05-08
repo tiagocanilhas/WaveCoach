@@ -98,7 +98,7 @@ CREATE TABLE waveCoach.gym(
     FOREIGN KEY (activity) REFERENCES waveCoach.activity(id)
 );
 
-CREATE TABLE waveCoach.gym_exercises(
+CREATE TABLE waveCoach.gym_exercise(
     id SERIAL PRIMARY KEY,
     name VARCHAR(64) NOT NULL,
     category VARCHAR(64) NOT NULL
@@ -107,12 +107,17 @@ CREATE TABLE waveCoach.gym_exercises(
 CREATE TABLE waveCoach.exercise(
     id SERIAL PRIMARY KEY,
     activity INTEGER REFERENCES waveCoach.gym(activity),
-    exercise INTEGER REFERENCES waveCoach.gym_exercises(id),
+    exercise INTEGER REFERENCES waveCoach.gym_exercise(id),
+    exercise_order INTEGER
+);
+
+CREATE TABLE waveCoach.sets(
+    id SERIAL PRIMARY KEY,
+    exercise_id INTEGER REFERENCES waveCoach.exercise(id),
     weight FLOAT,
-    series INTEGER,
-    repetitions INTEGER,
-    rest_time INTEGER,
-    order_ INTEGER
+    reps INTEGER,
+    rest_time FLOAT,
+    set_order INTEGER
 );
 
 CREATE TABLE waveCoach.water(
@@ -135,7 +140,7 @@ CREATE TABLE waveCoach.questionnaire(
     muscle_pain INTEGER
 );
 
-CREATE TABLE waveCoach.water_maneuvers(
+CREATE TABLE waveCoach.water_maneuver(
     id SERIAL PRIMARY KEY,
     name VARCHAR(64) NOT NULL
 );
@@ -143,7 +148,7 @@ CREATE TABLE waveCoach.water_maneuvers(
 CREATE TABLE waveCoach.maneuver(
     id SERIAL PRIMARY KEY,
     activity INTEGER REFERENCES waveCoach.water(activity),
-    maneuver INTEGER REFERENCES waveCoach.water_maneuvers(id),
+    maneuver INTEGER REFERENCES waveCoach.water_maneuver(id),
     side VARCHAR(5) CHECK (side IN ('left', 'right')) NOT NULL,
     success INTEGER,
     failed INTEGER,

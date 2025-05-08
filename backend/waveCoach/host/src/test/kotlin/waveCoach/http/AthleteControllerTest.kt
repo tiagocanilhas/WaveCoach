@@ -1225,6 +1225,38 @@ class AthleteControllerTest {
         val body =
             mapOf(
                 "date" to VALID_DATE,
+                "exercises" to listOf(
+                    mapOf(
+                        "sets" to listOf(
+                            mapOf(
+                                "reps" to 10,
+                                "weight" to 100.0,
+                                "rest" to 60.0,
+                            ),
+                            mapOf(
+                                "reps" to 20,
+                                "weight" to 100.0,
+                                "rest" to 60.0,
+                            ),
+                        ),
+                        "gymExerciseId" to 1,
+                    ),
+                    mapOf(
+                        "sets" to listOf(
+                            mapOf(
+                                "reps" to 10,
+                                "weight" to 100.0,
+                                "rest" to 60.0,
+                            ),
+                            mapOf(
+                                "reps" to 20,
+                                "weight" to 100.0,
+                                "rest" to 60.0,
+                            ),
+                        ),
+                        "gymExerciseId" to 2,
+                    ),
+                ),
             )
 
         client.post().uri("/athletes/$THIRD_ATHLETE_ID/gym")
@@ -1235,7 +1267,7 @@ class AthleteControllerTest {
             .expectStatus().isCreated
             .expectHeader().exists("Location")
             .expectHeader().value("location") {
-                assertTrue(it.startsWith("/api/athletes/$THIRD_ATHLETE_ID/gym/$GYM_ID"))
+                assertTrue(it.startsWith("/api/athletes/$THIRD_ATHLETE_ID/gym"))
             }
     }
 
@@ -1246,6 +1278,38 @@ class AthleteControllerTest {
         val body =
             mapOf(
                 "date" to INVALID_DATE,
+                "exercises" to listOf(
+                    mapOf(
+                        "sets" to listOf(
+                            mapOf(
+                                "reps" to 10,
+                                "weight" to 100.0,
+                                "rest" to 60.0,
+                            ),
+                            mapOf(
+                                "reps" to 20,
+                                "weight" to 100.0,
+                                "rest" to 60.0,
+                            ),
+                        ),
+                        "gymExerciseId" to 1,
+                    ),
+                    mapOf(
+                        "sets" to listOf(
+                            mapOf(
+                                "reps" to 10,
+                                "weight" to 100.0,
+                                "rest" to 60.0,
+                            ),
+                            mapOf(
+                                "reps" to 20,
+                                "weight" to 100.0,
+                                "rest" to 60.0,
+                            ),
+                        ),
+                        "gymExerciseId" to 2,
+                    ),
+                ),
             )
 
         client.post().uri("/athletes/$THIRD_ATHLETE_ID/gym")
@@ -1268,6 +1332,38 @@ class AthleteControllerTest {
         val body =
             mapOf(
                 "date" to VALID_DATE,
+                "exercises" to listOf(
+                    mapOf(
+                        "sets" to listOf(
+                            mapOf(
+                                "reps" to 10,
+                                "weight" to 100.0,
+                                "rest" to 60.0,
+                            ),
+                            mapOf(
+                                "reps" to 20,
+                                "weight" to 100.0,
+                                "rest" to 60.0,
+                            ),
+                        ),
+                        "gymExerciseId" to 1,
+                    ),
+                    mapOf(
+                        "sets" to listOf(
+                            mapOf(
+                                "reps" to 10,
+                                "weight" to 100.0,
+                                "rest" to 60.0,
+                            ),
+                            mapOf(
+                                "reps" to 20,
+                                "weight" to 100.0,
+                                "rest" to 60.0,
+                            ),
+                        ),
+                        "gymExerciseId" to 2,
+                    ),
+                ),
             )
 
         client.post().uri("/athletes/$id/gym")
@@ -1290,6 +1386,38 @@ class AthleteControllerTest {
         val body =
             mapOf(
                 "date" to VALID_DATE,
+                "exercises" to listOf(
+                    mapOf(
+                        "sets" to listOf(
+                            mapOf(
+                                "reps" to 10,
+                                "weight" to 100.0,
+                                "rest" to 60.0,
+                            ),
+                            mapOf(
+                                "reps" to 20,
+                                "weight" to 100.0,
+                                "rest" to 60.0,
+                            ),
+                        ),
+                        "gymExerciseId" to 1,
+                    ),
+                    mapOf(
+                        "sets" to listOf(
+                            mapOf(
+                                "reps" to 10,
+                                "weight" to 100.0,
+                                "rest" to 60.0,
+                            ),
+                            mapOf(
+                                "reps" to 20,
+                                "weight" to 100.0,
+                                "rest" to 60.0,
+                            ),
+                        ),
+                        "gymExerciseId" to 2,
+                    ),
+                ),
             )
 
         client.post().uri("/athletes/$id/gym")
@@ -1310,6 +1438,38 @@ class AthleteControllerTest {
         val body =
             mapOf(
                 "date" to VALID_DATE,
+                "exercises" to listOf(
+                    mapOf(
+                        "sets" to listOf(
+                            mapOf(
+                                "reps" to 10,
+                                "weight" to 100.0,
+                                "rest" to 60.0,
+                            ),
+                            mapOf(
+                                "reps" to 20,
+                                "weight" to 100.0,
+                                "rest" to 60.0,
+                            ),
+                        ),
+                        "gymExerciseId" to 1,
+                    ),
+                    mapOf(
+                        "sets" to listOf(
+                            mapOf(
+                                "reps" to 10,
+                                "weight" to 100.0,
+                                "rest" to 60.0,
+                            ),
+                            mapOf(
+                                "reps" to 20,
+                                "weight" to 100.0,
+                                "rest" to 60.0,
+                            ),
+                        ),
+                        "gymExerciseId" to 2,
+                    ),
+                ),
             )
 
         client.post().uri("/athletes/$THIRD_ATHLETE_ID/gym")
@@ -1321,6 +1481,75 @@ class AthleteControllerTest {
             .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
             .expectBody()
             .jsonPath("type").isEqualTo(Problem.notAthletesCoach.type.toString())
+    }
+
+    @Test
+    fun `create gym activity - invalid gym exercise`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "date" to VALID_DATE,
+                "exercises" to listOf(
+                    mapOf(
+                        "sets" to listOf(
+                            mapOf(
+                                "reps" to 10,
+                                "weight" to 100.0,
+                                "rest" to 60.0,
+                            ),
+                            mapOf(
+                                "reps" to 20,
+                                "weight" to 100.0,
+                                "rest" to 60.0,
+                            ),
+                        ),
+                        "gymExerciseId" to -1,
+                    ),
+                ),
+            )
+
+        client.post().uri("/athletes/$THIRD_ATHLETE_ID/gym")
+            .header("Authorization", "Bearer $SECOND_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidGymExercise.type.toString())
+    }
+
+    @Test
+    fun `create gym activity - invalid set`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "date" to VALID_DATE,
+                "exercises" to listOf(
+                    mapOf(
+                        "sets" to listOf(
+                            mapOf(
+                                "reps" to -1,
+                                "weight" to 100.0,
+                                "rest" to 60.0,
+                            ),
+                        ),
+                        "gymExerciseId" to 1,
+                    ),
+                ),
+            )
+
+        client.post().uri("/athletes/$THIRD_ATHLETE_ID/gym")
+            .header("Authorization", "Bearer $SECOND_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidSets.type.toString())
     }
 
 
@@ -1384,6 +1613,112 @@ class AthleteControllerTest {
             .jsonPath("type").isEqualTo(Problem.notAthletesCoach.type.toString())
     }
 
+    /**
+     * Get gym activity tests
+     */
+
+    @Test
+    fun `get gym activity - success`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.get().uri("/athletes/$THIRD_ATHLETE_ID/gym/$SECOND_GYM_ACTIVITY_ID")
+            .header("Authorization", "Bearer $SECOND_COACH_TOKEN")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody()
+            .jsonPath("activityId").isEqualTo(SECOND_GYM_ACTIVITY_ID)
+            .jsonPath("uid").isEqualTo(THIRD_ATHLETE_ID)
+            .jsonPath("date").isEqualTo(FIRST_GYM_ACTIVITY_DATE)
+            .jsonPath("type").isEqualTo("gym")
+            .jsonPath("exercises").exists()
+    }
+
+    @Test
+    fun `get gym activity - invalid athlete id`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val id = "invalid"
+
+        client.get().uri("/athletes/$id/gym/$SECOND_GYM_ACTIVITY_ID")
+            .header("Authorization", "Bearer $SECOND_COACH_TOKEN")
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidAthleteId.type.toString())
+    }
+
+    @Test
+    fun `get gym activity - invalid gym activity id`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val id = "invalid"
+
+        client.get().uri("/athletes/$THIRD_ATHLETE_ID/gym/$id")
+            .header("Authorization", "Bearer $SECOND_COACH_TOKEN")
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidGymActivityId.type.toString())
+    }
+
+    @Test
+    fun `get gym activity - athlete not found`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val id = 0
+
+        client.get().uri("/athletes/$id/gym/$SECOND_GYM_ACTIVITY_ID")
+            .header("Authorization", "Bearer $SECOND_COACH_TOKEN")
+            .exchange()
+            .expectStatus().isNotFound
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.athleteNotFound.type.toString())
+    }
+
+    @Test
+    fun `get gym activity - not athlete's coach`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.get().uri("/athletes/$THIRD_ATHLETE_ID/gym/$SECOND_GYM_ACTIVITY_ID")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .exchange()
+            .expectStatus().isForbidden
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.notAthletesCoach.type.toString())
+    }
+
+    @Test
+    fun `get gym activity - gym activity not found`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val id = 0
+
+        client.get().uri("/athletes/$THIRD_ATHLETE_ID/gym/$id")
+            .header("Authorization", "Bearer $SECOND_COACH_TOKEN")
+            .exchange()
+            .expectStatus().isNotFound
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.gymActivityNotFound.type.toString())
+    }
+
+    @Test
+    fun `get gym activity - not athlete's activity`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.get().uri("/athletes/$THIRD_ATHLETE_ID/gym/$FIRST_GYM_ACTIVITY_ID")
+            .header("Authorization", "Bearer $SECOND_COACH_TOKEN")
+            .exchange()
+            .expectStatus().isForbidden
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.notAthletesActivity.type.toString())
+    }
+
     companion object {
         private fun randomString() = "String_${abs(Random.nextLong())}"
 
@@ -1409,7 +1744,10 @@ class AthleteControllerTest {
         private const val SECOND_COACH_TOKEN = "fM5JjtPOUqtnZg1lB7jnJhXBP5gI2WbIIBoO3JhYM5M="
         private const val THIRD_ATHLETE_ID = 5
 
-        private const val GYM_ID = 3
+        private const val FIRST_GYM_ACTIVITY_ID = 1
+        private const val FIRST_GYM_ACTIVITY_DATE = 948758400000
+        private const val SECOND_GYM_ACTIVITY_ID = 2
+
 
         private const val ATHLETE_HEIGHT = 181
         private const val ATHLETE_WEIGHT = 74.0f
