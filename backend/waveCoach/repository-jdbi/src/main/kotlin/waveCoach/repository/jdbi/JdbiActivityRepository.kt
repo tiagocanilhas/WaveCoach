@@ -40,4 +40,10 @@ class JdbiActivityRepository(
             .bind("uid", uid)
             .execute()
     }
+
+    override fun removeActivity(activityId: Int) {
+        handle.createUpdate("delete from waveCoach.activity where id = :activityId")
+            .bind("activityId", activityId)
+            .execute()
+    }
 }

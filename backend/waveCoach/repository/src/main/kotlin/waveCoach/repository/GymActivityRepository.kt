@@ -12,17 +12,23 @@ interface GymActivityRepository {
 
     fun removeGymActivities(uid: Int)
 
+    fun removeGymActivity(activityId: Int)
+
     fun storeExercise(activityID: Int, exerciseID: Int, exerciseOrder: Int): Int
 
     fun getExercises(activityId: Int): List<Exercise>
 
     fun removeExercisesByAthlete(athleteId: Int)
 
+    fun removeExercisesByActivity(activityId: Int)
+
     fun storeSet(exerciseId: Int, reps: Int, weight: Float, rest: Float, setOrder: Int): Int
 
     fun getSets(exerciseId: Int): List<Sets>
 
     fun removeSetsByAthlete(athleteId: Int)
+
+    fun removeSetsByActivity(activityId: Int)
 
     fun storeGymExercise(name: String, category: String): Int
 

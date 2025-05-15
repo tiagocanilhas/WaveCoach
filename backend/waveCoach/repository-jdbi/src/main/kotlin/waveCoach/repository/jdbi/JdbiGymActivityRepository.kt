@@ -38,10 +38,17 @@ class JdbiGymActivityRepository(
             .execute()
     }
 
+    override fun removeGymActivity(activityId: Int) {
+        handle.createUpdate("delete from waveCoach.gym where activity = :activityId")
+            .bind("activityId", activityId)
+            .execute()
+    }
+
     override fun storeExercise(activityID: Int, exerciseID: Int, exerciseOrder: Int): Int =
         handle.createUpdate(
             """
-            insert into waveCoach.exercise (activity, exercise, exercise_order) values (:activity, :exercise, :exerciseOrder)
+            insert into waveCoach.exercise (activity, exercise, exercise_order) 
+            values (:activity, :exercise, :exerciseOrder)
             """.trimIndent(),
         )
             .bind("activity", activityID)
@@ -54,7 +61,11 @@ class JdbiGymActivityRepository(
     override fun getExercises(activityId: Int): List<Exercise> =
         handle.createQuery(
             """
-            select * from waveCoach.exercise where activity = :activityId order by exercise_order
+            select e.id, e.activity, ge.name, e.exercise_order
+            from waveCoach.exercise e
+            join waveCoach.gym_exercise ge on e.exercise = ge.id
+            where e.activity = :activityId
+            order by e.exercise_order
             """.trimIndent(),
         )
             .bind("activityId", activityId)
@@ -74,10 +85,21 @@ class JdbiGymActivityRepository(
             .execute()
     }
 
+    override fun removeExercisesByActivity(activityId: Int) {
+        handle.createUpdate(
+            """
+        delete from waveCoach.exercise where activity = :activityId
+        """.trimIndent(),
+        )
+            .bind("activityId", activityId)
+            .execute()
+    }
+
     override fun storeSet(exerciseId: Int, reps: Int, weight: Float, rest: Float, setOrder: Int): Int =
         handle.createUpdate(
             """
-            insert into waveCoach.sets (exercise_id, weight, reps, rest_time, set_order) values (:exercise_id, :weight, :reps, :rest_time, :setOrder)
+            insert into waveCoach.sets (exercise_id, weight, reps, rest_time, set_order) 
+            values (:exercise_id, :weight, :reps, :rest_time, :setOrder)
             """.trimIndent(),
         )
             .bind("exercise_id", exerciseId)
@@ -102,24 +124,32 @@ class JdbiGymActivityRepository(
     override fun removeSetsByAthlete(athleteId: Int) {
         handle.createUpdate(
             """
-    delete from waveCoach.sets 
-    where exercise_id in (
-        select id from waveCoach.exercise where activity in (
-            select id from waveCoach.activity where uid = :athleteId
+        delete from waveCoach.sets 
+        where exercise_id in (
+            select id from waveCoach.exercise where activity in (
+                select id from waveCoach.activity where uid = :athleteId
+            )
         )
-    )
-    """.trimIndent(),
+        """.trimIndent(),
         )
             .bind("athleteId", athleteId)
             .execute()
     }
 
-    override fun storeGymExercise(name: String, category: String): Int =
+    override fun removeSetsByActivity(activityId: Int) {
         handle.createUpdate(
             """
-            insert into waveCoach.gym_exercise (name, category) values (:name, :category)
-            """.trimIndent(),
+        delete from waveCoach.sets where exercise_id in (
+            select id from waveCoach.exercise where activity = :activityId
         )
+        """.trimIndent(),
+        )
+            .bind("activityId", activityId)
+            .execute()
+    }
+
+    override fun storeGymExercise(name: String, category: String): Int =
+        handle.createUpdate("insert into waveCoach . gym_exercise (name, category) values (:name, :category)")
             .bind("name", name)
             .bind("category", category)
             .executeAndReturnGeneratedKeys()
@@ -127,30 +157,22 @@ class JdbiGymActivityRepository(
             .one()
 
     override fun getGymExerciseByName(name: String): GymExercise? =
-        handle.createQuery(
-            """
-            select * from waveCoach.gym_exercise where name = :name
-            """.trimIndent(),
-        )
+        handle.createQuery("select * from waveCoach.gym_exercise where name = :name")
             .bind("name", name)
             .mapTo<GymExercise>()
             .findOne()
             .orElse(null)
 
     override fun getAllGymExercises(): List<GymExercise> =
-        handle.createQuery(
-            """
-            select * from waveCoach.gym_exercise
-            """.trimIndent(),
-        )
+        handle.createQuery("select * from waveCoach.gym_exercise")
             .mapTo<GymExercise>()
             .list()
 
     override fun updateGymExercise(exerciseId: Int, name: String, category: String) {
         handle.createUpdate(
             """
-            update waveCoach.gym_exercise set name = :name, category = :category where id = :exerciseId
-            """.trimIndent(),
+        update waveCoach . gym_exercise set name = :name, category = :category where id = :exerciseId
+        """.trimIndent(),
         )
             .bind("exerciseId", exerciseId)
             .bind("name", name)
@@ -159,16 +181,12 @@ class JdbiGymActivityRepository(
     }
 
     override fun removeGymExercise(exerciseId: Int) {
-        handle.createUpdate(
-            """
-            delete from waveCoach.gym_exercise where id = :exerciseId
-            """.trimIndent(),
-        )
+        handle.createUpdate("delete from waveCoach.gym_exercise where id = :exerciseId")
             .bind("exerciseId", exerciseId)
             .execute()
     }
 
-    override fun isGymExerciseValid(exerciseId: Int, ): Boolean =
+    override fun isGymExerciseValid(exerciseId: Int): Boolean =
         handle.createQuery("select exists(select 1 from waveCoach.gym_exercise where id = :exerciseId)")
             .bind("exerciseId", exerciseId)
             .mapTo<Boolean>()

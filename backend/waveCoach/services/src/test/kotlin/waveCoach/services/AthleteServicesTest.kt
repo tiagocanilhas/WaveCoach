@@ -984,141 +984,6 @@ class AthleteServicesTest {
         }
     }
 
-    @Test
-    fun `create gym activity - success`() {
-        val testClock = TestClock()
-        val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
-
-        when (
-            val result =
-                athleteServices.createGymActivity(
-                    FIRST_COACH_ID,
-                    FIRST_ATHLETE_ID,
-                    ATHLETE_CHARACTERISTICS_FIRST_DATE,
-                    EXERCISES_LIST
-                )
-        ) {
-            is Failure -> fail("Unexpected $result")
-            is Success -> assertTrue(result.value > 0)
-        }
-    }
-
-    @Test
-    fun `create gym activity - invalid date`() {
-        val testClock = TestClock()
-        val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
-
-        val invalidDates =
-            listOf(
-                "32-01-2000",
-                "2000-01-01",
-                "01-01-2200",
-            )
-
-        invalidDates.forEach { date ->
-            when (
-                val result =
-                    athleteServices.createGymActivity(
-                        FIRST_COACH_ID,
-                        FIRST_ATHLETE_ID,
-                        date,
-                        EXERCISES_LIST
-                    )
-            ) {
-                is Failure -> assertTrue(result.value is CreateGymActivityError.InvalidDate)
-                is Success -> fail("Unexpected $result")
-            }
-        }
-    }
-
-    @Test
-    fun `create gym activity - athlete not found`() {
-        val testClock = TestClock()
-        val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
-
-        when (
-            val result =
-                athleteServices.createGymActivity(
-                    FIRST_COACH_ID,
-                    0,
-                    ATHLETE_CHARACTERISTICS_FIRST_DATE,
-                    EXERCISES_LIST
-                )
-        ) {
-            is Failure -> assertTrue(result.value is CreateGymActivityError.AthleteNotFound)
-            is Success -> fail("Unexpected $result")
-        }
-    }
-
-    @Test
-    fun `create gym activity - not athlete's coach`() {
-        val testClock = TestClock()
-        val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
-
-        when (
-            val result =
-                athleteServices.createGymActivity(
-                    SECOND_COACH_ID,
-                    FIRST_ATHLETE_ID,
-                    ATHLETE_CHARACTERISTICS_FIRST_DATE,
-                    EXERCISES_LIST
-                )
-        ) {
-            is Failure -> assertTrue(result.value is CreateGymActivityError.NotAthletesCoach)
-            is Success -> fail("Unexpected $result")
-        }
-    }
-
-    @Test
-    fun `create gym activity - invalid gym exercise`() {
-        val testClock = TestClock()
-        val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
-
-        val invalidExercisesList =
-            listOf(
-                ExerciseInputInfo(sets = emptyList(), gymExerciseId = -1),
-            )
-
-
-        when (
-            val result =
-                athleteServices.createGymActivity(
-                    FIRST_COACH_ID,
-                    FIRST_ATHLETE_ID,
-                    ATHLETE_CHARACTERISTICS_FIRST_DATE,
-                    invalidExercisesList
-                )
-        ) {
-            is Failure -> assertTrue(result.value is CreateGymActivityError.InvalidGymExercise)
-            is Success -> fail("Unexpected $result")
-        }
-
-    }
-
-    @Test
-    fun `create gym activity - invalid set`() {
-        val testClock = TestClock()
-        val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
-
-        val invalidExercisesList =
-            listOf(
-                ExerciseInputInfo(sets = listOf(SetInputInfo(reps = -1, weight = -1f, rest = -1f)), gymExerciseId = 1),
-            )
-
-        when (
-            val result =
-                athleteServices.createGymActivity(
-                    FIRST_COACH_ID,
-                    FIRST_ATHLETE_ID,
-                    ATHLETE_CHARACTERISTICS_FIRST_DATE,
-                    invalidExercisesList
-                )
-        ) {
-            is Failure -> assertTrue(result.value is CreateGymActivityError.InvalidSet)
-            is Success -> fail("Unexpected $result")
-        }
-    }
-
     /**
      * Get Activities Tests
      */
@@ -1156,64 +1021,7 @@ class AthleteServicesTest {
         }
     }
 
-    /**
-     * Get Gym Activity Tests
-     */
 
-    @Test
-    fun `get gym activity - success`() {
-        val testClock = TestClock()
-        val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
-
-        when (val result = athleteServices.getGymActivity(FIRST_COACH_ID, FIRST_ATHLETE_ID, FIRST_GYM_ACTIVITY_ID)) {
-            is Failure -> fail("Unexpected $result")
-            is Success -> assertTrue(result.value.exercises.isNotEmpty())
-        }
-    }
-
-    @Test
-    fun `get gym activity - activity not found`() {
-        val testClock = TestClock()
-        val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
-
-        when (val result = athleteServices.getGymActivity(FIRST_COACH_ID, FIRST_ATHLETE_ID, 0)) {
-            is Failure -> assertTrue(result.value is GetGymActivityError.ActivityNotFound)
-            is Success -> fail("Unexpected $result")
-        }
-    }
-
-    @Test
-    fun `get gym activity - athlete not found`() {
-        val testClock = TestClock()
-        val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
-
-        when (val result = athleteServices.getGymActivity(FIRST_COACH_ID, 0, FIRST_GYM_ACTIVITY_ID)) {
-            is Failure -> assertTrue(result.value is GetGymActivityError.AthleteNotFound)
-            is Success -> fail("Unexpected $result")
-        }
-    }
-
-    @Test
-    fun `get gym activity - not athlete's coach`() {
-        val testClock = TestClock()
-        val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
-
-        when (val result = athleteServices.getGymActivity(SECOND_COACH_ID, FIRST_ATHLETE_ID, FIRST_GYM_ACTIVITY_ID)) {
-            is Failure -> assertTrue(result.value is GetGymActivityError.NotAthletesCoach)
-            is Success -> fail("Unexpected $result")
-        }
-    }
-
-    @Test
-    fun `get gym activity - not athlete's activity`() {
-        val testClock = TestClock()
-        val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
-
-        when (val result = athleteServices.getGymActivity(FIRST_COACH_ID, FIRST_ATHLETE_ID, SECOND_GYM_ACTIVITY_ID)) {
-            is Failure -> assertTrue(result.value is GetGymActivityError.NotAthletesActivity)
-            is Success -> fail("Unexpected $result")
-        }
-    }
 
     companion object {
         private fun randomString() = "String_${abs(Random.nextLong())}"
@@ -1251,6 +1059,7 @@ class AthleteServicesTest {
 
         private const val FIRST_GYM_ACTIVITY_ID = 1
         private const val SECOND_GYM_ACTIVITY_ID = 2
+        private const val THIRD_GYM_ACTIVITY_ID = 3
 
         private const val MAX_TOKENS_PER_USER = 5
 

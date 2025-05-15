@@ -50,6 +50,14 @@ insert into waveCoach.characteristics (date, uid, weight, height, calories, body
 insert into waveCoach.characteristics (date, uid, weight, height, calories, body_fat, waist_size, arm_size, thigh_size, tricep_fat, abdomen_fat, thigh_fat) values (947462400000, 5, 74.0, 181, 1, 1.0, 1, 1, 1, 1, 1, 1);
 insert into waveCoach.activity (uid, date) values (5, 948758400000);
 insert into waveCoach.gym (activity) values (2);
+insert into waveCoach.activity (uid, date) values (5, 947462400000);
+insert into waveCoach.gym (activity) values (3);
+insert into waveCoach.exercise (activity, exercise, exercise_order) values (3, 2, 1);
+insert into waveCoach.sets (exercise_id, weight, reps, rest_time, set_order) values (3, 100.0, 10, 60.0, 1);
+
+--Second athlete activity
+insert into waveCoach.activity (uid, date) values (4, 948758400000);
+insert into waveCoach.gym (activity) values (4);
 
 
 

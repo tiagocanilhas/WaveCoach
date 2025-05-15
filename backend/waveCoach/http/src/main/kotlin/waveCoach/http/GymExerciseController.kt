@@ -22,7 +22,7 @@ import waveCoach.utils.Success
 
 @RestController
 class GymExerciseController(
-    private val gymExercise: GymExerciseServices,
+    private val gymExerciseServices: GymExerciseServices,
 ) {
 
     @PostMapping(Uris.GymExercise.CREATE)
@@ -30,7 +30,7 @@ class GymExerciseController(
         coach: AuthenticatedUser,
         @RequestBody input: CreateGymExerciseInputModel,
     ): ResponseEntity<*> {
-        val result = gymExercise.createGymExercise(input.name, input.category)
+        val result = gymExerciseServices.createGymExercise(input.name, input.category)
 
         return when (result) {
             is Success ->
@@ -52,7 +52,7 @@ class GymExerciseController(
     fun getAll(
         coach: AuthenticatedUser,
     ): ResponseEntity<*> {
-        val result = gymExercise.getAllGymExercises()
+        val result = gymExerciseServices.getAllGymExercises()
 
         return ResponseEntity
             .status(200)
@@ -75,7 +75,7 @@ class GymExerciseController(
         @PathVariable geid: Int,
         @RequestBody input: UpdateGymExerciseInputModel,
     ): ResponseEntity<*> {
-        val result = gymExercise.updateGymExercise(geid, input.name, input.category)
+        val result = gymExerciseServices.updateGymExercise(geid, input.name, input.category)
 
         return when (result) {
             is Success -> ResponseEntity.status(204).build<Unit>()
@@ -95,7 +95,7 @@ class GymExerciseController(
         coach: AuthenticatedUser,
         @PathVariable geid: Int,
     ): ResponseEntity<*> {
-        val result = gymExercise.removeGymExercise(geid)
+        val result = gymExerciseServices.removeGymExercise(geid)
 
         return when (result) {
             is Success -> ResponseEntity.status(204).build<Unit>()

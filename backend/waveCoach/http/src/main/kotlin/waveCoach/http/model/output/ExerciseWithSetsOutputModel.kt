@@ -1,9 +1,9 @@
 package waveCoach.http.model.output
 
 data class ExerciseWithSetsOutputModel(
-    val exerciseId: Int,
+    val id: Int,
     val activity: Int,
-    val gymExerciseId: Int,
-    val exerciseOrder: Int,
+    val gymExercise: String,
+    val order: Int,
     val sets: List<SetOutputModel>,
 )

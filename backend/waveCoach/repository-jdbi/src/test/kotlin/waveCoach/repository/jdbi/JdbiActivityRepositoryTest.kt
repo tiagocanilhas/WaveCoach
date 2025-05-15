@@ -40,6 +40,9 @@ class JdbiActivityRepositoryTest {
     fun `remove activities`() =
         testWithHandleAndRollback { handle ->
             val activityRepository = JdbiActivityRepository(handle)
+            val gymActivityRepository = JdbiGymActivityRepository(handle)
+
+            gymActivityRepository.removeGymActivities(SECOND_ATHLETE_ID)
 
             activityRepository.storeActivity(SECOND_ATHLETE_ID, DATE, TYPE)
 
@@ -50,10 +53,26 @@ class JdbiActivityRepositoryTest {
             assertTrue(activityList.isEmpty())
         }
 
+    @Test
+    fun `remove activity`() =
+        testWithHandleAndRollback { handle ->
+            val activityRepository = JdbiActivityRepository(handle)
+            val gymActivityRepository = JdbiGymActivityRepository(handle)
+
+            gymActivityRepository.removeGymActivity(ACTIVITY_ID)
+
+            activityRepository.removeActivity(ACTIVITY_ID)
+
+            val activityList = activityRepository.getAthleteActivityList(SECOND_ATHLETE_ID)
+
+            assertTrue(activityList.isEmpty())
+        }
+
     companion object {
         private const val DATE = 948758400000 // (15-05-2000)
         private const val FIRST_ATHLETE_ID = 3
         private const val SECOND_ATHLETE_ID = 4
+        private const val ACTIVITY_ID = 4
         private const val TYPE = "gym"
     }
 }

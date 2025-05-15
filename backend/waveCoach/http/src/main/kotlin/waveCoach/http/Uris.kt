@@ -31,6 +31,17 @@ object Uris {
         fun byId(id: Int): URI = UriTemplate(GET_BY_ID).expand(id)
     }
 
+    object GymActivity {
+        private const val GYM_ACTIVITY = "$PREFIX/gym"
+
+        const val CREATE = GYM_ACTIVITY
+        const val GET_BY_ID = "$GYM_ACTIVITY/{activityId}"
+        const val UPDATE = "$GYM_ACTIVITY/{activityId}"
+        const val REMOVE = "$GYM_ACTIVITY/{activityId}"
+
+        fun byId(id: Int): URI = UriTemplate(GET_BY_ID).expand(id)
+    }
+
     object GymExercise {
         private const val GYM_EXERCISE = "$PREFIX/gym/exercise"
 
@@ -62,19 +73,11 @@ object Uris {
         const val UPDATE_CHARACTERISTICS = "$ATHLETES/{aid}/characteristics/{date}"
         const val REMOVE_CHARACTERISTICS = "$ATHLETES/{aid}/characteristics/{date}"
 
-        const val CREATE_GYM_ACTIVITY = "$ATHLETES/{aid}/gym"
-        const val GET_BY_ID_GYM_ACTIVITY = "$ATHLETES/{aid}/gym/{activityId}"
-
         const val CREATE_WATER_ACTIVITY = "$ATHLETES/{aid}/water"
 
         const val GET_ACTIVITIES = "$ATHLETES/{aid}/activities"
 
         fun byId(id: Int): URI = UriTemplate(GET_BY_ID).expand(id)
-
-        fun gymActivityById(
-            id: Int,
-            activityId: Int,
-        ): URI = UriTemplate(GET_BY_ID_GYM_ACTIVITY).expand(id, activityId)
 
         fun characteristicsByDate(
             aid: Int,

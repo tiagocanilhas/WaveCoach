@@ -14,4 +14,6 @@ interface ActivityRepository {
     fun getActivityById(activityId: Int): Activity?
 
     fun removeActivities(uid: Int)
+
+    fun removeActivity(activityId: Int)
 }

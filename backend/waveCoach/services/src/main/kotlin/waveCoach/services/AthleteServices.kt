@@ -18,17 +18,6 @@ data class AthleteCodeExternalInfo(
     val expirationDate: Instant,
 )
 
-data class ExerciseInputInfo(
-    val sets: List<SetInputInfo>,
-    val gymExerciseId: Int,
-)
-
-data class SetInputInfo(
-    val reps: Int,
-    val weight: Float,
-    val rest: Float,
-)
-
 sealed class CreateAthleteError {
     data object InvalidBirthDate : CreateAthleteError()
 
@@ -136,30 +125,6 @@ sealed class RemoveCharacteristicsError {
     data object NotAthletesCoach : RemoveCharacteristicsError()
 }
 typealias RemoveCharacteristicsResult = Either<RemoveCharacteristicsError, Int>
-
-sealed class CreateGymActivityError {
-    data object InvalidDate : CreateGymActivityError()
-
-    data object AthleteNotFound : CreateGymActivityError()
-
-    data object NotAthletesCoach : CreateGymActivityError()
-
-    data object InvalidGymExercise : CreateGymActivityError()
-
-    data object InvalidSet : CreateGymActivityError()
-}
-typealias CreateGymActivityResult = Either<CreateGymActivityError, Int>
-
-sealed class GetGymActivityError {
-    data object AthleteNotFound : GetGymActivityError()
-
-    data object ActivityNotFound : GetGymActivityError()
-
-    data object NotAthletesActivity : GetGymActivityError()
-
-    data object NotAthletesCoach : GetGymActivityError()
-}
-typealias GetGymActivityResult = Either<GetGymActivityError, ActivityWithExercises>
 
 sealed class GetActivitiesError {
     data object AthleteNotFound : GetActivitiesError()
@@ -519,73 +484,6 @@ class AthleteServices(
         }
     }
 
-    fun createGymActivity(
-        coachId: Int,
-        uid: Int,
-        date: String,
-        exercises: List<ExerciseInputInfo>
-    ): CreateGymActivityResult {
-        val dateLong = dateToLong(date) ?: return failure(CreateGymActivityError.InvalidDate)
-
-        return transactionManager.run {
-            val athleteRepository = it.athleteRepository
-            val activityRepository = it.activityRepository
-            val gymActivityRepository = it.gymActivityRepository
-            val athlete =
-                athleteRepository.getAthlete(uid) ?: return@run failure(CreateGymActivityError.AthleteNotFound)
-
-            if (athlete.coach != coachId) return@run failure(CreateGymActivityError.NotAthletesCoach)
-
-            val activityID = activityRepository.storeActivity(uid, dateLong, "gym")
-
-            gymActivityRepository.storeGymActivity(activityID)
-
-            exercises.forEachIndexed { exerciseOrder, exercise ->
-                if (!gymActivityRepository.isGymExerciseValid(exercise.gymExerciseId))
-                    return@run failure(CreateGymActivityError.InvalidGymExercise)
-
-                val exerciseId = gymActivityRepository.storeExercise(activityID, exercise.gymExerciseId, exerciseOrder)
-                exercise.sets.forEachIndexed { setOrder, set ->
-                    if (!checkSet(set)) return@run failure(CreateGymActivityError.InvalidSet)
-
-                    gymActivityRepository.storeSet(exerciseId, set.reps, set.weight, set.rest, setOrder)
-                }
-            }
-            success(activityID)
-        }
-    }
-
-    fun getGymActivity(
-        coachId: Int,
-        uid: Int,
-        activityId: Int,
-    ): GetGymActivityResult {
-        return transactionManager.run {
-            val athleteRepository = it.athleteRepository
-            val activityRepository = it.activityRepository
-            val gymActivityRepository = it.gymActivityRepository
-
-            val athlete =
-                athleteRepository.getAthlete(uid) ?: return@run failure(GetGymActivityError.AthleteNotFound)
-            if (athlete.coach != coachId) return@run failure(GetGymActivityError.NotAthletesCoach)
-
-            val activity =
-                activityRepository.getActivityById(activityId)
-                    ?: return@run failure(GetGymActivityError.ActivityNotFound)
-
-            if (activity.uid != uid) return@run failure(GetGymActivityError.NotAthletesActivity)
-
-            val exercises = gymActivityRepository.getExercises(activityId)
-
-            val exercisesWithSets = exercises.map { exercise ->
-                val sets = gymActivityRepository.getSets(exercise.id)
-                ExerciseWithSets(exercise.id, exercise.activity, exercise.exercise, exercise.exerciseOrder, sets)
-            }
-
-            success(ActivityWithExercises(activity.id, activity.uid, activity.date, activity.type, exercisesWithSets))
-        }
-    }
-
     fun getActivities(
         cid: Int,
         uid: Int,
@@ -616,7 +514,5 @@ class AthleteServices(
             null
         }
     }
-
-    private fun checkSet(sets: SetInputInfo): Boolean = sets.reps > 0 && sets.weight > 0 && sets.rest > 0
 
 }
