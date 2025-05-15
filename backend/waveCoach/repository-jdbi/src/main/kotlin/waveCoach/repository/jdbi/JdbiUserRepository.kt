@@ -91,7 +91,7 @@ class JdbiUserRepository(
     override fun getToken(tokenValidationInfo: TokenValidationInfo): Pair<User, Token>? =
         handle.createQuery(
             """
-            select id, username, password, token, created_time, used_time from waveCoach.user 
+            select id, username, password, token, is_coach, created_time, used_time from waveCoach.user 
             join waveCoach.token on id = uid
             where token = :token
             """.trimIndent(),
@@ -105,6 +105,7 @@ class JdbiUserRepository(
         val id: Int,
         val username: String,
         val password: PasswordValidationInfo,
+        val isCoach: Boolean,
         val token: TokenValidationInfo,
         val createdTime: Long,
         val usedTime: Long,
@@ -112,7 +113,7 @@ class JdbiUserRepository(
         val userAndToken: Pair<User, Token>
             get() =
                 Pair(
-                    User(id, username, password),
+                    User(id, username, password, isCoach),
                     Token(token, id, Instant.fromEpochSeconds(createdTime), Instant.fromEpochSeconds(usedTime)),
                 )
     }

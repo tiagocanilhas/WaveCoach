@@ -3,7 +3,15 @@ package waveCoach.services
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import org.springframework.stereotype.Component
-import waveCoach.domain.*
+import waveCoach.domain.Activity
+import waveCoach.domain.ActivityDomain
+import waveCoach.domain.Athlete
+import waveCoach.domain.AthleteCode
+import waveCoach.domain.AthleteDomain
+import waveCoach.domain.Characteristics
+import waveCoach.domain.CharacteristicsDomain
+import waveCoach.domain.Mesocycle
+import waveCoach.domain.UserDomain
 import waveCoach.repository.TransactionManager
 import waveCoach.utils.Either
 import waveCoach.utils.failure
@@ -16,6 +24,19 @@ import java.time.format.DateTimeParseException
 data class AthleteCodeExternalInfo(
     val code: String,
     val expirationDate: Instant,
+)
+
+data class MesocycleInputInfo(
+    val id: Int?,
+    val startTime: Long,
+    val endTime: Long,
+    val microcycles: List<MicrocycleInputInfo>,
+    )
+
+data class MicrocycleInputInfo(
+    val id: Int?,
+    val startTime: Long,
+    val endTime: Long,
 )
 
 sealed class CreateAthleteError {
@@ -54,6 +75,8 @@ sealed class GenerateCodeError {
     data object AthleteNotFound : GenerateCodeError()
 
     data object NotAthletesCoach : GenerateCodeError()
+
+    data object CredentialsAlreadyChanged : GenerateCodeError()
 }
 typealias GenerateCodeResult = Either<GenerateCodeError, AthleteCodeExternalInfo>
 
@@ -126,6 +149,28 @@ sealed class RemoveCharacteristicsError {
 }
 typealias RemoveCharacteristicsResult = Either<RemoveCharacteristicsError, Int>
 
+sealed class GetCalendarError{
+    data object AthleteNotFound : GetCalendarError()
+
+    data object NotAthletesCoach : GetCalendarError()
+}
+typealias GetCalendarResult = Either<GetCalendarError, List<Mesocycle>>
+
+sealed class SetCalendarError {
+    data object MesocycleNotFound : SetCalendarError()
+
+    data object InvalidMesocycle : SetCalendarError()
+
+    data object MicrocycleNotFound : SetCalendarError()
+
+    data object InvalidMicrocycle : SetCalendarError()
+
+    data object AthleteNotFound : SetCalendarError()
+
+    data object NotAthletesCoach : SetCalendarError()
+}
+typealias SetCalendarResult = Either<SetCalendarError, Boolean>
+
 sealed class GetActivitiesError {
     data object AthleteNotFound : GetActivitiesError()
 
@@ -139,6 +184,7 @@ class AthleteServices(
     private val athleteDomain: AthleteDomain,
     private val characteristicsDomain: CharacteristicsDomain,
     private val userDomain: UserDomain,
+    private val activityDomain: ActivityDomain,
     private val clock: Clock,
 ) {
     fun createAthlete(
@@ -164,16 +210,19 @@ class AthleteServices(
     }
 
     fun getAthlete(
-        coachId: Int,
+        uid: Int,
         aid: Int,
     ): GetAthleteResult {
         return transactionManager.run {
             val athleteRepository = it.athleteRepository
 
             val athlete = athleteRepository.getAthlete(aid) ?: return@run failure(GetAthleteError.AthleteNotFound)
-            if (athlete.coach != coachId) return@run failure(GetAthleteError.NotAthletesCoach)
 
-            success(athlete)
+            when {
+                uid == aid -> success(athlete)
+                athlete.coach != uid -> failure(GetAthleteError.NotAthletesCoach)
+                else -> success(athlete)
+            }
         }
     }
 
@@ -242,6 +291,7 @@ class AthleteServices(
 
             val athlete = athleteRepository.getAthlete(aid) ?: return@run failure(GenerateCodeError.AthleteNotFound)
             if (athlete.coach != cid) return@run failure(GenerateCodeError.NotAthletesCoach)
+            if (athlete.credentialsChanged) return@run failure(GenerateCodeError.CredentialsAlreadyChanged)
 
             val value = userDomain.generateTokenValue()
             val codeValidationInfo = athleteDomain.createAthleteCodeValidationInformation(value)
@@ -297,6 +347,7 @@ class AthleteServices(
             if (userRepository.checkUsername(username)) return@run failure(ChangeCredentialsError.UsernameAlreadyExists)
 
             userRepository.updateUser(athlete.uid, username, passwordValidationInfo)
+            athleteRepository.setCredentialsChangedToTrue(athlete.uid)
             athleteRepository.removeCode(athlete.uid)
             success(athlete.uid)
         }
@@ -359,8 +410,8 @@ class AthleteServices(
     }
 
     fun getCharacteristics(
-        coachId: Int,
         uid: Int,
+        aid: Int,
         date: String,
     ): GetCharacteristicsResult {
         val dateLong = dateToLong(date) ?: return failure(GetCharacteristicsError.InvalidDate)
@@ -369,34 +420,32 @@ class AthleteServices(
             val characteristicsRepository = it.characteristicsRepository
             val athleteRepository = it.athleteRepository
 
-            val athlete =
-                athleteRepository.getAthlete(uid)
-                    ?: return@run failure(GetCharacteristicsError.AthleteNotFound)
+            val athlete = athleteRepository.getAthlete(aid)
+                ?: return@run failure(GetCharacteristicsError.AthleteNotFound)
 
-            if (athlete.coach != coachId) return@run failure(GetCharacteristicsError.NotAthletesCoach)
+            if (uid != aid && uid != athlete.coach) return@run failure(GetCharacteristicsError.NotAthletesCoach)
 
-            val characteristics =
-                characteristicsRepository.getCharacteristics(uid, dateLong)
-                    ?: return@run failure(GetCharacteristicsError.CharacteristicsNotFound)
+            val characteristics = characteristicsRepository.getCharacteristics(aid, dateLong)
+                ?: return@run failure(GetCharacteristicsError.CharacteristicsNotFound)
 
             success(characteristics)
         }
     }
 
     fun getCharacteristicsList(
-        coachId: Int,
         uid: Int,
+        aid: Int,
     ): GetCharacteristicsListResult {
         return transactionManager.run {
             val characteristicsRepository = it.characteristicsRepository
             val athleteRepository = it.athleteRepository
 
-            val athlete =
-                athleteRepository.getAthlete(uid) ?: return@run failure(GetCharacteristicsListError.AthleteNotFound)
+            val athlete = athleteRepository.getAthlete(aid)
+                ?: return@run failure(GetCharacteristicsListError.AthleteNotFound)
 
-            if (athlete.coach != coachId) return@run failure(GetCharacteristicsListError.NotAthletesCoach)
+            if (uid != aid && uid != athlete.coach) return@run failure(GetCharacteristicsListError.NotAthletesCoach)
 
-            val characteristicsList = characteristicsRepository.getCharacteristicsList(uid)
+            val characteristicsList = characteristicsRepository.getCharacteristicsList(aid)
             success(characteristicsList)
         }
     }
@@ -484,18 +533,86 @@ class AthleteServices(
         }
     }
 
-    fun getActivities(
+    fun setCalendar(
         cid: Int,
         uid: Int,
+        calendar: List<MesocycleInputInfo>,
+    ): SetCalendarResult {
+        return transactionManager.run {
+            val athleteRepository = it.athleteRepository
+            val activityRepository = it.activityRepository
+
+            val athlete = athleteRepository.getAthlete(uid) ?: return@run failure(SetCalendarError.AthleteNotFound)
+            if (athlete.coach != cid) return@run failure(SetCalendarError.NotAthletesCoach)
+
+            for (meso in calendar) {
+                if (!activityDomain.areDatesValid(meso.startTime, meso.endTime))
+                    return@run failure(SetCalendarError.InvalidMesocycle)
+
+                val mesoId: Int
+                if (meso.id != null) {
+                    val mesoDb = activityRepository.getMesocycle(meso.id)
+                        ?: return@run failure(SetCalendarError.MesocycleNotFound)
+
+                    if (activityDomain.compareCycles(mesoDb.startTime, mesoDb.endTime, meso.startTime, meso.endTime))
+                        activityRepository.updateMesocycle(meso.id, meso.startTime, meso.endTime)
+
+                    mesoId = meso.id
+                }
+                else mesoId = activityRepository.storeMesocycle(uid, meso.startTime, meso.endTime)
+
+                for (micro in meso.microcycles) {
+                    if (
+                        !activityDomain.areDatesValid(micro.startTime, micro.endTime)
+                        || !activityDomain.areDatesValid(meso.startTime, micro.startTime)
+                        || !activityDomain.areDatesValid(micro.endTime, meso.endTime)
+                    )
+                        return@run failure(SetCalendarError.InvalidMicrocycle)
+
+                    if (micro.id != null) {
+                        val microDb = activityRepository.getMicrocycle(micro.id)
+                            ?: return@run failure(SetCalendarError.MicrocycleNotFound)
+
+                        if (activityDomain.compareCycles(microDb.startTime, microDb.endTime, micro.startTime, micro.endTime))
+                            activityRepository.updateMicrocycle(micro.id, micro.startTime, micro.endTime)
+                    }
+                    else activityRepository.storeMicrocycle(mesoId, micro.startTime, micro.endTime)
+                }
+            }
+            success(true)
+        }
+    }
+
+    fun getCalendar(
+        uid: Int,
+        aid: Int,
+        type: String?,
+    ) : GetCalendarResult {
+        val activityType = activityDomain.isValidType(type ?: "")
+
+        return transactionManager.run {
+            val athleteRepository = it.athleteRepository
+            val activityRepository = it.activityRepository
+
+            val athlete = athleteRepository.getAthlete(aid) ?: return@run failure(GetCalendarError.AthleteNotFound)
+            if (uid != aid && athlete.coach != uid) return@run failure(GetCalendarError.NotAthletesCoach)
+
+            success(activityRepository.getCalendar(aid, activityType))
+        }
+    }
+
+    fun getActivities(
+        uid: Int,
+        aid: Int,
     ): GetActivitiesResult {
         return transactionManager.run {
             val athleteRepository = it.athleteRepository
             val activityRepository = it.activityRepository
 
-            val athlete = athleteRepository.getAthlete(uid) ?: return@run failure(GetActivitiesError.AthleteNotFound)
-            if (athlete.coach != cid) return@run failure(GetActivitiesError.NotAthletesCoach)
+            val athlete = athleteRepository.getAthlete(aid) ?: return@run failure(GetActivitiesError.AthleteNotFound)
+            if (uid != aid && athlete.coach != uid) return@run failure(GetActivitiesError.NotAthletesCoach)
 
-            val activities = activityRepository.getAthleteActivityList(uid)
+            val activities = activityRepository.getAthleteActivityList(aid)
             success(activities)
         }
     }

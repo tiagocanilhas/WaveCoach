@@ -2,18 +2,23 @@ import * as React from 'react'
 import { useReducer } from 'react'
 import { useParams } from 'react-router-dom'
 
-import { Characteristics } from '../../pages/Characterisitcs/index'
+import { TextField } from '@mui/material'
 import { Popup } from '../Popup'
 import { Button } from '../Button'
 
-import styles from './styles.module.css'
-import { TextField } from '@mui/material'
+import { Characteristics } from '../../types/Characteristics'
+
 import { deleteCharacteristics, updateCharacteristics } from '../../services/athleteServices'
+
 import { handleError } from '../../utils/handleError'
+
+import { useAuthentication } from '../../hooks/useAuthentication'
+
+import styles from './styles.module.css'
 
 type State =
   | { tag: 'showing'; error?: string; values: Characteristics }
-  | { tag: 'editing'; error?: string; inputs: Characteristics }
+  | { tag: 'editing'; error?: string; inputs: Characteristics; oldData: Characteristics }
   | { tag: 'submitting'; inputs: Characteristics }
 
 type Action =
@@ -29,7 +34,7 @@ function reducer(state: State, action: Action): State {
     case 'showing':
       switch (action.type) {
         case 'goToEdit':
-          return { tag: 'editing', inputs: state.values }
+          return { tag: 'editing', inputs: state.values, oldData: state.values }
         default:
           return state
       }
@@ -37,11 +42,11 @@ function reducer(state: State, action: Action): State {
     case 'editing':
       switch (action.type) {
         case 'edit':
-          return { tag: 'editing', error: undefined, inputs: { ...state.inputs, [action.name]: action.value } }
+          return { ...state, tag: 'editing', error: undefined, inputs: { ...state.inputs, [action.name]: action.value } }
         case 'submit':
           return { tag: 'submitting', inputs: state.inputs }
         case 'goToShow':
-          return { tag: 'showing', values: state.inputs }
+          return { tag: 'showing', values: state.oldData, error: undefined }
         default:
           return state
       }
@@ -65,8 +70,9 @@ type ShowSelectedCharacteristicsPopupProps = {
 }
 
 export function ShowSelectedCharacteristicsPopup({ data, onClose, onSuccess }: ShowSelectedCharacteristicsPopupProps) {
-  const [state, dispatch] = useReducer(reducer, { tag: 'showing', values: data || {} })
-  const id = useParams().aid as string
+  const initialState: State = { tag: 'showing', values: data || {} }
+  const [state, dispatch] = useReducer(reducer, initialState)
+  const id = useParams().aid
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -98,6 +104,7 @@ export function ShowSelectedCharacteristicsPopup({ data, onClose, onSuccess }: S
       dispatch({ type: 'error', error: handleError(error) })
     }
   }
+
   function handleEdit(ev: React.ChangeEvent<HTMLInputElement>) {
     dispatch({ type: 'edit', name: ev.currentTarget.name, value: ev.currentTarget.value })
   }
@@ -146,6 +153,7 @@ type ShowingProps = {
 }
 
 function Showing({ data, handleUpdate, handleDelete }: ShowingProps) {
+  const [user] = useAuthentication()
   return (
     <form className={styles.form}>
       <TextField label="Height" value={data.height || 'N/A'} inputProps={{ readOnly: true }} />
@@ -159,10 +167,12 @@ function Showing({ data, handleUpdate, handleDelete }: ShowingProps) {
       <TextField label="Abdomen Fat" value={data.abdomenFat || 'N/A'} inputProps={{ readOnly: true }} />
       <TextField label="Thigh Fat" value={data.thighFat || 'N/A'} inputProps={{ readOnly: true }} />
 
-      <div className={styles.actions}>
-        <Button text="Update" onClick={handleUpdate} width="100%" height="25px" />
-        <Button text="Delete" onClick={handleDelete} width="100%" height="25px" />
-      </div>
+      {user.isCoach && (
+        <div className={styles.actions}>
+          <Button text="Update" onClick={handleUpdate} width="100%" height="25px" />
+          <Button text="Delete" onClick={handleDelete} width="100%" height="25px" />
+        </div>
+      )}
     </form>
   )
 }

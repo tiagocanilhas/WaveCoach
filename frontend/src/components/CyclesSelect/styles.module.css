@@ -1,0 +1,87 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+.container > button {
+  flex-shrink: 0;
+}
+
+.cyclesContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.mesocycleContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 20px;
+}
+
+.mesocycle {
+  background-color: var(--mesocycle-color);
+  color: var(--mesocycle-text-color);
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+  white-space: nowrap;
+  font-size: 25px;
+  transition: background-color 0.3s;
+}
+
+.mesocycle:hover {
+  background-color: var(--button-hover-color);
+  cursor: pointer;
+}
+
+.mesocycle.selected {
+  background-color: var(--mesocycle-active-color);
+  color: var(--mesocycle-active-text-color);
+}
+
+.microcycles {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+
+.microcycleContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.microcycle {
+  background-color: var(--microcycle-color);
+  color: var(--microcycle-text-color);
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+  white-space: nowrap;
+  font-size: 20px;
+  transition: background-color 0.3s;
+}
+
+.microcycle:hover {
+  background-color: var(--microcycle-hover-color);
+  cursor: pointer;
+}
+
+.microcycle.selected {
+  background-color: var(--microcycle-active-color);
+  color: var(--microcycle-active-text-color);
+}
+
+.microcycleTime {
+  display: flex;
+  justify-content: space-between;
+}
+
+.microcycleTime p {
+  font-size: 18px;
+}

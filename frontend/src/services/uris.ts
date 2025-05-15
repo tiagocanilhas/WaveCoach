@@ -31,13 +31,32 @@ const ATHLETES = {
   updateCharacteristics: (id: string, date: string) => `${ATHLETES_URL}/${id}/characteristics/${date}`,
   deleteCharacteristics: (id: string, date: string) => `${ATHLETES_URL}/${id}/characteristics/${date}`,
 
-  createGymActivity: (id: string) => `${ATHLETES_URL}/${id}/gym`,
-
+  createCalendar: (id: string) => `${ATHLETES_URL}/${id}/calendar`,
+  getCalendar: (id: string, type: string) => `${ATHLETES_URL}/${id}/calendar?type=${type}`,
   getActivities: (id: string) => `${ATHLETES_URL}/${id}/activities`,
+}
+
+const GYM_URL = `${BASE_URL}/gym`
+const GYM = {
+  create: GYM_URL,
+  getById: (id: string) => `${GYM_URL}/${id}`,
+  update: (id: string) => `${GYM_URL}/${id}`,
+  delete: (id: string) => `${GYM_URL}/${id}`,
+}
+
+const GYM_EXERCISES_URL = `${BASE_URL}/gym/exercise`
+const GYM_EXERCISES = {
+  create: GYM_EXERCISES_URL,
+  getAll: GYM_EXERCISES_URL,
+  getById: (id: string) => `${GYM_EXERCISES_URL}/${id}`,
+  update: (id: string) => `${GYM_EXERCISES_URL}/${id}`,
+  delete: (id: string) => `${GYM_EXERCISES_URL}/${id}`,
 }
 
 export const URIS = {
   USERS,
   COACHES,
   ATHLETES,
+  GYM,
+  GYM_EXERCISES,
 }

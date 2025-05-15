@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 import { AuthenticationContext } from '../components/AuthenticationProvider'
-import { User } from '../types/user'
+import { User } from '../types/User'
 
 export function useAuthentication(): [User | undefined, (user: User) => void, boolean] {
   const state = useContext(AuthenticationContext)

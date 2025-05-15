@@ -5,4 +5,5 @@ data class AthleteOutputModel(
     val coach: Int,
     val name: String,
     val birthDate: Long,
+    val credentialsChanged: Boolean,
 )

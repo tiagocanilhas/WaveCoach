@@ -5,6 +5,7 @@ import styles from './styles.module.css'
 
 type DropdownOption = {
   label: string
+  disabled?: boolean
   onClick: () => void
 }
 
@@ -38,18 +39,21 @@ export function Dropdown({ options }: DropdownProps) {
       </div>
       {isOpen && (
         <ul className={styles.dropdownMenu}>
-          {options.map((option, index) => (
-            <li
-              key={index}
-              className={styles.dropdownItem}
-              onClick={() => {
-                option.onClick()
-                setIsOpen(false)
-              }}
-            >
-              {option.label}
-            </li>
-          ))}
+          {options.map((option, index) => {
+            if (option.disabled) return
+            return (
+              <li
+                key={index}
+                className={styles.dropdownItem}
+                onClick={() => {
+                  option.onClick()
+                  setIsOpen(false)
+                }}
+              >
+                {option.label}
+              </li>
+            )
+          })}
         </ul>
       )}
     </div>

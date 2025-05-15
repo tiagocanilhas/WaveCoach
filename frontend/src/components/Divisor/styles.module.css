@@ -2,12 +2,21 @@
   display: flex;
   flex-direction: row;
   gap: 20px;
+  width: 100%;
+  max-width: 100vw;
+  margin-bottom: 20px;
 }
 
 .left {
   width: 400px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .right {
   flex-grow: 1;
+  max-width: calc(100vw - 400px - 20px);
+  overflow-x: auto;
 }

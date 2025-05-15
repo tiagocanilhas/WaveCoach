@@ -15,5 +15,5 @@ export function RequireNoAuthentication() {
 
   if (!user) return <Outlet />
 
-  return <Navigate to="/" state={{ source: location.state?.source || '/' }} replace={true} />
+  return <Navigate to="/" state={{ source: location.state?.source || '/' }} replace />
 }

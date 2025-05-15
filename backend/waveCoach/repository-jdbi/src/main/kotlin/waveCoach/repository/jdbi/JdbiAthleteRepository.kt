@@ -60,6 +60,12 @@ class JdbiAthleteRepository(
             .execute()
     }
 
+    override fun setCredentialsChangedToTrue(uid: Int) {
+        handle.createUpdate("update waveCoach.athlete set credentials_changed = true where uid = :uid")
+            .bind("uid", uid)
+            .execute()
+    }
+
     override fun removeAthlete(uid: Int) {
         handle.createUpdate("delete from waveCoach.athlete where uid = :uid")
             .bind("uid", uid)
@@ -86,13 +92,14 @@ class JdbiAthleteRepository(
         val coach: Int,
         val name: String,
         val birthDate: Long,
+        val credentialsChanged: Boolean,
         val username: String,
         val createdTime: Long,
     ) {
         val athleteUsernameAndCreatedTime: Triple<Athlete, String, Long>
             get() =
                 Triple(
-                    Athlete(uid, coach, name, birthDate),
+                    Athlete(uid, coach, name, birthDate, credentialsChanged),
                     username,
                     createdTime,
                 )

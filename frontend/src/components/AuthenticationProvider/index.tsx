@@ -3,7 +3,7 @@ import { createContext, useEffect, useState } from 'react'
 
 import { checkAuth } from '../../services/userServices'
 
-import { User } from '../../types/user'
+import { User } from '../../types/User'
 
 type AuthenticationContextType = {
   user: User | undefined

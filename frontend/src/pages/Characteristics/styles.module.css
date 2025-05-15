@@ -1,0 +1,16 @@
+.characteristics {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.characteristic {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.chart {
+  flex: 3;
+  margin-left: 20px;
+}

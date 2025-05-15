@@ -106,6 +106,10 @@ export async function deleteCharacteristics(id: string, date: string) {
   return await customFetch(URIS.ATHLETES.deleteCharacteristics(id, date), 'DELETE')
 }
 
-export async function getActivities(id: string) {
-  return await customFetch(URIS.ATHLETES.getActivities(id), 'GET')
+export async function createCalendar(id: string, events: { mesocycles: any[] }) {
+  return await customFetch(URIS.ATHLETES.createCalendar(id), 'POST', events)
+}
+
+export async function getCalendar(id: string, type?: string) {
+  return await customFetch(URIS.ATHLETES.getCalendar(id, type), 'GET')
 }

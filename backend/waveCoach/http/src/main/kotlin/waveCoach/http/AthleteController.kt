@@ -1,6 +1,15 @@
 package waveCoach.http
 
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RestController
+import waveCoach.domain.AuthenticatedCoach
 import org.springframework.web.bind.annotation.*
 import waveCoach.domain.AuthenticatedUser
 import waveCoach.http.model.input.*
@@ -15,7 +24,7 @@ class AthleteController(
 ) {
     @PostMapping(Uris.Athletes.CREATE)
     fun create(
-        coach: AuthenticatedUser,
+        coach: AuthenticatedCoach,
         @RequestBody input: AthleteCreateInputModel,
     ): ResponseEntity<*> {
         val result = athleteServices.createAthlete(input.name, coach.info.id, input.birthDate)
@@ -37,11 +46,11 @@ class AthleteController(
 
     @GetMapping(Uris.Athletes.GET_BY_ID)
     fun getById(
-        coach: AuthenticatedUser,
+        user: AuthenticatedUser,
         @PathVariable aid: String,
     ): ResponseEntity<*> {
         val uid = aid.toIntOrNull() ?: return Problem.response(400, Problem.invalidAthleteId)
-        val result = athleteServices.getAthlete(coach.info.id, uid)
+        val result = athleteServices.getAthlete(user.info.id, uid)
 
         return when (result) {
             is Success ->
@@ -53,6 +62,7 @@ class AthleteController(
                             result.value.coach,
                             result.value.name,
                             result.value.birthDate,
+                            result.value.credentialsChanged,
                         ),
                     )
 
@@ -65,7 +75,7 @@ class AthleteController(
     }
 
     @GetMapping(Uris.Athletes.GET_BY_COACH)
-    fun getByCoach(coach: AuthenticatedUser): ResponseEntity<*> {
+    fun getByCoach(coach: AuthenticatedCoach): ResponseEntity<*> {
         val result = athleteServices.getAthletes(coach.info.id)
 
         return ResponseEntity
@@ -78,6 +88,7 @@ class AthleteController(
                             it.coach,
                             it.name,
                             it.birthDate,
+                            it.credentialsChanged,
                         )
                     },
                 ),
@@ -86,7 +97,7 @@ class AthleteController(
 
     @PutMapping(Uris.Athletes.UPDATE)
     fun update(
-        coach: AuthenticatedUser,
+        coach: AuthenticatedCoach,
         @PathVariable aid: String,
         @RequestBody input: AthleteUpdateInputModel,
     ): ResponseEntity<*> {
@@ -108,7 +119,7 @@ class AthleteController(
 
     @DeleteMapping(Uris.Athletes.REMOVE)
     fun remove(
-        coach: AuthenticatedUser,
+        coach: AuthenticatedCoach,
         @PathVariable aid: String,
     ): ResponseEntity<*> {
         val uid = aid.toIntOrNull() ?: return Problem.response(400, Problem.invalidAthleteId)
@@ -127,7 +138,7 @@ class AthleteController(
 
     @PostMapping(Uris.Athletes.GENERATE_CODE)
     fun generateCode(
-        coach: AuthenticatedUser,
+        coach: AuthenticatedCoach,
         @PathVariable aid: String,
     ): ResponseEntity<*> {
         val uid = aid.toIntOrNull() ?: return Problem.response(400, Problem.invalidAthleteId)
@@ -148,6 +159,8 @@ class AthleteController(
                 when (result.value) {
                     GenerateCodeError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
                     GenerateCodeError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
+                    GenerateCodeError.CredentialsAlreadyChanged ->
+                        Problem.response(409, Problem.credentialsAlreadyChanged)
                 }
         }
     }
@@ -195,7 +208,7 @@ class AthleteController(
 
     @PostMapping(Uris.Athletes.CREATE_CHARACTERISTICS)
     fun createCharacteristics(
-        coach: AuthenticatedUser,
+        coach: AuthenticatedCoach,
         @PathVariable aid: String,
         @RequestBody input: AthleteCreateCharacteristicsInputModel,
     ): ResponseEntity<*> {
@@ -230,12 +243,12 @@ class AthleteController(
 
     @GetMapping(Uris.Athletes.GET_CHARACTERISTICS)
     fun getCharacteristics(
-        coach: AuthenticatedUser,
+        user: AuthenticatedUser,
         @PathVariable aid: String,
         @PathVariable date: String,
     ): ResponseEntity<*> {
         val uid = aid.toIntOrNull() ?: return Problem.response(400, Problem.invalidAthleteId)
-        val result = athleteServices.getCharacteristics(coach.info.id, uid, date)
+        val result = athleteServices.getCharacteristics(user.info.id, uid, date)
 
         return when (result) {
             is Success ->
@@ -315,7 +328,7 @@ class AthleteController(
 
     @PutMapping(Uris.Athletes.UPDATE_CHARACTERISTICS)
     fun updateCharacteristics(
-        coach: AuthenticatedUser,
+        coach: AuthenticatedCoach,
         @PathVariable aid: String,
         @PathVariable date: String,
         @RequestBody input: AthleteUpdateCharacteristicsInputModel,
@@ -347,7 +360,7 @@ class AthleteController(
 
     @DeleteMapping(Uris.Athletes.REMOVE_CHARACTERISTICS)
     fun removeCharacteristics(
-        coach: AuthenticatedUser,
+        coach: AuthenticatedCoach,
         @PathVariable aid: String,
         @PathVariable date: String,
     ): ResponseEntity<*> {
@@ -372,38 +385,104 @@ class AthleteController(
         }
     }
 
-    /*@PostMapping(Uris.Athletes.CREATE_WATER_ACTIVITY)
-    fun createWaterActivity(
-        coach: AuthenticatedUser,
+    @PostMapping(Uris.Athletes.CREATE_CALENDAR)
+    fun createCalendar(
+        coach: AuthenticatedCoach,
         @PathVariable aid: String,
-        @RequestBody input: AthleteCreateWaterActivityInputModel
+        @RequestBody input: CalendarCreateInputModel
     ): ResponseEntity<*> {
         val uid = aid.toIntOrNull() ?: return Problem.response(400, Problem.invalidAthleteId)
-        val result = athleteServices.createWaterActivity(
-            coach.info.id, uid, input.date, input.duration, input.distance, input.calories
-        )
+
+        val mesocycles = input.mesocycles.map { mesocycle ->
+            MesocycleInputInfo(
+                mesocycle.id,
+                mesocycle.startTime,
+                mesocycle.endTime,
+                mesocycle.microcycles.map { microcycle ->
+                    MicrocycleInputInfo(
+                        microcycle.id,
+                        microcycle.startTime,
+                        microcycle.endTime,
+                    )
+                },
+            )
+        }
+
+        val result = athleteServices.setCalendar(coach.info.id, uid, mesocycles,)
 
         return when (result) {
-            is Success -> ResponseEntity
-                .status(201)
-                .header("Location", Uris.Athletes.characteristicsByDate(uid, result.value).toASCIIString())
-                .build<Unit>()
+            is Success ->
+                ResponseEntity
+                    .status(201)
+//                    .header("Location", Uris.Athletes.getCalendar(uid).toASCIIString())
+                    .build<Unit>()
 
-            is Failure -> when (result.value) {
-                CreateWaterActivityError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
-                CreateWaterActivityError.InvalidDate -> Problem.response(400, Problem.invalidDate)
-                CreateWaterActivityError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
-            }
+            is Failure ->
+                when (result.value) {
+                    SetCalendarError.MesocycleNotFound -> Problem.response(404, Problem.athleteNotFound)
+                    SetCalendarError.InvalidMesocycle -> Problem.response(400, Problem.athleteNotFound)
+                    SetCalendarError.MicrocycleNotFound -> Problem.response(404, Problem.athleteNotFound)
+                    SetCalendarError.InvalidMicrocycle -> Problem.response(400, Problem.athleteNotFound)
+                    SetCalendarError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
+                    SetCalendarError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
+                }
         }
-    }*/
+    }
+
+    @GetMapping(Uris.Athletes.GET_CALENDAR)
+    fun getCalendar(
+        user: AuthenticatedUser,
+        @PathVariable aid: String,
+        @RequestParam type: String?,
+    ): ResponseEntity<*> {
+        val uid = aid.toIntOrNull() ?: return Problem.response(400, Problem.invalidAthleteId)
+        val result = athleteServices.getCalendar(user.info.id, uid, type)
+
+        return when (result) {
+            is Success ->
+                ResponseEntity
+                    .status(200)
+                    .body(
+                        CalendarOutputModel(
+                            result.value.map { meso ->
+                                MesocycleOutputModel(
+                                    meso.id,
+                                    meso.startTime,
+                                    meso.endTime,
+                                    meso.microcycles.map { micro ->
+                                        MicrocycleOutputModel(
+                                            micro.id,
+                                            micro.startTime,
+                                            micro.endTime,
+                                            micro.activities.map {
+                                                ActivityOutputModel(
+                                                    it.id,
+                                                    it.date,
+                                                    it.type.toString(),
+                                                )
+                                            },
+                                        )
+                                    },
+                                )
+                            },
+                        ),
+                    )
+
+            is Failure ->
+                when (result.value) {
+                    GetCalendarError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
+                    GetCalendarError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
+                }
+        }
+    }
 
     @GetMapping(Uris.Athletes.GET_ACTIVITIES)
     fun getActivities(
-        coach: AuthenticatedUser,
+        user: AuthenticatedUser,
         @PathVariable aid: String,
     ): ResponseEntity<*> {
         val uid = aid.toIntOrNull() ?: return Problem.response(400, Problem.invalidAthleteId)
-        val result = athleteServices.getActivities(coach.info.id, uid)
+        val result = athleteServices.getActivities(user.info.id, uid)
 
         return when (result) {
             is Success ->
@@ -414,7 +493,6 @@ class AthleteController(
                             result.value.map {
                                 ActivityOutputModel(
                                     it.id,
-                                    it.uid,
                                     it.date,
                                     it.type.toString(),
                                 )

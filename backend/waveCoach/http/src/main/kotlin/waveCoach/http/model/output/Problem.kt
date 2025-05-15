@@ -22,6 +22,12 @@ class Problem(
 
         private const val BASE_URI = ""
 
+        val credentialsAlreadyChanged =
+            Problem(
+                "Athlete credentials changed",
+                URI.create("$BASE_URI/athlete-credentials-changed"),
+            )
+
         val athleteNotFound =
             Problem(
                 "Athlete not found",
@@ -128,6 +134,12 @@ class Problem(
             Problem(
                 "Username is blank",
                 URI("$BASE_URI/username-is-blank"),
+            )
+
+        val userIsNotACoach =
+            Problem(
+                "User is not a coach",
+                URI("$BASE_URI/user-is-not-a-coach"),
             )
 
         val invalidGymActivityId =

@@ -4,9 +4,9 @@
   /* Button */
   --button-color: #aa7248;
   --button-text-color: #000000;
-  --button-hover-color: #92633f;
+  --button-hover-color: #795134;
   --button-text-hover-color: #ffffff;
-  --button-active-color: #a7724a;
+  --button-active-color: #8a5e3d;
 
   --button-disabled-color: #dddddd;
   --button-disabled-text-color: #aaaaaa;
@@ -22,6 +22,21 @@
 
   /* Background */
   --background-color: #baa89b;
+
+  /* Cycles */
+  --mesocycle-color: #b18a6e;
+  --mesocycle-text-color: #3c2f2f;
+  --mesocycle-text-hover-color: #ffffff;
+  --mesocycle-hover-color: #9e785f;
+  --mesocycle-active-color: #8c5f47;
+  --mesocycle-active-text-color: #ffffff;
+
+  --microcycle-color: #a67c52;
+  --microcycle-text-color: #ffffff;
+  --microcycle-text-hover-color: #ffffff;
+  --microcycle-hover-color: #8e6342;
+  --microcycle-active-color: #7b522c;
+  --microcycle-active-text-color: #ffffff;
 }
 
 * {

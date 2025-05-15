@@ -1,0 +1,15 @@
+.exercise {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.exercise img {
+  width: 83%;
+  margin-bottom: 10px;
+  border-radius: 10px;
+}
+
+.exerciseList h2 {
+  margin-left: 10px;
+}

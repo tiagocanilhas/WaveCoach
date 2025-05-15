@@ -26,7 +26,7 @@ type SideBarProps = {
 
 export function SideBar({ isOpen, sidebarData, closeSidebar }: SideBarProps) {
   const [logoutPopup, setLogoutPopup] = useState(false)
-  const [_, setUser] = useAuthentication()
+  const [user, setUser] = useAuthentication()
 
   async function handleLogout() {
     try {
@@ -61,11 +61,13 @@ export function SideBar({ isOpen, sidebarData, closeSidebar }: SideBarProps) {
           })}
         </ul>
         <ul className={styles.sidebarItems} onClick={closeSidebar}>
-          <li className={styles.sidebarBottomText}>
-            <Link to="/">
-              <span>Athletes</span>
-            </Link>
-          </li>
+          {user.isCoach && (
+            <li className={styles.sidebarBottomText}>
+              <Link to="/">
+                <span>Athletes</span>
+              </Link>
+            </li>
+          )}
           <li className={styles.sidebarBottomText}>
             <Link to="/account">
               <FaUser />

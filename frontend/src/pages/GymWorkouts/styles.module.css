@@ -1,0 +1,17 @@
+.lastWorkoutExercise {
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+}
+
+.lastWorkoutExerciseContent {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.lastWorkoutExercise img {
+  width: 150px;
+  height: 150px;
+  border-radius: 20px;
+}

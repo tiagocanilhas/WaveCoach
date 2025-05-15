@@ -13,6 +13,8 @@ interface AthleteRepository {
 
     fun updateAthlete(uid: Int, name: String, birthDate: Long)
 
+    fun setCredentialsChangedToTrue(uid: Int)
+
     fun removeAthlete(uid: Int)
 
     fun storeCode(code: AthleteCode)

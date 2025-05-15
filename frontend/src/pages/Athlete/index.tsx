@@ -1,47 +1,62 @@
 import * as React from 'react'
-import { useEffect, useReducer, useState } from 'react'
+import { useEffect, useReducer } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { CircularProgress } from '@mui/material'
+import { Activity } from '../../components/Activity'
 import { Dropdown } from '../../components/Dropdown'
 import { Card } from '../../components/Card'
 import { ObjectList } from '../../components/ObjectList'
 import { EditAthletePopup } from '../../components/EditAthletePopup'
 import { Divisor } from '../../components/Divisor'
+import { CyclesSelect } from '../../components/CyclesSelect'
+import { Button } from '../../components/Button'
+import { CyclesPopup } from '../../components/CyclesPopup'
 
-import { Activity } from '../../types/activity'
-import { Athlete } from '../../types/athlete'
+import { Calendar } from '../../types/Calendar'
+import { Athlete } from '../../types/Athlete'
 
 import { epochConverter } from '../../utils/epochConverter'
 import { epochConverterToAge } from '../../utils/epochConverterToAge'
 
-import { generateCode } from '../../services/athleteServices'
+import { useAuthentication } from '../../hooks/useAuthentication'
 
-import { getAthlete } from '../../services/athleteServices'
-import { deleteAthlete } from '../../services/athleteServices'
-import { getActivities } from '../../services/athleteServices'
+import { generateCode, getAthlete, deleteAthlete, getCalendar } from '../../services/athleteServices'
 
 import styles from './styles.module.css'
 
+type SelectedCycle = {
+  mesocycleId: number
+  microcycleId: number | null
+} | null
+
 type State = {
   athlete: Athlete | undefined
-  activities: Activity[] | undefined
+  calendar: Calendar | undefined
+  cycleSelected: SelectedCycle
   isEditPopupOpen: boolean
+  isCyclesPopupOpen: boolean
 }
 
 type Action =
   | { type: 'setAthlete'; athlete: Athlete }
-  | { type: 'setActivities'; activities: Activity[] }
+  | { type: 'setCalendar'; calendar: Calendar }
+  | { type: 'setCycleSelected'; cycleSelected: SelectedCycle }
   | { type: 'toggleEditPopup' }
+  | { type: 'toggleCyclesPopup' }
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
     case 'setAthlete':
       return { ...state, athlete: action.athlete }
-    case 'setActivities':
-      return { ...state, activities: action.activities }
+    case 'setCalendar':
+      return { ...state, calendar: action.calendar }
+    case 'setCycleSelected':
+      return { ...state, cycleSelected: action.cycleSelected }
     case 'toggleEditPopup':
       return { ...state, isEditPopupOpen: !state.isEditPopupOpen }
+    case 'toggleCyclesPopup':
+      return { ...state, isCyclesPopupOpen: !state.isCyclesPopupOpen }
     default:
       return state
   }
@@ -49,14 +64,17 @@ function reducer(state: State, action: Action): State {
 
 const initialState: State = {
   athlete: undefined,
-  activities: [],
+  calendar: undefined,
+  cycleSelected: null,
   isEditPopupOpen: false,
+  isCyclesPopupOpen: false,
 }
 
 export function Athlete() {
-  const navigate = useNavigate()
   const [state, dispatch] = useReducer(reducer, initialState)
   const id = useParams().aid
+  const [user, _] = useAuthentication()
+  const navigate = useNavigate()
 
   useEffect(() => {
     async function fetchAthlete() {
@@ -67,17 +85,17 @@ export function Athlete() {
         console.error('Error fetching athlete:', error)
       }
     }
-    async function fetchActivities() {
+    async function fetchCalendar() {
       try {
-        const res = await getActivities(id)
-        dispatch({ type: 'setActivities', activities: res.activities })
+        const res = await getCalendar(id)
+        dispatch({ type: 'setCalendar', calendar: res })
       } catch (error) {
         console.error('Error fetching Activities:', error)
       }
     }
 
     fetchAthlete()
-    fetchActivities()
+    fetchCalendar()
   }, [])
 
   async function handleGetCode() {
@@ -90,7 +108,7 @@ export function Athlete() {
     }
   }
 
-  async function handleEdit() {
+  function handleEdit() {
     dispatch({ type: 'toggleEditPopup' })
   }
 
@@ -110,9 +128,39 @@ export function Athlete() {
     window.location.reload()
   }
 
+  function handleCycleSelect(select: SelectedCycle) {
+    dispatch({ type: 'setCycleSelected', cycleSelected: select })
+  }
+
+  function handleManageCycles() {
+    dispatch({ type: 'toggleCyclesPopup' })
+  }
+
   const athlete = state.athlete
-  const activities = state.activities
+
+  function getActivities() {
+    if (state.calendar) {
+      const mesocycles = state.calendar.mesocycles
+
+      if (!state.cycleSelected) return mesocycles.flatMap(m => m.microcycles).flatMap(mc => mc.activities)
+
+      const { mesocycleId, microcycleId } = state.cycleSelected
+
+      if (microcycleId !== null) {
+        const mesocycle = mesocycles.find(m => m.id === mesocycleId)
+        const microcycle = mesocycle?.microcycles.find(mc => mc.id === microcycleId)
+        return microcycle?.activities ?? []
+      } else {
+        const mesocycle = mesocycles.find(m => m.id === mesocycleId)
+        return mesocycle?.microcycles.flatMap(mc => mc.activities) ?? []
+      }
+    }
+  }
+
+  const activities = getActivities()
+  const cycleSelected = state.cycleSelected
   const isEditPopupOpen = state.isEditPopupOpen
+  const isCyclesPopupOpen = state.isCyclesPopupOpen
 
   if (athlete === undefined || activities === undefined) {
     return <CircularProgress className={styles.waiting} />
@@ -122,42 +170,41 @@ export function Athlete() {
     <>
       <Divisor
         left={
-          <Card
-            content={
-              <div className={styles.athlete}>
-                <Dropdown
-                  options={[
-                    { label: 'Generate Code', onClick: handleGetCode },
-                    { label: 'Edit', onClick: handleEdit },
-                    { label: 'Delete', onClick: handleDelete },
-                  ]}
-                />
-                <img src={/*athlete.img ||*/ '/images/anonymous-user.webp'} alt={athlete.name || 'Anonymous'} />
-                <h2>{athlete.name}</h2>
-                <p className={styles.age}>{epochConverterToAge(athlete.birthDate)} years</p>
-              </div>
-            }
-            width="100%"
-          />
+          <div className={styles.left}>
+            <Card
+              content={
+                <div className={styles.athlete}>
+                  {user.isCoach && (
+                    <Dropdown
+                      options={[
+                        { label: 'Generate Code', disabled: athlete.credentialsChanged, onClick: handleGetCode },
+                        { label: 'Edit', onClick: handleEdit },
+                        { label: 'Delete', onClick: handleDelete },
+                      ]}
+                    />
+                  )}
+                  <img src={'/images/anonymous-user.webp'} alt={athlete.name || 'Anonymous'} />
+                  <h2>{athlete.name}</h2>
+                  <p className={styles.age}>{epochConverterToAge(athlete.birthDate)} years</p>
+                </div>
+              }
+              width="100%"
+            />
+            <Button text={user.isCoach ? 'Manage Cycles' : 'Calendar'} onClick={handleManageCycles} width="100%" height="40px" />
+          </div>
         }
         right={
           <div className={styles.calendar}>
+            <Card
+              content={
+                <CyclesSelect cycles={state.calendar.mesocycles} cycleSelected={cycleSelected} onSelect={handleCycleSelect} />
+              }
+              width="100%"
+            />
             <ObjectList
               items={activities}
               getKey={activity => activity.id}
-              renderItem={activity => (
-                <div className={styles.activity}>
-                  <div className={styles.imageContainer}>
-                    <img 
-                      src={`/images/${activity.type || 'no_image'}.svg`}
-                      alt={activity.type || 'No Image'}
-                      onError={(e) => {e.currentTarget.src = '/images/no_image.svg'}}
-                    />
-                    <span>{activity.type && activity.type !== 'null' ? activity.type.charAt(0).toUpperCase() + activity.type.slice(1) : ''}</span>
-                  </div>
-                  <h3>{epochConverter(activity.date, 'dd-mm-yyyy')}</h3>
-                </div>
-              )}
+              renderItem={activity => <Activity activity={activity} />}
             />
           </div>
         }
@@ -174,6 +221,8 @@ export function Athlete() {
           }}
         />
       )}
+
+      {isCyclesPopupOpen && <CyclesPopup onClose={handleManageCycles} onSuccess={onSuccess} cycles={state.calendar.mesocycles} />}
     </>
   )
 }

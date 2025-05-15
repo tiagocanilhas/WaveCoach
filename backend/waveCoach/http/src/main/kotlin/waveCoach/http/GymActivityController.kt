@@ -2,6 +2,7 @@ package waveCoach.http
 
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import waveCoach.domain.AuthenticatedCoach
 import waveCoach.domain.AuthenticatedUser
 import waveCoach.http.model.input.CreateGymActivityInputModel
 import waveCoach.http.model.output.ActivityWithExercisesOutputModel
@@ -18,7 +19,7 @@ class GymActivityController(
 ) {
     @PostMapping(Uris.GymActivity.CREATE)
     fun create(
-        coach: AuthenticatedUser,
+        coach: AuthenticatedCoach,
         @RequestBody input: CreateGymActivityInputModel,
     ): ResponseEntity<*> {
         val result = gymActivityServices.createGymActivity(
@@ -52,11 +53,11 @@ class GymActivityController(
 
     @GetMapping(Uris.GymActivity.GET_BY_ID)
     fun getById(
-        coach: AuthenticatedUser,
+        user: AuthenticatedUser,
         @PathVariable activityId: String,
     ): ResponseEntity<*> {
         val activityIdInt = activityId.toIntOrNull() ?: return Problem.response(400, Problem.invalidGymActivityId)
-        val result = gymActivityServices.getGymActivity(coach.info.id, activityIdInt)
+        val result = gymActivityServices.getGymActivity(user.info.id, activityIdInt)
 
         return when (result) {
             is Success ->
@@ -98,7 +99,7 @@ class GymActivityController(
 
     /* @PatchMapping(Uris.Athletes.UPDATE_GYM_ACTIVITY)
     fun updateGymActivity(
-        coach: AuthenticatedUser,
+        coach: AuthenticatedCoach,
         @PathVariable aid: String,
         @PathVariable activityId: String,
         @RequestBody input: UpdateGymActivityInputModel,
@@ -135,7 +136,7 @@ class GymActivityController(
 
     @DeleteMapping(Uris.GymActivity.REMOVE)
     fun remove(
-        coach: AuthenticatedUser,
+        coach: AuthenticatedCoach,
         @PathVariable activityId: String,
     ): ResponseEntity<*> {
         val activityIdInt = activityId.toIntOrNull() ?: return Problem.response(400, Problem.invalidGymActivityId)

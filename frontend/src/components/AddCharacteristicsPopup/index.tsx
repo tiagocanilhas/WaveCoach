@@ -2,8 +2,8 @@ import * as React from 'react'
 import { useReducer } from 'react'
 import { useParams } from 'react-router-dom'
 
-import { TextField } from '@mui/material'
-import { Popup } from '../../components/Popup'
+import TextField from '@mui/material/TextField'
+import { Popup } from '../Popup'
 import { Button } from '../Button'
 
 import { createCharacteristics } from '../../services/athleteServices'
@@ -207,7 +207,7 @@ export function AddCharacteristicsPopup({ onClose, onSuccess }: AddCharacteristi
       onClose={onClose}
       content={
         <form onSubmit={handleSubmit} className={styles.form}>
-          <TextField name="date" type="date" value={date} onChange={handleChange} required />
+          <TextField name="date" type="date" label="Date" value={date} onChange={handleChange} />
           <TextField name="height" type="number" label="Height" value={height} onChange={handleChange} />
           <TextField name="weight" type="number" label="Weight" value={weight} onChange={handleChange} />
           <TextField name="calories" type="number" label="Calories" value={calories} onChange={handleChange} />

@@ -71,7 +71,7 @@ export function Login() {
 
     try {
       const res = await login(username, password)
-      setUser({ id: res.id, username: res.username })
+      setUser({ id: res.id, username: res.username, isCoach: res.isCoach })
       dispatch({ type: 'success' })
     } catch (error) {
       dispatch({ type: 'error', error: handleError(error) })

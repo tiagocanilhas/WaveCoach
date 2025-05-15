@@ -25,7 +25,8 @@ CREATE SCHEMA IF NOT EXISTS waveCoach;
 CREATE TABLE waveCoach.user (
     id SERIAL PRIMARY KEY,
     username VARCHAR(64) UNIQUE NOT NULL,
-    password VARCHAR(256) NOT NULL
+    password VARCHAR(256) NOT NULL,
+    is_coach BOOLEAN DEFAULT TRUE
 );
 
 CREATE TABLE waveCoach.coach (
@@ -38,6 +39,7 @@ CREATE TABLE waveCoach.athlete (
     coach INTEGER,
     name VARCHAR(64) NOT NULL,
     birth_date BIGINT NOT NULL,
+    credentials_changed BOOLEAN DEFAULT FALSE NOT NULL,
     FOREIGN KEY (coach) REFERENCES waveCoach.coach(uid),
     FOREIGN KEY (uid) REFERENCES waveCoach.user(id)
 );
@@ -89,6 +91,7 @@ CREATE TABLE waveCoach.microcycle(
 CREATE TABLE waveCoach.activity(
     id SERIAL PRIMARY KEY,
     uid INTEGER REFERENCES waveCoach.athlete(uid),
+    microcycle INTEGER REFERENCES waveCoach.microcycle(id),
     date BIGINT DEFAULT EXTRACT(EPOCH FROM CURRENT_TIMESTAMP) NOT NULL,
     type VARCHAR(64)
 );
@@ -171,6 +174,47 @@ CREATE TABLE waveCoach.athlete_competition(
 CREATE TABLE waveCoach.heat(
 );
 
+
+
+
+CREATE OR REPLACE FUNCTION set_coach()
+RETURNS TRIGGER AS $$
+BEGIN
+    UPDATE waveCoach.user
+    SET is_coach = TRUE
+    WHERE id = NEW.uid;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_set_coach
+AFTER INSERT ON waveCoach.coach
+FOR EACH ROW
+EXECUTE FUNCTION set_coach();
+
+
+
+
+
+CREATE OR REPLACE FUNCTION set_athlete()
+RETURNS TRIGGER AS $$
+BEGIN
+    UPDATE waveCoach.user
+    SET is_coach = FALSE
+    WHERE id = NEW.uid;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_set_athlete
+AFTER INSERT ON waveCoach.athlete
+FOR EACH ROW
+EXECUTE FUNCTION set_athlete();
+
+
+
+
+
 CREATE OR REPLACE FUNCTION set_activity_type_gym()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -185,6 +229,10 @@ CREATE TRIGGER trigger_set_activity_type_gym
 AFTER INSERT ON waveCoach.gym
 FOR EACH ROW
 EXECUTE FUNCTION set_activity_type_gym();
+
+
+
+
 
 CREATE OR REPLACE FUNCTION set_activity_type_water()
 RETURNS TRIGGER AS $$

@@ -122,7 +122,7 @@ class GymActivityServices(
     }
 
     fun getGymActivity(
-        coachId: Int,
+        uid: Int,
         activityId: Int,
     ): GetGymActivityResult {
         return transactionManager.run {
@@ -130,14 +130,13 @@ class GymActivityServices(
             val activityRepository = it.activityRepository
             val gymActivityRepository = it.gymActivityRepository
 
-            val activity =
-                activityRepository.getActivityById(activityId)
-                    ?: return@run failure(GetGymActivityError.ActivityNotFound)
+            val activity = activityRepository.getActivityById(activityId)
+                ?: return@run failure(GetGymActivityError.ActivityNotFound)
 
-            val athlete =
-                athleteRepository.getAthlete(activity.uid)
+            val athlete = athleteRepository.getAthlete(activity.uid)!!
 
-            if (athlete!!.coach != coachId) return@run failure(GetGymActivityError.NotAthletesCoach)
+            if (athlete.uid != uid && athlete.coach != uid)
+                return@run failure(GetGymActivityError.NotAthletesCoach)
 
             val exercises = gymActivityRepository.getExercises(activityId)
 

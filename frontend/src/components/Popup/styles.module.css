@@ -17,8 +17,6 @@
   background-color: #fff;
   border-radius: 8px;
   padding: 30px 10px 10px 10px;
-  width: 100%;
-  max-width: 400px;
   height: auto;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   pointer-events: auto;
@@ -40,4 +38,8 @@
   font-weight: bold;
   margin-bottom: 10px;
   text-align: center;
+}
+
+.content {
+  margin-top: 20px;
 }

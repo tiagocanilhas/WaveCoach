@@ -14,6 +14,7 @@ import waveCoach.utils.success
 data class LoginExternalInfo(
     val id: Int,
     val username: String,
+    val isCoach: Boolean,
     val tokenValue: String,
     val tokenExpiration: Instant,
 )
@@ -77,7 +78,7 @@ class UserServices(
             val token = Token(tokenValidationInfo, user.id, now, now)
             userRepository.storeToken(token, userDomain.maxNumberOfTokensPerUser)
 
-            success(LoginExternalInfo(user.id, user.username, value, userDomain.getTokenExpiration(token)))
+            success(LoginExternalInfo(user.id, user.username, user.isCoach, value, userDomain.getTokenExpiration(token)))
         }
     }
 

@@ -1,0 +1,14 @@
+.addExercise {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 70vw;
+}
+
+.addExerciseContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  height: 70vh;
+  overflow-y: auto;
+}

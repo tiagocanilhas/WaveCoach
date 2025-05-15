@@ -14,6 +14,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import waveCoach.domain.Sha256TokenEncoder
 import waveCoach.domain.UserDomainConfig
+import waveCoach.http.pipeline.AuthenticatedCoachArgumentResolver
 import waveCoach.http.pipeline.AuthenticatedUserArgumentResolver
 import waveCoach.http.pipeline.AuthenticationInterceptor
 import waveCoach.repository.jdbi.configureWithAppRequirements
@@ -53,6 +54,7 @@ class WaveCoachApplication {
 class PipelineConfigurer(
     val authenticationInterceptor: AuthenticationInterceptor,
     val authenticatedUserArgumentResolver: AuthenticatedUserArgumentResolver,
+    val authenticatedCoachArgumentResolver: AuthenticatedCoachArgumentResolver,
 ) : WebMvcConfigurer {
     override fun addInterceptors(registry: InterceptorRegistry) {
         registry.addInterceptor(authenticationInterceptor)
@@ -60,6 +62,7 @@ class PipelineConfigurer(
 
     override fun addArgumentResolvers(resolvers: MutableList<HandlerMethodArgumentResolver>) {
         resolvers.add(authenticatedUserArgumentResolver)
+        resolvers.add(authenticatedCoachArgumentResolver)
     }
 }
 

@@ -1,4 +1,4 @@
-@token = GGxvuCVHYVRPCV59Ph6riqRfAqTPkVOeyOkSRrxJ7LM=
+@token = ZKBt0tOrXp-58Uvme1en2Ls0M8jDPh34mbYpsQLoU4Y=
 
 ### Create Coach
 POST http://localhost:8080/api/coaches
@@ -78,6 +78,48 @@ Content-Type: application/json
 
 ### Generate Code
 POST http://localhost:8080/api/athletes/6/code
+Authorization: Bearer {{token}}
+
+
+
+### get activities
+GET http://localhost:8080/api/athletes/3/activities
+Authorization: Bearer {{token}}
+
+
+### get athletes
+GET http://localhost:8080/api/athletes
+Authorization: Bearer {{token}}
+
+### create calendar
+POST http://localhost:8080/api/athletes/3/calendar
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "mesocycles": [
+    {
+      "id": null,
+      "startTime": 1745442324000,
+      "endTime": 1747442379000,
+      "microcycles": [
+        {
+          "id": null,
+          "startTime": 1745442379000,
+          "endTime": 1746442379000
+        },
+        {
+          "id": null,
+          "startTime": 1746442379000,
+          "endTime": 1747442379000
+        }
+      ]
+    }
+  ]
+}
+
+### get calendar
+GET http://localhost:8080/api/athletes/3/calendar?type=wasdsadasd
 Authorization: Bearer {{token}}
 
 

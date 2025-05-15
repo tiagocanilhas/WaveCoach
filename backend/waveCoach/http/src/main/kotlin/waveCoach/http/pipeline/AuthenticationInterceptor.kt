@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component
 import org.springframework.web.method.HandlerMethod
 import org.springframework.web.servlet.HandlerInterceptor
 import org.springframework.web.servlet.ModelAndView
+import waveCoach.domain.AuthenticatedCoach
 import waveCoach.domain.AuthenticatedUser
 import waveCoach.domain.UserDomainConfig
 import waveCoach.http.Uris
@@ -16,7 +17,6 @@ import waveCoach.http.pipeline.AuthenticatedUserArgumentResolver.Companion.getUs
 @Component
 class AuthenticationInterceptor(
     private val tokenProcessor: RequestTokenProcessor,
-    private val usersDomainConfig: UserDomainConfig,
 ) : HandlerInterceptor {
     override fun preHandle(
         request: HttpServletRequest,
@@ -25,7 +25,10 @@ class AuthenticationInterceptor(
     ): Boolean {
         if (
             handler is HandlerMethod &&
-            handler.methodParameters.any { it.parameterType == AuthenticatedUser::class.java }
+            handler.methodParameters.any {
+                it.parameterType == AuthenticatedUser::class.java ||
+                it.parameterType == AuthenticatedCoach::class.java
+            }
         ) {
             val userAuthHeader =
                 tokenProcessor
@@ -51,34 +54,6 @@ class AuthenticationInterceptor(
         }
 
         return true
-    }
-
-    override fun postHandle(
-        request: HttpServletRequest,
-        response: HttpServletResponse,
-        handler: Any,
-        modelAndView: ModelAndView?,
-    ) {
-        if (request.requestURI == Uris.Users.LOGOUT) {
-            return
-        }
-
-        val authenticatedUser = getUserFrom(request) ?: return
-
-        val refreshedTime = usersDomainConfig.tokenRollingTtl.inWholeSeconds
-        val refreshedTokenCookie =
-            ResponseCookie.from("token", authenticatedUser.token)
-                .httpOnly(true).path("/").maxAge(refreshedTime).build()
-
-        val refreshedUserCookie =
-            ResponseCookie.from(
-                "user",
-                "${authenticatedUser.info.id}:${authenticatedUser.info.username}",
-            )
-                .path("/").maxAge(refreshedTime).build()
-
-        response.addHeader("Set-Cookie", refreshedTokenCookie.toString())
-        response.addHeader("Set-Cookie", refreshedUserCookie.toString())
     }
 
     companion object {

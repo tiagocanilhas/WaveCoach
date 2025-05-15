@@ -5,4 +5,5 @@ data class Athlete(
     val coach: Int,
     val name: String,
     val birthDate: Long,
+    val credentialsChanged: Boolean,
 )

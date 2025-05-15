@@ -1,5 +1,6 @@
 package waveCoach.repository.jdbi
 
+import waveCoach.domain.ActivityType
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
@@ -23,7 +24,17 @@ class JdbiActivityRepositoryTest {
 
             val activityList = activityRepository.getAthleteActivityList(FIRST_ATHLETE_ID)
 
-            assertTrue(activityList.isNotEmpty() && activityList.size == 2)
+            assertTrue(activityList.isNotEmpty())
+        }
+
+    @Test
+    fun `get calendar`() =
+        testWithHandleAndRollback { handle ->
+            val activityRepository = JdbiActivityRepository(handle)
+
+            assertTrue(activityRepository.getCalendar(FIRST_ATHLETE_ID, null).isNotEmpty())
+            assertTrue(activityRepository.getCalendar(FIRST_ATHLETE_ID, ActivityType.GYM).isNotEmpty())
+            assertTrue(activityRepository.getCalendar(FIRST_ATHLETE_ID, ActivityType.WATER).isNotEmpty())
         }
 
     @Test

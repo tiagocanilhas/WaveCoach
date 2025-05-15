@@ -378,8 +378,8 @@ class AthleteControllerTest {
     fun `generate code - success`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        client.post().uri("/athletes/$FIRST_ATHLETE_ID/code")
-            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+        client.post().uri("/athletes/$THIRD_ATHLETE_ID/code")
+            .header("Authorization", "Bearer $SECOND_COACH_TOKEN")
             .exchange()
             .expectStatus().isCreated
             .expectBody()
@@ -428,6 +428,19 @@ class AthleteControllerTest {
             .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
             .expectBody()
             .jsonPath("type").isEqualTo(Problem.notAthletesCoach.type.toString())
+    }
+
+    @Test
+    fun `generate code - credentials already changed`(){
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.post().uri("/athletes/$SECOND_ATHLETE_ID/code")
+            .header("Authorization", "Bearer $SECOND_COACH_TOKEN")
+            .exchange()
+            .expectStatus().isEqualTo(409)
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.credentialsAlreadyChanged.type.toString())
     }
 
     /**

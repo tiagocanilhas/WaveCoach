@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useEffect, useReducer } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 
 import { CircularProgress } from '@mui/material'
 import { TextField } from '@mui/material'
@@ -13,7 +13,9 @@ import { getAthletes } from '../../services/athleteServices'
 import { generateCode } from '../../services/athleteServices'
 import { deleteAthlete } from '../../services/athleteServices'
 
-import { Athlete } from '../../types/athlete'
+import { useAuthentication } from '../../hooks/useAuthentication'
+
+import { Athlete } from '../../types/Athlete'
 
 import styles from './styles.module.css'
 
@@ -46,6 +48,9 @@ const initialState: State = {
 
 export function Home() {
   const [state, dispatch] = useReducer(reducer, initialState)
+
+  const [user] = useAuthentication()
+  if (!user.isCoach) return <Navigate to={`/athletes/${user.id}`} />
 
   async function fetchAthletes() {
     try {
@@ -118,12 +123,12 @@ export function Home() {
             <div className={styles.athlete}>
               <Dropdown
                 options={[
-                  { label: 'Generate Code', onClick: () => handleGetCode(athlete.uid) },
+                  { label: 'Generate Code', disabled: athlete.credentialsChanged, onClick: () => handleGetCode(athlete.uid) },
                   { label: 'Delete', onClick: () => handleDelete(athlete.uid) },
                 ]}
               />
               <Link to={`/athletes/${athlete.uid}`} className={styles.link}>
-                <img src={/*athlete.img || */ '/images/anonymous-user.webp'} alt={athlete.name || 'Anonymous'} />
+                <img src={'/images/anonymous-user.webp'} alt={athlete.name || 'Anonymous'} />
               </Link>
               <h2 className={styles.name}>{athlete.name}</h2>
             </div>

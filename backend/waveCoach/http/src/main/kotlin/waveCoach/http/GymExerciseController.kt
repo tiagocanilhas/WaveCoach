@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
+import waveCoach.domain.AuthenticatedCoach
 import waveCoach.domain.AuthenticatedUser
 import waveCoach.http.model.input.CreateGymExerciseInputModel
 import waveCoach.http.model.input.UpdateGymExerciseInputModel
@@ -27,7 +28,7 @@ class GymExerciseController(
 
     @PostMapping(Uris.GymExercise.CREATE)
     fun create(
-        coach: AuthenticatedUser,
+        coach: AuthenticatedCoach,
         @RequestBody input: CreateGymExerciseInputModel,
     ): ResponseEntity<*> {
         val result = gymExerciseServices.createGymExercise(input.name, input.category)
@@ -50,7 +51,7 @@ class GymExerciseController(
 
     @GetMapping(Uris.GymExercise.GET_ALL)
     fun getAll(
-        coach: AuthenticatedUser,
+        coach: AuthenticatedCoach,
     ): ResponseEntity<*> {
         val result = gymExerciseServices.getAllGymExercises()
 
@@ -71,7 +72,7 @@ class GymExerciseController(
 
     @PutMapping(Uris.GymExercise.UPDATE)
     fun update(
-        coach: AuthenticatedUser,
+        coach: AuthenticatedCoach,
         @PathVariable geid: Int,
         @RequestBody input: UpdateGymExerciseInputModel,
     ): ResponseEntity<*> {
@@ -92,7 +93,7 @@ class GymExerciseController(
 
     @DeleteMapping(Uris.GymExercise.REMOVE)
     fun remove(
-        coach: AuthenticatedUser,
+        coach: AuthenticatedCoach,
         @PathVariable geid: Int,
     ): ResponseEntity<*> {
         val result = gymExerciseServices.removeGymExercise(geid)

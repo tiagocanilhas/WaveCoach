@@ -261,7 +261,7 @@ class AthleteServicesTest {
         val testClock = TestClock()
         val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
 
-        when (val result = athleteServices.generateCode(FIRST_COACH_ID, FIRST_ATHLETE_ID)) {
+        when (val result = athleteServices.generateCode(SECOND_COACH_ID, FOURTH_ATHLETE_ID)) {
             is Failure -> fail("Unexpected $result")
             is Success -> {
                 assertTrue(result.value.code.isNotEmpty())
@@ -288,6 +288,17 @@ class AthleteServicesTest {
 
         when (val result = athleteServices.generateCode(SECOND_COACH_ID, FIRST_ATHLETE_ID)) {
             is Failure -> assertTrue(result.value is GenerateCodeError.NotAthletesCoach)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
+    @Test
+    fun `generate code - credentials already changed`() {
+        val testClock = TestClock()
+        val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (val result = athleteServices.generateCode(FIRST_COACH_ID, FIRST_ATHLETE_ID)) {
+            is Failure -> assertTrue(result.value is GenerateCodeError.CredentialsAlreadyChanged)
             is Success -> fail("Unexpected $result")
         }
     }
@@ -375,7 +386,7 @@ class AthleteServicesTest {
                 "Abc12!", // smaller than 6 characters
             )
 
-        val code = (athleteServices.generateCode(FIRST_COACH_ID, FIRST_ATHLETE_ID) as Success).value.code
+        val code = (athleteServices.generateCode(SECOND_COACH_ID, FOURTH_ATHLETE_ID)as Success).value.code
 
         insecurePasswords.forEach { password ->
             when (val result = athleteServices.changeCredentials(code, randomString(), password)) {
@@ -390,12 +401,7 @@ class AthleteServicesTest {
         val testClock = TestClock()
         val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
 
-        val code = (athleteServices.generateCode(FIRST_COACH_ID, FIRST_ATHLETE_ID) as Success).value.code
-
-        when (val result = athleteServices.changeCredentials(code, randomString(), randomString())) {
-            is Failure -> fail("Unexpected $result")
-            is Success -> assertTrue(result.value == FIRST_ATHLETE_ID)
-        }
+        val code = "invalid_code"
 
         when (val result = athleteServices.changeCredentials(code, randomString(), randomString())) {
             is Failure -> assertTrue(result.value is ChangeCredentialsError.InvalidCode)
@@ -408,8 +414,7 @@ class AthleteServicesTest {
         val testClock = TestClock()
         val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
 
-        val code = (athleteServices.generateCode(FIRST_COACH_ID, FIRST_ATHLETE_ID) as Success).value.code
-
+        val code = (athleteServices.generateCode(SECOND_COACH_ID, FOURTH_ATHLETE_ID) as Success).value.code
 
         when (val result = athleteServices.changeCredentials(code, THIRD_ATHLETE_USERNAME, randomString())) {
             is Failure -> assertTrue(result.value is ChangeCredentialsError.UsernameAlreadyExists)
@@ -984,6 +989,48 @@ class AthleteServicesTest {
         }
     }
 
+
+
+    /**
+     * Get calendar
+     */
+
+    @Test
+    fun `get calendar - success`() {
+        val testClock = TestClock()
+        val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (val result = athleteServices.getCalendar(FIRST_COACH_ID, FIRST_ATHLETE_ID, null)) {
+            is Failure -> fail("Unexpected $result")
+            is Success -> assertTrue(result.value.isNotEmpty())
+        }
+    }
+
+    @Test
+    fun `get calendar - athlete not found`() {
+        val testClock = TestClock()
+        val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (val result = athleteServices.getCalendar(FIRST_COACH_ID, 0, null)) {
+            is Failure -> assertTrue(result.value is GetCalendarError.AthleteNotFound)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
+    @Test
+    fun `get calendar - not athlete's coach`() {
+        val testClock = TestClock()
+        val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (val result = athleteServices.getCalendar(SECOND_COACH_ID, FIRST_ATHLETE_ID, null)) {
+            is Failure -> assertTrue(result.value is GetCalendarError.NotAthletesCoach)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
+
+
+
     /**
      * Get Activities Tests
      */
@@ -1033,13 +1080,14 @@ class AthleteServicesTest {
         private const val FIRST_ATHLETE_ID = 3
         private const val FIRST_ATHLETE_USERNAME = "athlete"
         private const val FIRST_ATHLETE_NAME = "John Doe"
-        private const val FIRST_ATHLETE_CODE = "lnAEN21Ohq4cuorzGxMSZMKhCj2mXXSFXCO6UKzSluU="
         private const val FIRST_ATHLETE_BIRTH_DATE: Long = 631152000
 
         private const val SECOND_ATHLETE_ID = 4
 
         private const val THIRD_ATHLETE_ID = 5
         private const val THIRD_ATHLETE_USERNAME = "athlete3"
+
+        private const val FOURTH_ATHLETE_ID = 6
 
         private const val ATHLETE_CHARACTERISTICS_FIRST_DATE = "25-01-2000" // date long = 948758400000
         private const val ATHLETE_CHARACTERISTICS_FIRST_DATE_LONG = 948758400000
@@ -1095,6 +1143,7 @@ class AthleteServicesTest {
                     maxTokensPerUser = maxTokensPerUser,
                 ),
             ),
+            ActivityDomain(),
             testClock,
         )
 

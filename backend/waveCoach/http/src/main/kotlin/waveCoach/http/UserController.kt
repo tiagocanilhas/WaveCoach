@@ -9,13 +9,12 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import waveCoach.domain.AuthenticatedUser
-import waveCoach.http.model.input.AuthCheckOutputModel
+import waveCoach.http.model.output.AuthCheckOutputModel
 import waveCoach.http.model.input.LoginInputModel
 import waveCoach.http.model.input.UserUpdateInputModel
 import waveCoach.http.model.output.LoginOutputModel
 import waveCoach.http.model.output.Problem
 import waveCoach.services.CheckCredentialsError
-import waveCoach.services.CreateCoachError
 import waveCoach.services.UserServices
 import waveCoach.services.UserUpdateError
 import waveCoach.utils.Failure
@@ -52,7 +51,7 @@ class UserController(
                             result.value.tokenExpiration.epochSeconds - Clock.System.now().epochSeconds,
                         ).toString(),
                     )
-                    .body(LoginOutputModel(result.value.id, result.value.username, result.value.tokenValue))
+                    .body(LoginOutputModel(result.value.id, result.value.username, result.value.tokenValue, result.value.isCoach))
 
             is Failure ->
                 when (result.value) {
@@ -76,7 +75,7 @@ class UserController(
     ): ResponseEntity<*> {
         return ResponseEntity
             .status(200)
-            .body(AuthCheckOutputModel(user.info.id, user.info.username,))
+            .body(AuthCheckOutputModel(user.info.id, user.info.username, user.info.isCoach))
     }
 
     @PutMapping(Uris.Users.UPDATE)

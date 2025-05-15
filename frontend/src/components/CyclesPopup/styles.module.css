@@ -1,0 +1,105 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.items {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 10px;
+  gap: 10px;
+  border-radius: 5px;
+  border: 1px solid #000;
+  background-color: #f0f0f0;
+}
+
+.items h3 {
+  margin: 0;
+}
+
+.item {
+  padding: 10px;
+  margin: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.item.mesocycle {
+  background-color: var(--mesocycle-color);
+  color: var(--mesocycle-text-color);
+}
+
+.item.mesocycle:hover {
+  background-color: var(--mesocycle-hover-color);
+}
+
+.item.microcycle {
+  background-color: var(--microcycle-color);
+  color: var(--microcycle-text-color);
+}
+
+.item.microcycle:hover {
+  background-color: var(--microcycle-hover-color);
+}
+
+.calendar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 70vh;
+  width: 50vw;
+}
+
+:global .fc-prev-button,
+:global .fc-next-button,
+:global .fc-prevYear-button,
+:global .fc-nextYear-button,
+:global .fc-today-button {
+  background-color: var(--button-color) !important;
+  color: var(--button-text-color) !important;
+  border: none !important;
+  padding: 8px 16px;
+  border-radius: 5px;
+}
+
+:global .fc-prev-button:hover,
+:global .fc-next-button:hover,
+:global .fc-prevYear-button:hover,
+:global .fc-nextYear-button:hover,
+:global .fc-today-button:hover {
+  background-color: var(--button-hover-color) !important;
+  color: var(--button-hover-text-color) !important;
+}
+
+:global .fc-prev-button:active,
+:global .fc-next-button:active,
+:global .fc-prevYear-button:active,
+:global .fc-nextYear-button:active,
+:global .fc-today-button:active {
+  background-color: var(--button-active-color) !important;
+  color: var(--button-active-text-color) !important;
+}
+
+.event {
+  display: block;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+.event.mesocycle {
+  background-color: var(--mesocycle-color);
+  color: white;
+  padding: 5px;
+  border-radius: 4px;
+  display: block;
+}
+
+.event.microcycle {
+  background-color: var(--microcycle-color);
+  color: white;
+  padding: 5px;
+  border-radius: 4px;
+  display: block;
+}
