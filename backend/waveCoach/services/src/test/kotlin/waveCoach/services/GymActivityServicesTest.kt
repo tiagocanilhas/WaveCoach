@@ -127,7 +127,7 @@ class GymActivityServicesTest {
 
         val invalidExercisesList =
             listOf(
-                ExerciseInputInfo(sets = listOf(SetInputInfo(reps = -1, weight = -1f, rest = -1f)), gymExerciseId = 1),
+                ExerciseInputInfo(sets = listOf(SetInputInfo(reps = -1, weight = -1f, restTime = -1f)), gymExerciseId = 1),
             )
 
         when (
@@ -152,7 +152,7 @@ class GymActivityServicesTest {
     fun `get gym activity - success`() {
         val createGymActivityServices = createGymActivityServices()
 
-        when (val result = createGymActivityServices.getGymActivity(SECOND_COACH_ID, THIRD_GYM_ACTIVITY_ID)) {
+        when (val result = createGymActivityServices.getGymActivity(FIRST_COACH_ID, FIRST_GYM_ACTIVITY_ID)) {
             is Failure -> fail("Unexpected $result")
             is Success -> assertTrue(result.value.exercises.isNotEmpty())
         }
@@ -186,9 +186,9 @@ class GymActivityServicesTest {
     fun `remove gym activity - success`() {
         val createGymActivityServices = createGymActivityServices()
 
-        when (val result = createGymActivityServices.removeGymActivity(FIRST_COACH_ID, FIRST_GYM_ACTIVITY_ID)) {
+        when (val result = createGymActivityServices.removeGymActivity(FIRST_COACH_ID, SECOND_GYM_ACTIVITY_ID)) {
             is Failure -> fail("Unexpected $result")
-            is Success -> assertTrue(result.value == FIRST_GYM_ACTIVITY_ID)
+            is Success -> assertTrue(result.value == SECOND_GYM_ACTIVITY_ID)
         }
     }
 
@@ -219,6 +219,7 @@ class GymActivityServicesTest {
         private const val DATE = "25-01-2000" // date long = 948758400000
 
         private const val FIRST_GYM_ACTIVITY_ID = 1
+        private const val SECOND_GYM_ACTIVITY_ID = 4
         private const val THIRD_GYM_ACTIVITY_ID = 3
 
         private val EXERCISES_LIST = listOf(
@@ -227,7 +228,7 @@ class GymActivityServicesTest {
                     SetInputInfo(
                         reps = 10,
                         weight = 60f,
-                        rest = 60f,
+                        restTime = 60f,
                     ),
                 ),
                 gymExerciseId = 1

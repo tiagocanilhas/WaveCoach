@@ -39,6 +39,7 @@ type ViewTag =
   | { tag: 'adding'; exercise: Exercise }
 
 type State = {
+  name: string
   exercises?: ExerciseMap | undefined
   view: ViewTag
 }
@@ -48,6 +49,7 @@ type Action =
   | { type: 'new'; exerciseType: string }
   | { type: 'add'; exercise: Exercise }
   | { type: 'setData'; exercises: Exercise[] }
+  | { type: 'setName'; name: string }
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
@@ -59,6 +61,8 @@ function reducer(state: State, action: Action): State {
       return { ...state, view: { tag: 'creating', category: action.exerciseType } }
     case 'add':
       return { ...state, view: { tag: 'adding', exercise: action.exercise } }
+    case 'setName':
+      return { ...state, name: action.name }
     default:
       return state
   }
@@ -70,7 +74,7 @@ type AddExercisePopupProps = {
 }
 
 export function AddExercisePopup({ onAdd, onClose }: AddExercisePopupProps) {
-  const initialState: State = { exercises: undefined, view: { tag: 'loading' } }
+  const initialState: State = { name: '', exercises: undefined, view: { tag: 'loading' } }
   const [state, dispatch] = useReducer(reducer, initialState)
 
   useEffect(() => {
@@ -82,6 +86,10 @@ export function AddExercisePopup({ onAdd, onClose }: AddExercisePopupProps) {
     }
     fetchData()
   }, [])
+
+  function handleOnChange(e: React.ChangeEvent<HTMLInputElement>) {
+    dispatch({ type: 'setName', name: e.target.value })
+  }
 
   function openAddNewExercise(type: string) {
     dispatch({ type: 'new', exerciseType: type })
@@ -105,20 +113,26 @@ export function AddExercisePopup({ onAdd, onClose }: AddExercisePopupProps) {
         title="Add Exercise"
         content={
           <div className={styles.addExercise}>
-            <TextField label="Name" type="text" name="exercise" />
+            <TextField label="Name" type="text" name="exercise" onChange={handleOnChange} value={state.name} />
             <div className={styles.addExerciseContainer}>
               {state.view.tag === 'loading' ? (
                 <CircularProgress />
               ) : (
-                Object.entries(state.exercises).map(([category, items]) => (
-                  <ExerciseList
-                    key={category}
-                    items={items}
-                    category={category.charAt(0).toUpperCase() + category.slice(1)}
-                    onAdd={openAddNewExercise}
-                    onExerciseClick={openAddExercise}
-                  />
-                ))
+                Object.entries(state.exercises).map(([category, items]) => {
+                  const filteredItems = items.filter(e =>e.name.toLowerCase().includes(state.name.toLowerCase()))
+                  
+                  if (filteredItems.length === 0) return null
+
+                  return (
+                    <ExerciseList
+                      key={category}
+                      items={filteredItems}
+                      category={category.charAt(0).toUpperCase() + category.slice(1)}
+                      onAdd={openAddNewExercise}
+                      onExerciseClick={openAddExercise}
+                    />
+                  )
+                })
               )}
             </div>
           </div>

@@ -60,7 +60,9 @@ export function GymWorkouts() {
         const res = await getCalendar(id, 'gym')
         const activities = res.mesocycles.flatMap(mesocycle => mesocycle.microcycles).flatMap(microcycle => microcycle.activities)
         dispatch({ type: 'setActivities', payload: activities })
-        fetchLastWorkout(activities[0].id)
+        
+        if (activities.length === 0) return
+        fetchLastWorkout(activities[activities.length - 1].id)
       } catch (error) {
         console.error('Error fetching data:', error)
       }
@@ -74,6 +76,10 @@ export function GymWorkouts() {
 
   function handleClose() {
     dispatch({ type: 'closeWorkout' })
+  }
+
+  function handleOnSuccess() {
+    window.location.reload()
   }
 
   if (state.activities === undefined) return <CircularProgress />
@@ -108,7 +114,7 @@ export function GymWorkouts() {
         onAdd={user.isCoach ? handleAdd : undefined}
       />
 
-      {state.isOpen && <AddWorkout onClose={handleClose} />}
+      {state.isOpen && <AddWorkout onClose={handleClose} onSuccess={handleOnSuccess} />}
     </>
   )
 }

@@ -1,12 +1,7 @@
 import { customFetch } from '../utils/customFetch'
-
 import { URIS } from './uris'
+import { toDisplayFormat } from '../utils/toDisplayFormat'
 
-function toDisplayFormat(date: string): string {
-  if (!date) return ''
-  const [year, month, day] = date.split('-')
-  return `${day}-${month}-${year}`
-}
 
 export async function getAthlete(id: string) {
   return await customFetch(URIS.ATHLETES.getById(id), 'GET')

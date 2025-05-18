@@ -22,6 +22,12 @@ class Problem(
 
         private const val BASE_URI = ""
 
+        val activityWithoutMicrocycle =
+            Problem(
+                "Activity without microcycle",
+                URI.create("$BASE_URI/activity-without-microcycle"),
+            )
+
         val credentialsAlreadyChanged =
             Problem(
                 "Athlete credentials changed",

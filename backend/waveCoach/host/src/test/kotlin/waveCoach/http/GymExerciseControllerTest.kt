@@ -7,6 +7,8 @@ import org.springframework.http.MediaType
 import org.springframework.test.web.reactive.server.WebTestClient
 import waveCoach.host.WaveCoachApplication
 import waveCoach.http.model.output.Problem
+import kotlin.math.abs
+import kotlin.random.Random
 import kotlin.test.Test
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = [WaveCoachApplication::class])
@@ -26,7 +28,7 @@ class GymExerciseControllerTest {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
         val body = mapOf(
-            "name" to "Bench Press",
+            "name" to randomString(),
             "category" to "Chest",
         )
 
@@ -265,5 +267,7 @@ class GymExerciseControllerTest {
 
         private const val FIRST_GYM_EXERCISE_ID = 1
         private const val THIRD_GYM_EXERCISE_ID = 3
+
+        private fun randomString() = "String_${abs(Random.nextLong())}"
     }
 }

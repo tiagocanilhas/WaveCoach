@@ -170,9 +170,9 @@ class JdbiGymActivityRepositoryTest {
         testWithHandleAndRollback { handle ->
             val gymActivityRepository = JdbiGymActivityRepository(handle)
 
-            val gymExerciseId = gymActivityRepository.storeGymExercise("Bench Press", "Chest")
+            val gymExerciseId = gymActivityRepository.storeGymExercise("abc", "Chest")
 
-            val gymExercise = gymActivityRepository.getGymExerciseByName("Bench Press")
+            val gymExercise = gymActivityRepository.getGymExerciseByName("abc")
 
             assertTrue { gymExercise != null }
             assertEquals(gymExerciseId, gymExercise?.id)
@@ -183,12 +183,12 @@ class JdbiGymActivityRepositoryTest {
         testWithHandleAndRollback { handle ->
             val gymActivityRepository = JdbiGymActivityRepository(handle)
 
-            val gymExercise = gymActivityRepository.getGymExerciseByName("Pull Up")
+            val gymExercise = gymActivityRepository.getGymExerciseByName("Leg Press")
 
             assertTrue { gymExercise != null }
             assertEquals(3, gymExercise?.id)
-            assertEquals("Pull Up", gymExercise?.name)
-            assertEquals(Category.BACK, gymExercise?.category)
+            assertEquals("Leg Press", gymExercise?.name)
+            assertEquals(Category.LEGS, gymExercise?.category)
         }
 
     @Test
@@ -220,7 +220,7 @@ class JdbiGymActivityRepositoryTest {
 
             gymActivityRepository.removeGymExercise(GYM_EXERCISE_ID)
 
-            val removedGymExercise = gymActivityRepository.getGymExerciseByName("Pull Up")
+            val removedGymExercise = gymActivityRepository.getGymExerciseByName("Leg Press")
 
             assertTrue { removedGymExercise == null }
         }

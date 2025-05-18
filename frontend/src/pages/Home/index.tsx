@@ -8,6 +8,7 @@ import { Card } from '../../components/Card'
 import { AddAthletePopup } from '../../components/AddAthletePopup'
 import { ObjectList } from '../../components/ObjectList'
 import { Dropdown } from '../../components/Dropdown'
+import { ScrollableText } from '../../components/ScrollableText'
 
 import { getAthletes } from '../../services/athleteServices'
 import { generateCode } from '../../services/athleteServices'
@@ -130,7 +131,7 @@ export function Home() {
               <Link to={`/athletes/${athlete.uid}`} className={styles.link}>
                 <img src={'/images/anonymous-user.webp'} alt={athlete.name || 'Anonymous'} />
               </Link>
-              <h2 className={styles.name}>{athlete.name}</h2>
+              <ScrollableText text={athlete.name} className={styles.name} />
             </div>
           )}
           onAdd={handlePopup}

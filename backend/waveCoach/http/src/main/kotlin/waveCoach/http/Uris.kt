@@ -77,7 +77,6 @@ object Uris {
 
         const val CREATE_CALENDAR = "$ATHLETES/{aid}/calendar"
         const val GET_CALENDAR = "$ATHLETES/{aid}/calendar"
-        const val GET_ACTIVITIES = "$ATHLETES/{aid}/activities"
 
         fun byId(id: Int): URI = UriTemplate(GET_BY_ID).expand(id)
 

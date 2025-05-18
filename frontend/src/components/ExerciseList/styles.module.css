@@ -10,6 +10,11 @@
   border-radius: 10px;
 }
 
+.exerciseName {
+  font-size: 18px;
+  font-weight: bold;
+}
+
 .exerciseList h2 {
   margin-left: 10px;
 }

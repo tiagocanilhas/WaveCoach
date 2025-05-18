@@ -2,6 +2,15 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  height: 100%;
+}
+
+.lastWorkoutContent {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .workout {

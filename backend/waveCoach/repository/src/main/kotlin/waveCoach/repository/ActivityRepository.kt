@@ -6,7 +6,7 @@ import waveCoach.domain.Mesocycle
 import waveCoach.domain.Microcycle
 
 interface ActivityRepository {
-    fun storeActivity(uid: Int, date: Long, type: String): Int
+    fun storeActivity(uid: Int, date: Long, microcycle: Int): Int
 
     fun storeMesocycle(
         uid: Int,
@@ -26,6 +26,11 @@ interface ActivityRepository {
 
     fun getMicrocycle(
         id: Int,
+    ): Microcycle?
+
+    fun getMicrocycleByDate(
+        date: Long,
+        uid: Int,
     ): Microcycle?
 
     fun updateMesocycle(

@@ -40,10 +40,6 @@
 }
 
 .name {
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-  width: 100%;
-  text-align: center;
-  display: block;
+  font-size: 25px;
+  font-weight: bold;
 }

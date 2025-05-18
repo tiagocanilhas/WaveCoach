@@ -5,6 +5,7 @@ import { ObjectList } from '../ObjectList'
 import { Exercise } from '../../types/Exercise'
 
 import styles from './styles.module.css'
+import { ScrollableText } from '../ScrollableText'
 
 type ExerciseListProps = {
   items: Exercise[]
@@ -25,7 +26,7 @@ export function ExerciseList({ items, category, onAdd, onExerciseClick }: Exerci
         renderItem={exercise => (
           <div className={styles.exercise}>
             <img src={`/images/no_image.svg`} alt="Exercise" onClick={() => onExerciseClick(exercise)} />
-            <h3>{exercise.name}</h3>
+            <ScrollableText text={exercise.name} className={styles.exerciseName} />
           </div>
         )}
       />

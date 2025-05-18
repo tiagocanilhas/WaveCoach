@@ -77,6 +77,55 @@ class GymActivityControllerTest {
     }
 
     @Test
+    fun `create gym activity - unauthorized`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "athleteId" to THIRD_ATHLETE_ID,
+                "date" to VALID_DATE,
+                "exercises" to listOf(
+                    mapOf(
+                        "sets" to listOf(
+                            mapOf(
+                                "reps" to 10,
+                                "weight" to 100.0,
+                                "rest" to 60.0,
+                            ),
+                            mapOf(
+                                "reps" to 20,
+                                "weight" to 100.0,
+                                "rest" to 60.0,
+                            ),
+                        ),
+                        "gymExerciseId" to 1,
+                    ),
+                    mapOf(
+                        "sets" to listOf(
+                            mapOf(
+                                "reps" to 10,
+                                "weight" to 100.0,
+                                "rest" to 60.0,
+                            ),
+                            mapOf(
+                                "reps" to 20,
+                                "weight" to 100.0,
+                                "rest" to 60.0,
+                            ),
+                        ),
+                        "gymExerciseId" to 2,
+                    ),
+                ),
+            )
+
+        client.post().uri("/gym")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isUnauthorized
+    }
+
+    @Test
     fun `create gym activity - invalid date`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
@@ -308,24 +357,104 @@ class GymActivityControllerTest {
             .jsonPath("type").isEqualTo(Problem.invalidSets.type.toString())
     }
 
+    @Test
+    fun `create gym activity - user is not a coach`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "athleteId" to THIRD_ATHLETE_ID,
+                "date" to VALID_DATE,
+                "exercises" to listOf(
+                    mapOf(
+                        "sets" to listOf(
+                            mapOf(
+                                "reps" to 10,
+                                "weight" to 100.0,
+                                "rest" to 60.0,
+                            ),
+                            mapOf(
+                                "reps" to 20,
+                                "weight" to 100.0,
+                                "rest" to 60.0,
+                            ),
+                        ),
+                        "gymExerciseId" to 1,
+                    ),
+                    mapOf(
+                        "sets" to listOf(
+                            mapOf(
+                                "reps" to 10,
+                                "weight" to 100.0,
+                                "rest" to 60.0,
+                            ),
+                            mapOf(
+                                "reps" to 20,
+                                "weight" to 100.0,
+                                "rest" to 60.0,
+                            ),
+                        ),
+                        "gymExerciseId" to 2,
+                    ),
+                ),
+            )
+
+        client.post().uri("/gym")
+            .header("Authorization", "Bearer $FIRST_ATHLETE_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isForbidden
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.userIsNotACoach.type.toString())
+    }
+
+
+
     /**
      * Get gym activity tests
      */
 
     @Test
-    fun `get gym activity - success`() {
+    fun `get gym activity - success (coach)`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        client.get().uri("/gym/$SECOND_GYM_ACTIVITY_ID")
-            .header("Authorization", "Bearer $SECOND_COACH_TOKEN")
+        client.get().uri("/gym/$FIRST_GYM_ACTIVITY_ID")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
             .exchange()
             .expectStatus().isOk
             .expectBody()
-            .jsonPath("id").isEqualTo(SECOND_GYM_ACTIVITY_ID)
-            .jsonPath("uid").isEqualTo(THIRD_ATHLETE_ID)
+            .jsonPath("id").isEqualTo(FIRST_GYM_ACTIVITY_ID)
+            .jsonPath("uid").isEqualTo(FIRST_ATHLETE_ID)
             .jsonPath("date").isEqualTo(FIRST_GYM_ACTIVITY_DATE)
             .jsonPath("type").isEqualTo("gym")
             .jsonPath("exercises").exists()
+    }
+
+    @Test
+    fun `get gym activity - success (athlete)`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.get().uri("/gym/$FIRST_GYM_ACTIVITY_ID")
+            .header("Authorization", "Bearer $FIRST_ATHLETE_TOKEN")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody()
+            .jsonPath("id").isEqualTo(FIRST_GYM_ACTIVITY_ID)
+            .jsonPath("uid").isEqualTo(FIRST_ATHLETE_ID)
+            .jsonPath("date").isEqualTo(FIRST_GYM_ACTIVITY_DATE)
+            .jsonPath("type").isEqualTo("gym")
+            .jsonPath("exercises").exists()
+    }
+
+    @Test
+    fun `get gym activity - unauthorized`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.get().uri("/gym/$FIRST_GYM_ACTIVITY_ID")
+            .exchange()
+            .expectStatus().isUnauthorized
     }
 
     @Test
@@ -348,7 +477,7 @@ class GymActivityControllerTest {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
         client.get().uri("/gym/$SECOND_GYM_ACTIVITY_ID")
-            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .header("Authorization", "Bearer $SECOND_COACH_TOKEN")
             .exchange()
             .expectStatus().isForbidden
             .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
@@ -371,6 +500,8 @@ class GymActivityControllerTest {
             .jsonPath("type").isEqualTo(Problem.gymActivityNotFound.type.toString())
     }
 
+
+
     /**
      * Remove gym activity tests
      */
@@ -383,6 +514,15 @@ class GymActivityControllerTest {
             .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
             .exchange()
             .expectStatus().isNoContent
+    }
+
+    @Test
+    fun `remove gym activity - unauthorized`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.delete().uri("/gym/$FIRST_GYM_ACTIVITY_ID")
+            .exchange()
+            .expectStatus().isUnauthorized
     }
 
     @Test
@@ -428,17 +568,34 @@ class GymActivityControllerTest {
             .jsonPath("type").isEqualTo(Problem.gymActivityNotFound.type.toString())
     }
 
+    @Test
+    fun `remove gym activity - user is not a coach`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.delete().uri("/gym/$FIRST_GYM_ACTIVITY_ID")
+            .header("Authorization", "Bearer $FIRST_ATHLETE_TOKEN")
+            .exchange()
+            .expectStatus().isForbidden
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.userIsNotACoach.type.toString())
+    }
+
     companion object {
-        private const val VALID_DATE = "01-01-2000"
+        private const val VALID_DATE = "01-05-2025"
         private const val INVALID_DATE = "32-01-2000"
 
         private const val FIRST_COACH_TOKEN = "i_aY-4lpMqAIMuhkimTbKy4xYEuyvgFPaaTpVS0lctQ="
 
         private const val SECOND_COACH_TOKEN = "fM5JjtPOUqtnZg1lB7jnJhXBP5gI2WbIIBoO3JhYM5M="
+
+        private const val FIRST_ATHLETE_ID = 3
+        private const val FIRST_ATHLETE_TOKEN = "0FaEBvcKLwE1YKrLYdhHd5p61EQtJThf3mEX6o28Lgo="
+
         private const val THIRD_ATHLETE_ID = 5
 
         private const val FIRST_GYM_ACTIVITY_ID = 1
-        private const val FIRST_GYM_ACTIVITY_DATE = 948758400000
+        private const val FIRST_GYM_ACTIVITY_DATE = 1746057600000
         private const val SECOND_GYM_ACTIVITY_ID = 2
 
     }

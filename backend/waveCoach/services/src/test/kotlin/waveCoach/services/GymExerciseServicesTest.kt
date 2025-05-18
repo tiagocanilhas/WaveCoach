@@ -178,7 +178,7 @@ class GymExerciseServicesTest {
     companion object {
         private fun randomString() = "String_${abs(Random.nextLong())}"
 
-        private const val GYM_EXERCISE_NAME = "Supine"
+        private const val GYM_EXERCISE_NAME = "Bench Press"
         private const val FIRST_GYM_EXERCISE_ID = 1
         private const val THIRD_GYM_EXERCISE_ID = 3
 

@@ -408,7 +408,7 @@ class AthleteController(
             )
         }
 
-        val result = athleteServices.setCalendar(coach.info.id, uid, mesocycles,)
+        val result = athleteServices.setCalendar(coach.info.id, uid, mesocycles)
 
         return when (result) {
             is Success ->
@@ -472,38 +472,6 @@ class AthleteController(
                 when (result.value) {
                     GetCalendarError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
                     GetCalendarError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
-                }
-        }
-    }
-
-    @GetMapping(Uris.Athletes.GET_ACTIVITIES)
-    fun getActivities(
-        user: AuthenticatedUser,
-        @PathVariable aid: String,
-    ): ResponseEntity<*> {
-        val uid = aid.toIntOrNull() ?: return Problem.response(400, Problem.invalidAthleteId)
-        val result = athleteServices.getActivities(user.info.id, uid)
-
-        return when (result) {
-            is Success ->
-                ResponseEntity
-                    .status(200)
-                    .body(
-                        ActivityListOutputModel(
-                            result.value.map {
-                                ActivityOutputModel(
-                                    it.id,
-                                    it.date,
-                                    it.type.toString(),
-                                )
-                            },
-                        ),
-                    )
-
-            is Failure ->
-                when (result.value) {
-                    GetActivitiesError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
-                    GetActivitiesError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
                 }
         }
     }

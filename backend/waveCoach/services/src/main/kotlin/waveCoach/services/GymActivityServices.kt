@@ -14,13 +14,13 @@ import java.time.format.DateTimeParseException
 
 data class ExerciseInputInfo(
     val sets: List<SetInputInfo>,
-    val gymExerciseId: Int,
+    val id: Int,
 )
 
 data class SetInputInfo(
     val reps: Int,
     val weight: Float,
-    val rest: Float,
+    val restTime: Float,
 )
 
 /*data class UpdateExerciseInputInfo(
@@ -44,6 +44,8 @@ sealed class CreateGymActivityError {
     data object AthleteNotFound : CreateGymActivityError()
 
     data object NotAthletesCoach : CreateGymActivityError()
+
+    data object ActivityWithoutMicrocycle : CreateGymActivityError()
 
     data object InvalidGymExercise : CreateGymActivityError()
 
@@ -84,7 +86,6 @@ typealias RemoveGymActivityResult = Either<RemoveGymActivityError, Int>
 class GymActivityServices(
     private val transactionManager: TransactionManager,
 ) {
-
     fun createGymActivity(
         coachId: Int,
         uid: Int,
@@ -97,24 +98,27 @@ class GymActivityServices(
             val athleteRepository = it.athleteRepository
             val activityRepository = it.activityRepository
             val gymActivityRepository = it.gymActivityRepository
-            val athlete =
-                athleteRepository.getAthlete(uid) ?: return@run failure(CreateGymActivityError.AthleteNotFound)
+
+            val athlete = athleteRepository.getAthlete(uid)
+                ?: return@run failure(CreateGymActivityError.AthleteNotFound)
 
             if (athlete.coach != coachId) return@run failure(CreateGymActivityError.NotAthletesCoach)
 
-            val activityID = activityRepository.storeActivity(uid, dateLong, "gym")
+            val micro = activityRepository.getMicrocycleByDate(dateLong, uid)
+                ?: return@run failure(CreateGymActivityError.ActivityWithoutMicrocycle)
 
+            val activityID = activityRepository.storeActivity(uid, dateLong, micro.id)
             gymActivityRepository.storeGymActivity(activityID)
 
             exercises.forEachIndexed { exerciseOrder, exercise ->
-                if (!gymActivityRepository.isGymExerciseValid(exercise.gymExerciseId))
+                if (!gymActivityRepository.isGymExerciseValid(exercise.id))
                     return@run failure(CreateGymActivityError.InvalidGymExercise)
 
-                val exerciseId = gymActivityRepository.storeExercise(activityID, exercise.gymExerciseId, exerciseOrder)
+                val exerciseId = gymActivityRepository.storeExercise(activityID, exercise.id, exerciseOrder)
                 exercise.sets.forEachIndexed { setOrder, set ->
                     if (!checkSet(set)) return@run failure(CreateGymActivityError.InvalidSet)
 
-                    gymActivityRepository.storeSet(exerciseId, set.reps, set.weight, set.rest, setOrder)
+                    gymActivityRepository.storeSet(exerciseId, set.reps, set.weight, set.restTime, setOrder)
                 }
             }
             success(activityID)
@@ -246,17 +250,13 @@ class GymActivityServices(
             val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
             val dateParsed = LocalDate.parse(date, formatter)
 
-            if (dateParsed.isBefore(LocalDate.now())) {
-                dateParsed.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
-            } else {
-                null
-            }
+            dateParsed.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
         } catch (e: DateTimeParseException) {
             null
         }
     }
 
-    private fun checkSet(sets: SetInputInfo): Boolean = sets.reps > 0 && sets.weight > 0 && sets.rest > 0
+    private fun checkSet(sets: SetInputInfo): Boolean = sets.reps > 0 && sets.weight > 0 && sets.restTime > 0
 
     /*private fun checkSet(sets: UpdateSetInputInfo): Boolean {
         return (sets.reps ?: 0) > 0 && (sets.weight ?: 0f) > 0 && (sets.rest ?: 0f) > 0

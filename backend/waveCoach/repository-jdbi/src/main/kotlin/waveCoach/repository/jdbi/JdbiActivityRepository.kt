@@ -11,11 +11,11 @@ import waveCoach.repository.ActivityRepository
 class JdbiActivityRepository(
     private val handle: Handle,
 ) : ActivityRepository {
-    override fun storeActivity(uid: Int, date: Long, type: String): Int =
-        handle.createUpdate("insert into waveCoach.activity (uid, date, type) values (:uid, :date, :type)")
+    override fun storeActivity(uid: Int, date: Long, microcycle: Int): Int =
+        handle.createUpdate("insert into waveCoach.activity (uid, date, microcycle) values (:uid, :date, :microcycle)")
             .bind("uid", uid)
             .bind("date", date)
-            .bind("type", type)
+            .bind("microcycle", microcycle)
             .executeAndReturnGeneratedKeys()
             .mapTo<Int>()
             .one()
@@ -59,6 +59,19 @@ class JdbiActivityRepository(
     override fun getMicrocycle(id: Int): Microcycle? =
         handle.createQuery("select * from waveCoach.microcycle where id = :id")
             .bind("id", id)
+            .mapTo<Microcycle>()
+            .singleOrNull()
+
+    override fun getMicrocycleByDate(
+        date: Long,
+        uid: Int,
+    ): Microcycle? =
+        handle.createQuery("""
+            select * from waveCoach.microcycle 
+            where start_time <= :date and end_time >= :date
+        """.trimIndent())
+            .bind("date", date)
+            .bind("uid", uid)
             .mapTo<Microcycle>()
             .singleOrNull()
 
@@ -114,7 +127,7 @@ class JdbiActivityRepository(
             left join waveCoach.microcycle mi on mi.mesocycle = m.id
             left join waveCoach.activity a on a.microcycle = mi.id
             where m.uid = :uid and (:type is null or a.type = :type)
-            order by m.id, mi.id, a.id
+            order by m.start_time, mi.start_time, a.date
         """.trimIndent()
 
         val rows = handle.createQuery(query)

@@ -601,22 +601,6 @@ class AthleteServices(
         }
     }
 
-    fun getActivities(
-        uid: Int,
-        aid: Int,
-    ): GetActivitiesResult {
-        return transactionManager.run {
-            val athleteRepository = it.athleteRepository
-            val activityRepository = it.activityRepository
-
-            val athlete = athleteRepository.getAthlete(aid) ?: return@run failure(GetActivitiesError.AthleteNotFound)
-            if (uid != aid && athlete.coach != uid) return@run failure(GetActivitiesError.NotAthletesCoach)
-
-            val activities = activityRepository.getAthleteActivityList(aid)
-            success(activities)
-        }
-    }
-
     private fun dateToLong(date: String): Long? {
         return try {
             val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")

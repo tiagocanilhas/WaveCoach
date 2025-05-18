@@ -990,6 +990,13 @@ class AthleteServicesTest {
     }
 
 
+    /**
+     * Set Calendar Tests
+     */
+
+    // TODO: Implement set calendar tests
+
+
 
     /**
      * Get calendar
@@ -1004,6 +1011,46 @@ class AthleteServicesTest {
             is Failure -> fail("Unexpected $result")
             is Success -> assertTrue(result.value.isNotEmpty())
         }
+
+        when (val result = athleteServices.getCalendar(FIRST_COACH_ID, FIRST_ATHLETE_ID, "invalid")) {
+            is Failure -> fail("Unexpected $result")
+            is Success -> assertTrue(result.value.isNotEmpty())
+        }
+    }
+
+    @Test
+    fun `get calendar - success (only gym activity)`() {
+        val testClock = TestClock()
+        val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (val result = athleteServices.getCalendar(FIRST_COACH_ID, FIRST_ATHLETE_ID, "gym")) {
+            is Failure -> fail("Unexpected $result")
+            is Success -> {
+                assertTrue(result.value.all { mesocycle ->
+                    mesocycle.microcycles.all { microcycle ->
+                        microcycle.activities.all { it.type == ActivityType.GYM }
+                    }
+                })
+            }
+        }
+    }
+
+    @Test
+    fun `get calendar - success (only water activity)`() {
+        val testClock = TestClock()
+        val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (val result = athleteServices.getCalendar(FIRST_COACH_ID, FIRST_ATHLETE_ID, "water")) {
+            is Failure -> fail("Unexpected $result")
+            is Success -> {
+                assertTrue(result.value.all { mesocycle ->
+                    mesocycle.microcycles.all { microcycle ->
+                        microcycle.activities.all { it.type == ActivityType.WATER }
+                    }
+                })
+            }
+        }
+
     }
 
     @Test
@@ -1024,46 +1071,6 @@ class AthleteServicesTest {
 
         when (val result = athleteServices.getCalendar(SECOND_COACH_ID, FIRST_ATHLETE_ID, null)) {
             is Failure -> assertTrue(result.value is GetCalendarError.NotAthletesCoach)
-            is Success -> fail("Unexpected $result")
-        }
-    }
-
-
-
-
-    /**
-     * Get Activities Tests
-     */
-
-    @Test
-    fun `get activities - success`() {
-        val testClock = TestClock()
-        val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
-
-        when (val result = athleteServices.getActivities(FIRST_COACH_ID, FIRST_ATHLETE_ID)) {
-            is Failure -> fail("Unexpected $result")
-            is Success -> assertTrue(result.value.isNotEmpty())
-        }
-    }
-
-    @Test
-    fun `get activities - athlete not found`() {
-        val testClock = TestClock()
-        val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
-
-        when (val result = athleteServices.getActivities(FIRST_COACH_ID, 0)) {
-            is Failure -> assertTrue(result.value is GetActivitiesError.AthleteNotFound)
-            is Success -> fail("Unexpected $result")
-        }
-    }
-
-    @Test
-    fun `get activities - not athlete's coach`() {
-        val testClock = TestClock()
-        val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
-
-        when (val result = athleteServices.getActivities(SECOND_COACH_ID, FIRST_ATHLETE_ID)) {
-            is Failure -> assertTrue(result.value is GetActivitiesError.NotAthletesCoach)
             is Success -> fail("Unexpected $result")
         }
     }
@@ -1117,7 +1124,7 @@ class AthleteServicesTest {
                     SetInputInfo(
                         reps = 10,
                         weight = 60f,
-                        rest = 60f,
+                        restTime = 60f,
                     ),
                 ),
                 gymExerciseId = 1

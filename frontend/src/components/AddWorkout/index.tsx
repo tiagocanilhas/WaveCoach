@@ -57,6 +57,7 @@ function reducer(state: State, action: Action): State {
 
 type AddWorkoutProps = {
   onClose: () => void
+  onSuccess: () => void
 }
 
 const initialState: State = {
@@ -65,7 +66,7 @@ const initialState: State = {
   exercises: [],
 }
 
-export function AddWorkout({ onClose }: AddWorkoutProps) {
+export function AddWorkout({ onClose, onSuccess }: AddWorkoutProps) {
   const [state, dispatch] = useReducer(reducer, initialState)
   const id = useParams().aid
 
@@ -87,7 +88,16 @@ export function AddWorkout({ onClose }: AddWorkoutProps) {
 
   async function handleOnClick() {
     try {
-      await createGymActivity(id)
+      const exercises = state.exercises.map(info => ({
+        id: info.exercise.id,
+        sets: info.sets.map(set => ({
+          reps: set.reps,
+          weight: set.weight,
+          restTime: set.restTime,
+        })),
+      }))
+      await createGymActivity(id, state.date, exercises)
+      onSuccess()
     } catch (error) {
       console.error('Error adding workout:', error)
     }
@@ -121,7 +131,7 @@ export function AddWorkout({ onClose }: AddWorkoutProps) {
                         <ul>
                           {info.sets.map((set, idx) => (
                             <li>
-                              Set {idx + 1}: {set.reps} x {set.weight} kg - {set.rest}'
+                              Set {idx + 1}: {set.reps} x {set.weight} kg - {set.restTime}'
                             </li>
                           ))}
                         </ul>
