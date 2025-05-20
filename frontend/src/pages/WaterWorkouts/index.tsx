@@ -4,6 +4,7 @@ import { useEffect, useReducer } from 'react'
 
 import { CircularProgress } from '@mui/material'
 import { Workout } from '../../components/Workout'
+import { AddWaterWorkoutPopup } from '../../components/AddWaterWorkoutPopup'
 
 import { getCalendar } from '../../services/athleteServices'
 
@@ -71,21 +72,19 @@ export function WaterWorkouts() {
         console.error('Error fetching data:', error)
       }
     }
-
-    async function fetchLastWorkout() {
-      try {
-        const res = await getCalendar(id, 'water')
-        dispatch({ type: 'setLastWorkout', payload: res })
-      } catch (error) {
-        console.error('Error fetching data:', error)
-      }
-    }
     fetchCalendar()
-    fetchLastWorkout()
   }, [])
 
   function handleAdd() {
-    // Add workout logic here
+    dispatch({ type: 'addWorkout' })
+  }
+
+  function handleClose() {
+    dispatch({ type: 'closeWorkout' })
+  }
+
+  function handleOnSuccess() {
+    window.location.reload()
   }
 
   if (state.activities === undefined) return <CircularProgress />
@@ -93,7 +92,7 @@ export function WaterWorkouts() {
   return (
     <>
       <Workout
-        lastWorkoutContent={<p>Last water workout content</p>}
+        lastWorkoutContent={<>{state.workout === undefined ? <CircularProgress /> : state.workout}</>}
         workouts={state.activities}
         onAdd={user.isCoach ? handleAdd : undefined}
       />
@@ -107,6 +106,8 @@ export function WaterWorkouts() {
         <Card content={<Bar data={dummyData} />} width="500px" height="300px" />
         <Card content={<Bar data={dummyData} />} width="500px" height="300px" />
       </div>
+
+      {state.isOpen && <AddWaterWorkoutPopup onClose={handleClose} onSuccess={handleOnSuccess} />}
     </>
   )
 }

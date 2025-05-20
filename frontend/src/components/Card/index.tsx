@@ -6,11 +6,12 @@ type CardProps = {
   content: React.ReactNode
   width?: string
   height?: string
+  onClick?: () => void
 }
 
-export function Card({ content, width = null, height = null }: CardProps) {
+export function Card({ content, width = null, height = null, onClick }: CardProps) {
   return (
-    <div className={styles.card} style={{ width, height }}>
+    <div className={styles.card} style={{ width, height }} onClick={onClick}>
       {content}
     </div>
   )

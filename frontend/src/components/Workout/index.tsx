@@ -23,9 +23,7 @@ export function Workout({ lastWorkoutContent, workouts, onAdd }: WorkoutProps) {
           content={
             <div className={styles.lastWorkout}>
               <h1>Last workout</h1>
-              <div className={styles.lastWorkoutContent}>
-                {lastWorkoutContent}
-              </div>
+              <div className={styles.lastWorkoutContent}>{lastWorkoutContent}</div>
             </div>
           }
           width="100%"

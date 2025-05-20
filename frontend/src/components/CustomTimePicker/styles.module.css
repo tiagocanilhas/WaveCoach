@@ -1,0 +1,11 @@
+.container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.timePicker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

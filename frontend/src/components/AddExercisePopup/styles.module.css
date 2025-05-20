@@ -1,14 +1,61 @@
-.addExercise {
+.exercise {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  width: 70vw;
+  align-items: center;
 }
 
-.addExerciseContainer {
+.exercise img {
+  width: 100px;
+  border-radius: 10%;
+}
+
+.setsContainer {
   display: flex;
   flex-direction: column;
-  gap: 50px;
-  height: 70vh;
-  overflow-y: auto;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.remove {
+  font-size: 30px;
+  cursor: pointer;
+}
+
+.add {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+
+  width: 40px;
+  height: 40px;
+  font-size: 40px;
+  background-color: #ccc;
+  color: white;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 5px; /* espaço entre as linhas */
+}
+
+.table th,
+.table td {
+  padding: 5px 8px;
+  text-align: center; /* centra todos os cabeçalhos e células */
+}
+
+.table th:first-child,
+.table td:first-child {
+  width: 60px;
 }

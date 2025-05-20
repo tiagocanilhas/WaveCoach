@@ -1,0 +1,52 @@
+.addWorkout {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sliderContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+}
+
+.sliderContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+}
+
+.sliderContainer label {
+  white-space: nowrap;
+}
+
+.wavesContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  height: 50vh;
+  padding: 5px;
+  overflow-y: auto;
+}
+
+.add {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+
+  width: 17%;
+  font-size: 80px;
+  background-color: #ccc;
+  color: white;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.error {
+  color: red;
+  font-size: 14px;
+  margin-top: 5px;
+}

@@ -12,6 +12,7 @@ export async function customFetch(url: string, method: method, body?: object): P
     options.body = JSON.stringify(body)
   }
 
+  // await new Promise((resolve) => { setTimeout(resolve, 1000) })
   const res = await fetch(url, options)
 
   const text = await res.text()

@@ -10,9 +10,10 @@ type ObjectListProps<T> = {
   getKey: (item: T) => Key
   renderItem: (item: T) => ReactNode
   onAdd?: () => void
+  onItemClick?: (item: T) => void
 }
 
-export function ObjectList<T>({ items, renderItem, onAdd, getKey }: ObjectListProps<T>) {
+export function ObjectList<T>({ items, renderItem, onAdd, getKey, onItemClick }: ObjectListProps<T>) {
   const size = '200px'
   return (
     <div className={styles.container}>
@@ -29,7 +30,13 @@ export function ObjectList<T>({ items, renderItem, onAdd, getKey }: ObjectListPr
       )}
 
       {items.map(item => (
-        <Card key={getKey(item)} content={renderItem(item)} width={size} height={size} />
+        <Card
+          key={getKey(item)}
+          content={renderItem(item)}
+          width={size}
+          height={size}
+          onClick={() => onItemClick && onItemClick(item)}
+        />
       ))}
     </div>
   )

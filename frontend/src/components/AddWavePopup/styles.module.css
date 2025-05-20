@@ -1,0 +1,28 @@
+.addWave {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.maneuversContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  height: 50vh;
+  padding: 5px;
+  overflow-y: auto;
+}
+
+.add {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+
+  width: 17%;
+  font-size: 80px;
+  background-color: #ccc;
+  color: white;
+  border-radius: 50%;
+  cursor: pointer;
+}

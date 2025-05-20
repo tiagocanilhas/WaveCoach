@@ -53,10 +53,19 @@ const GYM_EXERCISES = {
   delete: (id: string) => `${GYM_EXERCISES_URL}/${id}`,
 }
 
+const WATER_MANEUVERS_URL = `${BASE_URL}/water/maneuver`
+const WATER_MANEUVERS = {
+  create: WATER_MANEUVERS_URL,
+  getAll: WATER_MANEUVERS_URL,
+  update: (id: string) => `${WATER_MANEUVERS_URL}/${id}`,
+  delete: (id: string) => `${WATER_MANEUVERS_URL}/${id}`,
+}
+
 export const URIS = {
   USERS,
   COACHES,
   ATHLETES,
   GYM,
   GYM_EXERCISES,
+  WATER_MANEUVERS,
 }

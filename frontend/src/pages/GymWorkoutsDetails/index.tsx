@@ -1,109 +1,37 @@
 import * as React from 'react'
+import { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
 
+import { CircularProgress } from '@mui/material'
 import { Card } from '../../components/Card'
+
+import { getGymActivity } from '../../services/gymServices'
 
 import { epochConverter } from '../../utils/epochConverter'
 
+import { Exercise } from '../../types/Exercise'
+
 import styles from './styles.module.css'
+import { GymWorkout } from '../../types/GymWorkout'
 
 export function GymWorkoutsDetails() {
-  const workout = {
-    id: 1,
-    date: 1672531199000,
-    exercises: [
-      {
-        name: 'Bench Press',
-        sets: [
-          {
-            id: 1,
-            reps: 10,
-            weight: 60,
-            rest: 2,
-          },
-          {
-            id: 2,
-            reps: 8,
-            weight: 70,
-            rest: 2,
-          },
-        ],
-      },
-      {
-        name: 'Squat',
-        sets: [
-          {
-            id: 3,
-            reps: 10,
-            weight: 80,
-            rest: 2,
-          },
-          {
-            id: 4,
-            reps: 8,
-            weight: 90,
-            rest: 2,
-          },
-          {
-            id: 5,
-            reps: 8,
-            weight: 90,
-            rest: 2,
-          },
-        ],
-      },
-      {
-        name: 'Deadlift',
-        sets: [
-          {
-            id: 6,
-            reps: 10,
-            weight: 100,
-            rest: 2,
-          },
-          {
-            id: 7,
-            reps: 8,
-            weight: 110,
-            rest: 2,
-          },
-        ],
-      },
-      {
-        name: 'Shoulder Press',
-        sets: [
-          {
-            id: 8,
-            reps: 10,
-            weight: 40,
-            rest: 2,
-          },
-          {
-            id: 9,
-            reps: 8,
-            weight: 50,
-            rest: 2,
-          },
-        ],
-      },
-      {
-        name: 'Pull Up',
-        sets: [
-          {
-            id: 10,
-            reps: 10,
-            weight: 0,
-            rest: 2,
-          },
-          {
-            id: 11,
-            reps: 8,
-            weight: 0,
-            rest: 2,
-          },
-        ],
-      },
-    ],
-  }
+  const [workout, setWorkout] = useState<GymWorkout>(undefined)
+  const gid = useParams().gid
+  
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const res = await getGymActivity(gid)
+        setWorkout(res)
+      }
+      catch (error) {
+        console.error('Error fetching workout details:', error)
+      }
+    }
+    fetchData()
+  }, [])
+
+  if (!workout) return <CircularProgress />
 
   return (
     <div className={styles.container}>
@@ -119,7 +47,7 @@ export function GymWorkoutsDetails() {
               <ul>
                 {exercise.sets.map((set, idx) => (
                   <li>
-                    Set {idx + 1}: {set.reps} x {set.weight} kg - {set.rest}'
+                    Set {idx + 1}: {set.reps} x {set.weight} kg - {set.restTime} sec'
                   </li>
                 ))}
               </ul>

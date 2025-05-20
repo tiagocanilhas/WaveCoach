@@ -43,7 +43,7 @@ const router = createBrowserRouter([
         children: [
           { path: 'athletes/:aid', element: <Title title="Athlete" content={<Athlete />} /> },
           { path: 'athletes/:aid/characteristics', element: <Title title="Characteristics" content={<Characteristics />} /> },
-          { path: 'athletes/:aid/gym/:wid', element: <Title title="Gym Workouts Details" content={<GymWorkoutsDetails />} /> },
+          { path: 'athletes/:aid/gym/:gid', element: <Title title="Gym Workouts Details" content={<GymWorkoutsDetails />} /> },
           { path: 'athletes/:aid/gym', element: <Title title="Gym" content={<GymWorkouts />} /> },
           { path: 'athletes/:aid/water', element: <Title title="Water" content={<WaterWorkouts />} /> },
         ],

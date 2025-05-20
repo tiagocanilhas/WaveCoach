@@ -54,6 +54,27 @@ object Uris {
         fun byId(id: Int): URI = UriTemplate(GET_BY_ID).expand(id)
     }
 
+    object WaterActivity {
+        private const val WATER_ACTIVITY = "$PREFIX/water"
+
+        const val CREATE = WATER_ACTIVITY
+        const val GET_BY_ID = "$WATER_ACTIVITY/{activityId}"
+        const val UPDATE = "$WATER_ACTIVITY/{activityId}"
+        const val REMOVE = "$WATER_ACTIVITY/{activityId}"
+    }
+
+    object WaterManeuver{
+        private const val WATER_MANEUVERS = "$PREFIX/water/maneuver"
+
+        const val CREATE = WATER_MANEUVERS
+        const val GET_BY_ID = "$WATER_MANEUVERS/{maneuverId}"
+        const val GET_ALL = WATER_MANEUVERS
+        const val UPDATE = "$WATER_MANEUVERS/{maneuverId}"
+        const val REMOVE = "$WATER_MANEUVERS/{maneuverId}"
+
+        fun byId(id: Int): URI = UriTemplate(GET_BY_ID).expand(id)
+    }
+
     object Athletes {
         private const val ATHLETES = "$PREFIX/athletes"
 

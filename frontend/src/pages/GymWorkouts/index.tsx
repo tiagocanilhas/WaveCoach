@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 
 import { CircularProgress } from '@mui/material'
 import { Workout } from '../../components/Workout'
-import { AddWorkout } from '../../components/AddWorkout'
+import { AddGymWorkoutPopup } from '../../components/AddGymWorkoutPopup'
 
 import { getCalendar } from '../../services/athleteServices'
 import { getGymActivity } from '../../services/gymServices'
@@ -60,7 +60,7 @@ export function GymWorkouts() {
         const res = await getCalendar(id, 'gym')
         const activities = res.mesocycles.flatMap(mesocycle => mesocycle.microcycles).flatMap(microcycle => microcycle.activities)
         dispatch({ type: 'setActivities', payload: activities })
-        
+
         if (activities.length === 0) return
         fetchLastWorkout(activities[activities.length - 1].id)
       } catch (error) {
@@ -114,7 +114,7 @@ export function GymWorkouts() {
         onAdd={user.isCoach ? handleAdd : undefined}
       />
 
-      {state.isOpen && <AddWorkout onClose={handleClose} onSuccess={handleOnSuccess} />}
+      {state.isOpen && <AddGymWorkoutPopup onClose={handleClose} onSuccess={handleOnSuccess} />}
     </>
   )
 }

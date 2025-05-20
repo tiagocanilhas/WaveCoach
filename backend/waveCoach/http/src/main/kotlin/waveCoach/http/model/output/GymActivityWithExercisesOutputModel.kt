@@ -1,9 +1,7 @@
 package waveCoach.http.model.output
 
-data class ActivityWithExercisesOutputModel(
+data class GymActivityWithExercisesOutputModel(
     val id: Int,
-    val uid: Int,
     val date: Long,
-    val type: String,
     val exercises: List<ExerciseWithSetsOutputModel>,
 )

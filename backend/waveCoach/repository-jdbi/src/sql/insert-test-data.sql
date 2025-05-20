@@ -13,6 +13,15 @@ insert into waveCoach.gym_exercise (name, category) values ('Lateral Raises', 'S
 insert into waveCoach.gym_exercise (name, category) values ('Bicep curl', 'Arms');
 insert into waveCoach.gym_exercise (name, category) values ('Triceps Pushdown', 'Arms');
 
+--Insert Water Maneuvers
+insert into waveCoach.water_maneuver (name) values ('Roll');
+insert into waveCoach.water_maneuver (name) values ('360');
+insert into waveCoach.water_maneuver (name) values ('360i');
+insert into waveCoach.water_maneuver (name) values ('ARS');
+insert into waveCoach.water_maneuver (name) values ('Invert');
+insert into waveCoach.water_maneuver (name) values ('Backflip');
+insert into waveCoach.water_maneuver (name) values ('Tube Ride');
+
 --First Coach
 insert into waveCoach.user (username, password) values ('admin', '$2a$10$6wZjBBzU2G1H7rK5VeFNIu.toyRHL.ULP1R2IMjpPy7xB8HhF/h0q');
 -- password: Admin123!

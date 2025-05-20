@@ -8,6 +8,7 @@ import waveCoach.repository.CoachRepository
 import waveCoach.repository.GymActivityRepository
 import waveCoach.repository.Transaction
 import waveCoach.repository.UserRepository
+import waveCoach.repository.WaterManeuverRepository
 
 class JdbiTransaction(
     private val handle: Handle,
@@ -18,6 +19,7 @@ class JdbiTransaction(
     override val characteristicsRepository: CharacteristicsRepository = JdbiCharacteristicsRepository(handle)
     override val activityRepository: ActivityRepository = JdbiActivityRepository(handle)
     override val gymActivityRepository: GymActivityRepository = JdbiGymActivityRepository(handle)
+    override val waterManeuverRepository: WaterManeuverRepository = JdbiWaterManeuverRepository(handle)
 
     override fun rollback() {
         handle.rollback()

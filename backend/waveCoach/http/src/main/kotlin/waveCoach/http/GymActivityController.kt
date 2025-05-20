@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*
 import waveCoach.domain.AuthenticatedCoach
 import waveCoach.domain.AuthenticatedUser
 import waveCoach.http.model.input.CreateGymActivityInputModel
-import waveCoach.http.model.output.ActivityWithExercisesOutputModel
+import waveCoach.http.model.output.GymActivityWithExercisesOutputModel
 import waveCoach.http.model.output.ExerciseWithSetsOutputModel
 import waveCoach.http.model.output.Problem
 import waveCoach.http.model.output.SetOutputModel
@@ -65,15 +65,12 @@ class GymActivityController(
                 ResponseEntity
                     .status(200)
                     .body(
-                        ActivityWithExercisesOutputModel(
+                        GymActivityWithExercisesOutputModel(
                             result.value.id,
-                            result.value.uid,
                             result.value.date,
-                            result.value.type.toString(),
                             result.value.exercises.map { exercise ->
                                 ExerciseWithSetsOutputModel(
                                     exercise.id,
-                                    exercise.activity,
                                     exercise.gymExercise,
                                     exercise.exerciseOrder,
                                     exercise.sets.map { set ->

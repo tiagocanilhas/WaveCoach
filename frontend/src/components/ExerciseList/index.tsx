@@ -23,9 +23,10 @@ export function ExerciseList({ items, category, onAdd, onExerciseClick }: Exerci
         items={filteredItems}
         getKey={exercise => exercise.id}
         onAdd={() => onAdd(category.toLowerCase())}
+        onItemClick={onExerciseClick}
         renderItem={exercise => (
           <div className={styles.exercise}>
-            <img src={`/images/no_image.svg`} alt="Exercise" onClick={() => onExerciseClick(exercise)} />
+            <img src={`/images/no_image.svg`} alt="Exercise" />
             <ScrollableText text={exercise.name} className={styles.exerciseName} />
           </div>
         )}

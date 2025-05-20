@@ -2,7 +2,6 @@ import { customFetch } from '../utils/customFetch'
 import { URIS } from './uris'
 import { toDisplayFormat } from '../utils/toDisplayFormat'
 
-
 export async function getAthlete(id: string) {
   return await customFetch(URIS.ATHLETES.getById(id), 'GET')
 }

@@ -3,7 +3,7 @@ import { useReducer } from 'react'
 
 import { TextField } from '@mui/material'
 import { Card } from '../Card'
-import { AddExercisePopup } from '../AddExercisePopup'
+import { SelectExercisePopup } from '../SelectExercisePopup'
 import { Popup } from '../Popup'
 import { Button } from '../Button'
 
@@ -55,7 +55,7 @@ function reducer(state: State, action: Action): State {
   }
 }
 
-type AddWorkoutProps = {
+type AddGymWorkoutPopupProps = {
   onClose: () => void
   onSuccess: () => void
 }
@@ -66,7 +66,7 @@ const initialState: State = {
   exercises: [],
 }
 
-export function AddWorkout({ onClose, onSuccess }: AddWorkoutProps) {
+export function AddGymWorkoutPopup({ onClose, onSuccess }: AddGymWorkoutPopupProps) {
   const [state, dispatch] = useReducer(reducer, initialState)
   const id = useParams().aid
 
@@ -157,7 +157,7 @@ export function AddWorkout({ onClose, onSuccess }: AddWorkoutProps) {
         onClose={onClose}
       />
 
-      {isOpen && <AddExercisePopup onAdd={onAddExercise} onClose={handleCloseExercise} />}
+      {isOpen && <SelectExercisePopup onAdd={onAddExercise} onClose={handleCloseExercise} />}
     </>
   )
 }
