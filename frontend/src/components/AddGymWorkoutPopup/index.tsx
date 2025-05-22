@@ -92,7 +92,7 @@ export function AddGymWorkoutPopup({ onClose, onSuccess }: AddGymWorkoutPopupPro
 
     const date = state.date
     const exercises = state.exercises.map(info => ({
-      id: info.exercise.id,
+      gymExerciseId: info.exercise.id,
       sets: info.sets.map(set => ({
         reps: set.reps,
         weight: set.weight,
