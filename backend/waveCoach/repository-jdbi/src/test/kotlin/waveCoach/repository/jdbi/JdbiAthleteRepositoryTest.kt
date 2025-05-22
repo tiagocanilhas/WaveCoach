@@ -22,7 +22,7 @@ class JdbiAthleteRepositoryTest {
             val uid = userRepository.storeUser(USERNAME, PasswordValidationInfo(PASSWORD))
 
             val name = randomString()
-            val aid = athleteRepository.storeAthlete(uid, COACH_ID, name, BIRTHDATE)
+            val aid = athleteRepository.storeAthlete(uid, COACH_ID, name, BIRTHDATE, null)
 
             assertNotNull(aid)
         }
@@ -36,7 +36,7 @@ class JdbiAthleteRepositoryTest {
             val uid = userRepository.storeUser(USERNAME, PasswordValidationInfo(PASSWORD))
 
             val name = randomString()
-            val aid = athleteRepository.storeAthlete(uid, COACH_ID, name, BIRTHDATE)
+            val aid = athleteRepository.storeAthlete(uid, COACH_ID, name, BIRTHDATE, null)
 
             val athlete = athleteRepository.getAthlete(aid)
 
@@ -77,7 +77,7 @@ class JdbiAthleteRepositoryTest {
             val uid = userRepository.storeUser(USERNAME, PasswordValidationInfo(PASSWORD))
 
             val name = randomString()
-            val aid = athleteRepository.storeAthlete(uid, COACH_ID, name, BIRTHDATE)
+            val aid = athleteRepository.storeAthlete(uid, COACH_ID, name, BIRTHDATE, null)
 
             athleteRepository.removeAthlete(aid)
 

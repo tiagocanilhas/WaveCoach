@@ -29,7 +29,7 @@ class GymActivityController(
             input.exercises.map { inputModel ->
                 ExerciseInputInfo(
                     sets = inputModel.sets.map { SetInputInfo(it.reps, it.weight, it.restTime) },
-                    gymExerciseId = inputModel.id
+                    gymExerciseId = inputModel.gymExerciseId
                 )
             }
         )
@@ -77,6 +77,7 @@ class GymActivityController(
                                     exercise.id,
                                     exercise.gymExercise,
                                     exercise.exerciseOrder,
+                                    exercise.url,
                                     exercise.sets.map { set ->
                                         SetOutputModel(
                                             set.id,

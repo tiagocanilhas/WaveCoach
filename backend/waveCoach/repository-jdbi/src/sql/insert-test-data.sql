@@ -1,17 +1,17 @@
 --Insert gym exercises
-insert into waveCoach.gym_exercise (name, category) values ('Deadlift', 'Legs');
-insert into waveCoach.gym_exercise (name, category) values ('Squat', 'Legs');
-insert into waveCoach.gym_exercise (name, category) values ('Leg Press', 'Legs');
-insert into waveCoach.gym_exercise (name, category) values ('Bench Press', 'Chest');
-insert into waveCoach.gym_exercise (name, category) values ('Incline Bench Press', 'Chest');
-insert into waveCoach.gym_exercise (name, category) values ('Dumbbell Press', 'Chest');
-insert into waveCoach.gym_exercise (name, category) values ('Incline Dumbbell Press', 'Chest');
-insert into waveCoach.gym_exercise (name, category) values ('Pull Up', 'Back');
-insert into waveCoach.gym_exercise (name, category) values ('Lat Pull Down', 'Back');
-insert into waveCoach.gym_exercise (name, category) values ('Shoulder Press', 'Shoulders');
-insert into waveCoach.gym_exercise (name, category) values ('Lateral Raises', 'Shoulders');
-insert into waveCoach.gym_exercise (name, category) values ('Bicep curl', 'Arms');
-insert into waveCoach.gym_exercise (name, category) values ('Triceps Pushdown', 'Arms');
+insert into waveCoach.gym_exercise (name, category) values ('Deadlift', 'legs');
+insert into waveCoach.gym_exercise (name, category) values ('Squat', 'legs');
+insert into waveCoach.gym_exercise (name, category) values ('Leg Press', 'legs');
+insert into waveCoach.gym_exercise (name, category) values ('Bench Press', 'chest');
+insert into waveCoach.gym_exercise (name, category) values ('Incline Bench Press', 'chest');
+insert into waveCoach.gym_exercise (name, category) values ('Dumbbell Press', 'chest');
+insert into waveCoach.gym_exercise (name, category) values ('Incline Dumbbell Press', 'chest');
+insert into waveCoach.gym_exercise (name, category) values ('Pull Up', 'back');
+insert into waveCoach.gym_exercise (name, category) values ('Lat Pull Down', 'back');
+insert into waveCoach.gym_exercise (name, category) values ('Shoulder Press', 'shoulders');
+insert into waveCoach.gym_exercise (name, category) values ('Lateral Raises', 'shoulders');
+insert into waveCoach.gym_exercise (name, category) values ('Bicep curl', 'arms');
+insert into waveCoach.gym_exercise (name, category) values ('Triceps Pushdown', 'arms');
 
 --Insert Water Maneuvers
 insert into waveCoach.water_maneuver (name) values ('Roll');
@@ -50,6 +50,7 @@ insert into waveCoach.characteristics (date, uid, weight, height, calories, body
 INSERT INTO waveCoach.mesocycle (uid, start_time, end_time) VALUES (3, 1746057600000, 1748736000000); -- 2025-05-01 to 2025-06-01
 INSERT INTO waveCoach.mesocycle (uid, start_time, end_time) VALUES (3, 1748736000000, 1751328000000); -- 2025-06-01 to 2025-07-01
 INSERT INTO waveCoach.mesocycle (uid, start_time, end_time) VALUES (3, 1751328000000, 1754006400000); -- 2025-07-01 to 2025-08-01
+INSERT INTO waveCoach.mesocycle (uid, start_time, end_time) VALUES (3, 1754006400000, 1756684800000); -- 2025-08-01 to 2025-09-01
 
 -- Microcycles
 INSERT INTO waveCoach.microcycle (mesocycle, start_time, end_time) VALUES (1, 1746057600000, 1747339200000); -- 2025-05-01 to 2025-05-15
@@ -59,6 +60,7 @@ INSERT INTO waveCoach.microcycle (mesocycle, start_time, end_time) VALUES (2, 17
 INSERT INTO waveCoach.microcycle (mesocycle, start_time, end_time) VALUES (2, 1749945600000, 1751328000000); -- 2025-06-15 to 2025-07-01
 INSERT INTO waveCoach.microcycle (mesocycle, start_time, end_time) VALUES (3, 1751328000000, 1752528000000); -- 2025-07-01 to 2025-07-14
 INSERT INTO waveCoach.microcycle (mesocycle, start_time, end_time) VALUES (3, 1752528000000, 1754006400000); -- 2025-07-14 to 2025-08-01
+INSERT INTO waveCoach.microcycle (mesocycle, start_time, end_time) VALUES (4, 1754006400000, 1754613000000); -- 2025-08-01 to 2025-08-08
 
 -- Activities for Microcycle 1 (2025-05-01 to 2025-05-15)
 INSERT INTO waveCoach.activity (uid, microcycle, date) VALUES (3, 1, 1746057600000); -- 2025-05-01
@@ -170,6 +172,10 @@ INSERT INTO waveCoach.gym (activity) VALUES (26);
 
 INSERT INTO waveCoach.activity (uid, microcycle, date) VALUES (3, 7, 1752873600000); -- 2025-07-18
 INSERT INTO waveCoach.water (activity) VALUES (27);
+
+-- Activities for Microcycle 8 (2025-08-01 to 2025-08-08)
+INSERT INTO waveCoach.activity (uid, microcycle, date) VALUES (3, 8, 1754006400000); -- 2025-08-01
+INSERT INTO waveCoach.water (activity) VALUES (28);
 
 --Second Athlete
 insert into waveCoach.user (username, password) values ('athlete2', '$2a$10$6wZjBBzU2G1H7rK5VeFNIu.toyRHL.ULP1R2IMjpPy7xB8HhF/h0q');

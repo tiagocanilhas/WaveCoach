@@ -13,6 +13,7 @@ import { SetData } from '../../types/SetData'
 import styles from './styles.module.css'
 import { createGymActivity } from '../../services/gymServices'
 import { useParams } from 'react-router-dom'
+import { handleError } from '../../utils/handleError'
 
 type State = {
   isOpen: boolean
@@ -86,26 +87,31 @@ export function AddGymWorkoutPopup({ onClose, onSuccess }: AddGymWorkoutPopupPro
     dispatch({ type: 'setDate', date: event.target.value })
   }
 
-  async function handleOnClick() {
+  async function handleOnSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+
+    const date = state.date
+    const exercises = state.exercises.map(info => ({
+      id: info.exercise.id,
+      sets: info.sets.map(set => ({
+        reps: set.reps,
+        weight: set.weight,
+        restTime: set.restTime,
+      })),
+    }))
+
     try {
-      const exercises = state.exercises.map(info => ({
-        id: info.exercise.id,
-        sets: info.sets.map(set => ({
-          reps: set.reps,
-          weight: set.weight,
-          restTime: set.restTime,
-        })),
-      }))
-      await createGymActivity(id, state.date, exercises)
+      await createGymActivity(id, date, exercises)
       onSuccess()
     } catch (error) {
-      console.error('Error adding workout:', error)
+      dispatch({ type: 'error', error: handleError(error) })
     }
   }
 
   const isOpen = state.isOpen
   const date = state.date
   const exercises = state.exercises
+  const error = state.error
   const disabled = state.exercises.length === 0 || date.length === 0
 
   return (
@@ -114,11 +120,12 @@ export function AddGymWorkoutPopup({ onClose, onSuccess }: AddGymWorkoutPopupPro
         title="Add Workout"
         content={
           <>
-            <div className={styles.addWorkout}>
+            <form className={styles.addWorkout} onSubmit={handleOnSubmit}>
               <TextField type="date" name="date" value={date} onChange={handleOnChange} />
               <div className={styles.exercisesContainer}>
-                {exercises.map(info => (
+                {exercises.map((info, index) => (
                   <Card
+                    key={index}
                     content={
                       <div className={styles.exercise}>
                         <div className={styles.remove} onClick={() => dispatch({ type: 'removeExercise', id: info.exercise.id })}>
@@ -130,7 +137,7 @@ export function AddGymWorkoutPopup({ onClose, onSuccess }: AddGymWorkoutPopupPro
                         </div>
                         <ul>
                           {info.sets.map((set, idx) => (
-                            <li>
+                            <li key={idx}>
                               Set {idx + 1}: {set.reps} x {set.weight} kg - {set.restTime}'
                             </li>
                           ))}
@@ -149,9 +156,9 @@ export function AddGymWorkoutPopup({ onClose, onSuccess }: AddGymWorkoutPopupPro
                   width="600px"
                 />
               </div>
-              <Button text="Add" onClick={handleOnClick} disabled={disabled} width="100%" height="30px" />
-            </div>
-            {state.error && <p className={styles.error}>{state.error}</p>}
+              <Button text="Add" type="submit" disabled={disabled} width="100%" height="30px" />
+            </form>
+            {state.error && <p className={styles.error}>{error}</p>}
           </>
         }
         onClose={onClose}

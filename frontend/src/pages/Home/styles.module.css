@@ -25,17 +25,16 @@
 }
 
 .athlete a {
-  display: inline-block;
   width: 80%;
   height: auto;
   overflow: hidden;
-  border-radius: 50%;
-  position: relative;
+  border-radius: 20%;
 }
 
 .athlete img {
   width: 100%;
-  height: 100%;
+  height: 140px;
+  border-radius: 20%;
   object-fit: cover;
 }
 

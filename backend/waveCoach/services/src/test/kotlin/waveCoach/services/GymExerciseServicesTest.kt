@@ -1,5 +1,6 @@
 package waveCoach.services
 
+import com.cloudinary.Cloudinary
 import org.jdbi.v3.core.Jdbi
 import org.postgresql.ds.PGSimpleDataSource
 import waveCoach.domain.GymExerciseDomain
@@ -25,7 +26,7 @@ class GymExerciseServicesTest {
         val name = randomString()
         val category = "shoulders"
 
-        when(val result = gymExerciseServices.createGymExercise(name, category)) {
+        when(val result = gymExerciseServices.createGymExercise(name, category, null)) {
             is Failure -> fail("Unexpected $result")
             is Success -> assertTrue { result.value > 1 }
         }
@@ -38,7 +39,7 @@ class GymExerciseServicesTest {
         val name = ""
         val category = "shoulders"
 
-        when(val result = gymExerciseServices.createGymExercise(name, category)) {
+        when(val result = gymExerciseServices.createGymExercise(name, category, null)) {
             is Failure -> assertTrue { result.value is CreateGymExerciseError.InvalidName }
             is Success -> fail("Unexpected $result")
         }
@@ -51,7 +52,7 @@ class GymExerciseServicesTest {
         val name = randomString()
         val category = randomString()
 
-        when(val result = gymExerciseServices.createGymExercise(name, category)) {
+        when(val result = gymExerciseServices.createGymExercise(name, category, null)) {
             is Failure -> assertTrue { result.value is CreateGymExerciseError.InvalidCategory }
             is Success -> fail("Unexpected $result")
         }
@@ -64,7 +65,7 @@ class GymExerciseServicesTest {
         val name = GYM_EXERCISE_NAME
         val category = "chest"
 
-        when(val result = gymExerciseServices.createGymExercise(name, category)) {
+        when(val result = gymExerciseServices.createGymExercise(name, category, null)) {
             is Failure -> assertTrue { result.value is CreateGymExerciseError.NameAlreadyExists }
             is Success -> fail("Unexpected $result")
         }
@@ -186,6 +187,7 @@ class GymExerciseServicesTest {
         private fun createGymExerciseServices() = GymExerciseServices(
             JdbiTransactionManager(jdbi),
             GymExerciseDomain(),
+            CloudinaryServices(cloudinary)
         )
 
         private val jdbi =
@@ -194,6 +196,14 @@ class GymExerciseServicesTest {
                     setURL("jdbc:postgresql://localhost:5432/db?user=dbuser&password=changeit")
                 },
             ).configureWithAppRequirements()
+
+        private val cloudinary = Cloudinary(
+            mapOf(
+                "cloud_name" to "",
+                "api_key" to "",
+                "api_secret" to ""
+            )
+        )
 
     }
 }

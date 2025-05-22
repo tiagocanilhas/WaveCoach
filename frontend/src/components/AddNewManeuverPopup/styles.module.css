@@ -6,12 +6,6 @@
   align-items: center;
 }
 
-.container img {
-  width: 200px;
-  height: 200px;
-  border-radius: 10px;
-}
-
 .error {
   color: red;
   font-size: 14px;

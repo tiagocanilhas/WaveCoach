@@ -129,7 +129,7 @@ export function Home() {
                 ]}
               />
               <Link to={`/athletes/${athlete.uid}`} className={styles.link}>
-                <img src={'/images/anonymous-user.webp'} alt={athlete.name || 'Anonymous'} />
+                <img src={athlete.url || '/images/anonymous-user.webp'} alt={athlete.name || 'Anonymous'} />
               </Link>
               <ScrollableText text={athlete.name} className={styles.name} />
             </div>

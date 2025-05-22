@@ -14,6 +14,7 @@ import { Wave } from '../../types/Wave'
 import styles from './styles.module.css'
 import { TimePicker } from '@mui/x-date-pickers'
 import { CustomTimePicker } from '../CustomTimePicker'
+import { handleError } from '../../utils/handleError'
 
 type State = {
   isOpen: boolean
@@ -130,11 +131,20 @@ export function AddWaterWorkoutPopup({ onClose, onSuccess }: AddWaterWorkoutPopu
     dispatch({ type: 'setTime', time: value })
   }
 
-  async function handleOnClick() {
+  async function handleOnSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+
+    const date = state.date
+    const condition = state.condition
+    const pse = state.pse
+    const time = state.time
+    const heartRate = state.heartRate
+    const waves = state.waves
+
     try {
       // TODO
     } catch (error) {
-      console.error('Error adding workout:', error)
+      dispatch({ type: 'error', error: handleError(error) })
     }
   }
 
@@ -153,7 +163,7 @@ export function AddWaterWorkoutPopup({ onClose, onSuccess }: AddWaterWorkoutPopu
         title="Add Workout"
         content={
           <>
-            <div className={styles.addWorkout}>
+            <form className={styles.addWorkout} onSubmit={handleOnSubmit}>
               <TextField type="date" name="date" value={date} onChange={handleOnChange} />
               <TextField type="text" name="condition" placeholder="Condition" />
               <div className={styles.sliderContainer}>
@@ -207,8 +217,8 @@ export function AddWaterWorkoutPopup({ onClose, onSuccess }: AddWaterWorkoutPopu
                   width="600px"
                 />
               </div>
-              <Button text="Add" onClick={handleOnClick} disabled={disabled} width="100%" height="30px" />
-            </div>
+              <Button text="Add" type="submit" disabled={disabled} width="100%" height="30px" />
+            </form>
             {state.error && <p className={styles.error}>{state.error}</p>}
           </>
         }

@@ -17,14 +17,13 @@ import { GymWorkout } from '../../types/GymWorkout'
 export function GymWorkoutsDetails() {
   const [workout, setWorkout] = useState<GymWorkout>(undefined)
   const gid = useParams().gid
-  
+
   useEffect(() => {
     async function fetchData() {
       try {
         const res = await getGymActivity(gid)
         setWorkout(res)
-      }
-      catch (error) {
+      } catch (error) {
         console.error('Error fetching workout details:', error)
       }
     }
@@ -41,7 +40,7 @@ export function GymWorkoutsDetails() {
           content={
             <div className={styles.exercise}>
               <div className={styles.exerciseInfo}>
-                <img src={`/images/no_image.svg`} alt="Exercise" />
+                <img src={exercise.url || `/images/no_image.svg`} alt="Exercise" />
                 <h3>{exercise.name}</h3>
               </div>
               <ul>

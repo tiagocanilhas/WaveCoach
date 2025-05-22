@@ -20,7 +20,7 @@ class JdbiActivityRepositoryTest {
         testWithHandleAndRollback { handle ->
             val activityRepository = JdbiActivityRepository(handle)
 
-            activityRepository.storeActivity(FIRST_ATHLETE_ID, DATE, TYPE)
+            activityRepository.storeActivity(FIRST_ATHLETE_ID, DATE, MICRO_ID)
 
             val activityList = activityRepository.getAthleteActivityList(FIRST_ATHLETE_ID)
 
@@ -55,7 +55,7 @@ class JdbiActivityRepositoryTest {
 
             gymActivityRepository.removeGymActivities(SECOND_ATHLETE_ID)
 
-            activityRepository.storeActivity(SECOND_ATHLETE_ID, DATE, TYPE)
+            activityRepository.storeActivity(SECOND_ATHLETE_ID, DATE, MICRO_ID)
 
             activityRepository.removeActivities(SECOND_ATHLETE_ID)
 
@@ -80,10 +80,10 @@ class JdbiActivityRepositoryTest {
         }
 
     companion object {
-        private const val DATE = 948758400000 // (15-05-2000)
+        private const val DATE = 1743801600000 // (02-08-2025)
         private const val FIRST_ATHLETE_ID = 3
         private const val SECOND_ATHLETE_ID = 4
         private const val ACTIVITY_ID = 4
-        private const val TYPE = "gym"
+        private const val MICRO_ID = 4
     }
 }

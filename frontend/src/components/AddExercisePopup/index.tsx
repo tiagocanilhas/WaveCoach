@@ -64,7 +64,7 @@ export function AddExercisePopup({ exercise, onAdd, onClose }: AddExercisePopupP
       content={
         <>
           <div className={styles.exercise}>
-            <img src={`/images/no_image.svg`} alt="Exercise" />
+            <img src={exercise.url || `/images/no_image.svg`} alt="Exercise" />
             <h2>{exercise.name}</h2>
           </div>
 
@@ -85,7 +85,7 @@ export function AddExercisePopup({ exercise, onAdd, onClose }: AddExercisePopupP
                     <td>{index + 1}</td>
                     <td>
                       <TextField
-                        value={set.reps}
+                        value={set.reps ?? ''}
                         onChange={e => handleChangeInteger(index, 'reps', e.target.value)}
                         inputMode="numeric"
                         type="number"
@@ -93,19 +93,19 @@ export function AddExercisePopup({ exercise, onAdd, onClose }: AddExercisePopupP
                     </td>
                     <td>
                       <TextField
-                        value={set.weight}
+                        value={set.weight ?? ''}
                         onChange={e => handleChangeFloat(index, 'weight', e.target.value)}
-                        type="number"
                         inputMode="numeric"
+                        type="number"
                         inputProps={{ step: '0.1' }}
                       />
                     </td>
                     <td>
                       <TextField
-                        value={set.restTime}
+                        value={set.restTime ?? ''}
                         onChange={e => handleChangeInteger(index, 'restTime', e.target.value)}
-                        type="number"
                         inputMode="numeric"
+                        type="number"
                       />
                     </td>
                     <td>

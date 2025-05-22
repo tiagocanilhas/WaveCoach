@@ -5,7 +5,7 @@ import waveCoach.domain.AthleteCode
 import waveCoach.domain.CodeValidationInfo
 
 interface AthleteRepository {
-    fun storeAthlete(uid: Int, coachId: Int, name: String, birthDate: Long): Int
+    fun storeAthlete(uid: Int, coachId: Int, name: String, birthDate: Long, url: String?): Int
 
     fun getAthlete(uid: Int): Athlete?
 

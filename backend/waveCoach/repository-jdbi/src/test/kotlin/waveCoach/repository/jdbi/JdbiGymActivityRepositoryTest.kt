@@ -13,7 +13,7 @@ class JdbiGymActivityRepositoryTest {
             val gymActivityRepository = JdbiGymActivityRepository(handle)
             val activityRepository = JdbiActivityRepository(handle)
 
-            val activityId = activityRepository.storeActivity(FIRST_ATHLETE_ID, DATE, TYPE)
+            val activityId = activityRepository.storeActivity(FIRST_ATHLETE_ID, DATE, MICRO_ID)
 
             val gymActivityId = gymActivityRepository.storeGymActivity(activityId)
 
@@ -60,7 +60,7 @@ class JdbiGymActivityRepositoryTest {
             val gymActivityRepository = JdbiGymActivityRepository(handle)
             val activityRepository = JdbiActivityRepository(handle)
 
-            val activityId = activityRepository.storeActivity(FIRST_ATHLETE_ID, DATE, TYPE)
+            val activityId = activityRepository.storeActivity(FIRST_ATHLETE_ID, DATE, MICRO_ID)
 
             val gymActivityId = gymActivityRepository.storeGymActivity(activityId)
 
@@ -114,7 +114,7 @@ class JdbiGymActivityRepositoryTest {
             val gymActivityRepository = JdbiGymActivityRepository(handle)
             val activityRepository = JdbiActivityRepository(handle)
 
-            val activityId = activityRepository.storeActivity(FIRST_ATHLETE_ID, DATE, TYPE)
+            val activityId = activityRepository.storeActivity(FIRST_ATHLETE_ID, DATE, MICRO_ID)
 
             val gymActivityId = gymActivityRepository.storeGymActivity(activityId)
 
@@ -170,7 +170,7 @@ class JdbiGymActivityRepositoryTest {
         testWithHandleAndRollback { handle ->
             val gymActivityRepository = JdbiGymActivityRepository(handle)
 
-            val gymExerciseId = gymActivityRepository.storeGymExercise("abc", "Chest")
+            val gymExerciseId = gymActivityRepository.storeGymExercise("abc", "chest", null)
 
             val gymExercise = gymActivityRepository.getGymExerciseByName("abc")
 
@@ -238,12 +238,12 @@ class JdbiGymActivityRepositoryTest {
         }
 
     companion object {
-        private const val DATE = 948758400000 // (15-05-2000)
+        private const val DATE = 1743801600000 // (02-08-2025)
+        private const val MICRO_ID = 4
         private const val FIRST_ATHLETE_ID = 3
         private const val SECOND_ATHLETE_ID = 4
         private const val THIRD_ATHLETE_ID = 5
         private const val GYM_EXERCISE_ID = 3
-        private const val TYPE = "gym"
         private const val FIRST_GYM_ACTIVITY_ID = 1
         private const val FIRST_EXERCISE_ID = 1
         private const val SECOND_GYM_ACTIVITY_ID = 2

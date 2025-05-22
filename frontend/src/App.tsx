@@ -16,6 +16,7 @@ import { Characteristics } from './pages/Characteristics'
 import { GymWorkouts } from './pages/GymWorkouts'
 import { GymWorkoutsDetails } from './pages/GymWorkoutsDetails'
 import { WaterWorkouts } from './pages/WaterWorkouts'
+import { WaterWorkoutsDetails } from './pages/WaterWorkoutsDetails'
 
 import { Login } from './pages/Login'
 import { RegisterSelect } from './pages/RegisterSelect'
@@ -45,6 +46,10 @@ const router = createBrowserRouter([
           { path: 'athletes/:aid/characteristics', element: <Title title="Characteristics" content={<Characteristics />} /> },
           { path: 'athletes/:aid/gym/:gid', element: <Title title="Gym Workouts Details" content={<GymWorkoutsDetails />} /> },
           { path: 'athletes/:aid/gym', element: <Title title="Gym" content={<GymWorkouts />} /> },
+          {
+            path: 'athletes/:aid/water/:wid',
+            element: <Title title="Water Workouts Details" content={<WaterWorkoutsDetails />} />,
+          },
           { path: 'athletes/:aid/water', element: <Title title="Water" content={<WaterWorkouts />} /> },
         ],
       },

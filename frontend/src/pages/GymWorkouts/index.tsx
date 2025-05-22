@@ -61,7 +61,11 @@ export function GymWorkouts() {
         const activities = res.mesocycles.flatMap(mesocycle => mesocycle.microcycles).flatMap(microcycle => microcycle.activities)
         dispatch({ type: 'setActivities', payload: activities })
 
-        if (activities.length === 0) return
+        if (activities.length === 0) {
+          dispatch({ type: 'setLastWorkout', payload: null })
+          return
+        }
+
         fetchLastWorkout(activities[activities.length - 1].id)
       } catch (error) {
         console.error('Error fetching data:', error)
@@ -91,15 +95,17 @@ export function GymWorkouts() {
           <>
             {state.workout === undefined ? (
               <CircularProgress />
+            ) : state.workout === null || state.workout.exercises.length === 0 ? (
+              <p>Data not available</p>
             ) : (
               state.workout.exercises.map(exercise => (
-                <div className={styles.lastWorkoutExercise}>
-                  <img src={`/images/no_image.svg`} alt="Exercise" />
+                <div className={styles.lastWorkoutExercise} key={exercise.id}>
+                  <img src={exercise.url || `/images/no_image.svg`} alt="Exercise" />
                   <div className={styles.lastWorkoutExerciseContent}>
                     <h2>{exercise.name}</h2>
                     <ul>
                       {exercise.sets.map((set, idx) => (
-                        <li>
+                        <li key={set.id}>
                           Set {idx + 1}: {set.reps} x {set.weight} kg - {set.restTime}'
                         </li>
                       ))}

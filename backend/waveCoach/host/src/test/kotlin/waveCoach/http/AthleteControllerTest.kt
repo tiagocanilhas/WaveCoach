@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.http.MediaType
+import org.springframework.http.client.MultipartBodyBuilder
 import org.springframework.test.web.reactive.server.WebTestClient
 import waveCoach.host.WaveCoachApplication
 import waveCoach.http.model.output.Problem
@@ -27,15 +28,19 @@ class AthleteControllerTest {
     fun `create an athlete - success`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val body =
+        val input =
             mapOf(
                 "name" to randomString(),
                 "birthDate" to VALID_DATE,
             )
 
+        val body = MultipartBodyBuilder().apply {
+            part("input", input)
+        }.build()
+
         client.post().uri("/athletes")
             .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
-            .contentType(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.MULTIPART_FORM_DATA)
             .bodyValue(body)
             .exchange()
             .expectStatus().isCreated
@@ -49,14 +54,18 @@ class AthleteControllerTest {
     fun `create an athlete - unauthorized`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val body =
+        val input =
             mapOf(
                 "name" to randomString(),
                 "birthDate" to VALID_DATE,
             )
 
+        val body = MultipartBodyBuilder().apply {
+            part("input", input)
+        }.build()
+
         client.post().uri("/athletes")
-            .contentType(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.MULTIPART_FORM_DATA)
             .bodyValue(body)
             .exchange()
             .expectStatus().isUnauthorized
@@ -66,15 +75,19 @@ class AthleteControllerTest {
     fun `create an athlete - invalid birth date`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val body =
+        val input =
             mapOf(
                 "name" to randomString(),
                 "birthDate" to INVALID_DATE,
             )
 
+        val body = MultipartBodyBuilder().apply {
+            part("input", input)
+        }.build()
+
         client.post().uri("/athletes")
             .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
-            .contentType(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.MULTIPART_FORM_DATA)
             .bodyValue(body)
             .exchange()
             .expectStatus().isBadRequest
@@ -94,15 +107,19 @@ class AthleteControllerTest {
             )
 
         invalidNames.forEach { name ->
-            val body =
+            val input =
                 mapOf(
                     "name" to name,
                     "birthDate" to VALID_DATE,
                 )
 
+            val body = MultipartBodyBuilder().apply {
+                part("input", input)
+            }.build()
+
             client.post().uri("/athletes")
                 .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
-                .contentType(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.MULTIPART_FORM_DATA)
                 .bodyValue(body)
                 .exchange()
                 .expectStatus().isBadRequest
@@ -116,15 +133,19 @@ class AthleteControllerTest {
     fun `create an athlete - user is not coach`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val body =
+        val input =
             mapOf(
                 "name" to randomString(),
                 "birthDate" to VALID_DATE,
             )
 
+        val body = MultipartBodyBuilder().apply {
+            part("input", input)
+        }.build()
+
         client.post().uri("/athletes")
             .header("Authorization", "Bearer $FIRST_ATHLETE_TOKEN")
-            .contentType(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.MULTIPART_FORM_DATA)
             .bodyValue(body)
             .exchange()
             .expectStatus().isForbidden

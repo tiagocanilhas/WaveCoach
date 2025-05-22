@@ -183,7 +183,7 @@ export function Athlete() {
                       ]}
                     />
                   )}
-                  <img src={'/images/anonymous-user.webp'} alt={athlete.name || 'Anonymous'} />
+                  <img src={athlete.url || '/images/anonymous-user.webp'} alt={athlete.name || 'Anonymous'} />
                   <h2>{athlete.name}</h2>
                   <p className={styles.age}>{epochConverterToAge(athlete.birthDate)} years</p>
                 </div>

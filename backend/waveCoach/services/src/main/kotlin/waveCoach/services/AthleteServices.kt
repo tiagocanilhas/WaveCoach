@@ -3,6 +3,7 @@ package waveCoach.services
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import org.springframework.stereotype.Component
+import org.springframework.web.multipart.MultipartFile
 import waveCoach.domain.Activity
 import waveCoach.domain.ActivityDomain
 import waveCoach.domain.Athlete
@@ -43,6 +44,8 @@ sealed class CreateAthleteError {
     data object InvalidBirthDate : CreateAthleteError()
 
     data object InvalidName : CreateAthleteError()
+
+    data object InvalidPhoto : CreateAthleteError()
 }
 typealias CreateAthleteResult = Either<CreateAthleteError, Int>
 
@@ -185,12 +188,14 @@ class AthleteServices(
     private val characteristicsDomain: CharacteristicsDomain,
     private val userDomain: UserDomain,
     private val activityDomain: ActivityDomain,
+    private val cloudinaryServices: CloudinaryServices,
     private val clock: Clock,
 ) {
     fun createAthlete(
         name: String,
         coachId: Int,
         birthDate: String,
+        photo: MultipartFile?
     ): CreateAthleteResult {
         val username = athleteDomain.createAthleteUsername()
         val passwordValidationInfo =
@@ -199,12 +204,17 @@ class AthleteServices(
         if (!athleteDomain.isNameValid(name)) return failure(CreateAthleteError.InvalidName)
         val date = dateToLong(birthDate) ?: return failure(CreateAthleteError.InvalidBirthDate)
 
+        val url = photo?.let {
+            cloudinaryServices.uploadAthleteImage(it)
+                ?: return failure(CreateAthleteError.InvalidPhoto)
+        }
+
         return transactionManager.run {
             val userRepository = it.userRepository
             val athleteRepository = it.athleteRepository
 
             val aid = userRepository.storeUser(username, passwordValidationInfo)
-            athleteRepository.storeAthlete(aid, coachId, name, date)
+            athleteRepository.storeAthlete(aid, coachId, name, date, url)
             success(aid)
         }
     }

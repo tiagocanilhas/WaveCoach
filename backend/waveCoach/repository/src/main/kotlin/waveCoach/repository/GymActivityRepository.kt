@@ -30,7 +30,7 @@ interface GymActivityRepository {
 
     fun removeSetsByActivity(activityId: Int)
 
-    fun storeGymExercise(name: String, category: String): Int
+    fun storeGymExercise(name: String, category: String, url: String?): Int
 
     fun getGymExerciseByName(name: String): GymExercise?
 

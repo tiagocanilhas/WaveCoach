@@ -15,17 +15,19 @@ class JdbiAthleteRepository(
         coachId: Int,
         name: String,
         birthDate: Long,
+        url: String?,
     ): Int =
         handle.createUpdate(
             """
-            insert into waveCoach.athlete (uid, coach, name, birth_date) 
-            values (:uid, :coach, :name, :birth_date)
+            insert into waveCoach.athlete (uid, coach, name, birth_date, url)
+            values (:uid, :coach, :name, :birth_date, :url)
             """.trimIndent(),
         )
             .bind("uid", uid)
             .bind("coach", coachId)
             .bind("name", name)
             .bind("birth_date", birthDate)
+            .bind("url", url)
             .executeAndReturnGeneratedKeys()
             .mapTo<Int>()
             .one()
@@ -93,13 +95,14 @@ class JdbiAthleteRepository(
         val name: String,
         val birthDate: Long,
         val credentialsChanged: Boolean,
+        val url: String?,
         val username: String,
         val createdTime: Long,
     ) {
         val athleteUsernameAndCreatedTime: Triple<Athlete, String, Long>
             get() =
                 Triple(
-                    Athlete(uid, coach, name, birthDate, credentialsChanged),
+                    Athlete(uid, coach, name, birthDate, credentialsChanged, url),
                     username,
                     createdTime,
                 )

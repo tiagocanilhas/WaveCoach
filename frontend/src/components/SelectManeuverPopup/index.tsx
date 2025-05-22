@@ -4,14 +4,16 @@ import { useEffect, useReducer } from 'react'
 import { CircularProgress, TextField } from '@mui/material'
 import { Popup } from '../Popup'
 
+import { AddNewManeuver } from '../AddNewManeuverPopup'
+import { AddManeuverPopup } from '../AddManeuverPopup'
+import { ScrollableText } from '../ScrollableText'
+import { ObjectList } from '../ObjectList'
+
 import { getWaterManeuvers } from '../../services/waterManeuverServices'
 
 import { Maneuver } from '../../types/Maneuver'
-import { ObjectList } from '../ObjectList'
 
 import styles from './styles.module.css'
-import { AddNewManeuver } from '../AddNewManeuverPopup'
-import { AddManeuverPopup } from '../AddManeuverPopup'
 
 type ViewTag = { tag: 'loading' } | { tag: 'choosing' } | { tag: 'creating' } | { tag: 'adding'; maneuver: Maneuver }
 
@@ -105,8 +107,9 @@ export function SelectManeuverPopup({ onAdd, onClose }: SelectManeuverPopupProps
                   getKey={item => item.id}
                   onItemClick={handleOnSelect}
                   renderItem={item => (
-                    <div>
-                      <h3>{item.name}</h3>
+                    <div className={styles.maneuver}>
+                      <img src={item.url || `/images/no_image.svg`} alt="Exercise" />
+                      <ScrollableText text={item.name} className={styles.maneuverName} />
                     </div>
                   )}
                   onAdd={handleOnAdd}

@@ -9,3 +9,21 @@
   height: 70vh;
   overflow-y: auto;
 }
+
+.maneuver {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+}
+
+.maneuver img {
+  width: 83%;
+  margin-bottom: 10px;
+  border-radius: 10px;
+}
+
+.maneuverName {
+  font-size: 18px;
+  font-weight: bold;
+}

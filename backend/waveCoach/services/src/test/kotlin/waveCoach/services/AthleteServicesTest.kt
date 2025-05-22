@@ -1,5 +1,6 @@
 package waveCoach.services
 
+import com.cloudinary.Cloudinary
 import org.jdbi.v3.core.Jdbi
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.postgresql.ds.PGSimpleDataSource
@@ -29,7 +30,7 @@ class AthleteServicesTest {
 
         val name = randomString()
 
-        when (val result = athleteServices.createAthlete(name, FIRST_COACH_ID, VALID_DATE)) {
+        when (val result = athleteServices.createAthlete(name, FIRST_COACH_ID, VALID_DATE, null)) {
             is Failure -> fail("Unexpected $result")
             is Success -> assertTrue(result.value > 1)
         }
@@ -47,7 +48,7 @@ class AthleteServicesTest {
             )
 
         invalidNames.forEach { name ->
-            when (val result = athleteServices.createAthlete(name, FIRST_COACH_ID, VALID_DATE)) {
+            when (val result = athleteServices.createAthlete(name, FIRST_COACH_ID, VALID_DATE, null)) {
                 is Failure -> assertTrue(result.value is CreateAthleteError.InvalidName)
                 is Success -> fail("Unexpected $result")
             }
@@ -68,7 +69,7 @@ class AthleteServicesTest {
             )
 
         invalidBirthDays.forEach { birthDate ->
-            when (val result = athleteServices.createAthlete(name, FIRST_COACH_ID, birthDate)) {
+            when (val result = athleteServices.createAthlete(name, FIRST_COACH_ID, birthDate, null)) {
                 is Failure -> assertTrue(result.value is CreateAthleteError.InvalidBirthDate)
                 is Success -> fail("Unexpected $result")
             }
@@ -1151,7 +1152,8 @@ class AthleteServicesTest {
                 ),
             ),
             ActivityDomain(),
-            testClock,
+            CloudinaryServices(cloudinary),
+            testClock
         )
 
         private val jdbi =
@@ -1160,5 +1162,13 @@ class AthleteServicesTest {
                     setURL("jdbc:postgresql://localhost:5432/db?user=dbuser&password=changeit")
                 },
             ).configureWithAppRequirements()
+
+        private val cloudinary = Cloudinary(
+            mapOf(
+                "cloud_name" to "",
+                "api_key" to "",
+                "api_secret" to ""
+            )
+        )
     }
 }

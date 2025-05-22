@@ -61,7 +61,7 @@ class JdbiGymActivityRepository(
     override fun getExercises(activityId: Int): List<Exercise> =
         handle.createQuery(
             """
-            select e.id, e.activity, ge.name, e.exercise_order
+            select e.id, e.activity, ge.name, e.exercise_order, ge.url
             from waveCoach.exercise e
             join waveCoach.gym_exercise ge on e.exercise = ge.id
             where e.activity = :activityId
@@ -148,10 +148,13 @@ class JdbiGymActivityRepository(
             .execute()
     }
 
-    override fun storeGymExercise(name: String, category: String): Int =
-        handle.createUpdate("insert into waveCoach . gym_exercise (name, category) values (:name, :category)")
+    override fun storeGymExercise(name: String, category: String, url: String?): Int =
+        handle.createUpdate("""
+            insert into waveCoach.gym_exercise (name, category, url) values (:name, :category, :url)
+        """.trimIndent())
             .bind("name", name)
             .bind("category", category)
+            .bind("url", url)
             .executeAndReturnGeneratedKeys()
             .mapTo<Int>()
             .one()

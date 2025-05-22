@@ -7,7 +7,9 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.multipart.MultipartFile
 import waveCoach.domain.AuthenticatedCoach
 import waveCoach.domain.AuthenticatedUser
 import waveCoach.http.model.input.CreateGymExerciseInputModel
@@ -25,13 +27,13 @@ import waveCoach.utils.Success
 class GymExerciseController(
     private val gymExerciseServices: GymExerciseServices,
 ) {
-
     @PostMapping(Uris.GymExercise.CREATE)
     fun create(
         coach: AuthenticatedCoach,
-        @RequestBody input: CreateGymExerciseInputModel,
+        @RequestPart("input") input: CreateGymExerciseInputModel,
+        @RequestPart("photo") photo: MultipartFile?
     ): ResponseEntity<*> {
-        val result = gymExerciseServices.createGymExercise(input.name, input.category)
+        val result = gymExerciseServices.createGymExercise(input.name, input.category, photo)
 
         return when (result) {
             is Success ->
@@ -45,6 +47,7 @@ class GymExerciseController(
                     CreateGymExerciseError.InvalidName -> Problem.response(400, Problem.invalidName)
                     CreateGymExerciseError.InvalidCategory -> Problem.response(400, Problem.invalidCategory)
                     CreateGymExerciseError.NameAlreadyExists -> Problem.response(400, Problem.nameAlreadyExists)
+                    CreateGymExerciseError.InvalidPhoto -> Problem.response(400, Problem.invalidPhoto)
                 }
         }
     }
@@ -64,6 +67,7 @@ class GymExerciseController(
                             it.id,
                             it.name,
                             it.category.toString(),
+                            it.url,
                         )
                     }
                 )

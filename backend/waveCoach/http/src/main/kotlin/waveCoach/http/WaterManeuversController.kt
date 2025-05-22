@@ -7,7 +7,9 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.multipart.MultipartFile
 import waveCoach.domain.AuthenticatedCoach
 import waveCoach.domain.AuthenticatedUser
 import waveCoach.http.model.input.WaterManeuverCreateInputModel
@@ -27,9 +29,10 @@ class WaterManeuversController(
     @PostMapping(Uris.WaterManeuver.CREATE)
     fun create(
         coach: AuthenticatedCoach,
-        @RequestBody input: WaterManeuverCreateInputModel
+        @RequestPart("input") input: WaterManeuverCreateInputModel,
+        @RequestPart("photo") photo: MultipartFile?
     ): ResponseEntity<*>{
-        val result = services.createWaterManeuver(input.name)
+        val result = services.createWaterManeuver(input.name, photo)
 
         return when (result){
             is Success ->
@@ -42,6 +45,7 @@ class WaterManeuversController(
                 when (result.value) {
                     CreateWaterManeuverError.InvalidName -> Problem.response(400, Problem.invalidName)
                     CreateWaterManeuverError.NameAlreadyExists -> Problem.response(400, Problem.nameAlreadyExists)
+                    CreateWaterManeuverError.InvalidPhoto -> Problem.response(400, Problem.invalidPhoto)
                 }
         }
     }
@@ -59,7 +63,8 @@ class WaterManeuversController(
                     result.map {
                         WaterManeuverOutputModel(
                             it.id,
-                            it.name
+                            it.name,
+                            it.url
                         )
                     }
                 )

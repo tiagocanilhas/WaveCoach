@@ -60,17 +60,23 @@ export function AddManeuverPopup({ maneuver, onAdd, onClose }: AddManeuverPopupP
       title="Add Maneuver"
       content={
         <div className={styles.container}>
-          <h2>{maneuver.name}</h2>
+          <div className={styles.maneuver}>
+            <img src={maneuver.url || '/images/no_image.svg'} alt="Exercise" />
+            <h2>{maneuver.name}</h2>
+          </div>
+
           <div className={styles.side}>
             Left
             <Switch checked={isRight} onChange={toggleSide} />
             Right
           </div>
+
           <div className={styles.success}>
             Failed
             <Switch checked={success} onChange={toggleSuccess} />
             Success
           </div>
+
           <Button text="Add" disabled={disabled} onClick={handleAddExercise} width="100%" height="30px" />
         </div>
       }

@@ -62,6 +62,8 @@ object Uris {
         const val UPDATE = "$WATER_ACTIVITY/{activityId}"
         const val REMOVE = "$WATER_ACTIVITY/{activityId}"
 
+        const val GET_QUESTIONNAIRE = "$WATER_ACTIVITY/{activityId}/questionnaire"
+
         fun byId(id: Int): URI = UriTemplate(GET_BY_ID).expand(id)
     }
 
@@ -96,10 +98,10 @@ object Uris {
         const val UPDATE_CHARACTERISTICS = "$ATHLETES/{aid}/characteristics/{date}"
         const val REMOVE_CHARACTERISTICS = "$ATHLETES/{aid}/characteristics/{date}"
 
-        const val CREATE_WATER_ACTIVITY = "$ATHLETES/{aid}/water"
-
         const val CREATE_CALENDAR = "$ATHLETES/{aid}/calendar"
         const val GET_CALENDAR = "$ATHLETES/{aid}/calendar"
+
+        const val GET_WATER_ACTIVITIES = "$ATHLETES/{aid}/water"
 
         fun byId(id: Int): URI = UriTemplate(GET_BY_ID).expand(id)
 

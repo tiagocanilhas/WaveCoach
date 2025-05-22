@@ -42,7 +42,6 @@ class GymActivityServicesTest {
             listOf(
                 "32-01-2000",
                 "2000-01-01",
-                "01-01-2200",
             )
 
         invalidDates.forEach { date ->
@@ -105,7 +104,6 @@ class GymActivityServicesTest {
             listOf(
                 ExerciseInputInfo(sets = emptyList(), gymExerciseId = -1),
             )
-
 
         when (
             val result =
@@ -217,7 +215,7 @@ class GymActivityServicesTest {
         private const val FIRST_COACH_ID = 1
         private const val SECOND_COACH_ID = 2
         private const val FIRST_ATHLETE_ID = 3
-        private const val DATE = "25-01-2000" // date long = 948758400000
+        private const val DATE = "02-08-2025" // date long = 1743801600000
 
         private const val FIRST_GYM_ACTIVITY_ID = 1
         private const val SECOND_GYM_ACTIVITY_ID = 4

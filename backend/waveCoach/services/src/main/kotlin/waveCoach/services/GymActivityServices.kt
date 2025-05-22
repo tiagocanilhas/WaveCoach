@@ -145,7 +145,7 @@ class GymActivityServices(
 
             val exercisesWithSets = exercises.map { exercise ->
                 val sets = gymActivityRepository.getSets(exercise.id)
-                ExerciseWithSets(exercise.id, exercise.activity, exercise.name, exercise.exerciseOrder, sets)
+                ExerciseWithSets(exercise.id, exercise.activity, exercise.name, exercise.exerciseOrder, exercise.url, sets)
             }
 
             success(ActivityWithExercises(activity.id, activity.uid, activity.date, activity.type, exercisesWithSets))

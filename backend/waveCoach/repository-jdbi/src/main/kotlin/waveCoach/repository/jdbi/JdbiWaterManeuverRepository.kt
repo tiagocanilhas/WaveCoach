@@ -8,9 +8,13 @@ import waveCoach.repository.WaterManeuverRepository
 class JdbiWaterManeuverRepository (
     private val handle: Handle
 ): WaterManeuverRepository {
-    override fun storeWaterManeuver(name: String): Int =
-        handle.createUpdate("insert into waveCoach.water_maneuver (name) values (:name)")
+    override fun storeWaterManeuver(
+        name: String,
+        url: String?
+    ): Int =
+        handle.createUpdate("insert into waveCoach.water_maneuver (name, url) values (:name, :url)")
             .bind("name", name)
+            .bind("url", url)
             .executeAndReturnGeneratedKeys()
             .mapTo<Int>()
             .one()

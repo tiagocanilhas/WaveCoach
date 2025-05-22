@@ -4,7 +4,7 @@ import waveCoach.domain.WaterManeuver
 
 interface WaterManeuverRepository {
 
-    fun storeWaterManeuver(name: String): Int
+    fun storeWaterManeuver(name: String, url: String?): Int
 
     fun getWaterManeuverByName(name: String): WaterManeuver?
 

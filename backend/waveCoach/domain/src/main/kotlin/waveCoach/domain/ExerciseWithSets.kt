@@ -5,5 +5,6 @@ data class ExerciseWithSets(
     val activity: Int,
     val gymExercise: String,
     val exerciseOrder: Int,
+    val url: String?,
     val sets: List<Sets>,
 )

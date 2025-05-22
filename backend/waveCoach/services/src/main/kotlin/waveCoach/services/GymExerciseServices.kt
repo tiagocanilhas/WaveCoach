@@ -1,6 +1,7 @@
 package waveCoach.services
 
 import org.springframework.stereotype.Component
+import org.springframework.web.multipart.MultipartFile
 import waveCoach.domain.GymExercise
 import waveCoach.domain.GymExerciseDomain
 import waveCoach.repository.TransactionManager
@@ -14,6 +15,8 @@ sealed class CreateGymExerciseError {
     data object InvalidName : CreateGymExerciseError()
 
     data object NameAlreadyExists : CreateGymExerciseError()
+
+    data object InvalidPhoto : CreateGymExerciseError()
 }
 typealias CreateGymExerciseResult = Either<CreateGymExerciseError, Int>
 
@@ -37,10 +40,12 @@ typealias RemoveGymExerciseResult = Either<RemoveGymExerciseError, Int>
 class GymExerciseServices(
     private val transactionManager: TransactionManager,
     private val gymExerciseDomain: GymExerciseDomain,
+    private val cloudinaryServices: CloudinaryServices
 ) {
     fun createGymExercise(
         name: String,
         category: String,
+        photo: MultipartFile?
     ): CreateGymExerciseResult {
         if (!gymExerciseDomain.isCategoryValid(category)) return failure(CreateGymExerciseError.InvalidCategory)
 
@@ -52,10 +57,12 @@ class GymExerciseServices(
             if (gymActivityRepository.getGymExerciseByName(name) != null)
                 return@run failure(CreateGymExerciseError.NameAlreadyExists)
 
+            val url = photo?.let { file ->
+                cloudinaryServices.uploadExerciseImage(file)
+                    ?: return@run failure(CreateGymExerciseError.InvalidPhoto)
+            }
 
-            val exerciseId = gymActivityRepository.storeGymExercise(name, category)
-
-            success(exerciseId)
+            success(gymActivityRepository.storeGymExercise(name, category, url))
         }
     }
 

@@ -4,4 +4,5 @@ export type Athlete = {
   name: string
   birthDate: number
   credentialsChanged: boolean
+  url?: string
 }

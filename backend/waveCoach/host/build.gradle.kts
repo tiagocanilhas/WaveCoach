@@ -38,6 +38,9 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-starter-webflux")
     testImplementation(kotlin("test"))
+
+    // Cloudinary
+    implementation("com.cloudinary:cloudinary-http44:1.32.0")
 }
 
 tasks.test {

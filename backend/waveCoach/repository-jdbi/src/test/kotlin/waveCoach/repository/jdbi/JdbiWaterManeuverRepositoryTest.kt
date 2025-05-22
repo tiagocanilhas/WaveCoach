@@ -16,7 +16,7 @@ class JdbiWaterManeuverRepositoryTest {
 
             val name = "Water Maneuver"
 
-            waterManeuversRepository.storeWaterManeuver(name)
+            waterManeuversRepository.storeWaterManeuver(name, null)
             val maneuver = waterManeuversRepository.getWaterManeuverByName(name)!!
 
             assertEquals(maneuver.name, name)

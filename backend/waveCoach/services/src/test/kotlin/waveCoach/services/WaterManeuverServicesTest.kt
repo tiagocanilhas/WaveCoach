@@ -1,5 +1,6 @@
 package waveCoach.services
 
+import com.cloudinary.Cloudinary
 import org.jdbi.v3.core.Jdbi
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail
@@ -25,7 +26,7 @@ class WaterManeuverServicesTest {
 
         val name = randomString()
 
-        when(val result = waterManeuversServices.createWaterManeuver(name)) {
+        when(val result = waterManeuversServices.createWaterManeuver(name, null)) {
             is Failure -> fail("Unexpected $result")
             is Success -> assertTrue(result.value > 0)
         }
@@ -37,7 +38,7 @@ class WaterManeuverServicesTest {
 
         val name = ""
 
-        when(val result = waterManeuversServices.createWaterManeuver(name)) {
+        when(val result = waterManeuversServices.createWaterManeuver(name, null)) {
             is Failure -> assertTrue(result.value is CreateWaterManeuverError.InvalidName)
             is Success -> fail("Unexpected $result")
         }
@@ -49,12 +50,12 @@ class WaterManeuverServicesTest {
 
         val name = randomString()
 
-        when(val result = waterManeuversServices.createWaterManeuver(name)) {
+        when(val result = waterManeuversServices.createWaterManeuver(name, null)) {
             is Failure -> fail("Unexpected $result")
             is Success -> assertTrue(result.value > 0)
         }
 
-        when(val result = waterManeuversServices.createWaterManeuver(name)) {
+        when(val result = waterManeuversServices.createWaterManeuver(name, null)) {
             is Failure -> assertTrue(result.value is CreateWaterManeuverError.NameAlreadyExists)
             is Success -> fail("Unexpected $result")
         }
@@ -82,6 +83,7 @@ class WaterManeuverServicesTest {
         private fun createWaterManeuverServices() = WaterManeuverServices (
             JdbiTransactionManager(jdbi),
             WaterManeuverDomain(),
+            CloudinaryServices(cloudinary),
         )
 
         private val jdbi =
@@ -90,6 +92,14 @@ class WaterManeuverServicesTest {
                     setURL("jdbc:postgresql://localhost:5432/db?user=dbuser&password=changeit")
                 },
             ).configureWithAppRequirements()
+
+        private val cloudinary = Cloudinary(
+            mapOf(
+                "cloud_name" to "",
+                "api_key" to "",
+                "api_secret" to ""
+            )
+        )
 
     }
 }

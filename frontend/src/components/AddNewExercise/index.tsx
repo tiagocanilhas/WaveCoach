@@ -9,22 +9,57 @@ import { handleError } from '../../utils/handleError'
 import { createGymExercise } from '../../services/gymExerciseServices'
 
 import styles from './styles.module.css'
+import { ImageSelector } from '../ImageSelector'
+import { useReducer } from 'react'
 
-type State = {
-  name: string
-  error?: string
-}
+type State =
+  | { tag: 'editing'; inputs: { name: string }; image: File; error?: string }
+  | { tag: 'submitting'; name: string; image: File | null }
+  | { tag: 'submitted' }
 
-type Action = { type: 'setName'; name: string } | { type: 'setError'; error: string }
+type Action =
+  | { type: 'edit'; name: string; value: string }
+  | { type: 'setImage'; file: File }
+  | { type: 'submit' }
+  | { type: 'error'; error: string }
+  | { type: 'success' }
 
 function reducer(state: State, action: Action): State {
-  switch (action.type) {
-    case 'setName':
-      return { name: action.name, error: undefined }
-    case 'setError':
-      return { ...state, error: action.error }
-    default:
-      return state
+  switch (state.tag) {
+    case 'editing':
+      switch (action.type) {
+        case 'edit':
+          return { ...state, inputs: { ...state.inputs, [action.name]: action.value }, error: undefined }
+        case 'setImage':
+          return { ...state, image: action.file }
+        case 'submit':
+          return { tag: 'submitting', name: state.inputs.name, image: state.image }
+        default:
+          return state
+      }
+
+    case 'submitting':
+      switch (action.type) {
+        case 'error':
+          return {
+            tag: 'editing',
+            error: action.error,
+            inputs: { name: state.name },
+            image: state.image,
+          }
+        case 'success':
+          return { tag: 'submitted' }
+        default:
+          return state
+      }
+
+    case 'submitted':
+      return {
+        tag: 'editing',
+        inputs: { name: '' },
+        image: null,
+        error: undefined,
+      }
   }
 }
 
@@ -34,23 +69,36 @@ type AddNewExerciseProps = {
 }
 
 export function AddNewExercise({ category, onClose }: AddNewExerciseProps) {
-  const [state, dispatch] = React.useReducer(reducer, { name: '', error: undefined })
+  const initialState: State = { tag: 'editing', inputs: { name: '' }, image: null, error: undefined }
+  const [state, dispatch] = useReducer(reducer, initialState)
 
   function handleOnChange(event: React.ChangeEvent<HTMLInputElement>) {
-    dispatch({ type: 'setName', name: event.target.value })
+    dispatch({ type: 'edit', name: event.target.name, value: event.target.value })
   }
 
-  async function handleAddNewExercise() {
-    const name = state.name.trim()
+  function handleImageSelect(file: File) {
+    dispatch({ type: 'setImage', file })
+  }
+
+  async function handleOnSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    if (state.tag !== 'editing') return
+
+    const name = state.inputs.name
+    const file = state.image
+
+    dispatch({ type: 'submit' })
+
     try {
-      await createGymExercise(name, category)
+      await createGymExercise(name, category, file)
       onClose()
     } catch (error) {
-      dispatch({ type: 'setError', error: handleError(error) })
+      dispatch({ type: 'error', error: handleError(error) })
     }
   }
 
-  const exerciseName = state.name
+  const exerciseName = state.tag === 'editing' ? state.inputs.name : ''
+  const error = state.tag === 'editing' ? state.error : undefined
   const disabled = exerciseName.length === 0
 
   return (
@@ -58,12 +106,14 @@ export function AddNewExercise({ category, onClose }: AddNewExerciseProps) {
       title={`Add New ${category.charAt(0).toUpperCase() + category.slice(1)} Exercise`}
       content={
         <>
-          <div className={styles.container}>
-            <img src={`/images/no_image.svg`} alt="Exercise" />
-            <TextField label="Exercise Name" name="name" value={exerciseName} onChange={handleOnChange} />
-          </div>
-          <Button text="Add" disabled={disabled} onClick={handleAddNewExercise} width="100%" height="30px" />
-          {state.error && <p className={styles.error}>{state.error}</p>}
+          <form onSubmit={handleOnSubmit}>
+            <div className={styles.container}>
+              <ImageSelector defaultImage="/images/no_image.svg" onImageSelect={handleImageSelect} />
+              <TextField label="Exercise Name" name="name" value={exerciseName} onChange={handleOnChange} />
+            </div>
+            <Button text="Add" type="submit" disabled={disabled} width="100%" height="30px" />
+          </form>
+          {error && <p className={styles.error}>{error}</p>}
         </>
       }
       onClose={onClose}

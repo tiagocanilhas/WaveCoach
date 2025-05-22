@@ -1,5 +1,6 @@
 package waveCoach.http
 
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import waveCoach.domain.AuthenticatedCoach
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
 import waveCoach.domain.AuthenticatedUser
 import waveCoach.http.model.input.*
 import waveCoach.http.model.output.*
@@ -22,12 +24,13 @@ import waveCoach.utils.Success
 class AthleteController(
     private val athleteServices: AthleteServices,
 ) {
-    @PostMapping(Uris.Athletes.CREATE)
+    @PostMapping(Uris.Athletes.CREATE, consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun create(
         coach: AuthenticatedCoach,
-        @RequestBody input: AthleteCreateInputModel,
+        @RequestPart("input") input: AthleteCreateInputModel,
+        @RequestPart("photo") photo: MultipartFile?
     ): ResponseEntity<*> {
-        val result = athleteServices.createAthlete(input.name, coach.info.id, input.birthDate)
+        val result = athleteServices.createAthlete(input.name, coach.info.id, input.birthDate, photo)
 
         return when (result) {
             is Success ->
@@ -40,6 +43,7 @@ class AthleteController(
                 when (result.value) {
                     CreateAthleteError.InvalidBirthDate -> Problem.response(400, Problem.invalidBirthDate)
                     CreateAthleteError.InvalidName -> Problem.response(400, Problem.invalidName)
+                    CreateAthleteError.InvalidPhoto -> Problem.response(400, Problem.invalidPhoto)
                 }
         }
     }
@@ -63,6 +67,7 @@ class AthleteController(
                             result.value.name,
                             result.value.birthDate,
                             result.value.credentialsChanged,
+                            result.value.url,
                         ),
                     )
 
@@ -89,6 +94,7 @@ class AthleteController(
                             it.name,
                             it.birthDate,
                             it.credentialsChanged,
+                            it.url,
                         )
                     },
                 ),

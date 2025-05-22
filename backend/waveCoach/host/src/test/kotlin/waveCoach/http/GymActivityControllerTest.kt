@@ -426,9 +426,7 @@ class GymActivityControllerTest {
             .expectStatus().isOk
             .expectBody()
             .jsonPath("id").isEqualTo(FIRST_GYM_ACTIVITY_ID)
-            .jsonPath("uid").isEqualTo(FIRST_ATHLETE_ID)
             .jsonPath("date").isEqualTo(FIRST_GYM_ACTIVITY_DATE)
-            .jsonPath("type").isEqualTo("gym")
             .jsonPath("exercises").exists()
     }
 
@@ -442,9 +440,7 @@ class GymActivityControllerTest {
             .expectStatus().isOk
             .expectBody()
             .jsonPath("id").isEqualTo(FIRST_GYM_ACTIVITY_ID)
-            .jsonPath("uid").isEqualTo(FIRST_ATHLETE_ID)
             .jsonPath("date").isEqualTo(FIRST_GYM_ACTIVITY_DATE)
-            .jsonPath("type").isEqualTo("gym")
             .jsonPath("exercises").exists()
     }
 
@@ -582,7 +578,7 @@ class GymActivityControllerTest {
     }
 
     companion object {
-        private const val VALID_DATE = "01-05-2025"
+        private const val VALID_DATE = "18-07-2025"
         private const val INVALID_DATE = "32-01-2000"
 
         private const val FIRST_COACH_TOKEN = "i_aY-4lpMqAIMuhkimTbKy4xYEuyvgFPaaTpVS0lctQ="

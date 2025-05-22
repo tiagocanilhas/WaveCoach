@@ -100,6 +100,12 @@ class Problem(
                 URI.create("$BASE_URI/invalid-name"),
             )
 
+        val invalidPhoto =
+            Problem(
+                "Invalid photo",
+                URI("$BASE_URI/invalid-photo"),
+            )
+
         val invalidToken =
             Problem(
                 "Invalid token",

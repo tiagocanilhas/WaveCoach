@@ -42,6 +42,7 @@ CREATE TABLE waveCoach.athlete (
     name VARCHAR(64) NOT NULL,
     birth_date BIGINT NOT NULL,
     credentials_changed BOOLEAN DEFAULT FALSE NOT NULL,
+    url VARCHAR(256) DEFAULT NULL,
     FOREIGN KEY (coach) REFERENCES waveCoach.coach(uid),
     FOREIGN KEY (uid) REFERENCES waveCoach.user(id)
 );
@@ -106,7 +107,8 @@ CREATE TABLE waveCoach.gym(
 CREATE TABLE waveCoach.gym_exercise(
     id SERIAL PRIMARY KEY,
     name VARCHAR(64) NOT NULL,
-    category VARCHAR(64) NOT NULL
+    category VARCHAR(64) NOT NULL,
+    url VARCHAR(256) DEFAULT NULL
 );
 
 CREATE TABLE waveCoach.exercise(
@@ -152,7 +154,8 @@ CREATE TABLE waveCoach.questionnaire(
 
 CREATE TABLE waveCoach.water_maneuver(
     id SERIAL PRIMARY KEY,
-    name VARCHAR(64) NOT NULL
+    name VARCHAR(64) NOT NULL,
+    url VARCHAR(256) DEFAULT NULL
 );
 
 CREATE TABLE waveCoach.maneuver(

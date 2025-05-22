@@ -1,5 +1,6 @@
 package waveCoach.host
 
+import com.cloudinary.Cloudinary
 import kotlinx.datetime.Clock
 import org.jdbi.v3.core.Jdbi
 import org.postgresql.ds.PGSimpleDataSource
@@ -48,6 +49,15 @@ class WaveCoachApplication {
             tokenRollingTtl = 1.hours,
             maxTokensPerUser = 3,
         )
+
+    @Bean
+    fun cloudinary(): Cloudinary = Cloudinary(
+        mapOf(
+            "cloud_name" to Environment.getCloudName(),
+            "api_key" to Environment.getApiKey(),
+            "api_secret" to Environment.getApiSecret()
+        )
+    )
 }
 
 @Configuration

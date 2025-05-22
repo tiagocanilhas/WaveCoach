@@ -17,7 +17,10 @@ type State = {
   maneuvers: any[] | undefined
 }
 
-type Action = { type: 'openPopup' } | { type: 'closePopup' }| { type: 'addManeuver'; payload: { maneuver: Maneuver; isRight: boolean, success: boolean } }
+type Action =
+  | { type: 'openPopup' }
+  | { type: 'closePopup' }
+  | { type: 'addManeuver'; payload: { maneuver: Maneuver; isRight: boolean; success: boolean } }
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
@@ -59,7 +62,7 @@ export function AddWavePopup({ onClose, onAdd }: AddWavePopupProps) {
   }
 
   function handleOnClick() {
-    onAdd({ maneuvers: state.maneuvers})
+    onAdd({ maneuvers: state.maneuvers })
   }
 
   const maneuvers = state.maneuvers
@@ -73,12 +76,12 @@ export function AddWavePopup({ onClose, onAdd }: AddWavePopupProps) {
           <div className={styles.addWave}>
             <div className={styles.maneuversContainer}>
               {maneuvers.map(info => (
-                <Card 
-                content={
-                  <p>
-                    {info.maneuver.name} - {info.isRight ? '➡️' : '⬅️'} {info.success ? '✅' : '❌'}
-                  </p>
-                } 
+                <Card
+                  content={
+                    <p>
+                      {info.maneuver.name} - {info.isRight ? '➡️' : '⬅️'} {info.success ? '✅' : '❌'}
+                    </p>
+                  }
                 />
               ))}
               <Card
