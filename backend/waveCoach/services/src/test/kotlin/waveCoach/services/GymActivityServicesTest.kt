@@ -3,6 +3,7 @@ package waveCoach.services
 import org.jdbi.v3.core.Jdbi
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.postgresql.ds.PGSimpleDataSource
+import waveCoach.domain.SetsDomain
 import waveCoach.repository.jdbi.JdbiTransactionManager
 import waveCoach.repository.jdbi.configureWithAppRequirements
 import waveCoach.utils.Failure
@@ -237,6 +238,7 @@ class GymActivityServicesTest {
 
         private fun createGymActivityServices() = GymActivityServices(
             JdbiTransactionManager(jdbi),
+            SetsDomain(),
         )
 
         private val jdbi =

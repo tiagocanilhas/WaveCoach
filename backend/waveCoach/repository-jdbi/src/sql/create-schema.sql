@@ -3,7 +3,7 @@ DROP TABLE IF EXISTS waveCoach.heat;
 DROP TABLE IF EXISTS waveCoach.athlete_competition;
 DROP TABLE IF EXISTS waveCoach.competition;
 DROP TABLE IF EXISTS waveCoach.maneuver;
-DROP TABLE IF EXISTS waveCoach.water_maneuvers;
+DROP TABLE IF EXISTS waveCoach.water_maneuver;
 DROP TABLE IF EXISTS waveCoach.questionnaire;
 DROP TABLE IF EXISTS waveCoach.water;
 DROP TABLE IF EXISTS waveCoach.sets;
@@ -128,12 +128,17 @@ CREATE TABLE waveCoach.sets(
 CREATE TABLE waveCoach.water(
     activity INTEGER PRIMARY KEY,
     pse INTEGER,
-    attempts INTEGER,
-    waves INTEGER,
     condition VARCHAR(64),
     heart_rate INTEGER,
-    time INTEGER,
+    duration INTEGER,
     FOREIGN KEY (activity) REFERENCES waveCoach.activity(id)
+);
+
+CREATE TABLE waveCoach.wave(
+    id SERIAL PRIMARY KEY,
+    activity INTEGER REFERENCES waveCoach.water(activity),
+    points FLOAT,
+    wave_order INTEGER
 );
 
 CREATE TABLE waveCoach.questionnaire(
@@ -152,12 +157,11 @@ CREATE TABLE waveCoach.water_maneuver(
 
 CREATE TABLE waveCoach.maneuver(
     id SERIAL PRIMARY KEY,
-    activity INTEGER REFERENCES waveCoach.water(activity),
+    wave INTEGER REFERENCES waveCoach.wave(id),
     maneuver INTEGER REFERENCES waveCoach.water_maneuver(id),
-    side VARCHAR(5) CHECK (side IN ('left', 'right')) NOT NULL,
-    success INTEGER,
-    failed INTEGER,
-    order_ INTEGER
+    right_side BOOLEAN,
+    success BOOLEAN,
+    maneuver_order INTEGER
 );
 
 CREATE TABLE waveCoach.competition(

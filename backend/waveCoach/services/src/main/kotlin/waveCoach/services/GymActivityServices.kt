@@ -3,18 +3,15 @@ package waveCoach.services
 import org.springframework.stereotype.Component
 import waveCoach.domain.ActivityWithExercises
 import waveCoach.domain.ExerciseWithSets
+import waveCoach.domain.SetsDomain
 import waveCoach.repository.TransactionManager
 import waveCoach.utils.Either
 import waveCoach.utils.failure
 import waveCoach.utils.success
-import java.time.LocalDate
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeParseException
 
 data class ExerciseInputInfo(
     val sets: List<SetInputInfo>,
-    val id: Int,
+    val gymExerciseId: Int,
 )
 
 data class SetInputInfo(
@@ -85,6 +82,7 @@ typealias RemoveGymActivityResult = Either<RemoveGymActivityError, Int>
 @Component
 class GymActivityServices(
     private val transactionManager: TransactionManager,
+    private val setsDomain: SetsDomain
 ) {
     fun createGymActivity(
         coachId: Int,
@@ -111,12 +109,13 @@ class GymActivityServices(
             gymActivityRepository.storeGymActivity(activityID)
 
             exercises.forEachIndexed { exerciseOrder, exercise ->
-                if (!gymActivityRepository.isGymExerciseValid(exercise.id))
+                if (!gymActivityRepository.isGymExerciseValid(exercise.gymExerciseId))
                     return@run failure(CreateGymActivityError.InvalidGymExercise)
 
-                val exerciseId = gymActivityRepository.storeExercise(activityID, exercise.id, exerciseOrder)
+                val exerciseId = gymActivityRepository.storeExercise(activityID, exercise.gymExerciseId, exerciseOrder)
                 exercise.sets.forEachIndexed { setOrder, set ->
-                    if (!checkSet(set)) return@run failure(CreateGymActivityError.InvalidSet)
+                    if (!setsDomain.checkSet(set.reps, set.weight, set.restTime))
+                        return@run failure(CreateGymActivityError.InvalidSet)
 
                     gymActivityRepository.storeSet(exerciseId, set.reps, set.weight, set.restTime, setOrder)
                 }
@@ -244,21 +243,4 @@ class GymActivityServices(
             success(activityId)
         }
     }
-
-    private fun dateToLong(date: String): Long? {
-        return try {
-            val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
-            val dateParsed = LocalDate.parse(date, formatter)
-
-            dateParsed.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
-        } catch (e: DateTimeParseException) {
-            null
-        }
-    }
-
-    private fun checkSet(sets: SetInputInfo): Boolean = sets.reps > 0 && sets.weight > 0 && sets.restTime > 0
-
-    /*private fun checkSet(sets: UpdateSetInputInfo): Boolean {
-        return (sets.reps ?: 0) > 0 && (sets.weight ?: 0f) > 0 && (sets.rest ?: 0f) > 0
-    }*/
 }

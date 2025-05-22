@@ -40,4 +40,11 @@ class JdbiWaterManeuverRepository (
         TODO("Not yet implemented")
     }
 
+    override fun isWaterManeuverValid(id: Int): Boolean =
+        handle.createQuery("select exists(select * from waveCoach.water_maneuver where id = :id)")
+            .bind("id", id)
+            .mapTo<Boolean>()
+            .one()
+
+
 }

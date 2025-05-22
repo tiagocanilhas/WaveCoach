@@ -29,7 +29,7 @@ class GymActivityController(
             input.exercises.map { inputModel ->
                 ExerciseInputInfo(
                     sets = inputModel.sets.map { SetInputInfo(it.reps, it.weight, it.restTime) },
-                    id = inputModel.id
+                    gymExerciseId = inputModel.id
                 )
             }
         )
@@ -45,7 +45,11 @@ class GymActivityController(
                     CreateGymActivityError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
                     CreateGymActivityError.InvalidDate -> Problem.response(400, Problem.invalidDate)
                     CreateGymActivityError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
-                    CreateGymActivityError.ActivityWithoutMicrocycle -> Problem.response(400, Problem.activityWithoutMicrocycle)
+                    CreateGymActivityError.ActivityWithoutMicrocycle -> Problem.response(
+                        400,
+                        Problem.activityWithoutMicrocycle
+                    )
+
                     CreateGymActivityError.InvalidGymExercise -> Problem.response(400, Problem.invalidGymExercise)
                     CreateGymActivityError.InvalidSet -> Problem.response(400, Problem.invalidSets)
                 }

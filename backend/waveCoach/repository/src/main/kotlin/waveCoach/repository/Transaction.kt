@@ -7,6 +7,7 @@ interface Transaction {
     val characteristicsRepository: CharacteristicsRepository
     val activityRepository: ActivityRepository
     val gymActivityRepository: GymActivityRepository
+    val waterActivityRepository: WaterActivityRepository
     val waterManeuverRepository: WaterManeuverRepository
 
     // other repository types

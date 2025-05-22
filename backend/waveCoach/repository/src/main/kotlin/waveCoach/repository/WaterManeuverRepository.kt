@@ -15,4 +15,6 @@ interface WaterManeuverRepository {
     fun updateWaterManeuver(id: Int, name: String)
 
     fun removeWaterManeuver(id: Int)
+
+    fun isWaterManeuverValid(id: Int): Boolean
 }

@@ -1,0 +1,84 @@
+package waveCoach.repository.jdbi
+
+import org.junit.jupiter.api.Assertions.assertTrue
+import kotlin.test.Test
+
+class JdbiWaterActivityRepositoryTest {
+    @Test
+    fun `store water activity`() =
+        testWithHandleAndRollback { handle ->
+            val waterActivityRepository = JdbiWaterActivityRepository(handle)
+
+            val activityId = waterActivityRepository.storeWaterActivity(
+                FIRST_ACTIVITY_ID,
+                FIRST_PSE,
+                FIRST_CONDITION,
+                FIRST_HEART_RATE,
+                FIRST_DURATION
+            )
+
+            assertTrue(activityId > 0)
+        }
+
+    @Test
+    fun `store wave`() =
+        testWithHandleAndRollback { handle ->
+            val waterActivityRepository = JdbiWaterActivityRepository(handle)
+
+            val activityId = waterActivityRepository.storeWaterActivity(
+                FIRST_ACTIVITY_ID,
+                FIRST_PSE,
+                FIRST_CONDITION,
+                FIRST_HEART_RATE,
+                FIRST_DURATION
+            )
+
+            val waveId = waterActivityRepository.storeWave(
+                activityId,
+                null,
+                1
+            )
+
+            assertTrue(waveId > 0)
+        }
+
+    @Test
+    fun `store maneuver`() =
+        testWithHandleAndRollback { handle ->
+            val waterActivityRepository = JdbiWaterActivityRepository(handle)
+
+            val activityId = waterActivityRepository.storeWaterActivity(
+                FIRST_ACTIVITY_ID,
+                FIRST_PSE,
+                FIRST_CONDITION,
+                FIRST_HEART_RATE,
+                FIRST_DURATION
+            )
+
+            val waveId = waterActivityRepository.storeWave(
+                activityId,
+                null,
+                1
+            )
+
+            val maneuverId = waterActivityRepository.storeManeuver(
+                waveId,
+                1,
+                rightSide = true,
+                true,
+                1
+            )
+
+            assertTrue(maneuverId > 0)
+        }
+
+
+
+    companion object{
+        const val FIRST_ACTIVITY_ID = 1
+        const val FIRST_PSE = 5
+        const val FIRST_CONDITION = "Good"
+        const val FIRST_HEART_RATE = 120
+        const val FIRST_DURATION = 30
+    }
+}

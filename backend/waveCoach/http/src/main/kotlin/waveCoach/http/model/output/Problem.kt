@@ -195,5 +195,29 @@ class Problem(
                 "Invalid set",
                 URI("$BASE_URI/invalid-set"),
             )
+
+        val invalidPse =
+            Problem(
+                "Invalid PSE",
+                URI("$BASE_URI/invalid-pse"),
+            )
+
+        val invalidHeartRate =
+            Problem(
+                "Invalid heart rate",
+                URI("$BASE_URI/invalid-heart-rate"),
+            )
+
+        val invalidDuration =
+            Problem(
+                "Invalid duration",
+                URI("$BASE_URI/invalid-duration"),
+            )
+
+        val invalidWaterManeuver =
+            Problem(
+                "Invalid maneuver",
+                URI("$BASE_URI/invalid-maneuver"),
+            )
     }
 }

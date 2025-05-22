@@ -61,6 +61,8 @@ object Uris {
         const val GET_BY_ID = "$WATER_ACTIVITY/{activityId}"
         const val UPDATE = "$WATER_ACTIVITY/{activityId}"
         const val REMOVE = "$WATER_ACTIVITY/{activityId}"
+
+        fun byId(id: Int): URI = UriTemplate(GET_BY_ID).expand(id)
     }
 
     object WaterManeuver{
