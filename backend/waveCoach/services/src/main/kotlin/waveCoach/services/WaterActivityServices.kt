@@ -1,7 +1,9 @@
 package waveCoach.services
 
 import org.springframework.stereotype.Component
+import waveCoach.domain.ActivityType
 import waveCoach.domain.WaterActivityDomain
+import waveCoach.domain.WaterActivityWithWaves
 import waveCoach.repository.TransactionManager
 import waveCoach.utils.Either
 import waveCoach.utils.failure
@@ -36,6 +38,15 @@ sealed class CreateWaterActivityError {
     data object InvalidWaterManeuver : CreateWaterActivityError()
 }
 typealias CreateWaterActivityResult = Either<CreateWaterActivityError, Int>
+
+sealed class GetWaterActivityError {
+    data object ActivityNotFound : GetWaterActivityError()
+
+    data object NotAthletesCoach : GetWaterActivityError()
+
+    data object NotWaterActivity : GetWaterActivityError()
+}
+typealias GetWaterActivityResult = Either<GetWaterActivityError, WaterActivityWithWaves>
 
 @Component
 class WaterActivityServices(
@@ -109,6 +120,29 @@ class WaterActivityServices(
             }
 
             success(waterActivityId)
+        }
+    }
+
+    fun getWaterActivity(uid: Int, activityId: Int): GetWaterActivityResult {
+        return transactionManager.run {
+            val athleteRepository = it.athleteRepository
+            val activityRepository = it.activityRepository
+            val waterActivityRepository = it.waterActivityRepository
+
+            val activity = activityRepository.getActivityById(activityId)
+                ?: return@run failure(GetWaterActivityError.ActivityNotFound)
+
+            if (activity.type != ActivityType.WATER)
+                return@run failure(GetWaterActivityError.NotWaterActivity)
+
+            val athlete = athleteRepository.getAthlete(activity.uid)!!
+
+            if (athlete.uid != uid && athlete.coach != uid)
+                return@run failure(GetWaterActivityError.NotAthletesCoach)
+
+            val waterActivity = waterActivityRepository.getWaterActivity(activityId)!!
+
+            success(waterActivity)
         }
     }
 }

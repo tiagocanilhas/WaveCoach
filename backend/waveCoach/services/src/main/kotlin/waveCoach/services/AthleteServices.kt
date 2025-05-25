@@ -174,13 +174,6 @@ sealed class SetCalendarError {
 }
 typealias SetCalendarResult = Either<SetCalendarError, Boolean>
 
-sealed class GetActivitiesError {
-    data object AthleteNotFound : GetActivitiesError()
-
-    data object NotAthletesCoach : GetActivitiesError()
-}
-typealias GetActivitiesResult = Either<GetActivitiesError, List<Activity>>
-
 @Component
 class AthleteServices(
     private val transactionManager: TransactionManager,

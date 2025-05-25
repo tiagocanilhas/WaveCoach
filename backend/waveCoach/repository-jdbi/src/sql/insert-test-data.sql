@@ -90,7 +90,11 @@ insert into waveCoach.sets (exercise_id, weight, reps, rest_time, set_order) val
 
 
 INSERT INTO waveCoach.activity (uid, microcycle, date) VALUES (3, 1, 1746144000000); -- 2025-05-02
-INSERT INTO waveCoach.water (activity) VALUES (2);
+INSERT INTO waveCoach.water (activity, pse, condition, heart_rate, duration) VALUES (2, 5, 'Good', 120, 60);
+INSERT INTO waveCoach.wave (activity, points, wave_order) VALUES (2, 5, 1);
+INSERT INTO waveCoach.maneuver (wave, maneuver, right_side, success, maneuver_order) VALUES (1, 1, true, true, 1);
+INSERT INTO waveCoach.maneuver (wave, maneuver, right_side, success, maneuver_order) VALUES (1, 2, true, true, 2);
+INSERT INTO waveCoach.wave (activity, points, wave_order) VALUES (2, 2, 2);
 
 INSERT INTO waveCoach.activity (uid, microcycle, date) VALUES (3, 1, 1746230400000); -- 2025-05-03
 INSERT INTO waveCoach.water (activity) VALUES (3);

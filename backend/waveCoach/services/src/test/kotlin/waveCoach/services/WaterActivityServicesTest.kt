@@ -246,12 +246,66 @@ class WaterActivityServicesTest {
         }
     }
 
+    /**
+     * Get WaterActivity Test
+     */
+
+    @Test
+    fun `get water activity - success`() {
+        val createWaterActivityService = createWaterActivityServices()
+
+        when (
+            val result = createWaterActivityService.getWaterActivity(FIRST_COACH_ID, WATER_ACTIVITY_ID)
+        ) {
+            is Failure -> fail("Unexpected $result")
+            is Success -> assertTrue(result.value.id == WATER_ACTIVITY_ID)
+        }
+    }
+
+    @Test
+    fun `get water activity - not found`() {
+        val createWaterActivityService = createWaterActivityServices()
+
+        when (
+            val result = createWaterActivityService.getWaterActivity(FIRST_COACH_ID, 0)
+        ) {
+            is Failure -> assertTrue(result.value is GetWaterActivityError.ActivityNotFound)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
+    @Test
+    fun `get water activity - not athletes coach`() {
+        val createWaterActivityService = createWaterActivityServices()
+
+        when (
+            val result = createWaterActivityService.getWaterActivity(SECOND_COACH_ID, WATER_ACTIVITY_ID)
+        ) {
+            is Failure -> assertTrue(result.value is GetWaterActivityError.NotAthletesCoach)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
+    @Test
+    fun `get water activity - not water activity`() {
+        val createWaterActivityService = createWaterActivityServices()
+
+        when (
+            val result = createWaterActivityService.getWaterActivity(FIRST_COACH_ID, 1)
+        ) {
+            is Failure -> assertTrue(result.value is GetWaterActivityError.NotWaterActivity)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
     companion object {
         private const val FIRST_COACH_ID = 1
         private const val SECOND_COACH_ID = 2
         private const val FIRST_ATHLETE_ID = 3
         private const val DATE = "25-05-2025"
         private const val DATE_WITHOUT_MICROCYCLE = "01-01-2000"
+
+        private const val WATER_ACTIVITY_ID = 2
 
         private const val PSE = 10
         private const val CONDITION = "good"

@@ -359,13 +359,128 @@ class WaterActivityControllerTest {
             .jsonPath("type").isEqualTo(Problem.invalidWaterManeuver.type.toString())
     }
 
+    /**
+     * Get Water Activity Test
+     */
+
+    @Test
+    fun `get water activity - success(coach)`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.get()
+            .uri("/water/2")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .exchange()
+            .expectStatus().isOk
+            .expectHeader().contentType(MediaType.APPLICATION_JSON)
+            .expectBody()
+            .jsonPath("id").isEqualTo(2)
+            .jsonPath("athleteId").isEqualTo(FIRST_ATHLETE_ID)
+            .jsonPath("microcycleId").isEqualTo(1)
+            .jsonPath("date").isEqualTo(ACTIVITY_DATE)
+            .jsonPath("pse").isEqualTo(5)
+            .jsonPath("condition").isEqualTo("Good")
+            .jsonPath("heartRate").isEqualTo(120)
+            .jsonPath("duration").isEqualTo(60)
+            .jsonPath("waves").exists()
+    }
+
+    @Test
+    fun `get water activity - success(athlete)`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.get()
+            .uri("/water/2")
+            .header("Authorization", "Bearer $FIRST_ATHLETE_TOKEN")
+            .exchange()
+            .expectStatus().isOk
+            .expectHeader().contentType(MediaType.APPLICATION_JSON)
+            .expectBody()
+            .jsonPath("id").isEqualTo(2)
+            .jsonPath("athleteId").isEqualTo(FIRST_ATHLETE_ID)
+            .jsonPath("microcycleId").isEqualTo(1)
+            .jsonPath("date").isEqualTo(ACTIVITY_DATE)
+            .jsonPath("pse").isEqualTo(5)
+            .jsonPath("condition").isEqualTo("Good")
+            .jsonPath("heartRate").isEqualTo(120)
+            .jsonPath("duration").isEqualTo(60)
+            .jsonPath("waves").exists()
+    }
+
+    @Test
+    fun `get water activity - not found`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.get()
+            .uri("/water/0")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .exchange()
+            .expectStatus().isNotFound
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.waterActivityNotFound.type.toString())
+    }
+
+    @Test
+    fun `get water activity - not athletes coach`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.get()
+            .uri("/water/2")
+            .header("Authorization", "Bearer $SECOND_COACH_TOKEN")
+            .exchange()
+            .expectStatus().isForbidden
+    }
+
+    @Test
+    fun `get water activity - invalid id`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.get()
+            .uri("/water/invalid-id")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidWaterActivityId.type.toString())
+    }
+
+    @Test
+    fun `get water activity - unauthorized`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.get()
+            .uri("/water/2")
+            .exchange()
+            .expectStatus().isUnauthorized
+    }
+
+    @Test
+    fun `get water activity - not water activity`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.get()
+            .uri("/water/1")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.notWaterActivity.type.toString())
+    }
+
+
+
     companion object {
         private const val FIRST_COACH_TOKEN = "i_aY-4lpMqAIMuhkimTbKy4xYEuyvgFPaaTpVS0lctQ="
         private const val FIRST_COACH_ID = 1
         private const val SECOND_COACH_TOKEN = "fM5JjtPOUqtnZg1lB7jnJhXBP5gI2WbIIBoO3JhYM5M="
         private const val FIRST_ATHLETE_ID = 3
+        private const val FIRST_ATHLETE_TOKEN = "0FaEBvcKLwE1YKrLYdhHd5p61EQtJThf3mEX6o28Lgo="
 
         private const val DATE = "03-05-2025" // date long = 1736006400000
+        private const val ACTIVITY_DATE = 1746144000000
         private const val DATE_WITHOUT_MICROCYCLE = "01-01-2000" // date long = 1736006400000
 
         private fun randomString() = "String_${abs(Random.nextLong())}"

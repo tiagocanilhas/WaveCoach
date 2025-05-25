@@ -1,7 +1,7 @@
 package waveCoach.services
 
 import org.springframework.stereotype.Component
-import waveCoach.domain.ActivityWithExercises
+import waveCoach.domain.GymActivityWithExercises
 import waveCoach.domain.ExerciseWithSets
 import waveCoach.domain.SetsDomain
 import waveCoach.repository.TransactionManager
@@ -55,7 +55,7 @@ sealed class GetGymActivityError {
 
     data object NotAthletesCoach : GetGymActivityError()
 }
-typealias GetGymActivityResult = Either<GetGymActivityError, ActivityWithExercises>
+typealias GetGymActivityResult = Either<GetGymActivityError, GymActivityWithExercises>
 
 /*sealed class UpdateGymActivityError {
     data object InvalidDate : UpdateGymActivityError()
@@ -148,7 +148,7 @@ class GymActivityServices(
                 ExerciseWithSets(exercise.id, exercise.activity, exercise.name, exercise.exerciseOrder, exercise.url, sets)
             }
 
-            success(ActivityWithExercises(activity.id, activity.uid, activity.date, activity.type, exercisesWithSets))
+            success(GymActivityWithExercises(activity.id, activity.uid, activity.date, activity.type, exercisesWithSets))
         }
     }
 

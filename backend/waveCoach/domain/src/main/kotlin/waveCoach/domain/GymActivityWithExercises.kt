@@ -1,6 +1,6 @@
 package waveCoach.domain
 
-data class ActivityWithExercises(
+data class GymActivityWithExercises(
     val id: Int,
     val uid: Int,
     val date: Long,

@@ -225,5 +225,23 @@ class Problem(
                 "Invalid maneuver",
                 URI("$BASE_URI/invalid-maneuver"),
             )
+
+        val invalidWaterActivityId =
+            Problem(
+                "Invalid water activity id",
+                URI("$BASE_URI/invalid-water-activity-id"),
+            )
+
+        val waterActivityNotFound =
+            Problem(
+                "Water activity not found",
+                URI("$BASE_URI/water-activity-not-found"),
+            )
+
+        val notWaterActivity =
+            Problem(
+                "Not a water activity",
+                URI("$BASE_URI/not-water-activity"),
+            )
     }
 }

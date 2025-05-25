@@ -1,16 +1,15 @@
 package waveCoach.http
 
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import waveCoach.domain.AuthenticatedCoach
+import waveCoach.domain.AuthenticatedUser
 import waveCoach.http.model.input.CreateWaterActivityInputModel
+import waveCoach.http.model.output.ManeuverOutputModel
 import waveCoach.http.model.output.Problem
-import waveCoach.services.CreateWaterActivityError
-import waveCoach.services.ManeuverInputInfo
-import waveCoach.services.WaterActivityServices
-import waveCoach.services.WaveInputInfo
+import waveCoach.http.model.output.WaterActivityOutputModel
+import waveCoach.http.model.output.WaveOutputModel
+import waveCoach.services.*
 import waveCoach.utils.Failure
 import waveCoach.utils.Success
 
@@ -68,6 +67,57 @@ class WaterActivityController(
                         400,
                         Problem.invalidWaterManeuver
                     )
+                }
+        }
+    }
+
+    @GetMapping(Uris.WaterActivity.GET_BY_ID)
+    fun getById(
+        user: AuthenticatedUser,
+        @PathVariable activityId: String,
+    ): ResponseEntity<*> {
+        val activityIdInt = activityId.toIntOrNull() ?: return Problem.response(400, Problem.invalidWaterActivityId)
+
+        val result = waterActivityService.getWaterActivity(user.info.id, activityIdInt)
+
+        return when (result) {
+            is Success ->
+                ResponseEntity
+                    .status(200)
+                    .body(
+                        WaterActivityOutputModel(
+                            result.value.id,
+                            result.value.athleteId,
+                            result.value.microcycleId,
+                            result.value.date,
+                            result.value.pse,
+                            result.value.condition,
+                            result.value.heartRate,
+                            result.value.duration,
+                            result.value.waves.map { wave ->
+                                WaveOutputModel(
+                                    wave.id,
+                                    wave.points,
+                                    wave.maneuvers.map { maneuver ->
+                                        ManeuverOutputModel(
+                                            maneuver.id,
+                                            maneuver.waterManeuverId,
+                                            maneuver.waterManeuverName,
+                                            maneuver.url,
+                                            maneuver.rightSide,
+                                            maneuver.success
+                                        )
+                                    }
+                                )
+                            }
+                        ),
+                    )
+
+            is Failure ->
+                when (result.value) {
+                    GetWaterActivityError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
+                    GetWaterActivityError.ActivityNotFound -> Problem.response(404, Problem.waterActivityNotFound)
+                    GetWaterActivityError.NotWaterActivity -> Problem.response(400, Problem.notWaterActivity)
                 }
         }
     }
