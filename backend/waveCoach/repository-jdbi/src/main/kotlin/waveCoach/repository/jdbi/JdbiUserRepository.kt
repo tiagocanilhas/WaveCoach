@@ -133,4 +133,10 @@ class JdbiUserRepository(
             .bind("token", tokenValidationInfo.value)
             .execute()
     }
+
+    override fun removeTokensByUserId(userId: Int) {
+        handle.createUpdate("delete from waveCoach.token where uid = :uid")
+            .bind("uid", userId)
+            .execute()
+    }
 }

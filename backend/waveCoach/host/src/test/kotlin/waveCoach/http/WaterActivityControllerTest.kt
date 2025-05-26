@@ -470,6 +470,69 @@ class WaterActivityControllerTest {
             .jsonPath("type").isEqualTo(Problem.notWaterActivity.type.toString())
     }
 
+    /**
+     * Remove Water Activity Test
+     */
+
+    @Test
+    fun `remove water activity - success`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.delete().uri("/water/$FIRST_ACTIVITY_ID")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .exchange()
+            .expectStatus().isNoContent
+    }
+
+    @Test
+    fun `remove water activity - not athletes coach`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.delete().uri("/water/$SECOND_ACTIVITY_ID")
+            .header("Authorization", "Bearer $SECOND_COACH_TOKEN")
+            .exchange()
+            .expectStatus().isForbidden
+    }
+
+    @Test
+    fun `remove water activity - not found`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.delete().uri("/water/0")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .exchange()
+            .expectStatus().isNotFound
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.waterActivityNotFound.type.toString())
+    }
+
+    @Test
+    fun `remove water activity - not water activity`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.delete().uri("/water/$NOT_WATER_ACTIVITY_ID")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.notWaterActivity.type.toString())
+    }
+
+    @Test
+    fun `remove water activity - invalid id`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.delete().uri("/water/invalid-id")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidWaterActivityId.type.toString())
+    }
+
 
 
     companion object {
@@ -478,6 +541,10 @@ class WaterActivityControllerTest {
         private const val SECOND_COACH_TOKEN = "fM5JjtPOUqtnZg1lB7jnJhXBP5gI2WbIIBoO3JhYM5M="
         private const val FIRST_ATHLETE_ID = 3
         private const val FIRST_ATHLETE_TOKEN = "0FaEBvcKLwE1YKrLYdhHd5p61EQtJThf3mEX6o28Lgo="
+
+        private const val FIRST_ACTIVITY_ID = 2
+        private const val SECOND_ACTIVITY_ID = 3
+        private const val NOT_WATER_ACTIVITY_ID = 1
 
         private const val DATE = "03-05-2025" // date long = 1736006400000
         private const val ACTIVITY_DATE = 1746144000000

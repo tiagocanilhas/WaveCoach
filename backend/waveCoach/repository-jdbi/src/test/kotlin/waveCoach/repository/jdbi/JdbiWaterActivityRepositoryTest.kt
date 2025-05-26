@@ -10,7 +10,7 @@ class JdbiWaterActivityRepositoryTest {
             val waterActivityRepository = JdbiWaterActivityRepository(handle)
 
             val activityId = waterActivityRepository.storeWaterActivity(
-                FIRST_ACTIVITY_ID,
+                FIRST_WATER_ACTIVITY_ID,
                 FIRST_PSE,
                 FIRST_CONDITION,
                 FIRST_HEART_RATE,
@@ -18,6 +18,17 @@ class JdbiWaterActivityRepositoryTest {
             )
 
             assertTrue(activityId > 0)
+        }
+
+    @Test
+    fun `remove water activity`() =
+        testWithHandleAndRollback { handle ->
+            val waterActivityRepository = JdbiWaterActivityRepository(handle)
+
+            waterActivityRepository.removeWaterActivity(SECOND_WATER_ACTIVITY_ID)
+
+            val waterActivity = waterActivityRepository.getWaterActivity(SECOND_WATER_ACTIVITY_ID)
+            assertTrue(waterActivity == null)
         }
 
     @Test
@@ -98,6 +109,9 @@ class JdbiWaterActivityRepositoryTest {
 
     companion object{
         const val FIRST_ACTIVITY_ID = 1
+
+        const val FIRST_WATER_ACTIVITY_ID = 2
+        const val SECOND_WATER_ACTIVITY_ID = 3
         const val FIRST_PSE = 5
         const val FIRST_CONDITION = "Good"
         const val FIRST_HEART_RATE = 120

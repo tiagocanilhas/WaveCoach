@@ -14,15 +14,23 @@ interface ActivityRepository {
         endTime: Long,
     ): Int
 
+    fun getMesocycle(
+        id: Int,
+    ): Mesocycle?
+
+    fun updateMesocycle(
+        id: Int,
+        startTime: Long,
+        endTime: Long,
+    ): Int
+
+    fun  removeMesocycles(uid: Int)
+
     fun storeMicrocycle(
         mesocycle: Int,
         startTime: Long,
         endTime: Long,
     ): Int
-
-    fun getMesocycle(
-        id: Int,
-    ): Mesocycle?
 
     fun getMicrocycle(
         id: Int,
@@ -33,17 +41,13 @@ interface ActivityRepository {
         uid: Int,
     ): Microcycle?
 
-    fun updateMesocycle(
-        id: Int,
-        startTime: Long,
-        endTime: Long,
-    ): Int
-
     fun updateMicrocycle(
         id: Int,
         startTime: Long,
         endTime: Long,
     ): Int
+
+    fun removeMicrocycles(uid: Int)
 
     fun getCalendar(
         uid: Int,

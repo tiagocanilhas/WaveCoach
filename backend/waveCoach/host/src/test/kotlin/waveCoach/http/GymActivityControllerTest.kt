@@ -496,6 +496,19 @@ class GymActivityControllerTest {
             .jsonPath("type").isEqualTo(Problem.gymActivityNotFound.type.toString())
     }
 
+    @Test
+    fun `get gym activity - not gym activity`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.get().uri("/gym/$NOT_GYM_ACTIVITY_ID")
+            .header("Authorization", "Bearer $SECOND_COACH_TOKEN")
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.notGymActivity.type.toString())
+    }
+
 
 
     /**
@@ -577,6 +590,19 @@ class GymActivityControllerTest {
             .jsonPath("type").isEqualTo(Problem.userIsNotACoach.type.toString())
     }
 
+    @Test
+    fun `remove gym activity - not gym activity`(){
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.delete().uri("/gym/$NOT_GYM_ACTIVITY_ID")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.notGymActivity.type.toString())
+    }
+
     companion object {
         private const val VALID_DATE = "18-07-2025"
         private const val INVALID_DATE = "32-01-2000"
@@ -592,7 +618,9 @@ class GymActivityControllerTest {
 
         private const val FIRST_GYM_ACTIVITY_ID = 1
         private const val FIRST_GYM_ACTIVITY_DATE = 1746057600000
-        private const val SECOND_GYM_ACTIVITY_ID = 2
+        private const val SECOND_GYM_ACTIVITY_ID = 4
+
+        private const val NOT_GYM_ACTIVITY_ID = 2
 
     }
 }

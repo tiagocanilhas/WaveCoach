@@ -166,6 +166,12 @@ class Problem(
                 URI("$BASE_URI/activity-not-found"),
             )
 
+        val notGymActivity =
+            Problem(
+                "Not a gym activity",
+                URI("$BASE_URI/not-gym-activity"),
+            )
+
         val notAthletesActivity =
             Problem(
                 "Not athlete's activity",

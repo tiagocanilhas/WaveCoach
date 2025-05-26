@@ -48,6 +48,15 @@ sealed class GetWaterActivityError {
 }
 typealias GetWaterActivityResult = Either<GetWaterActivityError, WaterActivityWithWaves>
 
+sealed class RemoveWaterActivityError {
+    data object ActivityNotFound : RemoveWaterActivityError()
+
+    data object NotAthletesCoach : RemoveWaterActivityError()
+
+    data object NotWaterActivity : RemoveWaterActivityError()
+}
+typealias RemoveWaterActivityResult = Either<RemoveWaterActivityError, Int>
+
 @Component
 class WaterActivityServices(
     private val transactionManager: TransactionManager,
@@ -143,6 +152,36 @@ class WaterActivityServices(
             val waterActivity = waterActivityRepository.getWaterActivity(activityId)!!
 
             success(waterActivity)
+        }
+    }
+
+    fun removeWaterActivity(
+        coachId: Int,
+        activityId: Int,
+    ): RemoveWaterActivityResult {
+        return transactionManager.run {
+            val athleteRepository = it.athleteRepository
+            val activityRepository = it.activityRepository
+            val waterActivityRepository = it.waterActivityRepository
+
+            val activity =
+                activityRepository.getActivityById(activityId)
+                    ?: return@run failure(RemoveWaterActivityError.ActivityNotFound)
+
+            if (activity.type != ActivityType.WATER)
+                return@run failure(RemoveWaterActivityError.NotWaterActivity)
+
+            val athlete =
+                athleteRepository.getAthlete(activity.uid)
+
+            if (athlete!!.coach != coachId) return@run failure(RemoveWaterActivityError.NotAthletesCoach)
+
+            waterActivityRepository.removeManeuversByActivity(activityId)
+            waterActivityRepository.removeWavesByActivity(activityId)
+            waterActivityRepository.removeWaterActivity(activityId)
+            activityRepository.removeActivity(activityId)
+
+            success(activityId)
         }
     }
 }

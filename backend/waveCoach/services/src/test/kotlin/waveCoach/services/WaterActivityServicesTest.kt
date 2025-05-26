@@ -255,10 +255,10 @@ class WaterActivityServicesTest {
         val createWaterActivityService = createWaterActivityServices()
 
         when (
-            val result = createWaterActivityService.getWaterActivity(FIRST_COACH_ID, WATER_ACTIVITY_ID)
+            val result = createWaterActivityService.getWaterActivity(FIRST_COACH_ID, FIRST_WATER_ACTIVITY_ID)
         ) {
             is Failure -> fail("Unexpected $result")
-            is Success -> assertTrue(result.value.id == WATER_ACTIVITY_ID)
+            is Success -> assertTrue(result.value.id == FIRST_WATER_ACTIVITY_ID)
         }
     }
 
@@ -279,7 +279,7 @@ class WaterActivityServicesTest {
         val createWaterActivityService = createWaterActivityServices()
 
         when (
-            val result = createWaterActivityService.getWaterActivity(SECOND_COACH_ID, WATER_ACTIVITY_ID)
+            val result = createWaterActivityService.getWaterActivity(SECOND_COACH_ID, FIRST_WATER_ACTIVITY_ID)
         ) {
             is Failure -> assertTrue(result.value is GetWaterActivityError.NotAthletesCoach)
             is Success -> fail("Unexpected $result")
@@ -298,6 +298,58 @@ class WaterActivityServicesTest {
         }
     }
 
+    /**
+     * Remove WaterActivity Test
+     */
+
+    @Test
+    fun `remove water activity - success`() {
+        val createWaterActivityService = createWaterActivityServices()
+
+        when (
+            val result = createWaterActivityService.removeWaterActivity(FIRST_COACH_ID, SECOND_WATER_ACTIVITY_ID)
+        ) {
+            is Failure -> fail("Unexpected $result")
+            is Success -> assertTrue(result.value == SECOND_WATER_ACTIVITY_ID)
+        }
+    }
+
+    @Test
+    fun `remove water activity - activity not found`() {
+        val createWaterActivityService = createWaterActivityServices()
+
+        when (
+            val result = createWaterActivityService.removeWaterActivity(FIRST_COACH_ID, 0)
+        ) {
+            is Failure -> assertTrue(result.value is RemoveWaterActivityError.ActivityNotFound)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
+    @Test
+    fun `remove water activity - not athletes coach`() {
+        val createWaterActivityService = createWaterActivityServices()
+
+        when (
+            val result = createWaterActivityService.removeWaterActivity(SECOND_COACH_ID, FIRST_WATER_ACTIVITY_ID)
+        ) {
+            is Failure -> assertTrue(result.value is RemoveWaterActivityError.NotAthletesCoach)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
+    @Test
+    fun `remove water activity - not water activity`() {
+        val createWaterActivityService = createWaterActivityServices()
+
+        when (
+            val result = createWaterActivityService.removeWaterActivity(FIRST_COACH_ID, NOT_WATER_ACTIVITY_ID)
+        ) {
+            is Failure -> assertTrue(result.value is RemoveWaterActivityError.NotWaterActivity)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
     companion object {
         private const val FIRST_COACH_ID = 1
         private const val SECOND_COACH_ID = 2
@@ -305,7 +357,10 @@ class WaterActivityServicesTest {
         private const val DATE = "25-05-2025"
         private const val DATE_WITHOUT_MICROCYCLE = "01-01-2000"
 
-        private const val WATER_ACTIVITY_ID = 2
+        private const val FIRST_WATER_ACTIVITY_ID = 2
+        private const val SECOND_WATER_ACTIVITY_ID = 3
+
+        private const val NOT_WATER_ACTIVITY_ID = 1
 
         private const val PSE = 10
         private const val CONDITION = "good"

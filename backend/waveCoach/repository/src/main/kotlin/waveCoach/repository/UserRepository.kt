@@ -37,4 +37,6 @@ interface UserRepository {
     )
 
     fun removeToken(tokenValidationInfo: TokenValidationInfo)
+
+    fun removeTokensByUserId(userId: Int)
 }

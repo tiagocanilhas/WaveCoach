@@ -54,6 +54,8 @@ sealed class GetGymActivityError {
     data object ActivityNotFound : GetGymActivityError()
 
     data object NotAthletesCoach : GetGymActivityError()
+
+    data object NotGymActivity : GetGymActivityError()
 }
 typealias GetGymActivityResult = Either<GetGymActivityError, GymActivityWithExercises>
 
@@ -76,19 +78,21 @@ sealed class RemoveGymActivityError {
     data object NotAthletesCoach : RemoveGymActivityError()
 
     data object ActivityNotFound : RemoveGymActivityError()
+
+    data object NotGymActivity : RemoveGymActivityError()
 }
 typealias RemoveGymActivityResult = Either<RemoveGymActivityError, Int>
 
 @Component
 class GymActivityServices(
     private val transactionManager: TransactionManager,
-    private val setsDomain: SetsDomain
+    private val setsDomain: SetsDomain,
 ) {
     fun createGymActivity(
         coachId: Int,
         uid: Int,
         date: String,
-        exercises: List<ExerciseInputInfo>
+        exercises: List<ExerciseInputInfo>,
     ): CreateGymActivityResult {
         val dateLong = dateToLong(date) ?: return failure(CreateGymActivityError.InvalidDate)
 
@@ -136,6 +140,9 @@ class GymActivityServices(
             val activity = activityRepository.getActivityById(activityId)
                 ?: return@run failure(GetGymActivityError.ActivityNotFound)
 
+            if (activity.type != waveCoach.domain.ActivityType.GYM)
+                return@run failure(GetGymActivityError.NotGymActivity)
+
             val athlete = athleteRepository.getAthlete(activity.uid)!!
 
             if (athlete.uid != uid && athlete.coach != uid)
@@ -145,10 +152,25 @@ class GymActivityServices(
 
             val exercisesWithSets = exercises.map { exercise ->
                 val sets = gymActivityRepository.getSets(exercise.id)
-                ExerciseWithSets(exercise.id, exercise.activity, exercise.name, exercise.exerciseOrder, exercise.url, sets)
+                ExerciseWithSets(
+                    exercise.id,
+                    exercise.activity,
+                    exercise.name,
+                    exercise.exerciseOrder,
+                    exercise.url,
+                    sets
+                )
             }
 
-            success(GymActivityWithExercises(activity.id, activity.uid, activity.date, activity.type, exercisesWithSets))
+            success(
+                GymActivityWithExercises(
+                    activity.id,
+                    activity.uid,
+                    activity.date,
+                    activity.type,
+                    exercisesWithSets
+                )
+            )
         }
     }
 
@@ -229,6 +251,9 @@ class GymActivityServices(
             val activity =
                 activityRepository.getActivityById(activityId)
                     ?: return@run failure(RemoveGymActivityError.ActivityNotFound)
+
+            if (activity.type != waveCoach.domain.ActivityType.GYM)
+                return@run failure(RemoveGymActivityError.NotGymActivity)
 
             val athlete =
                 athleteRepository.getAthlete(activity.uid)

@@ -25,25 +25,12 @@ class JdbiActivityRepository(
         startTime: Long,
         endTime: Long,
     ): Int =
-        handle.createUpdate("""
+        handle.createUpdate(
+            """
             insert into waveCoach.mesocycle (uid, start_time, end_time) values (:uid, :start_time, :end_time)
-        """.trimIndent())
+        """.trimIndent()
+        )
             .bind("uid", uid)
-            .bind("start_time", startTime)
-            .bind("end_time", endTime)
-            .executeAndReturnGeneratedKeys()
-            .mapTo<Int>()
-            .one()
-
-    override fun storeMicrocycle(
-        mesocycle: Int,
-        startTime: Long,
-        endTime: Long,
-    ): Int =
-        handle.createUpdate("""
-            insert into waveCoach.microcycle (mesocycle, start_time, end_time) values (:mesocycle, :start_time, :end_time)
-        """.trimIndent())
-            .bind("mesocycle", mesocycle)
             .bind("start_time", startTime)
             .bind("end_time", endTime)
             .executeAndReturnGeneratedKeys()
@@ -56,6 +43,44 @@ class JdbiActivityRepository(
             .mapTo<Mesocycle>()
             .singleOrNull()
 
+    override fun updateMesocycle(
+        id: Int,
+        startTime: Long,
+        endTime: Long,
+    ): Int =
+        handle.createUpdate(
+            """
+            update waveCoach.mesocycle set start_time = :start_time, end_time = :end_time where id = :id
+        """.trimIndent()
+        )
+            .bind("id", id)
+            .bind("start_time", startTime)
+            .bind("end_time", endTime)
+            .execute()
+
+    override fun removeMesocycles(uid: Int) {
+        handle.createUpdate("delete from waveCoach.mesocycle where uid = :uid")
+            .bind("uid", uid)
+            .execute()
+    }
+
+    override fun storeMicrocycle(
+        mesocycle: Int,
+        startTime: Long,
+        endTime: Long,
+    ): Int =
+        handle.createUpdate(
+            """
+            insert into waveCoach.microcycle (mesocycle, start_time, end_time) values (:mesocycle, :start_time, :end_time)
+        """.trimIndent()
+        )
+            .bind("mesocycle", mesocycle)
+            .bind("start_time", startTime)
+            .bind("end_time", endTime)
+            .executeAndReturnGeneratedKeys()
+            .mapTo<Int>()
+            .one()
+
     override fun getMicrocycle(id: Int): Microcycle? =
         handle.createQuery("select * from waveCoach.microcycle where id = :id")
             .bind("id", id)
@@ -66,40 +91,41 @@ class JdbiActivityRepository(
         date: Long,
         uid: Int,
     ): Microcycle? =
-        handle.createQuery("""
+        handle.createQuery(
+            """
             select * from waveCoach.microcycle 
             where start_time <= :date and end_time >= :date
-        """.trimIndent())
+        """.trimIndent()
+        )
             .bind("date", date)
             .bind("uid", uid)
             .mapTo<Microcycle>()
             .singleOrNull()
-
-    override fun updateMesocycle(
-        id: Int,
-        startTime: Long,
-        endTime: Long,
-    ): Int =
-        handle.createUpdate("""
-            update waveCoach.mesocycle set start_time = :start_time, end_time = :end_time where id = :id
-        """.trimIndent())
-            .bind("id", id)
-            .bind("start_time", startTime)
-            .bind("end_time", endTime)
-            .execute()
 
     override fun updateMicrocycle(
         id: Int,
         startTime: Long,
         endTime: Long,
     ): Int =
-        handle.createUpdate("""
+        handle.createUpdate(
+            """
             update waveCoach.microcycle set start_time = :start_time, end_time = :end_time where id = :id
-        """.trimIndent())
+        """.trimIndent()
+        )
             .bind("id", id)
             .bind("start_time", startTime)
             .bind("end_time", endTime)
             .execute()
+
+    override fun removeMicrocycles(uid: Int) {
+        handle.createUpdate(
+            """
+            delete from waveCoach.microcycle where mesocycle in (select id from waveCoach.mesocycle where uid = :uid)
+        """.trimIndent()
+        )
+            .bind("uid", uid)
+            .execute()
+    }
 
     private data class Row(
         val mesoId: Int,
@@ -111,7 +137,7 @@ class JdbiActivityRepository(
         val microEnd: Long?,
         val activityId: Int?,
         val activityDate: Long?,
-        val activityType: ActivityType?
+        val activityType: ActivityType?,
     )
 
     override fun getCalendar(
@@ -143,7 +169,7 @@ class JdbiActivityRepository(
                     uid = mesoInfo.uid,
                     startTime = mesoInfo.mesoStart,
                     endTime = mesoInfo.mesoEnd,
-                    microcycles =  mesoRows
+                    microcycles = mesoRows
                         .filter { it.microId != null }
                         .groupBy { it.microId }
                         .map { (microId, microRows) ->
@@ -165,7 +191,7 @@ class JdbiActivityRepository(
                                         )
                                     }
                             )
-                    }
+                        }
                 )
             }
     }

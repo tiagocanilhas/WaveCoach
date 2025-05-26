@@ -177,6 +177,16 @@ class GymActivityServicesTest {
         }
     }
 
+    @Test
+    fun `get gym activity - not gym activity`() {
+        val createGymActivityServices = createGymActivityServices()
+
+        when (val result = createGymActivityServices.getGymActivity(FIRST_COACH_ID, THIRD_GYM_ACTIVITY_ID)) {
+            is Failure -> assertTrue(result.value is GetGymActivityError.NotGymActivity)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
     /**
      * Remove Gym Activity Tests
      */
@@ -207,6 +217,16 @@ class GymActivityServicesTest {
 
         when (val result = createGymActivityServices.removeGymActivity(SECOND_COACH_ID, FIRST_GYM_ACTIVITY_ID)) {
             is Failure -> assertTrue(result.value is RemoveGymActivityError.NotAthletesCoach)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
+    @Test
+    fun `remove gym activity - not gym activity`() {
+        val createGymActivityServices = createGymActivityServices()
+
+        when (val result = createGymActivityServices.removeGymActivity(FIRST_COACH_ID, THIRD_GYM_ACTIVITY_ID)) {
+            is Failure -> assertTrue(result.value is RemoveGymActivityError.NotGymActivity)
             is Success -> fail("Unexpected $result")
         }
     }

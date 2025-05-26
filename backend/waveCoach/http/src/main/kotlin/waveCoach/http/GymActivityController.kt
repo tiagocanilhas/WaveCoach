@@ -96,6 +96,7 @@ class GymActivityController(
                 when (result.value) {
                     GetGymActivityError.ActivityNotFound -> Problem.response(404, Problem.gymActivityNotFound)
                     GetGymActivityError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
+                    GetGymActivityError.NotGymActivity -> Problem.response(400, Problem.notGymActivity)
                 }
         }
     }
@@ -152,6 +153,7 @@ class GymActivityController(
                 when (result.value) {
                     RemoveGymActivityError.ActivityNotFound -> Problem.response(404, Problem.gymActivityNotFound)
                     RemoveGymActivityError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
+                    RemoveGymActivityError.NotGymActivity -> Problem.response(400, Problem.notGymActivity)
                 }
         }
     }

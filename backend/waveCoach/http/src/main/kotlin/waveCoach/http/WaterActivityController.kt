@@ -121,4 +121,24 @@ class WaterActivityController(
                 }
         }
     }
+
+    @DeleteMapping(Uris.WaterActivity.REMOVE)
+    fun remove(
+        coach: AuthenticatedCoach,
+        @PathVariable activityId: String,
+    ): ResponseEntity<*> {
+        val activityIdInt = activityId.toIntOrNull() ?: return Problem.response(400, Problem.invalidWaterActivityId)
+
+        val result = waterActivityService.removeWaterActivity(coach.info.id, activityIdInt)
+
+        return when (result) {
+            is Success -> ResponseEntity.status(204).build<Unit>()
+            is Failure ->
+                when (result.value) {
+                    RemoveWaterActivityError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
+                    RemoveWaterActivityError.ActivityNotFound -> Problem.response(404, Problem.waterActivityNotFound)
+                    RemoveWaterActivityError.NotWaterActivity -> Problem.response(400, Problem.notWaterActivity)
+                }
+        }
+    }
 }

@@ -268,16 +268,29 @@ class AthleteServices(
             val characteristicsRepository = it.characteristicsRepository
             val activityRepository = it.activityRepository
             val gymActivityRepository = it.gymActivityRepository
+            val waterActivityRepository = it.waterActivityRepository
 
             val athlete = athleteRepository.getAthlete(aid) ?: return@run failure(RemoveAthleteError.AthleteNotFound)
             if (athlete.coach != coachId) return@run failure(RemoveAthleteError.NotAthletesCoach)
 
             characteristicsRepository.removeCharacteristicsWithoutDate(aid)
+
             gymActivityRepository.removeSetsByAthlete(aid)
             gymActivityRepository.removeExercisesByAthlete(aid)
             gymActivityRepository.removeGymActivities(aid)
+
+            waterActivityRepository.removeManeuversByAthlete(aid)
+            waterActivityRepository.removeWavesByAthlete(aid)
+            waterActivityRepository.removeWaterActivities(aid)
+
             activityRepository.removeActivities(aid)
+
+            activityRepository.removeMicrocycles(aid)
+            activityRepository.removeMesocycles(aid)
+
             athleteRepository.removeCode(aid)
+            userRepository.removeTokensByUserId(aid)
+
             athleteRepository.removeAthlete(aid)
             userRepository.removeUser(aid)
 

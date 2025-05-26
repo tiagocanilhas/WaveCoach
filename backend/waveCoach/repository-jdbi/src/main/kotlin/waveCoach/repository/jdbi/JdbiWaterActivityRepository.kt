@@ -26,6 +26,23 @@ class JdbiWaterActivityRepository(
             .mapTo<Int>()
             .one()
 
+    override fun removeWaterActivity(activityId: Int) {
+        handle.createUpdate("delete from waveCoach.water where activity = :activityId")
+            .bind("activityId", activityId)
+            .execute()
+    }
+
+    override fun removeWaterActivities(athleteId: Int) {
+        handle.createUpdate(
+            """
+            delete from waveCoach.water 
+            where activity in (select id from waveCoach.activity where uid = :athleteId)
+            """.trimIndent(),
+        )
+            .bind("athleteId", athleteId)
+            .execute()
+    }
+
     override fun storeWave(activityId: Int, points: Float?, order: Int): Int =
         handle.createUpdate(
             """
@@ -39,6 +56,23 @@ class JdbiWaterActivityRepository(
             .executeAndReturnGeneratedKeys()
             .mapTo<Int>()
             .one()
+
+    override fun removeWavesByActivity(activityId: Int) {
+        handle.createUpdate("delete from waveCoach.wave where activity = :activityId")
+            .bind("activityId", activityId)
+            .execute()
+    }
+
+    override fun removeWavesByAthlete(athleteId: Int) {
+        handle.createUpdate(
+            """
+            delete from waveCoach.wave 
+            where activity in (select id from waveCoach.activity where uid = :athleteId)
+            """.trimIndent(),
+        )
+            .bind("athleteId", athleteId)
+            .execute()
+    }
 
     override fun storeManeuver(
         waveId: Int,
@@ -61,6 +95,30 @@ class JdbiWaterActivityRepository(
             .executeAndReturnGeneratedKeys()
             .mapTo<Int>()
             .one()
+
+    override fun removeManeuversByActivity(activityId: Int) {
+        handle.createUpdate(
+            """
+            delete from waveCoach.maneuver 
+            where wave in (select id from waveCoach.wave where activity = :activityId)
+            """.trimIndent(),
+        )
+            .bind("activityId", activityId)
+            .execute()
+    }
+
+    override fun removeManeuversByAthlete(athleteId: Int) {
+        handle.createUpdate(
+            """
+            delete from waveCoach.maneuver 
+            where wave in (select id from waveCoach.wave where activity in (
+                select id from waveCoach.activity where uid = :athleteId
+            ))
+            """.trimIndent(),
+        )
+            .bind("athleteId", athleteId)
+            .execute()
+    }
 
     private data class Row(
         val activityId: Int,
