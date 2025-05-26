@@ -6,7 +6,7 @@ import { Button } from '../Button'
 import { Switch, TextField } from '@mui/material'
 import { Card } from '../Card'
 
-import { Maneuver } from '../../types/Maneuver'
+import { WaterManeuver } from '../../types/WaterManeuver'
 
 import styles from './styles.module.css'
 
@@ -29,8 +29,8 @@ function reducer(state: State, action: Action): State {
 }
 
 type AddManeuverPopupProps = {
-  maneuver: Maneuver
-  onAdd: (maneuver: Maneuver, isRight: boolean, success: boolean) => void
+  maneuver: WaterManeuver
+  onAdd: (maneuver: WaterManeuver, isRight: boolean, success: boolean) => void
   onClose: () => void
 }
 

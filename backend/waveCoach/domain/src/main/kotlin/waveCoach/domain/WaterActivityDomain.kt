@@ -15,4 +15,6 @@ class WaterActivityDomain {
     fun checkDuration(duration: Int): Boolean {
         return duration > 0
     }
+
+    fun checkQuestionnaireValue(value: Int) = value in 0..10
 }

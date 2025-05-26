@@ -7,14 +7,16 @@ import { Card } from '../Card'
 import { Popup } from '../Popup'
 import { Button } from '../Button'
 import { AddWavePopup } from '../AddWavePopup'
+import { CustomTimePicker } from '../CustomTimePicker'
 
-import { Maneuver } from '../../types/Maneuver'
-import { Wave } from '../../types/Wave'
+// import { Wave } from '../../types/Wave'
+import { WaveToAdd } from '../../types/WaveToAdd'
+
+import { createWaterActivity } from '../../services/waterServices'
+
+import { handleError } from '../../utils/handleError'
 
 import styles from './styles.module.css'
-import { TimePicker } from '@mui/x-date-pickers'
-import { CustomTimePicker } from '../CustomTimePicker'
-import { handleError } from '../../utils/handleError'
 
 type State = {
   isOpen: boolean
@@ -23,7 +25,7 @@ type State = {
   pse: number
   time: number
   heartRate: number
-  waves: Wave[]
+  waves: WaveToAdd[]
   error?: string
 }
 
@@ -35,7 +37,7 @@ type Action =
   | { type: 'setPse'; pse: number }
   | { type: 'setTime'; time: number }
   | { type: 'setHeartRate'; heartRate: number }
-  | { type: 'addWave'; payload: { wave: Wave } }
+  | { type: 'addWave'; wave: WaveToAdd }
   | { type: 'error'; error: string }
 
 function reducer(state: State, action: Action): State {
@@ -58,7 +60,7 @@ function reducer(state: State, action: Action): State {
       return {
         ...state,
         isOpen: false,
-        waves: [...state.waves, action.payload.wave],
+        waves: [...state.waves, action.wave],
       }
     case 'error':
       return { ...state, error: action.error }
@@ -94,8 +96,8 @@ export function AddWaterWorkoutPopup({ onClose, onSuccess }: AddWaterWorkoutPopu
     dispatch({ type: 'closePopup' })
   }
 
-  function onAddWave(wave: Wave) {
-    dispatch({ type: 'addWave', payload: { wave } })
+  function onAddWave(wave: WaveToAdd) {
+    dispatch({ type: 'addWave', wave })
   }
 
   function handleOnChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -139,10 +141,17 @@ export function AddWaterWorkoutPopup({ onClose, onSuccess }: AddWaterWorkoutPopu
     const pse = state.pse
     const time = state.time
     const heartRate = state.heartRate
-    const waves = state.waves
+    const waves = state.waves.map(wave => ({
+      maneuvers: wave.maneuvers.map(m => ({
+        waterManeuverId: m.waterManeuverId,
+        rightSide: m.rightSide,
+        success: m.success,
+      })),
+    }))
 
     try {
-      // TODO
+      await createWaterActivity(id, date, pse, condition, heartRate, time, waves)
+      onSuccess()
     } catch (error) {
       dispatch({ type: 'error', error: handleError(error) })
     }
@@ -165,7 +174,7 @@ export function AddWaterWorkoutPopup({ onClose, onSuccess }: AddWaterWorkoutPopu
           <>
             <form className={styles.addWorkout} onSubmit={handleOnSubmit}>
               <TextField type="date" name="date" value={date} onChange={handleOnChange} />
-              <TextField type="text" name="condition" placeholder="Condition" />
+              <TextField type="text" name="condition" label="Condition" value={condition} onChange={handleOnChange} />
               <div className={styles.sliderContainer}>
                 <label>PSE</label>
                 <Slider
@@ -198,11 +207,13 @@ export function AddWaterWorkoutPopup({ onClose, onSuccess }: AddWaterWorkoutPopu
                   <Card
                     content={
                       <div className={styles.exercise}>
-                        {info.maneuvers.map(m => (
-                          <p>
-                            {m.maneuver.name} - {m.isRight ? '➡️' : '⬅️'} {m.success ? '✅' : '❌'}
-                          </p>
-                        ))}
+                        {info.maneuvers.map(m => {
+                          return (
+                            <p>
+                              {m.name} - {m.rightSide ? '➡️' : '⬅️'} {m.success ? '✅' : '❌'}
+                            </p>
+                          )
+                        })}
                       </div>
                     }
                     width="600px"

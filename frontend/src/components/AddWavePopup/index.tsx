@@ -4,23 +4,20 @@ import { useReducer } from 'react'
 import { Popup } from '../Popup'
 import { Card } from '../Card'
 import { Button } from '../Button'
-import { Switch } from '@mui/material'
 import { SelectManeuverPopup } from '../SelectManeuverPopup'
 
-import { Maneuver } from '../../types/Maneuver'
-import { Wave } from '../../types/Wave'
+import { WaterManeuver } from '../../types/WaterManeuver'
+import { ManeuverToAdd } from '../../types/ManeuverToAdd'
+import { WaveToAdd } from '../../types/WaveToAdd'
 
 import styles from './styles.module.css'
 
 type State = {
   isOpen: boolean
-  maneuvers: any[] | undefined
+  maneuvers: ManeuverToAdd[] | undefined
 }
 
-type Action =
-  | { type: 'openPopup' }
-  | { type: 'closePopup' }
-  | { type: 'addManeuver'; payload: { maneuver: Maneuver; isRight: boolean; success: boolean } }
+type Action = { type: 'openPopup' } | { type: 'closePopup' } | { type: 'addManeuver'; maneuver: ManeuverToAdd }
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
@@ -32,7 +29,7 @@ function reducer(state: State, action: Action): State {
       return {
         ...state,
         isOpen: false,
-        maneuvers: [...state.maneuvers, action.payload],
+        maneuvers: [...state.maneuvers, action.maneuver],
       }
     default:
       return state
@@ -40,7 +37,7 @@ function reducer(state: State, action: Action): State {
 }
 
 type AddWavePopupProps = {
-  onAdd: (wave: Wave) => void
+  onAdd: (wave: WaveToAdd) => void
   onClose: () => void
 }
 
@@ -57,8 +54,14 @@ export function AddWavePopup({ onClose, onAdd }: AddWavePopupProps) {
     dispatch({ type: 'closePopup' })
   }
 
-  function handleOnAdd(maneuver: Maneuver, isRight: boolean, success: boolean) {
-    dispatch({ type: 'addManeuver', payload: { maneuver, isRight, success } })
+  function handleOnAdd(maneuver: WaterManeuver, rightSide: boolean, success: boolean) {
+    const maneuverToAdd: ManeuverToAdd = {
+      waterManeuverId: maneuver.id,
+      name: maneuver.name,
+      rightSide: rightSide,
+      success: success,
+    }
+    dispatch({ type: 'addManeuver', maneuver: maneuverToAdd })
   }
 
   function handleOnClick() {
@@ -79,7 +82,7 @@ export function AddWavePopup({ onClose, onAdd }: AddWavePopupProps) {
                 <Card
                   content={
                     <p>
-                      {info.maneuver.name} - {info.isRight ? '➡️' : '⬅️'} {info.success ? '✅' : '❌'}
+                      {info.name} - {info.rightSide ? '➡️' : '⬅️'} {info.success ? '✅' : '❌'}
                     </p>
                   }
                 />

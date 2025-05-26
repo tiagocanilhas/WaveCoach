@@ -112,3 +112,7 @@ export async function createCalendar(id: string, events: { mesocycles: any[] }) 
 export async function getCalendar(id: string, type?: string) {
   return await customFetch(URIS.ATHLETES.getCalendar(id, type), 'GET')
 }
+
+export async function getWaterActivities(id: string) {
+  return await customFetch(URIS.ATHLETES.getWaterActivities(id), 'GET')
+}

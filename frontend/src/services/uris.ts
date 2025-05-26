@@ -34,6 +34,8 @@ const ATHLETES = {
   createCalendar: (id: string) => `${ATHLETES_URL}/${id}/calendar`,
   getCalendar: (id: string, type: string) => `${ATHLETES_URL}/${id}/calendar?type=${type}`,
   getActivities: (id: string) => `${ATHLETES_URL}/${id}/activities`,
+
+  getWaterActivities: (id: string) => `${ATHLETES_URL}/${id}/water`,
 }
 
 const GYM_URL = `${BASE_URL}/gym`
@@ -59,6 +61,8 @@ const WATER = {
   getById: (id: string) => `${WATER_URL}/${id}`,
   update: (id: string) => `${WATER_URL}/${id}`,
   delete: (id: string) => `${WATER_URL}/${id}`,
+  
+  getQuestionnaire: (id: string) => `${WATER_URL}/${id}/questionnaire`,
 }
 
 const WATER_MANEUVERS_URL = `${BASE_URL}/water/maneuver`

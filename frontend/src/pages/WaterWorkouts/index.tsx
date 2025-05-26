@@ -5,73 +5,84 @@ import { useEffect, useReducer } from 'react'
 import { CircularProgress } from '@mui/material'
 import { Workout } from '../../components/Workout'
 import { AddWaterWorkoutPopup } from '../../components/AddWaterWorkoutPopup'
+import { WaterCharts } from '../../components/WaterCharts'
 
-import { getCalendar } from '../../services/athleteServices'
+import { getWaterActivity } from '../../services/waterServices'
+import { getWaterActivities } from '../../services/athleteServices'
 
-import styles from './styles.module.css'
+import { handleError } from '../../utils/handleError'
 
-import { Bar } from 'react-chartjs-2'
-import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from 'chart.js'
-import { Card } from '../../components/Card'
 import { useAuthentication } from '../../hooks/useAuthentication'
 
-ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend)
+import { WaterCalendar } from '../../types/WaterCalendar'
 
-const dummyData = {
-  labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
-  datasets: [
-    {
-      label: 'Workouts',
-      data: [1, 2, 0, 3, 1],
-      backgroundColor: 'rgba(54, 162, 235, 0.6)',
-      borderRadius: 4,
-    },
-  ],
-}
+import styles from './styles.module.css'
+import { epochConverter } from '../../utils/epochConverter'
 
 type State = {
-  activities: any[]
+  calendar: WaterCalendar
   isOpen: boolean
   workout: any
+  selectedCycle?: { mesocycleId: number; microcycleId: number | null }
+  error?: string
 }
 
 type Action =
-  | { type: 'setActivities'; payload: any[] }
+  | { type: 'setCalendar'; payload: WaterCalendar }
   | { type: 'setLastWorkout'; payload: any }
   | { type: 'addWorkout' }
   | { type: 'closeWorkout' }
+  | { type: 'setSelectedCycle'; payload: { mesocycleId: number; microcycleId: number | null } | null }
+  | { type: 'error'; error: string }
 
 function reducer(state: State, action: Action) {
   switch (action.type) {
-    case 'setActivities':
-      return { ...state, activities: action.payload }
+    case 'setCalendar':
+      return { ...state, calendar: action.payload }
     case 'setLastWorkout':
       return { ...state, workout: action.payload }
     case 'addWorkout':
       return { ...state, isOpen: true }
     case 'closeWorkout':
       return { ...state, isOpen: false }
+    case 'setSelectedCycle':
+      return { ...state, selectedCycle: action.payload }
+    case 'error':
+      return { ...state, error: action.error }
     default:
       return state
   }
 }
 
 export function WaterWorkouts() {
-  const initialState: State = { activities: undefined, isOpen: false, workout: undefined }
+  const initialState: State = { calendar: undefined, isOpen: false, workout: undefined }
   const [state, dispatch] = useReducer(reducer, initialState)
   const id = useParams().aid
   const [user] = useAuthentication()
 
-  useEffect(() => {
-    async function fetchCalendar() {
-      try {
-        const res = await getCalendar(id, 'water')
-        const activities = res.mesocycles.flatMap(mesocycle => mesocycle.microcycles).flatMap(microcycle => microcycle.activities)
-        dispatch({ type: 'setActivities', payload: activities })
-      } catch (error) {
-        console.error('Error fetching data:', error)
+  async function fetchCalendar() {
+    try {
+      const calendar = await getWaterActivities(id)
+      dispatch({ type: 'setCalendar', payload: calendar })
+
+      const activities = calendar.mesocycles
+        .flatMap(mesocycle => mesocycle.microcycles)
+        .flatMap(microcycle => microcycle.activities)
+
+      if (activities.length === 0) {
+        dispatch({ type: 'setLastWorkout', payload: null })
+        return
       }
+
+      const wid = activities[activities.length - 1].id
+      const workout = await getWaterActivity(wid)
+      dispatch({ type: 'setLastWorkout', payload: workout })
+    } catch (error) {
+      dispatch({ type: 'error', error: handleError(error) })
     }
+  }
+
+  useEffect(() => {
     fetchCalendar()
   }, [])
 
@@ -83,29 +94,65 @@ export function WaterWorkouts() {
     dispatch({ type: 'closeWorkout' })
   }
 
-  function handleOnSuccess() {
-    window.location.reload()
+  function handleOnCycleSelected(cycle: { mesocycleId: number; microcycleId: number | null } | null) {
+    dispatch({ type: 'setSelectedCycle', payload: cycle })
   }
 
-  if (state.activities === undefined) return <CircularProgress />
+  function handleOnSuccess() {
+    fetchCalendar()
+    dispatch({ type: 'closeWorkout' })
+  }
+
+  const workout = state.workout
+
+  if (state.calendar === undefined) return <CircularProgress />
 
   return (
     <>
       <Workout
-        lastWorkoutContent={<>{state.workout === undefined ? <CircularProgress /> : state.workout}</>}
-        workouts={state.activities}
+        lastWorkoutContent={
+          <>
+            {workout === undefined ? (
+              <CircularProgress />
+            ) : workout === null || workout.waves.length === 0 ? (
+              <p>Data not available</p>
+            ) : (
+              <div className={styles.lastWorkout}>
+                <h2>{epochConverter(workout.date, 'dd-mm-yyyy')}</h2>
+                <div className={styles.lastWorkoutDetails}>
+                  <p>PSE: {workout.pse} (0-10)</p>
+                  <p>Condition: {workout.condition}</p>
+                  <p>Heart Rate: {workout.heartRate} bpm</p>
+                  <div>Duration: {workout.duration / 60} min</div>
+                </div>
+                {workout.waves.map((wave, index) => (
+                  <div className={styles.wave} key={wave.id}>
+                    <h2>{`Wave ${index + 1}`}</h2>
+                    <div className={styles.maneuvers}>
+                      {wave.maneuvers.map(maneuver => (
+                        <div key={maneuver.id} className={styles.maneuver}>
+                          <img src={maneuver.url || `/images/no_image.svg`} alt="Maneuver" />
+                          <div className={styles.maneuverDetails}>
+                            <p>{maneuver.name}</p>
+                            <p>{maneuver.rightSide ? '➡️' : '⬅️'}</p>
+                            <p>{maneuver.success ? '✅' : '❌'}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
+        }
+        calendar={state.calendar}
         onAdd={user.isCoach ? handleAdd : undefined}
+        onCycleSelected={handleOnCycleSelected}
+        type="water"
       />
 
-      <div className={styles.graphics}>
-        <Card content={<Bar data={dummyData} />} width="500px" height="300px" />
-        <Card content={<Bar data={dummyData} />} width="500px" height="300px" />
-        <Card content={<Bar data={dummyData} />} width="500px" height="300px" />
-        <Card content={<Bar data={dummyData} />} width="500px" height="300px" />
-        <Card content={<Bar data={dummyData} />} width="500px" height="300px" />
-        <Card content={<Bar data={dummyData} />} width="500px" height="300px" />
-        <Card content={<Bar data={dummyData} />} width="500px" height="300px" />
-      </div>
+      <WaterCharts data={state.calendar} selected={state.selectedCycle} />
 
       {state.isOpen && <AddWaterWorkoutPopup onClose={handleClose} onSuccess={handleOnSuccess} />}
     </>

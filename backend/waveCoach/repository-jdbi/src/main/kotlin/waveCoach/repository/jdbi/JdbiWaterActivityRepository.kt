@@ -6,6 +6,9 @@ import waveCoach.domain.WaterActivityWithWaves
 import waveCoach.domain.WaveWithManeuvers
 import waveCoach.repository.WaterActivityRepository
 import waveCoach.domain.Maneuver
+import waveCoach.domain.MesocycleWater
+import waveCoach.domain.MicrocycleWater
+import waveCoach.domain.Questionnaire
 
 class JdbiWaterActivityRepository(
     private val handle: Handle
@@ -194,4 +197,147 @@ class JdbiWaterActivityRepository(
         )
     }
 
+    override fun getWaterActivities(
+        uid: Int
+    ) :List<MesocycleWater> {
+        val query = """
+            select meso.id as meso_id, meso.start_time as meso_start, meso.end_time as meso_end,
+				micro.id as micro_id, micro.start_time as micro_start, micro.end_time as micro_end, 
+				a.id as activity_id, a.uid, a.microcycle, a.date, w.pse, 
+                w.condition, w.heart_rate, w.duration, wv.id as wave_id, wv.points, wv.wave_order, m.id as maneuver_id,
+                m.right_side, m.success, m.maneuver_order, wm.id as water_maneuver_id, wm.name as water_maneuver_name,
+                wm.url
+            from waveCoach.mesocycle meso
+            left join waveCoach.microcycle micro on micro.mesocycle = meso.id
+            left join waveCoach.activity a on a.microcycle = micro.id
+            left join waveCoach.water w on a.id = w.activity
+            left join waveCoach.wave wv on w.activity = wv.activity
+            left join waveCoach.maneuver m on wv.id = m.wave
+            left join waveCoach.water_maneuver wm on m.maneuver = wm.id
+            where a.type = 'water' and meso.uid = :uid 
+            order by meso.start_time, micro.start_time, a.date, wv.wave_order, m.maneuver_order
+        """.trimIndent()
+
+        data class Row(
+            val mesoId: Int,
+            val mesoStart: Long,
+            val mesoEnd: Long,
+            val microId: Int?,
+            val microStart: Long?,
+            val microEnd: Long?,
+            val activityId: Int?,
+            val uid: Int,
+            val microcycle: Int,
+            val date: Long,
+            val pse: Int?,
+            val condition: String?,
+            val heartRate: Int?,
+            val duration: Int?,
+            val waveId: Int?,
+            val points: Float?,
+            val waveOrder: Int?,
+            val maneuverId: Int?,
+            val rightSide: Boolean?,
+            val success: Boolean?,
+            val maneuverOrder: Int?,
+            val waterManeuverId: Int?,
+            val waterManeuverName: String?,
+            val url: String?,
+        )
+
+        val rows = handle.createQuery(query)
+            .bind("uid", uid)
+            .mapTo<Row>()
+            .list()
+
+        return rows.groupBy { it.mesoId }
+            .map { (mesoId, mesoRows) ->
+                val mesoInfo = mesoRows.first()
+                MesocycleWater(
+                    id = mesoId,
+                    uid = mesoInfo.uid,
+                    startTime = mesoInfo.mesoStart,
+                    endTime = mesoInfo.mesoEnd,
+                    microcycles = mesoRows
+                        .filter { it.microId != null }
+                        .groupBy { it.microId }
+                        .map { (microId, microRows) ->
+                            val microInfo = microRows.first()
+                            MicrocycleWater(
+                                id = microId!!,
+                                startTime = microInfo.microStart!!,
+                                endTime = microInfo.microEnd!!,
+                                activities = microRows
+                                    .filter { it.activityId != null }
+                                    .groupBy { it.activityId }
+                                    .map { (activityId, activityRows) ->
+                                        val activityInfo = activityRows.first()
+                                        WaterActivityWithWaves(
+                                            id = activityId!!,
+                                            athleteId = activityInfo.uid,
+                                            microcycleId = activityInfo.microcycle,
+                                            date = activityInfo.date,
+                                            pse = activityInfo.pse ?: 0,
+                                            condition = activityInfo.condition ?: "",
+                                            heartRate = activityInfo.heartRate ?: 0,
+                                            duration = activityInfo.duration ?: 0,
+                                            waves = microRows
+                                                .filter { it.waveId != null }
+                                                .groupBy { it.waveId }
+                                                .map { (_, waveRows) ->
+                                                    val info = waveRows.first()
+                                                    WaveWithManeuvers(
+                                                        id = info.waveId!!,
+                                                        points = info.points,
+                                                        order = info.waveOrder!!,
+                                                        maneuvers = waveRows
+                                                            .filter { it.maneuverId != null }
+                                                            .mapNotNull { maneuverRow ->
+                                                            Maneuver(
+                                                                id = maneuverRow.maneuverId !!,
+                                                                waterManeuverId = maneuverRow.waterManeuverId!!,
+                                                                waterManeuverName = maneuverRow.waterManeuverName!!,
+                                                                url = maneuverRow.url,
+                                                                rightSide = maneuverRow.rightSide!!,
+                                                                success = maneuverRow.success!!,
+                                                                order = maneuverRow.maneuverOrder!!
+                                                            )
+                                                        }
+                                                )
+                                            }
+                                        )
+                                    }
+                                )
+                            }
+                        )
+                    }
+    }
+
+    override fun storeQuestionnaire(activityId: Int, sleep: Int, fatigue: Int, stress: Int, musclePain: Int){
+        handle.createUpdate("""
+            insert into waveCoach.questionnaire (activity, sleep, fatigue, stress, muscle_pain) 
+            values (:activityId, :sleep, :fatigue, :stress, :musclePain)
+            """.trimIndent()
+        )
+            .bind("activityId", activityId)
+            .bind("sleep", sleep)
+            .bind("fatigue", fatigue)
+            .bind("stress", stress)
+            .bind("musclePain", musclePain)
+            .execute()
+    }
+
+    override fun getQuestionnaire(activityId: Int): Questionnaire? =
+        handle.createQuery(" select * from waveCoach.questionnaire where activity = :activityId")
+            .bind("activityId", activityId)
+            .mapTo<Questionnaire>()
+            .singleOrNull()
+
+    override fun removeQuestionnaire(activityId: Int) {
+        handle.createUpdate("delete from waveCoach.questionnaire where activity = :activityId")
+            .bind("activityId", activityId)
+            .execute()
+    }
 }
+
+

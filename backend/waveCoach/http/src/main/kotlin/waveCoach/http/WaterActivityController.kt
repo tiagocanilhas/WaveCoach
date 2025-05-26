@@ -2,11 +2,17 @@ package waveCoach.http
 
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RestController
 import waveCoach.domain.AuthenticatedCoach
 import waveCoach.domain.AuthenticatedUser
 import waveCoach.http.model.input.CreateWaterActivityInputModel
+import waveCoach.http.model.input.QuestionnaireCreateInputModel
 import waveCoach.http.model.output.ManeuverOutputModel
 import waveCoach.http.model.output.Problem
+import waveCoach.http.model.output.QuestionnaireOutputModel
 import waveCoach.http.model.output.WaterActivityOutputModel
 import waveCoach.http.model.output.WaveOutputModel
 import waveCoach.services.*
@@ -139,6 +145,60 @@ class WaterActivityController(
                     RemoveWaterActivityError.ActivityNotFound -> Problem.response(404, Problem.waterActivityNotFound)
                     RemoveWaterActivityError.NotWaterActivity -> Problem.response(400, Problem.notWaterActivity)
                 }
+        }
+    }
+
+    @PostMapping(Uris.WaterActivity.CREATE_QUESTIONNAIRE)
+    fun createQuestionnaire(
+        coach: AuthenticatedCoach,
+        @RequestBody input: QuestionnaireCreateInputModel,
+        @PathVariable activityId: String
+    ): ResponseEntity<*>{
+        val id = activityId.toIntOrNull() ?: return Problem.response(400, Problem.invalidWaterActivityId)
+
+        val result = waterActivityService.createQuestionnaire(coach.info.id, id, input.sleep, input.fatigue, input.stress, input.musclePain)
+
+        return when (result){
+            is Success -> ResponseEntity.status(204).build<Unit>()
+
+            is Failure -> when (result.value) {
+                CreateQuestionnaireError.AlreadyExists -> Problem.response(409, Problem.questionnaireAlreadyExists)
+                CreateQuestionnaireError.ActivityNotFound -> Problem.response(404, Problem.waterActivityNotFound)
+                CreateQuestionnaireError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
+                CreateQuestionnaireError.InvalidSleep -> Problem.response(400, Problem.invalidSleep)
+                CreateQuestionnaireError.InvalidFatigue -> Problem.response(400, Problem.invalidFatigue)
+                CreateQuestionnaireError.InvalidStress -> Problem.response(400, Problem.invalidStress)
+                CreateQuestionnaireError.InvalidMusclePain -> Problem.response(400, Problem.invalidMusclePain)
+            }
+        }
+    }
+
+    @GetMapping(Uris.WaterActivity.GET_QUESTIONNAIRE)
+    fun getQuestionnaire(
+        user: AuthenticatedUser,
+        @PathVariable activityId: String
+    ): ResponseEntity<*> {
+        val id = activityId.toIntOrNull() ?: return Problem.response(400, Problem.invalidWaterActivityId)
+
+        val result = waterActivityService.getQuestionnaire(user.info.id, id)
+
+        return when (result) {
+            is Success -> ResponseEntity
+                .status(200)
+                .body(
+                    QuestionnaireOutputModel(
+                        result.value.sleep,
+                        result.value.fatigue,
+                        result.value.stress,
+                        result.value.musclePain
+                    )
+                )
+
+            is Failure -> when (result.value) {
+                GetQuestionnaireError.ActivityNotFound -> Problem.response(404, Problem.waterActivityNotFound)
+                GetQuestionnaireError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
+                GetQuestionnaireError.QuestionnaireNotFound -> Problem.response(404, Problem.questionnaireNotFound)
+            }
         }
     }
 }

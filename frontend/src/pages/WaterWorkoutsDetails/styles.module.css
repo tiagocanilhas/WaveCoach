@@ -1,0 +1,51 @@
+.workoutDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.questionnaireDetails {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  padding: 10px;
+}
+
+.wavesContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.waveDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid #eeeeee;
+}
+
+.maneuversContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.maneuver {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
+}
+
+.maneuver img {
+  width: 50px;
+  height: 50px;
+}
+
+.maneuversCarrousel {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  width: 100%;
+}

@@ -1,8 +1,8 @@
 export type GymWorkout = {
-  id: string
+  id: number
   date: number
   exercises: {
-    id: string
+    id: number
     name: string
     order: number
     url?: string

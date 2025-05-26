@@ -1,0 +1,41 @@
+.lastWorkout {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-right: 20px;
+}
+
+.lastWorkoutDetails {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 5px;
+}
+
+.wave {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 1px solid #bbbbbb;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.maneuver {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  padding: 5px;
+  align-items: center;
+}
+
+.maneuver img {
+  width: 70px;
+  height: 70px;
+  border-radius: 10%;
+}
+
+.maneuverDetails {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}

@@ -52,7 +52,6 @@ export function CharacteristicsChart({ labels, dataSetsData, onPointClick }: Cha
       const labelIndex = xAxis.getValueForPixel(position.x)
 
       if (labelIndex !== undefined && labelIndex >= 0 && labelIndex < labels.length) {
-        console.log(`Label clicked: ${labels[labelIndex]}`)
         onPointClick(labelIndex)
       }
     },

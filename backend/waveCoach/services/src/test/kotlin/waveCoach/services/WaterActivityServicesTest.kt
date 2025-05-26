@@ -350,6 +350,73 @@ class WaterActivityServicesTest {
         }
     }
 
+
+    /**
+     * Create Questionnaire Test
+     */
+
+    @Test
+    fun `create questionnaire - success`() {
+        val createWaterActivityService = createWaterActivityServices()
+
+        when (
+            val result =
+                createWaterActivityService.createQuestionnaire(
+                    FIRST_COACH_ID,
+                    FIRST_WATER_ACTIVITY_ID,
+                    5,
+                    5,
+                    5,
+                    5,
+                )
+        ) {
+            is Failure -> fail("Unexpected $result")
+            is Success -> assertTrue(true)
+        }
+    }
+
+    @Test
+    fun `create questionnaire - activity not found`() {
+        val createWaterActivityService = createWaterActivityServices()
+
+        when (
+            val result =
+                createWaterActivityService.createQuestionnaire(
+                    FIRST_COACH_ID,
+                    0,
+                    5,
+                    5,
+                    5,
+                    5,
+                )
+        ) {
+            is Failure -> assertTrue(result.value is CreateQuestionnaireError.ActivityNotFound)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
+    @Test
+    fun `create questionnaire - not athletes coach`() {
+        val createWaterActivityService = createWaterActivityServices()
+
+        when (
+            val result =
+                createWaterActivityService.createQuestionnaire(
+                    SECOND_COACH_ID,
+                    FIRST_WATER_ACTIVITY_ID,
+                    5,
+                    5,
+                    5,
+                    5,
+                )
+        ) {
+            is Failure -> assertTrue(result.value is CreateQuestionnaireError.NotAthletesCoach)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
+
+
     companion object {
         private const val FIRST_COACH_ID = 1
         private const val SECOND_COACH_ID = 2

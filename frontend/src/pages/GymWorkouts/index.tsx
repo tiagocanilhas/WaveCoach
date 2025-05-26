@@ -11,11 +11,15 @@ import { getGymActivity } from '../../services/gymServices'
 
 import styles from './styles.module.css'
 import { useAuthentication } from '../../hooks/useAuthentication'
+import { handleError } from '../../utils/handleError'
+import { epochConverter } from '../../utils/epochConverter'
 
 type State = {
-  activities: any[]
+  calendar: any[]
   isOpen: boolean
   workout: any
+  selectedCycle?: { mesocycleId: number; microcycleId: number | null }
+  error?: string
 }
 
 type Action =
@@ -23,54 +27,57 @@ type Action =
   | { type: 'setLastWorkout'; payload: any }
   | { type: 'addWorkout' }
   | { type: 'closeWorkout' }
+  | { type: 'setSelectedCycle'; payload: { mesocycleId: number; microcycleId: number | null } | null }
+  | { type: 'error'; error: string }
 
 function reducer(state: State, action: Action) {
   switch (action.type) {
     case 'setActivities':
-      return { ...state, activities: action.payload }
+      return { ...state, calendar: action.payload }
     case 'setLastWorkout':
       return { ...state, workout: action.payload }
     case 'addWorkout':
       return { ...state, isOpen: true }
     case 'closeWorkout':
       return { ...state, isOpen: false }
+    case 'setSelectedCycle':
+      return { ...state, selectedCycle: action.payload }
+    case 'error':
+      return { ...state, error: action.error }
     default:
       return state
   }
 }
 
 export function GymWorkouts() {
-  const initialState: State = { activities: undefined, isOpen: false, workout: undefined }
+  const initialState: State = { calendar: undefined, isOpen: false, workout: undefined }
   const [state, dispatch] = useReducer(reducer, initialState)
   const id = useParams().aid
   const [user] = useAuthentication()
 
+  async function fetchCalendar() {
+    try {
+      const calendar = await getCalendar(id, 'gym')
+      dispatch({ type: 'setActivities', payload: calendar })
+
+      const activities = calendar.mesocycles
+        .flatMap(mesocycle => mesocycle.microcycles)
+        .flatMap(microcycle => microcycle.activities)
+
+      if (activities.length === 0) {
+        dispatch({ type: 'setLastWorkout', payload: null })
+        return
+      }
+
+      const gid = activities[activities.length - 1].id
+      const workout = await getGymActivity(gid)
+      dispatch({ type: 'setLastWorkout', payload: workout })
+    } catch (error) {
+      dispatch({ type: 'error', error: handleError(error) })
+    }
+  }
+
   useEffect(() => {
-    async function fetchLastWorkout(gid: string) {
-      try {
-        const res = await getGymActivity(gid)
-        dispatch({ type: 'setLastWorkout', payload: res })
-      } catch (error) {
-        console.error('Error fetching data:', error)
-      }
-    }
-
-    async function fetchCalendar() {
-      try {
-        const res = await getCalendar(id, 'gym')
-        const activities = res.mesocycles.flatMap(mesocycle => mesocycle.microcycles).flatMap(microcycle => microcycle.activities)
-        dispatch({ type: 'setActivities', payload: activities })
-
-        if (activities.length === 0) {
-          dispatch({ type: 'setLastWorkout', payload: null })
-          return
-        }
-
-        fetchLastWorkout(activities[activities.length - 1].id)
-      } catch (error) {
-        console.error('Error fetching data:', error)
-      }
-    }
     fetchCalendar()
   }, [])
 
@@ -82,11 +89,16 @@ export function GymWorkouts() {
     dispatch({ type: 'closeWorkout' })
   }
 
-  function handleOnSuccess() {
-    window.location.reload()
+  function handleOnCycleSelected(cycle: { mesocycleId: number; microcycleId: number | null } | null) {
+    dispatch({ type: 'setSelectedCycle', payload: cycle })
   }
 
-  if (state.activities === undefined) return <CircularProgress />
+  function handleOnSuccess() {
+    fetchCalendar()
+    dispatch({ type: 'closeWorkout' })
+  }
+
+  if (state.calendar === undefined) return <CircularProgress />
 
   return (
     <>
@@ -98,26 +110,31 @@ export function GymWorkouts() {
             ) : state.workout === null || state.workout.exercises.length === 0 ? (
               <p>Data not available</p>
             ) : (
-              state.workout.exercises.map(exercise => (
-                <div className={styles.lastWorkoutExercise} key={exercise.id}>
-                  <img src={exercise.url || `/images/no_image.svg`} alt="Exercise" />
-                  <div className={styles.lastWorkoutExerciseContent}>
-                    <h2>{exercise.name}</h2>
-                    <ul>
-                      {exercise.sets.map((set, idx) => (
-                        <li key={set.id}>
-                          Set {idx + 1}: {set.reps} x {set.weight} kg - {set.restTime}'
-                        </li>
-                      ))}
-                    </ul>
+              <div className={styles.lastWorkout}>
+                <h2>{epochConverter(state.workout.date, 'dd-mm-yyyy')}</h2>
+                {state.workout.exercises.map(exercise => (
+                  <div className={styles.lastWorkoutExercise} key={exercise.id}>
+                    <img src={exercise.url || `/images/no_image.svg`} alt="Exercise" />
+                    <div className={styles.lastWorkoutExerciseContent}>
+                      <h2>{exercise.name}</h2>
+                      <ul>
+                        {exercise.sets.map((set, idx) => (
+                          <li key={set.id}>
+                            Set {idx + 1}: {set.reps} x {set.weight} kg - {set.restTime}'
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   </div>
-                </div>
-              ))
+                ))}
+              </div>
             )}
           </>
         }
-        workouts={state.activities}
+        calendar={state.calendar}
         onAdd={user.isCoach ? handleAdd : undefined}
+        onCycleSelected={handleOnCycleSelected}
+        type="gym"
       />
 
       {state.isOpen && <AddGymWorkoutPopup onClose={handleClose} onSuccess={handleOnSuccess} />}

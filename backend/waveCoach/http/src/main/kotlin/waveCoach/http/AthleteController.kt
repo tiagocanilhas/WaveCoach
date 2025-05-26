@@ -481,4 +481,69 @@ class AthleteController(
                 }
         }
     }
+
+    @GetMapping(Uris.Athletes.GET_WATER_ACTIVITIES)
+    fun getWaterActivities(
+        user: AuthenticatedUser,
+        @PathVariable aid: String,
+    ): ResponseEntity<*>{
+        val id = aid.toIntOrNull() ?: return Problem.response(400, Problem.invalidAthleteId)
+        val result = athleteServices.getWaterActivities(user.info.id, id)
+
+        return when (result){
+            is Success ->
+                ResponseEntity
+                    .status(200)
+                    .body(WaterActivitiesCalendar(
+                        result.value.map { mesocycle ->
+                        MesocycleWaterOutputModel(
+                            mesocycle.id,
+                            mesocycle.startTime,
+                            mesocycle.endTime,
+                            mesocycle.microcycles.map { microcycle ->
+                                MicrocycleWaterOutputModel(
+                                    microcycle.id,
+                                    microcycle.startTime,
+                                    microcycle.endTime,
+                                    microcycle.activities.map { waterActivity ->
+                                        WaterActivityOutputModel(
+                                            waterActivity.id,
+                                            waterActivity.athleteId,
+                                            waterActivity.microcycleId,
+                                            waterActivity.date,
+                                            waterActivity.pse,
+                                            waterActivity.condition,
+                                            waterActivity.heartRate,
+                                            waterActivity.duration,
+                                            waterActivity.waves.map { wave ->
+                                                WaveOutputModel(
+                                                    wave.id,
+                                                    wave.points,
+                                                    wave.maneuvers.map { maneuver ->
+                                                        ManeuverOutputModel(
+                                                            maneuver.id,
+                                                            maneuver.waterManeuverId,
+                                                            maneuver.waterManeuverName,
+                                                            maneuver.url,
+                                                            maneuver.rightSide,
+                                                            maneuver.success
+                                                        )
+                                                    }
+                                                )
+                                            }
+                                        )
+                                    }
+                                )
+                            }
+                        )
+                    })
+                )
+
+            is Failure ->
+                when (result.value) {
+                    GetWaterActivitiesError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
+                    GetWaterActivitiesError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
+                }
+        }
+    }
 }

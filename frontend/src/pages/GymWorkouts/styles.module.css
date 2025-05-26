@@ -1,3 +1,9 @@
+.lastWorkout {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .lastWorkoutExercise {
   display: flex;
   flex-direction: row;

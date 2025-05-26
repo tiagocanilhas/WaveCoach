@@ -130,6 +130,12 @@ class Problem(
                 URI("$BASE_URI/password-is-blank"),
             )
 
+        val questionnaireAlreadyExists =
+            Problem(
+                "Questionnaire already exists",
+                URI("$BASE_URI/questionnaire-already-exists"),
+            )
+
         val tokenNotFound =
             Problem(
                 "Token not found",
@@ -238,6 +244,30 @@ class Problem(
                 URI("$BASE_URI/invalid-water-activity-id"),
             )
 
+        val invalidSleep =
+            Problem(
+                "Invalid sleep value",
+                URI("$BASE_URI/invalid-sleep"),
+            )
+
+        val invalidFatigue =
+            Problem(
+                "Invalid fatigue value",
+                URI("$BASE_URI/invalid-fatigue"),
+            )
+
+        val invalidStress =
+            Problem(
+                "Invalid stress value",
+                URI("$BASE_URI/invalid-stress"),
+            )
+
+        val invalidMusclePain =
+            Problem(
+                "Invalid muscle pain value",
+                URI("$BASE_URI/invalid-muscle-pain"),
+            )
+
         val waterActivityNotFound =
             Problem(
                 "Water activity not found",
@@ -248,6 +278,12 @@ class Problem(
             Problem(
                 "Not a water activity",
                 URI("$BASE_URI/not-water-activity"),
+            )
+
+        val questionnaireNotFound =
+            Problem(
+                "Questionnaire not found",
+                URI("$BASE_URI/questionnaire-not-found"),
             )
     }
 }

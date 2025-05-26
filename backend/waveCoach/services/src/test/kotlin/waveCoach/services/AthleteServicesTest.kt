@@ -1077,6 +1077,48 @@ class AthleteServicesTest {
     }
 
 
+    /**
+     * Get Water Activities Tests
+     */
+
+    @Test
+    fun `get water activities - success`() {
+        val testClock = TestClock()
+        val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (val result = athleteServices.getWaterActivities(FIRST_COACH_ID, FIRST_ATHLETE_ID)) {
+            is Failure -> fail("Unexpected $result")
+            is Success -> assertTrue(result.value.isNotEmpty())
+        }
+
+        when (val result = athleteServices.getWaterActivities(FIRST_ATHLETE_ID, FIRST_ATHLETE_ID)) {
+            is Failure -> fail("Unexpected $result")
+            is Success -> assertTrue(result.value.isNotEmpty())
+        }
+    }
+
+    @Test
+    fun `get water activities - athlete not found`() {
+        val testClock = TestClock()
+        val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (val result = athleteServices.getWaterActivities(FIRST_COACH_ID, 0)) {
+            is Failure -> assertTrue(result.value is GetWaterActivitiesError.AthleteNotFound)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
+    @Test
+    fun `get water activities - not athlete's coach`() {
+        val testClock = TestClock()
+        val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (val result = athleteServices.getWaterActivities(SECOND_COACH_ID, FIRST_ATHLETE_ID)) {
+            is Failure -> assertTrue(result.value is GetWaterActivitiesError.NotAthletesCoach)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
 
     companion object {
         private fun randomString() = "String_${abs(Random.nextLong())}"

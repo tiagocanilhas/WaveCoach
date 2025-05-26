@@ -486,7 +486,7 @@ class AthleteControllerTest {
     fun `remove an athlete - success`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        client.delete().uri("/athletes/$FIRST_ATHLETE_ID")
+        client.delete().uri("/athletes/$FIFTH_ATHLETE_ID")
             .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
             .exchange()
             .expectStatus().isNoContent
@@ -1724,6 +1724,90 @@ class AthleteControllerTest {
             .jsonPath("type").isEqualTo(Problem.notAthletesCoach.type.toString())
     }
 
+
+
+    /**
+     * Get Water Activities
+     */
+
+    @Test
+    fun `get water actviites - success (coach)`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.get().uri("/athletes/$FIRST_ATHLETE_ID/water")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody()
+            .jsonPath("mesocycles").exists()
+            .jsonPath("mesocycles.length()").value<Int> { assertTrue(it > 0) }
+    }
+
+    @Test
+    fun `get water actviites - success (athlete)`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.get().uri("/athletes/$FIRST_ATHLETE_ID/water")
+            .header("Authorization", "Bearer $FIRST_ATHLETE_TOKEN")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody()
+            .jsonPath("mesocycles").exists()
+            .jsonPath("mesocycles.length()").value<Int> { assertTrue(it > 0) }
+    }
+
+    @Test
+    fun `get water activities - unauthorized`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.get().uri("/athletes/$FIRST_ATHLETE_ID/water")
+            .exchange()
+            .expectStatus().isUnauthorized
+    }
+
+    @Test
+    fun `get water activities - invalid athlete id`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val id = "invalid"
+
+        client.get().uri("/athletes/$id/water")
+            .header("Authorization", "Bearer $FIRST_ATHLETE_TOKEN")
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidAthleteId.type.toString())
+    }
+
+    @Test
+    fun `get water activities - athlete not found`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val id = 0
+
+        client.get().uri("/athletes/$id/water")
+            .header("Authorization", "Bearer $FIRST_ATHLETE_TOKEN")
+            .exchange()
+            .expectStatus().isNotFound
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.athleteNotFound.type.toString())
+    }
+
+    @Test
+    fun `get water activities - not athlete's coach`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.get().uri("/athletes/$SECOND_ATHLETE_ID/water")
+            .header("Authorization", "Bearer $FIRST_ATHLETE_TOKEN")
+            .exchange()
+            .expectStatus().isForbidden
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.notAthletesCoach.type.toString())
+    }
+
     companion object {
         private fun randomString() = "String_${abs(Random.nextLong())}"
 
@@ -1762,5 +1846,7 @@ class AthleteControllerTest {
         private const val ATHLETE_TRICEP_FAT = 1
         private const val ATHLETE_ABDOMEN_FAT = 1
         private const val ATHLETE_THIGH_FAT = 1
+
+        private const val FIFTH_ATHLETE_ID = 7
     }
 }

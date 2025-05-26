@@ -2,6 +2,7 @@ package waveCoach.services
 
 import org.springframework.stereotype.Component
 import waveCoach.domain.ActivityType
+import waveCoach.domain.Questionnaire
 import waveCoach.domain.WaterActivityDomain
 import waveCoach.domain.WaterActivityWithWaves
 import waveCoach.repository.TransactionManager
@@ -56,6 +57,26 @@ sealed class RemoveWaterActivityError {
     data object NotWaterActivity : RemoveWaterActivityError()
 }
 typealias RemoveWaterActivityResult = Either<RemoveWaterActivityError, Int>
+
+sealed class CreateQuestionnaireError {
+    data object AlreadyExists : CreateQuestionnaireError()
+    data object ActivityNotFound : CreateQuestionnaireError()
+    data object NotAthletesCoach : CreateQuestionnaireError()
+    data object InvalidSleep : CreateQuestionnaireError()
+    data object InvalidFatigue : CreateQuestionnaireError()
+    data object InvalidStress : CreateQuestionnaireError()
+    data object InvalidMusclePain : CreateQuestionnaireError()
+}
+typealias CreateQuestionnaireResult = Either<CreateQuestionnaireError, Unit>
+
+sealed class GetQuestionnaireError {
+    data object ActivityNotFound : GetQuestionnaireError()
+
+    data object QuestionnaireNotFound : GetQuestionnaireError()
+
+    data object NotAthletesCoach : GetQuestionnaireError()
+}
+typealias GetQuestionnaireResult = Either<GetQuestionnaireError, Questionnaire>
 
 @Component
 class WaterActivityServices(
@@ -171,17 +192,84 @@ class WaterActivityServices(
             if (activity.type != ActivityType.WATER)
                 return@run failure(RemoveWaterActivityError.NotWaterActivity)
 
-            val athlete =
-                athleteRepository.getAthlete(activity.uid)
+            val athlete = athleteRepository.getAthlete(activity.uid)!!
 
-            if (athlete!!.coach != coachId) return@run failure(RemoveWaterActivityError.NotAthletesCoach)
+            if (athlete.coach != coachId) return@run failure(RemoveWaterActivityError.NotAthletesCoach)
 
             waterActivityRepository.removeManeuversByActivity(activityId)
             waterActivityRepository.removeWavesByActivity(activityId)
+            waterActivityRepository.removeQuestionnaire(activityId)
             waterActivityRepository.removeWaterActivity(activityId)
             activityRepository.removeActivity(activityId)
 
             success(activityId)
         }
     }
+
+    fun createQuestionnaire(
+        uid: Int,
+        activityId: Int,
+        sleep: Int,
+        fatigue: Int,
+        stress: Int,
+        musclePain: Int,
+    ): CreateQuestionnaireResult {
+        return transactionManager.run {
+            val athleteRepository = it.athleteRepository
+            val activityRepository = it.activityRepository
+            val waterActivityRepository = it.waterActivityRepository
+
+            val activity = activityRepository.getActivityById(activityId)
+                ?: return@run failure(CreateQuestionnaireError.ActivityNotFound)
+
+            val athlete = athleteRepository.getAthlete(activity.uid)!!
+
+            if (uid != athlete.uid && uid != athlete.coach)
+                return@run failure(CreateQuestionnaireError.NotAthletesCoach)
+
+            if (waterActivityRepository.getQuestionnaire(activityId) != null)
+                return@run failure(CreateQuestionnaireError.AlreadyExists)
+
+            if (!waterActivityDomain.checkQuestionnaireValue(sleep))
+                return@run failure(CreateQuestionnaireError.InvalidSleep)
+
+            if (!waterActivityDomain.checkQuestionnaireValue(fatigue))
+                return@run failure(CreateQuestionnaireError.InvalidFatigue)
+
+            if (!waterActivityDomain.checkQuestionnaireValue(stress))
+                return@run failure(CreateQuestionnaireError.InvalidStress)
+
+            if (!waterActivityDomain.checkQuestionnaireValue(musclePain))
+                return@run failure(CreateQuestionnaireError.InvalidMusclePain)
+
+            waterActivityRepository.storeQuestionnaire(activityId, sleep, fatigue, stress, musclePain)
+
+            success(Unit)
+        }
+    }
+
+    fun getQuestionnaire(
+        uid: Int,
+        activityId: Int,
+    ): GetQuestionnaireResult {
+        return transactionManager.run {
+            val athleteRepository = it.athleteRepository
+            val activityRepository = it.activityRepository
+            val waterActivityRepository = it.waterActivityRepository
+
+            val activity = activityRepository.getActivityById(activityId) ?:
+                return@run failure(GetQuestionnaireError.ActivityNotFound)
+
+            val athlete = athleteRepository.getAthlete(activity.uid)!!
+
+            if (uid != athlete.uid && uid != athlete.coach)
+                return@run failure(GetQuestionnaireError.NotAthletesCoach)
+
+            val questionnaire = waterActivityRepository.getQuestionnaire(activityId) ?:
+                return@run failure(GetQuestionnaireError.QuestionnaireNotFound)
+
+            success(questionnaire)
+        }
+    }
+
 }

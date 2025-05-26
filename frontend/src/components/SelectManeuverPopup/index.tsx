@@ -11,23 +11,23 @@ import { ObjectList } from '../ObjectList'
 
 import { getWaterManeuvers } from '../../services/waterManeuverServices'
 
-import { Maneuver } from '../../types/Maneuver'
+import { WaterManeuver } from '../../types/WaterManeuver'
 
 import styles from './styles.module.css'
 
-type ViewTag = { tag: 'loading' } | { tag: 'choosing' } | { tag: 'creating' } | { tag: 'adding'; maneuver: Maneuver }
+type ViewTag = { tag: 'loading' } | { tag: 'choosing' } | { tag: 'creating' } | { tag: 'adding'; maneuver: WaterManeuver }
 
 type State = {
   name: string
-  maneuvers?: Maneuver[] | undefined
+  maneuvers?: WaterManeuver[] | undefined
   view: ViewTag
 }
 
 type Action =
   | { type: 'choose' }
   | { type: 'new' }
-  | { type: 'add'; maneuver: Maneuver }
-  | { type: 'setData'; maneuvers: Maneuver[] }
+  | { type: 'add'; maneuver: WaterManeuver }
+  | { type: 'setData'; maneuvers: WaterManeuver[] }
   | { type: 'setName'; name: string }
 
 function reducer(state: State, action: Action): State {
@@ -48,7 +48,7 @@ function reducer(state: State, action: Action): State {
 }
 
 type SelectManeuverPopupProps = {
-  onAdd: (maneuver: Maneuver, isRight: boolean, success: boolean) => void
+  onAdd: (maneuver: WaterManeuver, rightSide: boolean, success: boolean) => void
   onClose: () => void
 }
 
@@ -77,7 +77,7 @@ export function SelectManeuverPopup({ onAdd, onClose }: SelectManeuverPopupProps
     dispatch({ type: 'new' })
   }
 
-  function handleOnSelect(maneuver: Maneuver) {
+  function handleOnSelect(maneuver: WaterManeuver) {
     dispatch({ type: 'add', maneuver: maneuver })
   }
 

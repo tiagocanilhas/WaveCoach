@@ -1,5 +1,7 @@
 package waveCoach.repository
 
+import waveCoach.domain.MesocycleWater
+import waveCoach.domain.Questionnaire
 import waveCoach.domain.WaterActivityWithWaves
 
 interface WaterActivityRepository {
@@ -23,4 +25,17 @@ interface WaterActivityRepository {
 
     fun getWaterActivity(activityId: Int): WaterActivityWithWaves?
 
+    fun getWaterActivities(uid: Int): List<MesocycleWater>
+
+    fun storeQuestionnaire(
+        activityId: Int,
+        sleep: Int,
+        fatigue: Int,
+        stress: Int,
+        musclePain: Int
+    )
+
+    fun getQuestionnaire(activityId: Int): Questionnaire?
+
+    fun removeQuestionnaire(activityId: Int)
 }

@@ -97,53 +97,55 @@ INSERT INTO waveCoach.maneuver (wave, maneuver, right_side, success, maneuver_or
 INSERT INTO waveCoach.wave (activity, points, wave_order) VALUES (2, 2, 2);
 
 INSERT INTO waveCoach.activity (uid, microcycle, date) VALUES (3, 1, 1746230400000); -- 2025-05-03
-INSERT INTO waveCoach.water (activity) VALUES (3);
+INSERT INTO waveCoach.water (activity, pse, condition, heart_rate, duration) VALUES (3, 6, 'Good', 115, 45);
+
+INSERT INTO waveCoach.questionnaire (activity, sleep, fatigue, stress, muscle_pain) VALUES (3, 7, 3, 2, 4);
 
 -- Activities for Microcycle 2 (2025-05-15 to 2025-06-01)
 INSERT INTO waveCoach.activity (uid, microcycle, date) VALUES (3, 2, 1747339200000); -- 2025-05-15
 INSERT INTO waveCoach.gym (activity) VALUES (4);
 
 INSERT INTO waveCoach.activity (uid, microcycle, date) VALUES (3, 2, 1747425600000); -- 2025-05-16
-INSERT INTO waveCoach.water (activity) VALUES (5);
+INSERT INTO waveCoach.water (activity, pse, condition, heart_rate, duration) VALUES (5, 7, 'Good', 110, 3600);
 
 INSERT INTO waveCoach.activity (uid, microcycle, date) VALUES (3, 2, 1747512000000); -- 2025-05-17
-INSERT INTO waveCoach.water (activity) VALUES (6);
+INSERT INTO waveCoach.water (activity, pse, condition, heart_rate, duration) VALUES (6, 6, 'Good', 115, 3600);
 
 -- Activities for Microcycle 3 (2025-06-01 to 2025-06-08)
 INSERT INTO waveCoach.activity (uid, microcycle, date) VALUES (3, 3, 1748736000000); -- 2025-06-01
 INSERT INTO waveCoach.gym (activity) VALUES (7);
 
 INSERT INTO waveCoach.activity (uid, microcycle, date) VALUES (3, 3, 1748822400000); -- 2025-06-02
-INSERT INTO waveCoach.water (activity) VALUES (8);
+INSERT INTO waveCoach.water (activity, pse, condition, heart_rate, duration) VALUES (8, 6, 'Good', 112, 5400);
 
 INSERT INTO waveCoach.activity (uid, microcycle, date) VALUES (3, 3, 1748908800000); -- 2025-06-03
-INSERT INTO waveCoach.water (activity) VALUES (9);
+INSERT INTO waveCoach.water (activity, pse, condition, heart_rate, duration) VALUES (9, 5, 'Good', 118, 5400);
 
 -- Activities for Microcycle 4 (2025-06-08 to 2025-06-15)
 INSERT INTO waveCoach.activity (uid, microcycle, date) VALUES (3, 4, 1749340800000); -- 2025-06-08
 INSERT INTO waveCoach.gym (activity) VALUES (10);
 
 INSERT INTO waveCoach.activity (uid, microcycle, date) VALUES (3, 4, 1749427200000); -- 2025-06-09
-INSERT INTO waveCoach.water (activity) VALUES (11);
+INSERT INTO waveCoach.water (activity, pse, condition, heart_rate, duration) VALUES (11, 7, 'Good', 120, 5400);
 
 INSERT INTO waveCoach.activity (uid, microcycle, date) VALUES (3, 4, 1749513600000); -- 2025-06-10
-INSERT INTO waveCoach.water (activity) VALUES (12);
+INSERT INTO waveCoach.water (activity, pse, condition, heart_rate, duration) VALUES (12, 8, 'Good', 125, 5400);
 
 INSERT INTO waveCoach.activity (uid, microcycle, date) VALUES (3, 4, 1749600000000); -- 2025-06-11
-INSERT INTO waveCoach.water (activity) VALUES (13);
+INSERT INTO waveCoach.water (activity, pse, condition, heart_rate, duration) VALUES (13, 9, 'Good', 130, 5400);
 
 -- Activities for Microcycle 5 (2025-06-15 to 2025-07-01)
 INSERT INTO waveCoach.activity (uid, microcycle, date) VALUES (3, 5, 1749945600000); -- 2025-06-15
 INSERT INTO waveCoach.gym (activity) VALUES (14);
 
 INSERT INTO waveCoach.activity (uid, microcycle, date) VALUES (3, 5, 1750032000000); -- 2025-06-16
-INSERT INTO waveCoach.water (activity) VALUES (15);
+INSERT INTO waveCoach.water (activity, pse, condition, heart_rate, duration) VALUES (15, 7, 'Good', 115, 5400);
 
 INSERT INTO waveCoach.activity (uid, microcycle, date) VALUES (3, 5, 1750118400000); -- 2025-06-17
-INSERT INTO waveCoach.water (activity) VALUES (16);
+INSERT INTO waveCoach.water (activity, pse, condition, heart_rate, duration) VALUES (16, 6, 'Good', 120, 5400);
 
 INSERT INTO waveCoach.activity (uid, microcycle, date) VALUES (3, 5, 1750204800000); -- 2025-06-18
-INSERT INTO waveCoach.water (activity) VALUES (17);
+INSERT INTO waveCoach.water (activity, pse, condition, heart_rate, duration) VALUES (17, 5, 'Good', 125, 5400);
 
 -- Activities for Microcycle 6 (2025-07-01 to 2025-07-14)
 INSERT INTO waveCoach.activity (uid, microcycle, date) VALUES (3, 6, 1751328000000); -- 2025-07-01
@@ -153,33 +155,58 @@ INSERT INTO waveCoach.activity (uid, microcycle, date) VALUES (3, 6, 17514144000
 INSERT INTO waveCoach.gym (activity) VALUES (19);
 
 INSERT INTO waveCoach.activity (uid, microcycle, date) VALUES (3, 6, 1751500800000); -- 2025-07-03
-INSERT INTO waveCoach.water (activity) VALUES (20);
+INSERT INTO waveCoach.water (activity, pse, condition, heart_rate, duration) VALUES (20, 7, 'Good', 110, 5400);
 
 INSERT INTO waveCoach.activity (uid, microcycle, date) VALUES (3, 6, 1751587200000); -- 2025-07-04
-INSERT INTO waveCoach.water (activity) VALUES (21);
+INSERT INTO waveCoach.water (activity, pse, condition, heart_rate, duration) VALUES (21, 6, 'Good', 115, 5400);
 
 INSERT INTO waveCoach.activity (uid, microcycle, date) VALUES (3, 6, 1751673600000); -- 2025-07-05
-INSERT INTO waveCoach.water (activity) VALUES (22);
+INSERT INTO waveCoach.water (activity, pse, condition, heart_rate, duration) VALUES (22, 5, 'Good', 120, 5400);
 
 -- Activities for Microcycle 7 (2025-07-14 to 2025-08-01)
 INSERT INTO waveCoach.activity (uid, microcycle, date) VALUES (3, 7, 1752528000000); -- 2025-07-14
 INSERT INTO waveCoach.gym (activity) VALUES (23);
 
 INSERT INTO waveCoach.activity (uid, microcycle, date) VALUES (3, 7, 1752614400000); -- 2025-07-15
-INSERT INTO waveCoach.water (activity) VALUES (24);
+INSERT INTO waveCoach.water (activity, pse, condition, heart_rate, duration) VALUES (24, 8, 'Good', 115, 5400);
 
 INSERT INTO waveCoach.activity (uid, microcycle, date) VALUES (3, 7, 1752700800000); -- 2025-07-16
-INSERT INTO waveCoach.water (activity) VALUES (25);
+INSERT INTO waveCoach.water (activity, pse, condition, heart_rate, duration) VALUES (25, 9, 'Good', 120, 5400);
 
 INSERT INTO waveCoach.activity (uid, microcycle, date) VALUES (3, 7, 1752787200000); -- 2025-07-17
 INSERT INTO waveCoach.gym (activity) VALUES (26);
 
 INSERT INTO waveCoach.activity (uid, microcycle, date) VALUES (3, 7, 1752873600000); -- 2025-07-18
-INSERT INTO waveCoach.water (activity) VALUES (27);
+INSERT INTO waveCoach.water (activity, pse, condition, heart_rate, duration) VALUES (27, 7, 'Good', 125, 5400);
 
 -- Activities for Microcycle 8 (2025-08-01 to 2025-08-08)
 INSERT INTO waveCoach.activity (uid, microcycle, date) VALUES (3, 8, 1754006400000); -- 2025-08-01
-INSERT INTO waveCoach.water (activity) VALUES (28);
+INSERT INTO waveCoach.water (activity, pse, condition, heart_rate, duration) VALUES (28, 8, 'Good', 107, 5400);
+
+INSERT INTO waveCoach.wave (activity, points, wave_order) VALUES (28, 5, 1);
+INSERT INTO waveCoach.maneuver (wave, maneuver, right_side, success, maneuver_order) VALUES (3, 1, true, true, 1);
+INSERT INTO waveCoach.maneuver (wave, maneuver, right_side, success, maneuver_order) VALUES (3, 1, true, true, 2);
+INSERT INTO waveCoach.maneuver (wave, maneuver, right_side, success, maneuver_order) VALUES (3, 1, true, true, 3);
+INSERT INTO waveCoach.maneuver (wave, maneuver, right_side, success, maneuver_order) VALUES (3, 1, true, false, 4);
+INSERT INTO waveCoach.maneuver (wave, maneuver, right_side, success, maneuver_order) VALUES (3, 1, true, false, 5);
+
+INSERT INTO waveCoach.wave (activity, points, wave_order) VALUES (28, 2, 2);
+INSERT INTO waveCoach.maneuver (wave, maneuver, right_side, success, maneuver_order) VALUES (4, 1, false, true, 1);
+INSERT INTO waveCoach.maneuver (wave, maneuver, right_side, success, maneuver_order) VALUES (4, 1, false, true, 2);
+INSERT INTO waveCoach.maneuver (wave, maneuver, right_side, success, maneuver_order) VALUES (4, 1, false, true, 3);
+INSERT INTO waveCoach.maneuver (wave, maneuver, right_side, success, maneuver_order) VALUES (4, 1, false, true, 4);
+INSERT INTO waveCoach.maneuver (wave, maneuver, right_side, success, maneuver_order) VALUES (4, 1, false, true, 5);
+INSERT INTO waveCoach.maneuver (wave, maneuver, right_side, success, maneuver_order) VALUES (4, 1, false, false, 6);
+INSERT INTO waveCoach.maneuver (wave, maneuver, right_side, success, maneuver_order) VALUES (4, 1, false, false, 7);
+INSERT INTO waveCoach.maneuver (wave, maneuver, right_side, success, maneuver_order) VALUES (4, 1, false, false, 8);
+
+INSERT INTO waveCoach.wave (activity, points, wave_order) VALUES (28, 2, 3);
+INSERT INTO waveCoach.maneuver (wave, maneuver, right_side, success, maneuver_order) VALUES (5, 3, false, true, 1);
+
+INSERT INTO waveCoach.wave (activity, points, wave_order) VALUES (28, 2, 4);
+INSERT INTO waveCoach.maneuver (wave, maneuver, right_side, success, maneuver_order) VALUES (6, 3, true, true, 1);
+INSERT INTO waveCoach.maneuver (wave, maneuver, right_side, success, maneuver_order) VALUES (6, 3, true, false, 2);
+INSERT INTO waveCoach.maneuver (wave, maneuver, right_side, success, maneuver_order) VALUES (6, 3, true, false, 3);
 
 --Second Athlete
 insert into waveCoach.user (username, password) values ('athlete2', '$2a$10$6wZjBBzU2G1H7rK5VeFNIu.toyRHL.ULP1R2IMjpPy7xB8HhF/h0q');
@@ -200,6 +227,11 @@ insert into waveCoach.characteristics (date, uid, weight, height, calories, body
 insert into waveCoach.user (username, password) values ('athlete4', '$2a$10$6wZjBBzU2G1H7rK5VeFNIu.toyRHL.ULP1R2IMjpPy7xB8HhF/h0q');
 -- password: Admin123!
 insert into waveCoach.athlete (uid, coach, name, birth_date) values (6, 2, 'Jane Smith', 631152000);
+
+--Fifth Athlete
+insert into waveCoach.user (username, password) values ('athlete5', '$2a$10$6wZjBBzU2G1H7rK5VeFNIu.toyRHL.ULP1R2IMjpPy7xB8HhF/h0q');
+-- password: Admin123!
+insert into waveCoach.athlete (uid, coach, name, birth_date) values (7, 1, 'Alice Johnson', 631152000);
 
 
 

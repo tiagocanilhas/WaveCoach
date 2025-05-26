@@ -12,6 +12,7 @@ import waveCoach.domain.AthleteDomain
 import waveCoach.domain.Characteristics
 import waveCoach.domain.CharacteristicsDomain
 import waveCoach.domain.Mesocycle
+import waveCoach.domain.MesocycleWater
 import waveCoach.domain.UserDomain
 import waveCoach.repository.TransactionManager
 import waveCoach.utils.Either
@@ -173,6 +174,13 @@ sealed class SetCalendarError {
     data object NotAthletesCoach : SetCalendarError()
 }
 typealias SetCalendarResult = Either<SetCalendarError, Boolean>
+
+sealed class GetWaterActivitiesError {
+    data object AthleteNotFound : GetWaterActivitiesError()
+
+    data object NotAthletesCoach : GetWaterActivitiesError()
+}
+typealias GetWaterActivitiesResult = Either<GetWaterActivitiesError, List<MesocycleWater>>
 
 @Component
 class AthleteServices(
@@ -614,6 +622,21 @@ class AthleteServices(
             if (uid != aid && athlete.coach != uid) return@run failure(GetCalendarError.NotAthletesCoach)
 
             success(activityRepository.getCalendar(aid, activityType))
+        }
+    }
+
+    fun getWaterActivities(
+        uid: Int,
+        aid: Int,
+    ): GetWaterActivitiesResult {
+        return transactionManager.run {
+            val athleteRepository = it.athleteRepository
+            val waterActivityRepository = it.waterActivityRepository
+
+            val athlete = athleteRepository.getAthlete(aid) ?: return@run failure(GetWaterActivitiesError.AthleteNotFound)
+            if (uid != aid && athlete.coach != uid) return@run failure(GetWaterActivitiesError.NotAthletesCoach)
+
+            success(waterActivityRepository.getWaterActivities(aid))
         }
     }
 

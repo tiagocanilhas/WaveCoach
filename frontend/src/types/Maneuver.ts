@@ -1,5 +1,9 @@
 export type Maneuver = {
-  id: string
+  id: number
+  waterManeuverId: number
   name: string
   url?: string
+  rightSide: boolean
+  success: boolean
+  order: number
 }

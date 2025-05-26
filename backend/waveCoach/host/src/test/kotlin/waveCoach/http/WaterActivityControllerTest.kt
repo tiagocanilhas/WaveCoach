@@ -478,7 +478,7 @@ class WaterActivityControllerTest {
     fun `remove water activity - success`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        client.delete().uri("/water/$FIRST_ACTIVITY_ID")
+        client.delete().uri("/water/$WATER_ACTIVITY_TO_REMOVE")
             .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
             .exchange()
             .expectStatus().isNoContent
@@ -534,6 +534,358 @@ class WaterActivityControllerTest {
     }
 
 
+    /**
+     * Create Questionnaire Test
+     */
+
+    @Test
+    fun `create questionnaire - success`(){
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body = mapOf(
+            "sleep" to 7,
+            "fatigue" to 3,
+            "stress" to 2,
+            "musclePain" to 1
+        )
+
+        client.post().uri("/water/$FIRST_ACTIVITY_ID/questionnaire")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isNoContent
+    }
+
+    @Test
+    fun `create questionnaire - unauthorized`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body = mapOf(
+            "sleep" to 7,
+            "fatigue" to 3,
+            "stress" to 2,
+            "musclePain" to 1
+        )
+
+        client.post().uri("/water/$FIRST_ACTIVITY_ID/questionnaire")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isUnauthorized
+    }
+
+    @Test
+    fun `create questionnaire - user is not a coach`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body = mapOf(
+            "sleep" to 7,
+            "fatigue" to 3,
+            "stress" to 2,
+            "musclePain" to 1
+        )
+
+        client.post().uri("/water/$FIRST_ACTIVITY_ID/questionnaire")
+            .header("Authorization", "Bearer $FIRST_ATHLETE_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isForbidden
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.userIsNotACoach.type.toString())
+    }
+
+
+    @Test
+    fun `create questionnaire - invalid water activity id`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val id = "invalid"
+
+        val body = mapOf(
+            "sleep" to 7,
+            "fatigue" to 3,
+            "stress" to 2,
+            "musclePain" to 1
+        )
+
+        client.post().uri("/water/$id/questionnaire")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidWaterActivityId.type.toString())
+    }
+
+    @Test
+    fun `create questionnaire - already exists`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body = mapOf(
+            "sleep" to 7,
+            "fatigue" to 3,
+            "stress" to 2,
+            "musclePain" to 1
+        )
+
+        client.post().uri("/water/$SECOND_ACTIVITY_ID/questionnaire")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isEqualTo(409)
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.questionnaireAlreadyExists.type.toString())
+    }
+
+    @Test
+    fun `create questionnaire - water activity not found`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body = mapOf(
+            "sleep" to 7,
+            "fatigue" to 3,
+            "stress" to 2,
+            "musclePain" to 1
+        )
+
+        val id = Random.nextInt()
+
+        client.post().uri("/water/$id/questionnaire")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isNotFound
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.waterActivityNotFound.type.toString())
+    }
+
+    @Test
+    fun `create questionnaire - not athletes coach`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body = mapOf(
+            "sleep" to 7,
+            "fatigue" to 3,
+            "stress" to 2,
+            "musclePain" to 1
+        )
+
+        client.post().uri("/water/$FIRST_ACTIVITY_ID/questionnaire")
+            .header("Authorization", "Bearer $SECOND_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isForbidden
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.notAthletesCoach.type.toString())
+    }
+
+    @Test
+    fun `create questionnaire - invalid sleep value`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body = mapOf(
+            "sleep" to -1,
+            "fatigue" to 3,
+            "stress" to 2,
+            "musclePain" to 1
+        )
+
+        client.post().uri("/water/$THIRD_ACTIVITY_ID/questionnaire")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidSleep.type.toString())
+    }
+
+    @Test
+    fun `create questionnaire - invalid fatigue value`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body = mapOf(
+            "sleep" to 7,
+            "fatigue" to -1,
+            "stress" to 2,
+            "musclePain" to 1
+        )
+
+        client.post().uri("/water/$THIRD_ACTIVITY_ID/questionnaire")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidFatigue.type.toString())
+    }
+
+    @Test
+    fun `create questionnaire - invalid stress value`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body = mapOf(
+            "sleep" to 7,
+            "fatigue" to 3,
+            "stress" to -1,
+            "musclePain" to 1
+        )
+
+        client.post().uri("/water/$THIRD_ACTIVITY_ID/questionnaire")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidStress.type.toString())
+    }
+
+    @Test
+    fun `create questionnaire - invalid muscle pain value`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body = mapOf(
+            "sleep" to 7,
+            "fatigue" to 3,
+            "stress" to 2,
+            "musclePain" to -1
+        )
+
+        client.post().uri("/water/$THIRD_ACTIVITY_ID/questionnaire")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidMusclePain.type.toString())
+    }
+
+    /**
+     * Get Questionnaire Test
+     */
+
+    @Test
+    fun `get questionnaire - success (coach)`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.get().uri("/water/$SECOND_ACTIVITY_ID/questionnaire")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .exchange()
+            .expectStatus().isOk
+            .expectHeader().contentType(MediaType.APPLICATION_JSON)
+            .expectBody()
+            .jsonPath("sleep").exists()
+            .jsonPath("fatigue").exists()
+            .jsonPath("stress").exists()
+            .jsonPath("musclePain").exists()
+    }
+
+    @Test
+    fun `get questionnaire - success (athlete)`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.get().uri("/water/$SECOND_ACTIVITY_ID/questionnaire")
+            .header("Authorization", "Bearer $FIRST_ATHLETE_TOKEN")
+            .exchange()
+            .expectStatus().isOk
+            .expectHeader().contentType(MediaType.APPLICATION_JSON)
+            .expectBody()
+            .jsonPath("sleep").exists()
+            .jsonPath("fatigue").exists()
+            .jsonPath("stress").exists()
+            .jsonPath("musclePain").exists()
+    }
+
+    @Test
+    fun `get questionnaire - unauthorized`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.get().uri("/water/$FIRST_ACTIVITY_ID/questionnaire")
+            .exchange()
+            .expectStatus().isUnauthorized
+    }
+
+    @Test
+    fun `get questionnaire - invalid water activity id`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val id = "invalid"
+
+        client.get().uri("/water/$id/questionnaire")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidWaterActivityId.type.toString())
+    }
+
+    @Test
+    fun `get questionnaire - activity not found`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val id = 0
+
+        client.get().uri("/water/$id/questionnaire")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .exchange()
+            .expectStatus().isNotFound
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.waterActivityNotFound.type.toString())
+    }
+
+    @Test
+    fun `get questionnaire - questionnaire not found`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.get().uri("/water/$THIRD_ACTIVITY_ID/questionnaire")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .exchange()
+            .expectStatus().isNotFound
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.questionnaireNotFound.type.toString())
+    }
+
+    @Test
+    fun `get questionnaire - not athletes coach`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.get().uri("/water/$FIRST_ACTIVITY_ID/questionnaire")
+            .header("Authorization", "Bearer $SECOND_COACH_TOKEN")
+            .exchange()
+            .expectStatus().isForbidden
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.notAthletesCoach.type.toString())
+    }
+
+
+
+    /**
+     * Remove Questionnaire Test
+     */
+
+
 
     companion object {
         private const val FIRST_COACH_TOKEN = "i_aY-4lpMqAIMuhkimTbKy4xYEuyvgFPaaTpVS0lctQ="
@@ -544,7 +896,9 @@ class WaterActivityControllerTest {
 
         private const val FIRST_ACTIVITY_ID = 2
         private const val SECOND_ACTIVITY_ID = 3
+        private const val THIRD_ACTIVITY_ID = 5
         private const val NOT_WATER_ACTIVITY_ID = 1
+        private const val WATER_ACTIVITY_TO_REMOVE = 6
 
         private const val DATE = "03-05-2025" // date long = 1736006400000
         private const val ACTIVITY_DATE = 1746144000000
