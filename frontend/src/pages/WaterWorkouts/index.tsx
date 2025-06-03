@@ -7,17 +7,17 @@ import { Workout } from '../../components/Workout'
 import { AddWaterWorkoutPopup } from '../../components/AddWaterWorkoutPopup'
 import { WaterCharts } from '../../components/WaterCharts'
 
-import { getWaterActivity } from '../../services/waterServices'
-import { getWaterActivities } from '../../services/athleteServices'
+import { getWaterActivity } from '../../../services/waterServices'
+import { getWaterActivities } from '../../../services/athleteServices'
 
-import { handleError } from '../../utils/handleError'
+import { handleError } from '../../../utils/handleError'
 
 import { useAuthentication } from '../../hooks/useAuthentication'
 
 import { WaterCalendar } from '../../types/WaterCalendar'
 
 import styles from './styles.module.css'
-import { epochConverter } from '../../utils/epochConverter'
+import { epochConverter } from '../../../utils/epochConverter'
 
 type State = {
   calendar: WaterCalendar

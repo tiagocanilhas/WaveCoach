@@ -6,5 +6,5 @@ data class Athlete(
     val name: String,
     val birthDate: Long,
     val credentialsChanged: Boolean,
-    val url: String?
+    val url: String?,
 )

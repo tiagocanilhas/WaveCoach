@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
@@ -25,16 +24,15 @@ import waveCoach.utils.Success
 class WaterManeuversController(
     private val services: WaterManeuverServices,
 ) {
-
     @PostMapping(Uris.WaterManeuver.CREATE)
     fun create(
         coach: AuthenticatedCoach,
         @RequestPart("input") input: WaterManeuverCreateInputModel,
-        @RequestPart("photo") photo: MultipartFile?
-    ): ResponseEntity<*>{
+        @RequestPart("photo") photo: MultipartFile?,
+    ): ResponseEntity<*> {
         val result = services.createWaterManeuver(input.name, photo)
 
-        return when (result){
+        return when (result) {
             is Success ->
                 ResponseEntity
                     .status(201)
@@ -51,9 +49,7 @@ class WaterManeuversController(
     }
 
     @GetMapping(Uris.WaterManeuver.GET_ALL)
-    fun getAll(
-        user: AuthenticatedUser
-    ): ResponseEntity<*> {
+    fun getAll(user: AuthenticatedUser): ResponseEntity<*> {
         val result = services.getWaterManeuvers()
 
         return ResponseEntity
@@ -64,10 +60,10 @@ class WaterManeuversController(
                         WaterManeuverOutputModel(
                             it.id,
                             it.name,
-                            it.url
+                            it.url,
                         )
-                    }
-                )
+                    },
+                ),
             )
     }
 
@@ -79,7 +75,6 @@ class WaterManeuversController(
         return TODO("Implement the update method")
     }
 
-
     @DeleteMapping(Uris.WaterManeuver.REMOVE)
     fun remove(
         coach: AuthenticatedCoach,
@@ -87,5 +82,4 @@ class WaterManeuversController(
     ): ResponseEntity<*> {
         return TODO("Implement the remove method")
     }
-
 }

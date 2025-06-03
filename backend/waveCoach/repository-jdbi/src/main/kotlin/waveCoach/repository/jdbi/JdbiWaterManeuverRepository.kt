@@ -5,12 +5,12 @@ import org.jdbi.v3.core.kotlin.mapTo
 import waveCoach.domain.WaterManeuver
 import waveCoach.repository.WaterManeuverRepository
 
-class JdbiWaterManeuverRepository (
-    private val handle: Handle
-): WaterManeuverRepository {
+class JdbiWaterManeuverRepository(
+    private val handle: Handle,
+) : WaterManeuverRepository {
     override fun storeWaterManeuver(
         name: String,
-        url: String?
+        url: String?,
     ): Int =
         handle.createUpdate("insert into waveCoach.water_maneuver (name, url) values (:name, :url)")
             .bind("name", name)
@@ -36,19 +36,15 @@ class JdbiWaterManeuverRepository (
             .mapTo<WaterManeuver>()
             .list()
 
-    override fun updateWaterManeuver(id: Int, name: String) {
+    override fun updateWaterManeuver(
+        id: Int,
+        name: String,
+    ) {
         TODO("Not yet implemented")
     }
 
     override fun removeWaterManeuver(id: Int) {
         TODO("Not yet implemented")
     }
-
-    override fun isWaterManeuverValid(id: Int): Boolean =
-        handle.createQuery("select exists(select * from waveCoach.water_maneuver where id = :id)")
-            .bind("id", id)
-            .mapTo<Boolean>()
-            .one()
-
 
 }

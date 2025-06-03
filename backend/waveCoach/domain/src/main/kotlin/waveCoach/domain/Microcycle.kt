@@ -1,6 +1,6 @@
 package waveCoach.domain
 
-data class Microcycle (
+data class Microcycle(
     val id: Int,
     val mesocycle: Int,
     val startTime: Long,

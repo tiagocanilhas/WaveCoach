@@ -68,7 +68,7 @@ object Uris {
         fun byId(id: Int): URI = UriTemplate(GET_BY_ID).expand(id)
     }
 
-    object WaterManeuver{
+    object WaterManeuver {
         private const val WATER_MANEUVERS = "$PREFIX/water/maneuver"
 
         const val CREATE = WATER_MANEUVERS

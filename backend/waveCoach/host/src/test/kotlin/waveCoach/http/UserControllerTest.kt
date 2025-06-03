@@ -28,8 +28,8 @@ class UserControllerTest {
 
         val body =
             mapOf(
-                "username" to USERNAME_OF_ADMIN,
-                "password" to PASSWORD_OF_ADMIN,
+                "username" to USERNAME,
+                "password" to PASSWORD,
             )
 
         client.post().uri("/login")
@@ -38,8 +38,8 @@ class UserControllerTest {
             .exchange()
             .expectStatus().isOk
             .expectBody()
-            .jsonPath("id").isEqualTo(1)
-            .jsonPath("username").isEqualTo(USERNAME_OF_ADMIN)
+            .jsonPath("id").isEqualTo(8)
+            .jsonPath("username").isEqualTo(USERNAME)
             .jsonPath("token").isNotEmpty
     }
 
@@ -50,7 +50,7 @@ class UserControllerTest {
         val body =
             mapOf(
                 "username" to "",
-                "password" to PASSWORD_OF_ADMIN,
+                "password" to PASSWORD,
             )
 
         client.post().uri("/login")
@@ -69,7 +69,7 @@ class UserControllerTest {
 
         val body =
             mapOf(
-                "username" to USERNAME_OF_ADMIN,
+                "username" to USERNAME,
                 "password" to "",
             )
 
@@ -113,8 +113,8 @@ class UserControllerTest {
 
         val body =
             mapOf(
-                "username" to USERNAME_OF_ADMIN,
-                "password" to PASSWORD_OF_ADMIN,
+                "username" to USERNAME,
+                "password" to PASSWORD,
             )
 
         client.post().uri("/login").bodyValue(body).exchange().expectBody()
@@ -132,8 +132,8 @@ class UserControllerTest {
 
         val body =
             mapOf(
-                "username" to USERNAME_OF_ADMIN,
-                "password" to PASSWORD_OF_ADMIN,
+                "username" to USERNAME,
+                "password" to PASSWORD,
             )
 
         client.post().uri("/login").bodyValue(body).exchange().expectBody()
@@ -165,21 +165,19 @@ class UserControllerTest {
             .exchange()
             .expectStatus().isUnauthorized
     }
-    
-    
-    
+
     /**
      * Auth Check Tests
      */
-    
+
     @Test
     fun `auth check (authorization header) - success`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
         val body =
             mapOf(
-                "username" to USERNAME_OF_ADMIN,
-                "password" to PASSWORD_OF_ADMIN,
+                "username" to USERNAME,
+                "password" to PASSWORD,
             )
 
         client.post().uri("/login").bodyValue(body).exchange().expectBody()
@@ -189,19 +187,19 @@ class UserControllerTest {
                     .exchange()
                     .expectStatus().isOk
                     .expectBody()
-                    .jsonPath("id").isEqualTo(1)
-                    .jsonPath("username").isEqualTo(USERNAME_OF_ADMIN)
+                    .jsonPath("id").isEqualTo(8)
+                    .jsonPath("username").isEqualTo(USERNAME)
             }
     }
-    
+
     @Test
     fun `auth check (cookie) - success`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
         val body =
             mapOf(
-                "username" to USERNAME_OF_ADMIN,
-                "password" to PASSWORD_OF_ADMIN,
+                "username" to USERNAME,
+                "password" to PASSWORD,
             )
 
         client.post().uri("/login").bodyValue(body).exchange().expectBody()
@@ -211,11 +209,11 @@ class UserControllerTest {
                     .exchange()
                     .expectStatus().isOk
                     .expectBody()
-                    .jsonPath("id").isEqualTo(1)
-                    .jsonPath("username").isEqualTo(USERNAME_OF_ADMIN)
+                    .jsonPath("id").isEqualTo(8)
+                    .jsonPath("username").isEqualTo(USERNAME)
             }
     }
-    
+
     @Test
     fun `auth check - unauthorized`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
@@ -233,8 +231,6 @@ class UserControllerTest {
             .exchange()
             .expectStatus().isUnauthorized
     }
-
-
 
     /**
      * Update User Tests
@@ -328,7 +324,7 @@ class UserControllerTest {
 
         val body =
             mapOf(
-                "username" to USERNAME_OF_ADMIN,
+                "username" to USERNAME,
                 "password" to randomString(),
             )
 
@@ -343,12 +339,9 @@ class UserControllerTest {
             .jsonPath("type").isEqualTo(Problem.usernameAlreadyExists.type.toString())
     }
 
-
     companion object {
-        private val USERNAME_OF_ADMIN = "admin"
-        private val PASSWORD_OF_ADMIN = "Admin123!"
-
-        private val USERNAME_OF_SECOND_COACH = "user2"
+        private val USERNAME = "user3"
+        private val PASSWORD = "Admin123!"
         private val TOKEN_OF_SECOND_COACH = "fM5JjtPOUqtnZg1lB7jnJhXBP5gI2WbIIBoO3JhYM5M="
 
         private fun randomString() = "String_${abs(Random.nextLong())}"

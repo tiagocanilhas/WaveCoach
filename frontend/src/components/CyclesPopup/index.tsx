@@ -11,10 +11,10 @@ import { Button } from '../Button'
 
 import { Mesocycle } from '../../types/Mesocycle'
 
-import { parseToEpoch } from '../../utils/parseToEpoch'
-import { epochConverter } from '../../utils/epochConverter'
+import { parseToEpoch } from '../../../utils/parseToEpoch'
+import { epochConverter } from '../../../utils/epochConverter'
 
-import { createCalendar } from '../../services/athleteServices'
+import { createCalendar } from '../../../services/athleteServices'
 
 import styles from './styles.module.css'
 import { useAuthentication } from '../../hooks/useAuthentication'

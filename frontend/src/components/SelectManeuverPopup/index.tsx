@@ -9,7 +9,7 @@ import { AddManeuverPopup } from '../AddManeuverPopup'
 import { ScrollableText } from '../ScrollableText'
 import { ObjectList } from '../ObjectList'
 
-import { getWaterManeuvers } from '../../services/waterManeuverServices'
+import { getWaterManeuvers } from '../../../services/waterManeuverServices'
 
 import { WaterManeuver } from '../../types/WaterManeuver'
 

@@ -132,7 +132,7 @@ class WaterActivityServicesTest {
                         MANEUVERS_LIST,
                     )
             ) {
-                is Failure -> assertTrue(result.value is CreateWaterActivityError.InvalidPse)
+                is Failure -> assertTrue(result.value is CreateWaterActivityError.InvalidRpe)
                 is Success -> fail("Unexpected $result")
             }
         }
@@ -142,9 +142,9 @@ class WaterActivityServicesTest {
     fun `create water activity - invalid heart rate`() {
         val createWaterActivityService = createWaterActivityServices()
 
-        val invalidHeartRateList = listOf(-1, 0, 201)
+        val invalidTrimpList = listOf(-1, 0, 201)
 
-        invalidHeartRateList.forEach { heartRate ->
+        invalidTrimpList.forEach { trimp ->
             when (
                 val result =
                     createWaterActivityService.createWaterActivity(
@@ -153,12 +153,12 @@ class WaterActivityServicesTest {
                         DATE,
                         PSE,
                         CONDITION,
-                        heartRate,
+                        trimp,
                         DURATION,
                         MANEUVERS_LIST,
                     )
             ) {
-                is Failure -> assertTrue(result.value is CreateWaterActivityError.InvalidHeartRate)
+                is Failure -> assertTrue(result.value is CreateWaterActivityError.InvalidTrimp)
                 is Success -> fail("Unexpected $result")
             }
         }
@@ -186,7 +186,6 @@ class WaterActivityServicesTest {
             is Failure -> assertTrue(result.value is CreateWaterActivityError.InvalidDuration)
             is Success -> fail("Unexpected $result")
         }
-
     }
 
     @Test
@@ -208,14 +207,15 @@ class WaterActivityServicesTest {
                     listOf(
                         WaveInputInfo(
                             points = 10f,
-                            maneuvers = listOf(
-                                ManeuverInputInfo(
-                                    waterManeuverId = invalidManeuver,
-                                    rightSide = true,
-                                    success = true
-                                )
-                            )
-                        )
+                            rightSide = true,
+                            maneuvers =
+                                listOf(
+                                    ManeuverInputInfo(
+                                        waterManeuverId = invalidManeuver,
+                                        success = true,
+                                    ),
+                                ),
+                        ),
                     ),
                 )
         ) {
@@ -350,7 +350,6 @@ class WaterActivityServicesTest {
         }
     }
 
-
     /**
      * Create Questionnaire Test
      */
@@ -415,8 +414,6 @@ class WaterActivityServicesTest {
         }
     }
 
-
-
     companion object {
         private const val FIRST_COACH_ID = 1
         private const val SECOND_COACH_ID = 2
@@ -433,28 +430,30 @@ class WaterActivityServicesTest {
         private const val CONDITION = "good"
         private const val HEART_RATE = 120
         private const val DURATION = 60
-        private val MANEUVERS_LIST = listOf(
-            WaveInputInfo(
-                points = 10f,
-                maneuvers = listOf(
-                    ManeuverInputInfo(
-                        waterManeuverId = 1,
-                        rightSide = true,
-                        success = true
-                    ),
-                    ManeuverInputInfo(
-                        waterManeuverId = 2,
-                        rightSide = false,
-                        success = false
-                    )
-                )
+        private val MANEUVERS_LIST =
+            listOf(
+                WaveInputInfo(
+                    points = 10f,
+                    rightSide = true,
+                    maneuvers =
+                        listOf(
+                            ManeuverInputInfo(
+                                waterManeuverId = 1,
+                                success = true,
+                            ),
+                            ManeuverInputInfo(
+                                waterManeuverId = 2,
+                                success = false,
+                            ),
+                        ),
+                ),
             )
-        )
 
-        private fun createWaterActivityServices() = WaterActivityServices(
-            JdbiTransactionManager(jdbi),
-            WaterActivityDomain()
-        )
+        private fun createWaterActivityServices() =
+            WaterActivityServices(
+                JdbiTransactionManager(jdbi),
+                WaterActivityDomain(),
+            )
 
         private val jdbi =
             Jdbi.create(
@@ -462,6 +461,5 @@ class WaterActivityServicesTest {
                     setURL("jdbc:postgresql://localhost:5432/db?user=dbuser&password=changeit")
                 },
             ).configureWithAppRequirements()
-
     }
 }

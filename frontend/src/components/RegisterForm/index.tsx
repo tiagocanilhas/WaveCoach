@@ -7,8 +7,8 @@ import { Card } from '../Card'
 import { Button } from '../Button'
 import { BackButton } from '../BackButton'
 
-import { validatePassword } from '../../utils/validatePassword'
-import { handleError } from '../../utils/handleError'
+import { validatePassword } from '../../../utils/validatePassword'
+import { handleError } from '../../../utils/handleError'
 
 import styles from './styles.module.css'
 
@@ -58,11 +58,8 @@ type RegisterFormProps = {
 }
 
 export function RegisterForm({ title, initialUsername, buttonText, onSubmit }: RegisterFormProps) {
-  const [state, dispatch] = useReducer(reducer, {
-    tag: 'editing',
-    inputs: { username: initialUsername, password: '', confirmPassword: '' },
-  })
-
+  const initialState: State = { tag: 'editing', inputs: { username: initialUsername, password: '', confirmPassword: '' } }
+  const [state, dispatch] = useReducer(reducer, initialState)
   const navigate = useNavigate()
 
   function handleBack() {
@@ -82,7 +79,6 @@ export function RegisterForm({ title, initialUsername, buttonText, onSubmit }: R
       dispatch({ type: 'success' })
     } catch (error) {
       dispatch({ type: 'error', error: handleError(error) })
-      return
     }
   }
 

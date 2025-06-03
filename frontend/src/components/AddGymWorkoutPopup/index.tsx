@@ -11,9 +11,9 @@ import { Exercise } from '../../types/Exercise'
 import { SetData } from '../../types/SetData'
 
 import styles from './styles.module.css'
-import { createGymActivity } from '../../services/gymServices'
+import { createGymActivity } from '../../../services/gymServices'
 import { useParams } from 'react-router-dom'
-import { handleError } from '../../utils/handleError'
+import { handleError } from '../../../utils/handleError'
 
 type State = {
   isOpen: boolean

@@ -5,19 +5,35 @@ import waveCoach.domain.Questionnaire
 import waveCoach.domain.WaterActivityWithWaves
 
 interface WaterActivityRepository {
-    fun storeWaterActivity(activityId: Int, pse: Int, condition: String, heartRate: Int, duration: Int): Int
+    fun storeWaterActivity(
+        activityId: Int,
+        rpe: Int,
+        condition: String,
+        trimp: Int,
+        duration: Int,
+    ): Int
 
     fun removeWaterActivity(activityId: Int)
 
     fun removeWaterActivities(athleteId: Int)
 
-    fun storeWave(activityId: Int, points: Float?, order: Int): Int
+    fun storeWave(
+        activityId: Int,
+        points: Float?,
+        rightSide: Boolean,
+        order: Int,
+    ): Int
 
     fun removeWavesByActivity(activityId: Int)
 
     fun removeWavesByAthlete(athleteId: Int)
 
-    fun storeManeuver(waveId: Int, waterManeuverId: Int, rightSide: Boolean, success: Boolean, order: Int): Int
+    fun storeManeuver(
+        waveId: Int,
+        waterManeuverId: Int,
+        success: Boolean,
+        order: Int,
+    ): Int
 
     fun removeManeuversByActivity(activityId: Int)
 
@@ -32,7 +48,7 @@ interface WaterActivityRepository {
         sleep: Int,
         fatigue: Int,
         stress: Int,
-        musclePain: Int
+        musclePain: Int,
     )
 
     fun getQuestionnaire(activityId: Int): Questionnaire?

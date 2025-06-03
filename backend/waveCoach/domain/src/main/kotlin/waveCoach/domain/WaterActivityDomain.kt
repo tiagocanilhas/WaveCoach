@@ -4,17 +4,9 @@ import org.springframework.stereotype.Component
 
 @Component
 class WaterActivityDomain {
-    fun checkPse(pse: Int): Boolean {
-        return pse in 1..10
-    }
+    fun checkPse(pse: Int) = pse in 1..10
+    fun checkTrimp(trimp: Int) = trimp in 1..200
+    fun checkDuration(duration: Int) = duration > 0
 
-    fun checkHeartRate(heartRate: Int): Boolean {
-        return heartRate in 1..200
-    }
-
-    fun checkDuration(duration: Int): Boolean {
-        return duration > 0
-    }
-
-    fun checkQuestionnaireValue(value: Int) = value in 0..10
+    fun checkQuestionnaireValue(value: Int) = value in 1..5
 }

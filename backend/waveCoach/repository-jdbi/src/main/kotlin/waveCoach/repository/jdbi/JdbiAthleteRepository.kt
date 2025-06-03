@@ -19,14 +19,14 @@ class JdbiAthleteRepository(
     ): Int =
         handle.createUpdate(
             """
-            insert into waveCoach.athlete (uid, coach, name, birth_date, url)
-            values (:uid, :coach, :name, :birth_date, :url)
+            insert into waveCoach.athlete (uid, coach, name, birthdate, url)
+            values (:uid, :coach, :name, :birthdate, :url)
             """.trimIndent(),
         )
             .bind("uid", uid)
             .bind("coach", coachId)
             .bind("name", name)
-            .bind("birth_date", birthDate)
+            .bind("birthdate", birthDate)
             .bind("url", url)
             .executeAndReturnGeneratedKeys()
             .mapTo<Int>()
@@ -52,13 +52,13 @@ class JdbiAthleteRepository(
         handle.createUpdate(
             """
             update waveCoach.athlete 
-            set name = :name, birth_date = :birth_date 
+            set name = :name, birthdate = :birthdate 
             where uid = :uid
             """.trimIndent(),
         )
             .bind("uid", uid)
             .bind("name", name)
-            .bind("birth_date", birthDate)
+            .bind("birthdate", birthDate)
             .execute()
     }
 

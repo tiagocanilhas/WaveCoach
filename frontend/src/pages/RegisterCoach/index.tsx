@@ -2,7 +2,7 @@ import * as React from 'react'
 
 import { RegisterForm } from '../../components/RegisterForm'
 
-import { createCoach } from '../../services/coachServices'
+import { createCoach } from '../../../services/coachServices'
 
 import styles from './styles.module.css'
 

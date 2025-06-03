@@ -26,7 +26,7 @@ class GymActivityServicesTest {
                     FIRST_COACH_ID,
                     FIRST_ATHLETE_ID,
                     DATE,
-                    EXERCISES_LIST
+                    EXERCISES_LIST,
                 )
         ) {
             is Failure -> fail("Unexpected $result")
@@ -51,7 +51,7 @@ class GymActivityServicesTest {
                         FIRST_COACH_ID,
                         FIRST_ATHLETE_ID,
                         date,
-                        EXERCISES_LIST
+                        EXERCISES_LIST,
                     )
             ) {
                 is Failure -> assertTrue(result.value is CreateGymActivityError.InvalidDate)
@@ -70,7 +70,7 @@ class GymActivityServicesTest {
                     FIRST_COACH_ID,
                     0,
                     DATE,
-                    EXERCISES_LIST
+                    EXERCISES_LIST,
                 )
         ) {
             is Failure -> assertTrue(result.value is CreateGymActivityError.AthleteNotFound)
@@ -88,7 +88,7 @@ class GymActivityServicesTest {
                     SECOND_COACH_ID,
                     FIRST_ATHLETE_ID,
                     DATE,
-                    EXERCISES_LIST
+                    EXERCISES_LIST,
                 )
         ) {
             is Failure -> assertTrue(result.value is CreateGymActivityError.NotAthletesCoach)
@@ -111,13 +111,12 @@ class GymActivityServicesTest {
                     FIRST_COACH_ID,
                     FIRST_ATHLETE_ID,
                     DATE,
-                    invalidExercisesList
+                    invalidExercisesList,
                 )
         ) {
             is Failure -> assertTrue(result.value is CreateGymActivityError.InvalidGymExercise)
             is Success -> fail("Unexpected $result")
         }
-
     }
 
     @Test
@@ -135,7 +134,7 @@ class GymActivityServicesTest {
                     FIRST_COACH_ID,
                     FIRST_ATHLETE_ID,
                     DATE,
-                    invalidExercisesList
+                    invalidExercisesList,
                 )
         ) {
             is Failure -> assertTrue(result.value is CreateGymActivityError.InvalidSet)
@@ -238,26 +237,29 @@ class GymActivityServicesTest {
         private const val DATE = "02-08-2025" // date long = 1743801600000
 
         private const val FIRST_GYM_ACTIVITY_ID = 1
-        private const val SECOND_GYM_ACTIVITY_ID = 4
+        private const val SECOND_GYM_ACTIVITY_ID = 7
         private const val THIRD_GYM_ACTIVITY_ID = 3
 
-        private val EXERCISES_LIST = listOf(
-            ExerciseInputInfo(
-                sets = listOf(
-                    SetInputInfo(
-                        reps = 10,
-                        weight = 60f,
-                        restTime = 60f,
-                    ),
+        private val EXERCISES_LIST =
+            listOf(
+                ExerciseInputInfo(
+                    sets =
+                        listOf(
+                            SetInputInfo(
+                                reps = 10,
+                                weight = 60f,
+                                restTime = 60f,
+                            ),
+                        ),
+                    gymExerciseId = 1,
                 ),
-                gymExerciseId = 1
             )
-        )
 
-        private fun createGymActivityServices() = GymActivityServices(
-            JdbiTransactionManager(jdbi),
-            SetsDomain(),
-        )
+        private fun createGymActivityServices() =
+            GymActivityServices(
+                JdbiTransactionManager(jdbi),
+                SetsDomain(),
+            )
 
         private val jdbi =
             Jdbi.create(
@@ -265,6 +267,5 @@ class GymActivityServicesTest {
                     setURL("jdbc:postgresql://localhost:5432/db?user=dbuser&password=changeit")
                 },
             ).configureWithAppRequirements()
-
     }
 }

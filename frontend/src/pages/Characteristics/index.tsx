@@ -13,10 +13,10 @@ import { Card } from '../../components/Card'
 import { CharacteristicsData } from '../../types/CharacterisitcsData'
 import { Characteristics } from '../../types/Characteristics'
 
-import { getCharacteristics } from '../../services/athleteServices'
+import { getCharacteristics } from '../../../services/athleteServices'
 
-import { epochConverter } from '../../utils/epochConverter'
-import { handleError } from '../../utils/handleError'
+import { epochConverter } from '../../../utils/epochConverter'
+import { handleError } from '../../../utils/handleError'
 
 import { useAuthentication } from '../../hooks/useAuthentication'
 

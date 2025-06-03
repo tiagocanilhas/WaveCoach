@@ -5,13 +5,23 @@ import waveCoach.domain.AthleteCode
 import waveCoach.domain.CodeValidationInfo
 
 interface AthleteRepository {
-    fun storeAthlete(uid: Int, coachId: Int, name: String, birthDate: Long, url: String?): Int
+    fun storeAthlete(
+        uid: Int,
+        coachId: Int,
+        name: String,
+        birthDate: Long,
+        url: String?,
+    ): Int
 
     fun getAthlete(uid: Int): Athlete?
 
     fun getAthleteList(coachId: Int): List<Athlete>
 
-    fun updateAthlete(uid: Int, name: String, birthDate: Long)
+    fun updateAthlete(
+        uid: Int,
+        name: String,
+        birthDate: Long,
+    )
 
     fun setCredentialsChangedToTrue(uid: Int)
 

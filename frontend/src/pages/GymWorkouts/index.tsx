@@ -6,13 +6,13 @@ import { CircularProgress } from '@mui/material'
 import { Workout } from '../../components/Workout'
 import { AddGymWorkoutPopup } from '../../components/AddGymWorkoutPopup'
 
-import { getCalendar } from '../../services/athleteServices'
-import { getGymActivity } from '../../services/gymServices'
+import { getCalendar } from '../../../services/athleteServices'
+import { getGymActivity } from '../../../services/gymServices'
 
 import styles from './styles.module.css'
 import { useAuthentication } from '../../hooks/useAuthentication'
-import { handleError } from '../../utils/handleError'
-import { epochConverter } from '../../utils/epochConverter'
+import { handleError } from '../../../utils/handleError'
+import { epochConverter } from '../../../utils/epochConverter'
 
 type State = {
   calendar: any[]

@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
 import waveCoach.domain.AuthenticatedCoach
-import waveCoach.domain.AuthenticatedUser
 import waveCoach.http.model.input.CreateGymExerciseInputModel
 import waveCoach.http.model.input.UpdateGymExerciseInputModel
 import waveCoach.http.model.output.GymExerciseListOutputModel
@@ -31,7 +30,7 @@ class GymExerciseController(
     fun create(
         coach: AuthenticatedCoach,
         @RequestPart("input") input: CreateGymExerciseInputModel,
-        @RequestPart("photo") photo: MultipartFile?
+        @RequestPart("photo") photo: MultipartFile?,
     ): ResponseEntity<*> {
         val result = gymExerciseServices.createGymExercise(input.name, input.category, photo)
 
@@ -53,9 +52,7 @@ class GymExerciseController(
     }
 
     @GetMapping(Uris.GymExercise.GET_ALL)
-    fun getAll(
-        coach: AuthenticatedCoach,
-    ): ResponseEntity<*> {
+    fun getAll(coach: AuthenticatedCoach): ResponseEntity<*> {
         val result = gymExerciseServices.getAllGymExercises()
 
         return ResponseEntity
@@ -69,8 +66,8 @@ class GymExerciseController(
                             it.category.toString(),
                             it.url,
                         )
-                    }
-                )
+                    },
+                ),
             )
     }
 
@@ -90,7 +87,6 @@ class GymExerciseController(
                     UpdateGymExerciseError.InvalidName -> Problem.response(400, Problem.invalidName)
                     UpdateGymExerciseError.InvalidCategory -> Problem.response(400, Problem.invalidCategory)
                     UpdateGymExerciseError.NameAlreadyExists -> Problem.response(400, Problem.nameAlreadyExists)
-
                 }
         }
     }

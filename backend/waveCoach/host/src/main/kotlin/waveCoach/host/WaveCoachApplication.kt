@@ -51,13 +51,14 @@ class WaveCoachApplication {
         )
 
     @Bean
-    fun cloudinary(): Cloudinary = Cloudinary(
-        mapOf(
-            "cloud_name" to Environment.getCloudName(),
-            "api_key" to Environment.getApiKey(),
-            "api_secret" to Environment.getApiSecret()
+    fun cloudinary(): Cloudinary =
+        Cloudinary(
+            mapOf(
+                "cloud_name" to Environment.getCloudName(),
+                "api_key" to Environment.getApiKey(),
+                "api_secret" to Environment.getApiSecret(),
+            ),
         )
-    )
 }
 
 @Configuration

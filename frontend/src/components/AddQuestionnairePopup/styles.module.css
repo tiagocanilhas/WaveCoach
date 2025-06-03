@@ -1,0 +1,14 @@
+
+.add {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+
+  width: 17%;
+  font-size: 80px;
+  background-color: #ccc;
+  color: white;
+  border-radius: 50%;
+  cursor: pointer;
+}

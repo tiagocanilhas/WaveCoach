@@ -295,7 +295,6 @@ class UserServicesTest {
         private val ID_OF_SECOND_COACH = 2
         private val TOKEN_OF_SECOND_COACH = "fM5JjtPOUqtnZg1lB7jnJhXBP5gI2WbIIBoO3JhYM5M="
 
-
         private fun createUserServices(
             testClock: TestClock,
             tokenTtl: Duration = 30.days,

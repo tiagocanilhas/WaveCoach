@@ -1,8 +1,8 @@
 package waveCoach.services
 
 import org.springframework.stereotype.Component
-import waveCoach.domain.GymActivityWithExercises
 import waveCoach.domain.ExerciseWithSets
+import waveCoach.domain.GymActivityWithExercises
 import waveCoach.domain.SetsDomain
 import waveCoach.repository.TransactionManager
 import waveCoach.utils.Either
@@ -101,25 +101,29 @@ class GymActivityServices(
             val activityRepository = it.activityRepository
             val gymActivityRepository = it.gymActivityRepository
 
-            val athlete = athleteRepository.getAthlete(uid)
-                ?: return@run failure(CreateGymActivityError.AthleteNotFound)
+            val athlete =
+                athleteRepository.getAthlete(uid)
+                    ?: return@run failure(CreateGymActivityError.AthleteNotFound)
 
             if (athlete.coach != coachId) return@run failure(CreateGymActivityError.NotAthletesCoach)
 
-            val micro = activityRepository.getMicrocycleByDate(dateLong, uid)
-                ?: return@run failure(CreateGymActivityError.ActivityWithoutMicrocycle)
+            val micro =
+                activityRepository.getMicrocycleByDate(dateLong, uid)
+                    ?: return@run failure(CreateGymActivityError.ActivityWithoutMicrocycle)
 
             val activityID = activityRepository.storeActivity(uid, dateLong, micro.id)
             gymActivityRepository.storeGymActivity(activityID)
 
             exercises.forEachIndexed { exerciseOrder, exercise ->
-                if (!gymActivityRepository.isGymExerciseValid(exercise.gymExerciseId))
+                if (!gymActivityRepository.isGymExerciseValid(exercise.gymExerciseId)) {
                     return@run failure(CreateGymActivityError.InvalidGymExercise)
+                }
 
                 val exerciseId = gymActivityRepository.storeExercise(activityID, exercise.gymExerciseId, exerciseOrder)
                 exercise.sets.forEachIndexed { setOrder, set ->
-                    if (!setsDomain.checkSet(set.reps, set.weight, set.restTime))
+                    if (!setsDomain.checkSet(set.reps, set.weight, set.restTime)) {
                         return@run failure(CreateGymActivityError.InvalidSet)
+                    }
 
                     gymActivityRepository.storeSet(exerciseId, set.reps, set.weight, set.restTime, setOrder)
                 }
@@ -137,30 +141,34 @@ class GymActivityServices(
             val activityRepository = it.activityRepository
             val gymActivityRepository = it.gymActivityRepository
 
-            val activity = activityRepository.getActivityById(activityId)
-                ?: return@run failure(GetGymActivityError.ActivityNotFound)
+            val activity =
+                activityRepository.getActivityById(activityId)
+                    ?: return@run failure(GetGymActivityError.ActivityNotFound)
 
-            if (activity.type != waveCoach.domain.ActivityType.GYM)
+            if (activity.type != waveCoach.domain.ActivityType.GYM) {
                 return@run failure(GetGymActivityError.NotGymActivity)
+            }
 
             val athlete = athleteRepository.getAthlete(activity.uid)!!
 
-            if (athlete.uid != uid && athlete.coach != uid)
+            if (athlete.uid != uid && athlete.coach != uid) {
                 return@run failure(GetGymActivityError.NotAthletesCoach)
+            }
 
             val exercises = gymActivityRepository.getExercises(activityId)
 
-            val exercisesWithSets = exercises.map { exercise ->
-                val sets = gymActivityRepository.getSets(exercise.id)
-                ExerciseWithSets(
-                    exercise.id,
-                    exercise.activity,
-                    exercise.name,
-                    exercise.exerciseOrder,
-                    exercise.url,
-                    sets
-                )
-            }
+            val exercisesWithSets =
+                exercises.map { exercise ->
+                    val sets = gymActivityRepository.getSets(exercise.id)
+                    ExerciseWithSets(
+                        exercise.id,
+                        exercise.activity,
+                        exercise.name,
+                        exercise.exerciseOrder,
+                        exercise.url,
+                        sets,
+                    )
+                }
 
             success(
                 GymActivityWithExercises(
@@ -168,8 +176,8 @@ class GymActivityServices(
                     activity.uid,
                     activity.date,
                     activity.type,
-                    exercisesWithSets
-                )
+                    exercisesWithSets,
+                ),
             )
         }
     }
@@ -246,23 +254,19 @@ class GymActivityServices(
         return transactionManager.run {
             val athleteRepository = it.athleteRepository
             val activityRepository = it.activityRepository
-            val gymActivityRepository = it.gymActivityRepository
 
             val activity =
                 activityRepository.getActivityById(activityId)
                     ?: return@run failure(RemoveGymActivityError.ActivityNotFound)
 
-            if (activity.type != waveCoach.domain.ActivityType.GYM)
+            if (activity.type != waveCoach.domain.ActivityType.GYM) {
                 return@run failure(RemoveGymActivityError.NotGymActivity)
+            }
 
-            val athlete =
-                athleteRepository.getAthlete(activity.uid)
+            val athlete = athleteRepository.getAthlete(activity.uid)!!
 
-            if (athlete!!.coach != coachId) return@run failure(RemoveGymActivityError.NotAthletesCoach)
+            if (athlete.coach != coachId) return@run failure(RemoveGymActivityError.NotAthletesCoach)
 
-            gymActivityRepository.removeSetsByActivity(activityId)
-            gymActivityRepository.removeExercisesByActivity(activityId)
-            gymActivityRepository.removeGymActivity(activityId)
             activityRepository.removeActivity(activityId)
 
             success(activityId)

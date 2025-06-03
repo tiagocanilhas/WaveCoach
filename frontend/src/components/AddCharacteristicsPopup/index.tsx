@@ -6,9 +6,9 @@ import TextField from '@mui/material/TextField'
 import { Popup } from '../Popup'
 import { Button } from '../Button'
 
-import { createCharacteristics } from '../../services/athleteServices'
+import { createCharacteristics } from '../../../services/athleteServices'
 
-import { handleError } from '../../utils/handleError'
+import { handleError } from '../../../utils/handleError'
 
 import styles from './styles.module.css'
 

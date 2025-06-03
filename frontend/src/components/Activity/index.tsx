@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { epochConverter } from '../../utils/epochConverter'
+import { epochConverter } from '../../../utils/epochConverter'
 
 import styles from './styles.module.css'
 

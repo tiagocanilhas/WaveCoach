@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom'
 
 import { LogoutPopup } from '../LogoutPopup'
 
-import { logout } from '../../services/userServices'
+import { logout } from '../../../services/userServices'
 
 import { useAuthentication } from '../../hooks/useAuthentication'
 

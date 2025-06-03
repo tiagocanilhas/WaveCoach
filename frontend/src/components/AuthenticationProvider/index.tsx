@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { createContext, useEffect, useState } from 'react'
 
-import { checkAuth } from '../../services/userServices'
+import { checkAuth } from '../../../services/userServices'
 
 import { User } from '../../types/User'
 

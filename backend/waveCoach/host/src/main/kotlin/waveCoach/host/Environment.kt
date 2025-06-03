@@ -8,7 +8,9 @@ object Environment {
 
     // Cloudinary credentials
     fun getCloudName() = System.getenv(KEY_CLOUD_NAME) ?: throw Exception("Missing env var $KEY_CLOUD_NAME")
+
     fun getApiKey() = System.getenv(KEY_API_KEY) ?: throw Exception("Missing env var $KEY_API_KEY")
+
     fun getApiSecret() = System.getenv(KEY_API_SECRET) ?: throw Exception("Missing env var $KEY_API_SECRET")
 
     private const val KEY_CLOUD_NAME = "CLOUDINARY_CLOUD_NAME"

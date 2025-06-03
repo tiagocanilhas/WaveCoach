@@ -8,7 +8,11 @@ import java.sql.SQLException
 
 class CategoryMapper : ColumnMapper<Category> {
     @Throws(SQLException::class)
-    override fun map(r: ResultSet, columnNumber: Int, ctx: StatementContext): Category {
+    override fun map(
+        r: ResultSet,
+        columnNumber: Int,
+        ctx: StatementContext,
+    ): Category {
         return Category.valueOf(r.getString(columnNumber))
     }
 }

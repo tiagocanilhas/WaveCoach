@@ -16,12 +16,12 @@ import { CyclesPopup } from '../../components/CyclesPopup'
 import { Calendar } from '../../types/Calendar'
 import { Athlete } from '../../types/Athlete'
 
-import { epochConverter } from '../../utils/epochConverter'
-import { epochConverterToAge } from '../../utils/epochConverterToAge'
+import { epochConverter } from '../../../utils/epochConverter'
+import { epochConverterToAge } from '../../../utils/epochConverterToAge'
 
 import { useAuthentication } from '../../hooks/useAuthentication'
 
-import { generateCode, getAthlete, deleteAthlete, getCalendar } from '../../services/athleteServices'
+import { generateCode, getAthlete, deleteAthlete, getCalendar } from '../../../services/athleteServices'
 
 import styles from './styles.module.css'
 

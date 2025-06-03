@@ -12,7 +12,7 @@ import { Card } from '../Card'
 import { Maneuver } from '../../types/Maneuver'
 import { WaterCalendar } from '../../types/WaterCalendar'
 
-import { epochConverter } from '../../utils/epochConverter'
+import { epochConverter } from '../../../utils/epochConverter'
 
 import styles from './styles.module.css'
 

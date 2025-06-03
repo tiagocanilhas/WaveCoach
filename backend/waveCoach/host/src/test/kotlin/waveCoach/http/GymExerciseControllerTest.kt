@@ -28,14 +28,16 @@ class GymExerciseControllerTest {
     fun `create gym exercise - success`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val input = mapOf(
-            "name" to randomString(),
-            "category" to "chest",
-        )
+        val input =
+            mapOf(
+                "name" to randomString(),
+                "category" to "chest",
+            )
 
-        val body = MultipartBodyBuilder().apply {
-            part("input", input)
-        }.build()
+        val body =
+            MultipartBodyBuilder().apply {
+                part("input", input)
+            }.build()
 
         client.post()
             .uri("/gym/exercise")
@@ -54,14 +56,16 @@ class GymExerciseControllerTest {
     fun `create gym exercise with invalid name`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val input = mapOf(
-            "name" to "",
-            "category" to "chest",
-        )
+        val input =
+            mapOf(
+                "name" to "",
+                "category" to "chest",
+            )
 
-        val body = MultipartBodyBuilder().apply {
-            part("input", input)
-        }.build()
+        val body =
+            MultipartBodyBuilder().apply {
+                part("input", input)
+            }.build()
 
         client.post()
             .uri("/gym/exercise")
@@ -79,14 +83,16 @@ class GymExerciseControllerTest {
     fun `create gym exercise with invalid category`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val input = mapOf(
-            "name" to "Bench Press",
-            "category" to "",
-        )
+        val input =
+            mapOf(
+                "name" to "Bench Press",
+                "category" to "",
+            )
 
-        val body = MultipartBodyBuilder().apply {
-            part("input", input)
-        }.build()
+        val body =
+            MultipartBodyBuilder().apply {
+                part("input", input)
+            }.build()
 
         client.post()
             .uri("/gym/exercise")
@@ -104,14 +110,16 @@ class GymExerciseControllerTest {
     fun `create gym exercise with already existing name`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val input = mapOf(
-            "name" to "Shoulder Press",
-            "category" to "shoulders",
-        )
+        val input =
+            mapOf(
+                "name" to "Shoulder Press",
+                "category" to "shoulders",
+            )
 
-        val body = MultipartBodyBuilder().apply {
-            part("input", input)
-        }.build()
+        val body =
+            MultipartBodyBuilder().apply {
+                part("input", input)
+            }.build()
 
         client.post()
             .uri("/gym/exercise")
@@ -151,10 +159,11 @@ class GymExerciseControllerTest {
     fun `update gym exercise - success`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val body = mapOf(
-            "name" to "Push Up",
-            "category" to "Chest",
-        )
+        val body =
+            mapOf(
+                "name" to "Push Up",
+                "category" to "Chest",
+            )
 
         client.put()
             .uri("/gym/exercise/$FIRST_GYM_EXERCISE_ID")
@@ -169,10 +178,11 @@ class GymExerciseControllerTest {
     fun `update gym exercise not found`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val body = mapOf(
-            "name" to "Push Up",
-            "category" to "Chest",
-        )
+        val body =
+            mapOf(
+                "name" to "Push Up",
+                "category" to "Chest",
+            )
 
         client.put()
             .uri("/gym/exercise/0")
@@ -190,10 +200,11 @@ class GymExerciseControllerTest {
     fun `update gym exercise with invalid name`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val body = mapOf(
-            "name" to "",
-            "category" to "Chest",
-        )
+        val body =
+            mapOf(
+                "name" to "",
+                "category" to "Chest",
+            )
 
         client.put()
             .uri("/gym/exercise/$FIRST_GYM_EXERCISE_ID")
@@ -211,10 +222,11 @@ class GymExerciseControllerTest {
     fun `update gym exercise with invalid category`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val body = mapOf(
-            "name" to "Push Up",
-            "category" to "",
-        )
+        val body =
+            mapOf(
+                "name" to "Push Up",
+                "category" to "",
+            )
 
         client.put()
             .uri("/gym/exercise/$FIRST_GYM_EXERCISE_ID")
@@ -232,10 +244,11 @@ class GymExerciseControllerTest {
     fun `update gym exercise with already existing name`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val body = mapOf(
-            "name" to "Deadlift",
-            "category" to "Back",
-        )
+        val body =
+            mapOf(
+                "name" to "Deadlift",
+                "category" to "Back",
+            )
 
         client.put()
             .uri("/gym/exercise/$FIRST_GYM_EXERCISE_ID")

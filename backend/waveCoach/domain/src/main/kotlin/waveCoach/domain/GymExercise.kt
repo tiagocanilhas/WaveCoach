@@ -4,5 +4,5 @@ data class GymExercise(
     val id: Int,
     val name: String,
     val category: Category,
-    val url: String?
+    val url: String?,
 )

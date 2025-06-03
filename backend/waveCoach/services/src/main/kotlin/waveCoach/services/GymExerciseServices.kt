@@ -40,12 +40,12 @@ typealias RemoveGymExerciseResult = Either<RemoveGymExerciseError, Int>
 class GymExerciseServices(
     private val transactionManager: TransactionManager,
     private val gymExerciseDomain: GymExerciseDomain,
-    private val cloudinaryServices: CloudinaryServices
+    private val cloudinaryServices: CloudinaryServices,
 ) {
     fun createGymExercise(
         name: String,
         category: String,
-        photo: MultipartFile?
+        photo: MultipartFile?,
     ): CreateGymExerciseResult {
         if (!gymExerciseDomain.isCategoryValid(category)) return failure(CreateGymExerciseError.InvalidCategory)
 
@@ -54,13 +54,15 @@ class GymExerciseServices(
         return transactionManager.run {
             val gymActivityRepository = it.gymActivityRepository
 
-            if (gymActivityRepository.getGymExerciseByName(name) != null)
+            if (gymActivityRepository.getGymExerciseByName(name) != null) {
                 return@run failure(CreateGymExerciseError.NameAlreadyExists)
-
-            val url = photo?.let { file ->
-                cloudinaryServices.uploadExerciseImage(file)
-                    ?: return@run failure(CreateGymExerciseError.InvalidPhoto)
             }
+
+            val url =
+                photo?.let { file ->
+                    cloudinaryServices.uploadExerciseImage(file)
+                        ?: return@run failure(CreateGymExerciseError.InvalidPhoto)
+                }
 
             success(gymActivityRepository.storeGymExercise(name, category, url))
         }
@@ -86,11 +88,13 @@ class GymExerciseServices(
         return transactionManager.run {
             val gymActivityRepository = it.gymActivityRepository
 
-            if (gymActivityRepository.getGymExerciseByName(name) != null)
+            if (gymActivityRepository.getGymExerciseByName(name) != null) {
                 return@run failure(UpdateGymExerciseError.NameAlreadyExists)
+            }
 
-            if (!gymActivityRepository.isGymExerciseValid(id))
+            if (!gymActivityRepository.isGymExerciseValid(id)) {
                 return@run failure(UpdateGymExerciseError.GymExerciseNotFound)
+            }
 
             gymActivityRepository.updateGymExercise(id, name, category)
 
@@ -102,8 +106,9 @@ class GymExerciseServices(
         return transactionManager.run {
             val gymActivityRepository = it.gymActivityRepository
 
-            if (!gymActivityRepository.isGymExerciseValid(id))
+            if (!gymActivityRepository.isGymExerciseValid(id)) {
                 return@run failure(RemoveGymExerciseError.GymExerciseNotFound)
+            }
 
             gymActivityRepository.removeGymExercise(id)
 

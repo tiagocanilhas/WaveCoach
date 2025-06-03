@@ -26,7 +26,7 @@ class GymExerciseServicesTest {
         val name = randomString()
         val category = "shoulders"
 
-        when(val result = gymExerciseServices.createGymExercise(name, category, null)) {
+        when (val result = gymExerciseServices.createGymExercise(name, category, null)) {
             is Failure -> fail("Unexpected $result")
             is Success -> assertTrue { result.value > 1 }
         }
@@ -39,7 +39,7 @@ class GymExerciseServicesTest {
         val name = ""
         val category = "shoulders"
 
-        when(val result = gymExerciseServices.createGymExercise(name, category, null)) {
+        when (val result = gymExerciseServices.createGymExercise(name, category, null)) {
             is Failure -> assertTrue { result.value is CreateGymExerciseError.InvalidName }
             is Success -> fail("Unexpected $result")
         }
@@ -52,7 +52,7 @@ class GymExerciseServicesTest {
         val name = randomString()
         val category = randomString()
 
-        when(val result = gymExerciseServices.createGymExercise(name, category, null)) {
+        when (val result = gymExerciseServices.createGymExercise(name, category, null)) {
             is Failure -> assertTrue { result.value is CreateGymExerciseError.InvalidCategory }
             is Success -> fail("Unexpected $result")
         }
@@ -65,7 +65,7 @@ class GymExerciseServicesTest {
         val name = GYM_EXERCISE_NAME
         val category = "chest"
 
-        when(val result = gymExerciseServices.createGymExercise(name, category, null)) {
+        when (val result = gymExerciseServices.createGymExercise(name, category, null)) {
             is Failure -> assertTrue { result.value is CreateGymExerciseError.NameAlreadyExists }
             is Success -> fail("Unexpected $result")
         }
@@ -94,7 +94,7 @@ class GymExerciseServicesTest {
         val name = randomString()
         val category = "shoulders"
 
-        when(val result = gymExerciseServices.updateGymExercise(FIRST_GYM_EXERCISE_ID, name, category)) {
+        when (val result = gymExerciseServices.updateGymExercise(FIRST_GYM_EXERCISE_ID, name, category)) {
             is Failure -> fail("Unexpected $result")
             is Success -> assertTrue { result.value == FIRST_GYM_EXERCISE_ID }
         }
@@ -107,7 +107,7 @@ class GymExerciseServicesTest {
         val name = ""
         val category = "shoulders"
 
-        when(val result = gymExerciseServices.updateGymExercise(FIRST_GYM_EXERCISE_ID, name, category)) {
+        when (val result = gymExerciseServices.updateGymExercise(FIRST_GYM_EXERCISE_ID, name, category)) {
             is Failure -> assertTrue { result.value is UpdateGymExerciseError.InvalidName }
             is Success -> fail("Unexpected $result")
         }
@@ -120,7 +120,7 @@ class GymExerciseServicesTest {
         val name = randomString()
         val category = randomString()
 
-        when(val result = gymExerciseServices.updateGymExercise(FIRST_GYM_EXERCISE_ID, name, category)) {
+        when (val result = gymExerciseServices.updateGymExercise(FIRST_GYM_EXERCISE_ID, name, category)) {
             is Failure -> assertTrue { result.value is UpdateGymExerciseError.InvalidCategory }
             is Success -> fail("Unexpected $result")
         }
@@ -133,7 +133,7 @@ class GymExerciseServicesTest {
         val name = GYM_EXERCISE_NAME
         val category = "chest"
 
-        when(val result = gymExerciseServices.updateGymExercise(FIRST_GYM_EXERCISE_ID, name, category)) {
+        when (val result = gymExerciseServices.updateGymExercise(FIRST_GYM_EXERCISE_ID, name, category)) {
             is Failure -> assertTrue { result.value is UpdateGymExerciseError.NameAlreadyExists }
             is Success -> fail("Unexpected $result")
         }
@@ -146,7 +146,7 @@ class GymExerciseServicesTest {
         val name = randomString()
         val category = "shoulders"
 
-        when(val result = gymExerciseServices.updateGymExercise(0, name, category)) {
+        when (val result = gymExerciseServices.updateGymExercise(0, name, category)) {
             is Failure -> assertTrue { result.value is UpdateGymExerciseError.GymExerciseNotFound }
             is Success -> fail("Unexpected $result")
         }
@@ -160,7 +160,7 @@ class GymExerciseServicesTest {
     fun `remove gym exercise - success`() {
         val gymExerciseServices = createGymExerciseServices()
 
-        when(val result = gymExerciseServices.removeGymExercise(THIRD_GYM_EXERCISE_ID)) {
+        when (val result = gymExerciseServices.removeGymExercise(THIRD_GYM_EXERCISE_ID)) {
             is Failure -> fail("Unexpected $result")
             is Success -> assertTrue { result.value == THIRD_GYM_EXERCISE_ID }
         }
@@ -170,7 +170,7 @@ class GymExerciseServicesTest {
     fun `remove gym exercise - not found`() {
         val gymExerciseServices = createGymExerciseServices()
 
-        when(val result = gymExerciseServices.removeGymExercise(0)) {
+        when (val result = gymExerciseServices.removeGymExercise(0)) {
             is Failure -> assertTrue { result.value is RemoveGymExerciseError.GymExerciseNotFound }
             is Success -> fail("Unexpected $result")
         }
@@ -183,12 +183,12 @@ class GymExerciseServicesTest {
         private const val FIRST_GYM_EXERCISE_ID = 1
         private const val THIRD_GYM_EXERCISE_ID = 3
 
-
-        private fun createGymExerciseServices() = GymExerciseServices(
-            JdbiTransactionManager(jdbi),
-            GymExerciseDomain(),
-            CloudinaryServices(cloudinary)
-        )
+        private fun createGymExerciseServices() =
+            GymExerciseServices(
+                JdbiTransactionManager(jdbi),
+                GymExerciseDomain(),
+                CloudinaryServices(cloudinary),
+            )
 
         private val jdbi =
             Jdbi.create(
@@ -197,13 +197,13 @@ class GymExerciseServicesTest {
                 },
             ).configureWithAppRequirements()
 
-        private val cloudinary = Cloudinary(
-            mapOf(
-                "cloud_name" to "",
-                "api_key" to "",
-                "api_secret" to ""
+        private val cloudinary =
+            Cloudinary(
+                mapOf(
+                    "cloud_name" to "",
+                    "api_key" to "",
+                    "api_secret" to "",
+                ),
             )
-        )
-
     }
 }

@@ -12,7 +12,6 @@ import kotlin.math.abs
 import kotlin.random.Random
 import kotlin.test.Test
 
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = [WaveCoachApplication::class])
 class WaterManeuverControllerTest {
     @LocalServerPort
@@ -29,13 +28,15 @@ class WaterManeuverControllerTest {
     fun `create water maneuver - success`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val input = mapOf(
-            "name" to randomString(),
-        )
+        val input =
+            mapOf(
+                "name" to randomString(),
+            )
 
-        val body = MultipartBodyBuilder().apply {
-            part("input", input)
-        }.build()
+        val body =
+            MultipartBodyBuilder().apply {
+                part("input", input)
+            }.build()
 
         client.post()
             .uri("/water/maneuver")
@@ -54,13 +55,15 @@ class WaterManeuverControllerTest {
     fun `create water maneuver - unauthorized`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val input = mapOf(
-            "name" to randomString(),
-        )
+        val input =
+            mapOf(
+                "name" to randomString(),
+            )
 
-        val body = MultipartBodyBuilder().apply {
-            part("input", input)
-        }.build()
+        val body =
+            MultipartBodyBuilder().apply {
+                part("input", input)
+            }.build()
 
         client.post()
             .uri("/water/maneuver")
@@ -74,13 +77,15 @@ class WaterManeuverControllerTest {
     fun `create water maneuver - invalid name`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val input = mapOf(
-            "name" to "",
-        )
+        val input =
+            mapOf(
+                "name" to "",
+            )
 
-        val body = MultipartBodyBuilder().apply {
-            part("input", input)
-        }.build()
+        val body =
+            MultipartBodyBuilder().apply {
+                part("input", input)
+            }.build()
 
         client.post()
             .uri("/water/maneuver")
@@ -98,13 +103,15 @@ class WaterManeuverControllerTest {
     fun `create water maneuver - name already exists`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val input = mapOf(
-            "name" to "Roll",
-        )
+        val input =
+            mapOf(
+                "name" to "Roll",
+            )
 
-        val body = MultipartBodyBuilder().apply {
-            part("input", input)
-        }.build()
+        val body =
+            MultipartBodyBuilder().apply {
+                part("input", input)
+            }.build()
 
         client.post()
             .uri("/water/maneuver")
@@ -122,13 +129,15 @@ class WaterManeuverControllerTest {
     fun `create water maneuver - user is not a coach`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val input = mapOf(
-            "name" to randomString(),
-        )
+        val input =
+            mapOf(
+                "name" to randomString(),
+            )
 
-        val body = MultipartBodyBuilder().apply {
-            part("input", input)
-        }.build()
+        val body =
+            MultipartBodyBuilder().apply {
+                part("input", input)
+            }.build()
 
         client.post()
             .uri("/water/maneuver")
@@ -187,7 +196,7 @@ class WaterManeuverControllerTest {
      * Delete Water Maneuver Test
      */
 
-    companion object{
+    companion object {
         private const val FIRST_COACH_TOKEN = "i_aY-4lpMqAIMuhkimTbKy4xYEuyvgFPaaTpVS0lctQ="
 
         private const val FIRST_ATHLETE_TOKEN = "0FaEBvcKLwE1YKrLYdhHd5p61EQtJThf3mEX6o28Lgo="

@@ -8,9 +8,9 @@ import { Button } from '../Button'
 
 import { Characteristics } from '../../types/Characteristics'
 
-import { deleteCharacteristics, updateCharacteristics } from '../../services/athleteServices'
+import { deleteCharacteristics, updateCharacteristics } from '../../../services/athleteServices'
 
-import { handleError } from '../../utils/handleError'
+import { handleError } from '../../../utils/handleError'
 
 import { useAuthentication } from '../../hooks/useAuthentication'
 

@@ -5,9 +5,9 @@ import { useParams } from 'react-router-dom'
 import { CircularProgress } from '@mui/material'
 import { Card } from '../../components/Card'
 
-import { getGymActivity } from '../../services/gymServices'
+import { getGymActivity } from '../../../services/gymServices'
 
-import { epochConverter } from '../../utils/epochConverter'
+import { epochConverter } from '../../../utils/epochConverter'
 
 import { Exercise } from '../../types/Exercise'
 

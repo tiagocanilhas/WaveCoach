@@ -5,6 +5,5 @@ data class ManeuverOutputModel(
     val waterManeuverId: Int,
     val name: String,
     val url: String?,
-    val rightSide: Boolean,
     val success: Boolean,
 )

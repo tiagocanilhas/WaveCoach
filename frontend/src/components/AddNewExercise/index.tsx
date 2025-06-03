@@ -4,9 +4,9 @@ import { TextField } from '@mui/material'
 import { Button } from '../Button'
 import { Popup } from '../Popup'
 
-import { handleError } from '../../utils/handleError'
+import { handleError } from '../../../utils/handleError'
 
-import { createGymExercise } from '../../services/gymExerciseServices'
+import { createGymExercise } from '../../../services/gymExerciseServices'
 
 import styles from './styles.module.css'
 import { ImageSelector } from '../ImageSelector'

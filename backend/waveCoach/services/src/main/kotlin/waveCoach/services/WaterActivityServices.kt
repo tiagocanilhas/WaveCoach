@@ -12,12 +12,12 @@ import waveCoach.utils.success
 
 data class WaveInputInfo(
     val points: Float?,
+    val rightSide: Boolean,
     val maneuvers: List<ManeuverInputInfo>,
 )
 
 data class ManeuverInputInfo(
     val waterManeuverId: Int,
-    val rightSide: Boolean,
     val success: Boolean,
 )
 
@@ -30,9 +30,9 @@ sealed class CreateWaterActivityError {
 
     data object ActivityWithoutMicrocycle : CreateWaterActivityError()
 
-    data object InvalidPse : CreateWaterActivityError()
+    data object InvalidRpe : CreateWaterActivityError()
 
-    data object InvalidHeartRate : CreateWaterActivityError()
+    data object InvalidTrimp : CreateWaterActivityError()
 
     data object InvalidDuration : CreateWaterActivityError()
 
@@ -60,11 +60,17 @@ typealias RemoveWaterActivityResult = Either<RemoveWaterActivityError, Int>
 
 sealed class CreateQuestionnaireError {
     data object AlreadyExists : CreateQuestionnaireError()
+
     data object ActivityNotFound : CreateQuestionnaireError()
+
     data object NotAthletesCoach : CreateQuestionnaireError()
+
     data object InvalidSleep : CreateQuestionnaireError()
+
     data object InvalidFatigue : CreateQuestionnaireError()
+
     data object InvalidStress : CreateQuestionnaireError()
+
     data object InvalidMusclePain : CreateQuestionnaireError()
 }
 typealias CreateQuestionnaireResult = Either<CreateQuestionnaireError, Unit>
@@ -81,7 +87,7 @@ typealias GetQuestionnaireResult = Either<GetQuestionnaireError, Questionnaire>
 @Component
 class WaterActivityServices(
     private val transactionManager: TransactionManager,
-    private val waterActivityDomain: WaterActivityDomain
+    private val waterActivityDomain: WaterActivityDomain,
 ) {
     fun createWaterActivity(
         coachId: Int,
@@ -89,7 +95,7 @@ class WaterActivityServices(
         date: String,
         pse: Int,
         condition: String,
-        heartRate: Int,
+        trimp: Int,
         duration: Int,
         waves: List<WaveInputInfo>,
     ): CreateWaterActivityResult {
@@ -101,50 +107,58 @@ class WaterActivityServices(
             val waterActivityRepository = it.waterActivityRepository
             val waterManeuverRepository = it.waterManeuverRepository
 
-            val athlete = athleteRepository.getAthlete(athleteId)
-                ?: return@run failure(CreateWaterActivityError.AthleteNotFound)
+            val athlete =
+                athleteRepository.getAthlete(athleteId)
+                    ?: return@run failure(CreateWaterActivityError.AthleteNotFound)
 
-            if (athlete.coach != coachId)
+            if (athlete.coach != coachId) {
                 return@run failure(CreateWaterActivityError.NotAthletesCoach)
+            }
 
-            val micro = activityRepository.getMicrocycleByDate(dateLong, athleteId)
-                ?: return@run failure(CreateWaterActivityError.ActivityWithoutMicrocycle)
+            val micro =
+                activityRepository.getMicrocycleByDate(dateLong, athleteId)
+                    ?: return@run failure(CreateWaterActivityError.ActivityWithoutMicrocycle)
 
             val activityId = activityRepository.storeActivity(athleteId, dateLong, micro.id)
 
-            if (!waterActivityDomain.checkPse(pse))
-                return@run failure(CreateWaterActivityError.InvalidPse)
+            if (!waterActivityDomain.checkPse(pse)) {
+                return@run failure(CreateWaterActivityError.InvalidRpe)
+            }
 
-            if (!waterActivityDomain.checkHeartRate(heartRate))
-                return@run failure(CreateWaterActivityError.InvalidHeartRate)
+            if (!waterActivityDomain.checkTrimp(trimp)) {
+                return@run failure(CreateWaterActivityError.InvalidTrimp)
+            }
 
-            if (!waterActivityDomain.checkDuration(duration))
+            if (!waterActivityDomain.checkDuration(duration)) {
                 return@run failure(CreateWaterActivityError.InvalidDuration)
+            }
 
-            val waterActivityId = waterActivityRepository.storeWaterActivity(
-                activityId,
-                pse,
-                condition,
-                heartRate,
-                duration,
-            )
+            val waterActivityId =
+                waterActivityRepository.storeWaterActivity(
+                    activityId,
+                    pse,
+                    condition,
+                    trimp,
+                    duration,
+                )
 
             waves.forEachIndexed { waveOrder, wave ->
                 val waveId = waterActivityRepository.storeWave(
                     waterActivityId,
                     wave.points,
-                    waveOrder
+                    wave.rightSide,
+                    waveOrder,
                 )
+
                 wave.maneuvers.forEachIndexed { maneuverOrder, maneuver ->
-                    if (!waterManeuverRepository.isWaterManeuverValid(maneuver.waterManeuverId))
+                    if (waterManeuverRepository.getWaterManeuverById(maneuver.waterManeuverId) == null)
                         return@run failure(CreateWaterActivityError.InvalidWaterManeuver)
 
                     waterActivityRepository.storeManeuver(
                         waveId,
                         maneuver.waterManeuverId,
-                        maneuver.rightSide,
                         maneuver.success,
-                        maneuverOrder
+                        maneuverOrder,
                     )
                 }
             }
@@ -153,22 +167,28 @@ class WaterActivityServices(
         }
     }
 
-    fun getWaterActivity(uid: Int, activityId: Int): GetWaterActivityResult {
+    fun getWaterActivity(
+        uid: Int,
+        activityId: Int,
+    ): GetWaterActivityResult {
         return transactionManager.run {
             val athleteRepository = it.athleteRepository
             val activityRepository = it.activityRepository
             val waterActivityRepository = it.waterActivityRepository
 
-            val activity = activityRepository.getActivityById(activityId)
-                ?: return@run failure(GetWaterActivityError.ActivityNotFound)
+            val activity =
+                activityRepository.getActivityById(activityId)
+                    ?: return@run failure(GetWaterActivityError.ActivityNotFound)
 
-            if (activity.type != ActivityType.WATER)
+            if (activity.type != ActivityType.WATER) {
                 return@run failure(GetWaterActivityError.NotWaterActivity)
+            }
 
             val athlete = athleteRepository.getAthlete(activity.uid)!!
 
-            if (athlete.uid != uid && athlete.coach != uid)
+            if (athlete.uid != uid && athlete.coach != uid) {
                 return@run failure(GetWaterActivityError.NotAthletesCoach)
+            }
 
             val waterActivity = waterActivityRepository.getWaterActivity(activityId)!!
 
@@ -183,23 +203,19 @@ class WaterActivityServices(
         return transactionManager.run {
             val athleteRepository = it.athleteRepository
             val activityRepository = it.activityRepository
-            val waterActivityRepository = it.waterActivityRepository
 
             val activity =
                 activityRepository.getActivityById(activityId)
                     ?: return@run failure(RemoveWaterActivityError.ActivityNotFound)
 
-            if (activity.type != ActivityType.WATER)
+            if (activity.type != ActivityType.WATER) {
                 return@run failure(RemoveWaterActivityError.NotWaterActivity)
+            }
 
             val athlete = athleteRepository.getAthlete(activity.uid)!!
 
             if (athlete.coach != coachId) return@run failure(RemoveWaterActivityError.NotAthletesCoach)
 
-            waterActivityRepository.removeManeuversByActivity(activityId)
-            waterActivityRepository.removeWavesByActivity(activityId)
-            waterActivityRepository.removeQuestionnaire(activityId)
-            waterActivityRepository.removeWaterActivity(activityId)
             activityRepository.removeActivity(activityId)
 
             success(activityId)
@@ -219,28 +235,35 @@ class WaterActivityServices(
             val activityRepository = it.activityRepository
             val waterActivityRepository = it.waterActivityRepository
 
-            val activity = activityRepository.getActivityById(activityId)
-                ?: return@run failure(CreateQuestionnaireError.ActivityNotFound)
+            val activity =
+                activityRepository.getActivityById(activityId)
+                    ?: return@run failure(CreateQuestionnaireError.ActivityNotFound)
 
             val athlete = athleteRepository.getAthlete(activity.uid)!!
 
-            if (uid != athlete.uid && uid != athlete.coach)
+            if (uid != athlete.uid && uid != athlete.coach) {
                 return@run failure(CreateQuestionnaireError.NotAthletesCoach)
+            }
 
-            if (waterActivityRepository.getQuestionnaire(activityId) != null)
+            if (waterActivityRepository.getQuestionnaire(activityId) != null) {
                 return@run failure(CreateQuestionnaireError.AlreadyExists)
+            }
 
-            if (!waterActivityDomain.checkQuestionnaireValue(sleep))
+            if (!waterActivityDomain.checkQuestionnaireValue(sleep)) {
                 return@run failure(CreateQuestionnaireError.InvalidSleep)
+            }
 
-            if (!waterActivityDomain.checkQuestionnaireValue(fatigue))
+            if (!waterActivityDomain.checkQuestionnaireValue(fatigue)) {
                 return@run failure(CreateQuestionnaireError.InvalidFatigue)
+            }
 
-            if (!waterActivityDomain.checkQuestionnaireValue(stress))
+            if (!waterActivityDomain.checkQuestionnaireValue(stress)) {
                 return@run failure(CreateQuestionnaireError.InvalidStress)
+            }
 
-            if (!waterActivityDomain.checkQuestionnaireValue(musclePain))
+            if (!waterActivityDomain.checkQuestionnaireValue(musclePain)) {
                 return@run failure(CreateQuestionnaireError.InvalidMusclePain)
+            }
 
             waterActivityRepository.storeQuestionnaire(activityId, sleep, fatigue, stress, musclePain)
 
@@ -257,19 +280,21 @@ class WaterActivityServices(
             val activityRepository = it.activityRepository
             val waterActivityRepository = it.waterActivityRepository
 
-            val activity = activityRepository.getActivityById(activityId) ?:
-                return@run failure(GetQuestionnaireError.ActivityNotFound)
+            val activity =
+                activityRepository.getActivityById(activityId)
+                    ?: return@run failure(GetQuestionnaireError.ActivityNotFound)
 
             val athlete = athleteRepository.getAthlete(activity.uid)!!
 
-            if (uid != athlete.uid && uid != athlete.coach)
+            if (uid != athlete.uid && uid != athlete.coach) {
                 return@run failure(GetQuestionnaireError.NotAthletesCoach)
+            }
 
-            val questionnaire = waterActivityRepository.getQuestionnaire(activityId) ?:
-                return@run failure(GetQuestionnaireError.QuestionnaireNotFound)
+            val questionnaire =
+                waterActivityRepository.getQuestionnaire(activityId)
+                    ?: return@run failure(GetQuestionnaireError.QuestionnaireNotFound)
 
             success(questionnaire)
         }
     }
-
 }

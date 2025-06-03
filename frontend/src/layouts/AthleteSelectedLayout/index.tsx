@@ -4,7 +4,7 @@ import { Outlet, useParams } from 'react-router-dom'
 
 import { Bars } from '../../components/Bars'
 
-import { getAthlete } from '../../services/athleteServices'
+import { getAthlete } from '../../../services/athleteServices'
 
 import styles from './styles.module.css'
 

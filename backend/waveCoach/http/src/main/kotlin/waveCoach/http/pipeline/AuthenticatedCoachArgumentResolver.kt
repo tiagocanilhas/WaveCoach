@@ -20,11 +20,13 @@ class AuthenticatedCoachArgumentResolver : HandlerMethodArgumentResolver {
         webRequest: NativeWebRequest,
         binderFactory: WebDataBinderFactory?,
     ): Any? {
-        val request = webRequest.getNativeRequest(HttpServletRequest::class.java)
-            ?: throw IllegalStateException("TODO")
+        val request =
+            webRequest.getNativeRequest(HttpServletRequest::class.java)
+                ?: throw IllegalStateException("TODO")
 
-        val user = AuthenticatedUserArgumentResolver.getUserFrom(request)
-            ?: throw IllegalStateException("TODO")
+        val user =
+            AuthenticatedUserArgumentResolver.getUserFrom(request)
+                ?: throw IllegalStateException("TODO")
 
         if (!user.info.isCoach) throw AccessDeniedException("TODO")
 

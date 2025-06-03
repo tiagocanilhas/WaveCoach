@@ -1,6 +1,6 @@
 package waveCoach.domain
 
-data class MesocycleWater (
+data class MesocycleWater(
     val id: Int,
     val uid: Int,
     val startTime: Long,

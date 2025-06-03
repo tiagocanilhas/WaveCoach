@@ -1,6 +1,6 @@
 package waveCoach.domain
 
-data class Questionnaire (
+data class Questionnaire(
     val id: Int,
     val activity: Int,
     val sleep: Int,

@@ -2,6 +2,7 @@ package waveCoach.http
 
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -10,9 +11,8 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import waveCoach.domain.AuthenticatedCoach
-import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import waveCoach.domain.AuthenticatedCoach
 import waveCoach.domain.AuthenticatedUser
 import waveCoach.http.model.input.*
 import waveCoach.http.model.output.*
@@ -28,7 +28,7 @@ class AthleteController(
     fun create(
         coach: AuthenticatedCoach,
         @RequestPart("input") input: AthleteCreateInputModel,
-        @RequestPart("photo") photo: MultipartFile?
+        @RequestPart("photo") photo: MultipartFile?,
     ): ResponseEntity<*> {
         val result = athleteServices.createAthlete(input.name, coach.info.id, input.birthDate, photo)
 
@@ -385,7 +385,6 @@ class AthleteController(
                     RemoveCharacteristicsError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
                     RemoveCharacteristicsError.CharacteristicsNotFound ->
                         Problem.response(404, Problem.characteristicsNotFound)
-
                     RemoveCharacteristicsError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
                 }
         }
@@ -395,24 +394,25 @@ class AthleteController(
     fun createCalendar(
         coach: AuthenticatedCoach,
         @PathVariable aid: String,
-        @RequestBody input: CalendarCreateInputModel
+        @RequestBody input: CalendarCreateInputModel,
     ): ResponseEntity<*> {
         val uid = aid.toIntOrNull() ?: return Problem.response(400, Problem.invalidAthleteId)
 
-        val mesocycles = input.mesocycles.map { mesocycle ->
-            MesocycleInputInfo(
-                mesocycle.id,
-                mesocycle.startTime,
-                mesocycle.endTime,
-                mesocycle.microcycles.map { microcycle ->
-                    MicrocycleInputInfo(
-                        microcycle.id,
-                        microcycle.startTime,
-                        microcycle.endTime,
-                    )
-                },
-            )
-        }
+        val mesocycles =
+            input.mesocycles.map { mesocycle ->
+                MesocycleInputInfo(
+                    mesocycle.id,
+                    mesocycle.startTime,
+                    mesocycle.endTime,
+                    mesocycle.microcycles.map { microcycle ->
+                        MicrocycleInputInfo(
+                            microcycle.id,
+                            microcycle.startTime,
+                            microcycle.endTime,
+                        )
+                    },
+                )
+            }
 
         val result = athleteServices.setCalendar(coach.info.id, uid, mesocycles)
 
@@ -486,58 +486,60 @@ class AthleteController(
     fun getWaterActivities(
         user: AuthenticatedUser,
         @PathVariable aid: String,
-    ): ResponseEntity<*>{
+    ): ResponseEntity<*> {
         val id = aid.toIntOrNull() ?: return Problem.response(400, Problem.invalidAthleteId)
         val result = athleteServices.getWaterActivities(user.info.id, id)
 
-        return when (result){
+        return when (result) {
             is Success ->
                 ResponseEntity
                     .status(200)
-                    .body(WaterActivitiesCalendar(
-                        result.value.map { mesocycle ->
-                        MesocycleWaterOutputModel(
-                            mesocycle.id,
-                            mesocycle.startTime,
-                            mesocycle.endTime,
-                            mesocycle.microcycles.map { microcycle ->
-                                MicrocycleWaterOutputModel(
-                                    microcycle.id,
-                                    microcycle.startTime,
-                                    microcycle.endTime,
-                                    microcycle.activities.map { waterActivity ->
-                                        WaterActivityOutputModel(
-                                            waterActivity.id,
-                                            waterActivity.athleteId,
-                                            waterActivity.microcycleId,
-                                            waterActivity.date,
-                                            waterActivity.pse,
-                                            waterActivity.condition,
-                                            waterActivity.heartRate,
-                                            waterActivity.duration,
-                                            waterActivity.waves.map { wave ->
-                                                WaveOutputModel(
-                                                    wave.id,
-                                                    wave.points,
-                                                    wave.maneuvers.map { maneuver ->
-                                                        ManeuverOutputModel(
-                                                            maneuver.id,
-                                                            maneuver.waterManeuverId,
-                                                            maneuver.waterManeuverName,
-                                                            maneuver.url,
-                                                            maneuver.rightSide,
-                                                            maneuver.success
+                    .body(
+                        WaterActivitiesCalendar(
+                            result.value.map { mesocycle ->
+                                MesocycleWaterOutputModel(
+                                    mesocycle.id,
+                                    mesocycle.startTime,
+                                    mesocycle.endTime,
+                                    mesocycle.microcycles.map { microcycle ->
+                                        MicrocycleWaterOutputModel(
+                                            microcycle.id,
+                                            microcycle.startTime,
+                                            microcycle.endTime,
+                                            microcycle.activities.map { waterActivity ->
+                                                WaterActivityOutputModel(
+                                                    waterActivity.id,
+                                                    waterActivity.athleteId,
+                                                    waterActivity.microcycleId,
+                                                    waterActivity.date,
+                                                    waterActivity.rpe,
+                                                    waterActivity.condition,
+                                                    waterActivity.trimp,
+                                                    waterActivity.duration,
+                                                    waterActivity.waves.map { wave ->
+                                                        WaveOutputModel(
+                                                            wave.id,
+                                                            wave.points,
+                                                            wave.rightSide,
+                                                            wave.maneuvers.map { maneuver ->
+                                                                ManeuverOutputModel(
+                                                                    maneuver.id,
+                                                                    maneuver.waterManeuverId,
+                                                                    maneuver.waterManeuverName,
+                                                                    maneuver.url,
+                                                                    maneuver.success,
+                                                                )
+                                                            },
                                                         )
-                                                    }
+                                                    },
                                                 )
-                                            }
+                                            },
                                         )
-                                    }
+                                    },
                                 )
-                            }
-                        )
-                    })
-                )
+                            },
+                        ),
+                    )
 
             is Failure ->
                 when (result.value) {

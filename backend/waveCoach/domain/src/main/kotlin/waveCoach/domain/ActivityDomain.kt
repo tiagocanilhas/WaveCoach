@@ -18,7 +18,7 @@ class ActivityDomain {
         endTimeDb: Long?,
         startTimeNew: Long,
         endTimeNew: Long,
-    ) : Boolean {
+    ): Boolean {
         if (startTimeDb == null || endTimeDb == null) return false
         return startTimeDb == startTimeNew && endTimeDb == endTimeNew
     }

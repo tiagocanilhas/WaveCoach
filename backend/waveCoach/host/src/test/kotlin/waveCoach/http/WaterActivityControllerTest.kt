@@ -27,31 +27,34 @@ class WaterActivityControllerTest {
     fun `create water activity - success`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val body = mapOf(
-            "athleteId" to FIRST_ATHLETE_ID,
-            "date" to DATE,
-            "pse" to 5,
-            "condition" to "good",
-            "heartRate" to 120,
-            "duration" to 60,
-            "waves" to listOf(
-                mapOf(
-                    "points" to 10.0,
-                    "maneuvers" to listOf(
+        val body =
+            mapOf(
+                "athleteId" to FIRST_ATHLETE_ID,
+                "date" to DATE,
+                "rpe" to 5,
+                "condition" to "good",
+                "trimp" to 120,
+                "duration" to 60,
+                "waves" to
+                    listOf(
                         mapOf(
-                            "waterManeuverId" to 1,
-                            "rightSide" to true,
-                            "success" to true
+                            "points" to 10.0,
+                            "maneuvers" to
+                                listOf(
+                                    mapOf(
+                                        "waterManeuverId" to 1,
+                                        "rightSide" to true,
+                                        "success" to true,
+                                    ),
+                                    mapOf(
+                                        "waterManeuverId" to 2,
+                                        "rightSide" to false,
+                                        "success" to false,
+                                    ),
+                                ),
                         ),
-                        mapOf(
-                            "waterManeuverId" to 2,
-                            "rightSide" to false,
-                            "success" to false
-                        )
-                    )
-                )
+                    ),
             )
-        )
 
         client.post()
             .uri("/water")
@@ -70,26 +73,29 @@ class WaterActivityControllerTest {
     fun `create water activity - invalid date`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val body = mapOf(
-            "athleteId" to FIRST_ATHLETE_ID,
-            "date" to "invalid-date",
-            "pse" to 5,
-            "condition" to "good",
-            "heartRate" to 120,
-            "duration" to 60,
-            "waves" to listOf(
-                mapOf(
-                    "points" to 10.0,
-                    "maneuvers" to listOf(
+        val body =
+            mapOf(
+                "athleteId" to FIRST_ATHLETE_ID,
+                "date" to "invalid-date",
+                "rpe" to 5,
+                "condition" to "good",
+                "trimp" to 120,
+                "duration" to 60,
+                "waves" to
+                    listOf(
                         mapOf(
-                            "waterManeuverId" to 1,
-                            "rightSide" to true,
-                            "success" to true
-                        )
-                    )
-                )
+                            "points" to 10.0,
+                            "maneuvers" to
+                                listOf(
+                                    mapOf(
+                                        "waterManeuverId" to 1,
+                                        "rightSide" to true,
+                                        "success" to true,
+                                    ),
+                                ),
+                        ),
+                    ),
             )
-        )
 
         client.post()
             .uri("/water")
@@ -107,26 +113,29 @@ class WaterActivityControllerTest {
     fun `create water activity - athlete not found`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val body = mapOf(
-            "athleteId" to 0,
-            "date" to DATE,
-            "pse" to 5,
-            "condition" to "good",
-            "heartRate" to 120,
-            "duration" to 60,
-            "waves" to listOf(
-                mapOf(
-                    "points" to 10.0,
-                    "maneuvers" to listOf(
+        val body =
+            mapOf(
+                "athleteId" to 0,
+                "date" to DATE,
+                "rpe" to 5,
+                "condition" to "good",
+                "trimp" to 120,
+                "duration" to 60,
+                "waves" to
+                    listOf(
                         mapOf(
-                            "waterManeuverId" to 1,
-                            "rightSide" to true,
-                            "success" to true
-                        )
-                    )
-                )
+                            "points" to 10.0,
+                            "maneuvers" to
+                                listOf(
+                                    mapOf(
+                                        "waterManeuverId" to 1,
+                                        "rightSide" to true,
+                                        "success" to true,
+                                    ),
+                                ),
+                        ),
+                    ),
             )
-        )
 
         client.post()
             .uri("/water")
@@ -144,26 +153,29 @@ class WaterActivityControllerTest {
     fun `create water activity - not athletes coach`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val body = mapOf(
-            "athleteId" to FIRST_ATHLETE_ID,
-            "date" to DATE,
-            "pse" to 5,
-            "condition" to "good",
-            "heartRate" to 120,
-            "duration" to 60,
-            "waves" to listOf(
-                mapOf(
-                    "points" to 10.0,
-                    "maneuvers" to listOf(
+        val body =
+            mapOf(
+                "athleteId" to FIRST_ATHLETE_ID,
+                "date" to DATE,
+                "rpe" to 5,
+                "condition" to "good",
+                "trimp" to 120,
+                "duration" to 60,
+                "waves" to
+                    listOf(
                         mapOf(
-                            "waterManeuverId" to 1,
-                            "rightSide" to true,
-                            "success" to true
-                        )
-                    )
-                )
+                            "points" to 10.0,
+                            "maneuvers" to
+                                listOf(
+                                    mapOf(
+                                        "waterManeuverId" to 1,
+                                        "rightSide" to true,
+                                        "success" to true,
+                                    ),
+                                ),
+                        ),
+                    ),
             )
-        )
 
         client.post()
             .uri("/water")
@@ -178,26 +190,29 @@ class WaterActivityControllerTest {
     fun `create water activity - activity without microcycle`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val body = mapOf(
-            "athleteId" to FIRST_ATHLETE_ID,
-            "date" to DATE_WITHOUT_MICROCYCLE,
-            "pse" to 5,
-            "condition" to "good",
-            "heartRate" to 120,
-            "duration" to 60,
-            "waves" to listOf(
-                mapOf(
-                    "points" to 10.0,
-                    "maneuvers" to listOf(
+        val body =
+            mapOf(
+                "athleteId" to FIRST_ATHLETE_ID,
+                "date" to DATE_WITHOUT_MICROCYCLE,
+                "rpe" to 5,
+                "condition" to "good",
+                "trimp" to 120,
+                "duration" to 60,
+                "waves" to
+                    listOf(
                         mapOf(
-                            "waterManeuverId" to 1,
-                            "rightSide" to true,
-                            "success" to true
-                        )
-                    )
-                )
+                            "points" to 10.0,
+                            "maneuvers" to
+                                listOf(
+                                    mapOf(
+                                        "waterManeuverId" to 1,
+                                        "rightSide" to true,
+                                        "success" to true,
+                                    ),
+                                ),
+                        ),
+                    ),
             )
-        )
 
         client.post()
             .uri("/water")
@@ -212,29 +227,32 @@ class WaterActivityControllerTest {
     }
 
     @Test
-    fun `create water activity - invalid pse`() {
+    fun `create water activity - invalid rpe`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val body = mapOf(
-            "athleteId" to FIRST_ATHLETE_ID,
-            "date" to DATE,
-            "pse" to -1,
-            "condition" to "good",
-            "heartRate" to 120,
-            "duration" to 60,
-            "waves" to listOf(
-                mapOf(
-                    "points" to 10.0,
-                    "maneuvers" to listOf(
+        val body =
+            mapOf(
+                "athleteId" to FIRST_ATHLETE_ID,
+                "date" to DATE,
+                "rpe" to -1,
+                "condition" to "good",
+                "trimp" to 120,
+                "duration" to 60,
+                "waves" to
+                    listOf(
                         mapOf(
-                            "waterManeuverId" to 1,
-                            "rightSide" to true,
-                            "success" to true
-                        )
-                    )
-                )
+                            "points" to 10.0,
+                            "maneuvers" to
+                                listOf(
+                                    mapOf(
+                                        "waterManeuverId" to 1,
+                                        "rightSide" to true,
+                                        "success" to true,
+                                    ),
+                                ),
+                        ),
+                    ),
             )
-        )
 
         client.post()
             .uri("/water")
@@ -245,33 +263,36 @@ class WaterActivityControllerTest {
             .expectStatus().isBadRequest
             .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
             .expectBody()
-            .jsonPath("type").isEqualTo(Problem.invalidPse.type.toString())
+            .jsonPath("type").isEqualTo(Problem.invalidRpe.type.toString())
     }
 
     @Test
-    fun `create water activity - invalid heart rate`() {
+    fun `create water activity - invalid trimp`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val body = mapOf(
-            "athleteId" to FIRST_ATHLETE_ID,
-            "date" to DATE,
-            "pse" to 5,
-            "condition" to "good",
-            "heartRate" to -1,
-            "duration" to 60,
-            "waves" to listOf(
-                mapOf(
-                    "points" to 10.0,
-                    "maneuvers" to listOf(
+        val body =
+            mapOf(
+                "athleteId" to FIRST_ATHLETE_ID,
+                "date" to DATE,
+                "rpe" to 5,
+                "condition" to "good",
+                "trimp" to -1,
+                "duration" to 60,
+                "waves" to
+                    listOf(
                         mapOf(
-                            "waterManeuverId" to 1,
-                            "rightSide" to true,
-                            "success" to true
-                        )
-                    )
-                )
+                            "points" to 10.0,
+                            "maneuvers" to
+                                listOf(
+                                    mapOf(
+                                        "waterManeuverId" to 1,
+                                        "rightSide" to true,
+                                        "success" to true,
+                                    ),
+                                ),
+                        ),
+                    ),
             )
-        )
 
         client.post()
             .uri("/water")
@@ -282,33 +303,36 @@ class WaterActivityControllerTest {
             .expectStatus().isBadRequest
             .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
             .expectBody()
-            .jsonPath("type").isEqualTo(Problem.invalidHeartRate.type.toString())
+            .jsonPath("type").isEqualTo(Problem.invalidTrimp.type.toString())
     }
 
     @Test
     fun `create water activity - invalid duration`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val body = mapOf(
-            "athleteId" to FIRST_ATHLETE_ID,
-            "date" to DATE,
-            "pse" to 5,
-            "condition" to "good",
-            "heartRate" to 120,
-            "duration" to -1,
-            "waves" to listOf(
-                mapOf(
-                    "points" to 10.0,
-                    "maneuvers" to listOf(
+        val body =
+            mapOf(
+                "athleteId" to FIRST_ATHLETE_ID,
+                "date" to DATE,
+                "rpe" to 5,
+                "condition" to "good",
+                "trimp" to 120,
+                "duration" to -1,
+                "waves" to
+                    listOf(
                         mapOf(
-                            "waterManeuverId" to 1,
-                            "rightSide" to true,
-                            "success" to true
-                        )
-                    )
-                )
+                            "points" to 10.0,
+                            "maneuvers" to
+                                listOf(
+                                    mapOf(
+                                        "waterManeuverId" to 1,
+                                        "rightSide" to true,
+                                        "success" to true,
+                                    ),
+                                ),
+                        ),
+                    ),
             )
-        )
 
         client.post()
             .uri("/water")
@@ -326,26 +350,29 @@ class WaterActivityControllerTest {
     fun `create water activity - invalid water maneuver`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val body = mapOf(
-            "athleteId" to FIRST_ATHLETE_ID,
-            "date" to DATE,
-            "pse" to 5,
-            "condition" to "good",
-            "heartRate" to 120,
-            "duration" to 60,
-            "waves" to listOf(
-                mapOf(
-                    "points" to 10.0,
-                    "maneuvers" to listOf(
+        val body =
+            mapOf(
+                "athleteId" to FIRST_ATHLETE_ID,
+                "date" to DATE,
+                "rpe" to 5,
+                "condition" to "good",
+                "trimp" to 120,
+                "duration" to 60,
+                "waves" to
+                    listOf(
                         mapOf(
-                            "waterManeuverId" to 0,
-                            "rightSide" to true,
-                            "success" to true
-                        )
-                    )
-                )
+                            "points" to 10.0,
+                            "maneuvers" to
+                                listOf(
+                                    mapOf(
+                                        "waterManeuverId" to 0,
+                                        "rightSide" to true,
+                                        "success" to true,
+                                    ),
+                                ),
+                        ),
+                    ),
             )
-        )
 
         client.post()
             .uri("/water")
@@ -378,9 +405,9 @@ class WaterActivityControllerTest {
             .jsonPath("athleteId").isEqualTo(FIRST_ATHLETE_ID)
             .jsonPath("microcycleId").isEqualTo(1)
             .jsonPath("date").isEqualTo(ACTIVITY_DATE)
-            .jsonPath("pse").isEqualTo(5)
+            .jsonPath("rpe").isEqualTo(5)
             .jsonPath("condition").isEqualTo("Good")
-            .jsonPath("heartRate").isEqualTo(120)
+            .jsonPath("trimp").isEqualTo(120)
             .jsonPath("duration").isEqualTo(60)
             .jsonPath("waves").exists()
     }
@@ -400,9 +427,9 @@ class WaterActivityControllerTest {
             .jsonPath("athleteId").isEqualTo(FIRST_ATHLETE_ID)
             .jsonPath("microcycleId").isEqualTo(1)
             .jsonPath("date").isEqualTo(ACTIVITY_DATE)
-            .jsonPath("pse").isEqualTo(5)
+            .jsonPath("rpe").isEqualTo(5)
             .jsonPath("condition").isEqualTo("Good")
-            .jsonPath("heartRate").isEqualTo(120)
+            .jsonPath("trimp").isEqualTo(120)
             .jsonPath("duration").isEqualTo(60)
             .jsonPath("waves").exists()
     }
@@ -533,21 +560,21 @@ class WaterActivityControllerTest {
             .jsonPath("type").isEqualTo(Problem.invalidWaterActivityId.type.toString())
     }
 
-
     /**
      * Create Questionnaire Test
      */
 
     @Test
-    fun `create questionnaire - success`(){
+    fun `create questionnaire - success`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val body = mapOf(
-            "sleep" to 7,
-            "fatigue" to 3,
-            "stress" to 2,
-            "musclePain" to 1
-        )
+        val body =
+            mapOf(
+                "sleep" to 5,
+                "fatigue" to 3,
+                "stress" to 2,
+                "musclePain" to 1,
+            )
 
         client.post().uri("/water/$FIRST_ACTIVITY_ID/questionnaire")
             .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
@@ -561,12 +588,13 @@ class WaterActivityControllerTest {
     fun `create questionnaire - unauthorized`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val body = mapOf(
-            "sleep" to 7,
-            "fatigue" to 3,
-            "stress" to 2,
-            "musclePain" to 1
-        )
+        val body =
+            mapOf(
+                "sleep" to 7,
+                "fatigue" to 3,
+                "stress" to 2,
+                "musclePain" to 1,
+            )
 
         client.post().uri("/water/$FIRST_ACTIVITY_ID/questionnaire")
             .contentType(MediaType.APPLICATION_JSON)
@@ -579,12 +607,13 @@ class WaterActivityControllerTest {
     fun `create questionnaire - user is not a coach`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val body = mapOf(
-            "sleep" to 7,
-            "fatigue" to 3,
-            "stress" to 2,
-            "musclePain" to 1
-        )
+        val body =
+            mapOf(
+                "sleep" to 7,
+                "fatigue" to 3,
+                "stress" to 2,
+                "musclePain" to 1,
+            )
 
         client.post().uri("/water/$FIRST_ACTIVITY_ID/questionnaire")
             .header("Authorization", "Bearer $FIRST_ATHLETE_TOKEN")
@@ -597,19 +626,19 @@ class WaterActivityControllerTest {
             .jsonPath("type").isEqualTo(Problem.userIsNotACoach.type.toString())
     }
 
-
     @Test
     fun `create questionnaire - invalid water activity id`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
         val id = "invalid"
 
-        val body = mapOf(
-            "sleep" to 7,
-            "fatigue" to 3,
-            "stress" to 2,
-            "musclePain" to 1
-        )
+        val body =
+            mapOf(
+                "sleep" to 7,
+                "fatigue" to 3,
+                "stress" to 2,
+                "musclePain" to 1,
+            )
 
         client.post().uri("/water/$id/questionnaire")
             .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
@@ -626,12 +655,13 @@ class WaterActivityControllerTest {
     fun `create questionnaire - already exists`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val body = mapOf(
-            "sleep" to 7,
-            "fatigue" to 3,
-            "stress" to 2,
-            "musclePain" to 1
-        )
+        val body =
+            mapOf(
+                "sleep" to 7,
+                "fatigue" to 3,
+                "stress" to 2,
+                "musclePain" to 1,
+            )
 
         client.post().uri("/water/$SECOND_ACTIVITY_ID/questionnaire")
             .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
@@ -648,12 +678,13 @@ class WaterActivityControllerTest {
     fun `create questionnaire - water activity not found`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val body = mapOf(
-            "sleep" to 7,
-            "fatigue" to 3,
-            "stress" to 2,
-            "musclePain" to 1
-        )
+        val body =
+            mapOf(
+                "sleep" to 7,
+                "fatigue" to 3,
+                "stress" to 2,
+                "musclePain" to 1,
+            )
 
         val id = Random.nextInt()
 
@@ -672,12 +703,13 @@ class WaterActivityControllerTest {
     fun `create questionnaire - not athletes coach`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val body = mapOf(
-            "sleep" to 7,
-            "fatigue" to 3,
-            "stress" to 2,
-            "musclePain" to 1
-        )
+        val body =
+            mapOf(
+                "sleep" to 7,
+                "fatigue" to 3,
+                "stress" to 2,
+                "musclePain" to 1,
+            )
 
         client.post().uri("/water/$FIRST_ACTIVITY_ID/questionnaire")
             .header("Authorization", "Bearer $SECOND_COACH_TOKEN")
@@ -694,12 +726,13 @@ class WaterActivityControllerTest {
     fun `create questionnaire - invalid sleep value`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val body = mapOf(
-            "sleep" to -1,
-            "fatigue" to 3,
-            "stress" to 2,
-            "musclePain" to 1
-        )
+        val body =
+            mapOf(
+                "sleep" to -1,
+                "fatigue" to 3,
+                "stress" to 2,
+                "musclePain" to 1,
+            )
 
         client.post().uri("/water/$THIRD_ACTIVITY_ID/questionnaire")
             .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
@@ -716,12 +749,13 @@ class WaterActivityControllerTest {
     fun `create questionnaire - invalid fatigue value`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val body = mapOf(
-            "sleep" to 7,
-            "fatigue" to -1,
-            "stress" to 2,
-            "musclePain" to 1
-        )
+        val body =
+            mapOf(
+                "sleep" to 5,
+                "fatigue" to -1,
+                "stress" to 2,
+                "musclePain" to 1,
+            )
 
         client.post().uri("/water/$THIRD_ACTIVITY_ID/questionnaire")
             .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
@@ -738,12 +772,13 @@ class WaterActivityControllerTest {
     fun `create questionnaire - invalid stress value`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val body = mapOf(
-            "sleep" to 7,
-            "fatigue" to 3,
-            "stress" to -1,
-            "musclePain" to 1
-        )
+        val body =
+            mapOf(
+                "sleep" to 5,
+                "fatigue" to 3,
+                "stress" to -1,
+                "musclePain" to 1,
+            )
 
         client.post().uri("/water/$THIRD_ACTIVITY_ID/questionnaire")
             .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
@@ -760,12 +795,13 @@ class WaterActivityControllerTest {
     fun `create questionnaire - invalid muscle pain value`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val body = mapOf(
-            "sleep" to 7,
-            "fatigue" to 3,
-            "stress" to 2,
-            "musclePain" to -1
-        )
+        val body =
+            mapOf(
+                "sleep" to 5,
+                "fatigue" to 3,
+                "stress" to 2,
+                "musclePain" to -1,
+            )
 
         client.post().uri("/water/$THIRD_ACTIVITY_ID/questionnaire")
             .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
@@ -879,13 +915,9 @@ class WaterActivityControllerTest {
             .jsonPath("type").isEqualTo(Problem.notAthletesCoach.type.toString())
     }
 
-
-
     /**
      * Remove Questionnaire Test
      */
-
-
 
     companion object {
         private const val FIRST_COACH_TOKEN = "i_aY-4lpMqAIMuhkimTbKy4xYEuyvgFPaaTpVS0lctQ="

@@ -90,9 +90,9 @@ class AthleteServicesTest {
             is Success ->
                 assertTrue(
                     result.value.uid == FIRST_ATHLETE_ID &&
-                            result.value.coach == FIRST_COACH_ID &&
-                            result.value.name == FIRST_ATHLETE_NAME &&
-                            result.value.birthDate == FIRST_ATHLETE_BIRTH_DATE,
+                        result.value.coach == FIRST_COACH_ID &&
+                        result.value.name == FIRST_ATHLETE_NAME &&
+                        result.value.birthDate == FIRST_ATHLETE_BIRTH_DATE,
                 )
         }
     }
@@ -621,18 +621,18 @@ class AthleteServicesTest {
             is Success ->
                 assertTrue(
                     result.value.uid == FIRST_ATHLETE_ID &&
-                            result.value.date == ATHLETE_CHARACTERISTICS_FIRST_DATE_LONG &&
-                            result.value.height == ATHLETE_HEIGHT &&
-                            result.value.weight == ATHLETE_WEIGHT &&
-                            result.value.bmi == ATHLETE_BMI &&
-                            result.value.calories == ATHLETE_CALORIES &&
-                            result.value.bodyFat == ATHLETE_BODY_FAT &&
-                            result.value.waistSize == ATHLETE_WAIST_SIZE &&
-                            result.value.armSize == ATHLETE_ARM_SIZE &&
-                            result.value.thighSize == ATHLETE_THIGH_SIZE &&
-                            result.value.tricepFat == ATHLETE_TRICEP_FAT &&
-                            result.value.abdomenFat == ATHLETE_ABDOMEN_FAT &&
-                            result.value.thighFat == ATHLETE_THIGH_FAT,
+                        result.value.date == ATHLETE_CHARACTERISTICS_FIRST_DATE_LONG &&
+                        result.value.height == ATHLETE_HEIGHT &&
+                        result.value.weight == ATHLETE_WEIGHT &&
+                        result.value.bmi == ATHLETE_BMI &&
+                        result.value.calories == ATHLETE_CALORIES &&
+                        result.value.bodyFat == ATHLETE_BODY_FAT &&
+                        result.value.waistSize == ATHLETE_WAIST_SIZE &&
+                        result.value.armSize == ATHLETE_ARM_SIZE &&
+                        result.value.thighSize == ATHLETE_THIGH_SIZE &&
+                        result.value.tricepFat == ATHLETE_TRICEP_FAT &&
+                        result.value.abdomenFat == ATHLETE_ABDOMEN_FAT &&
+                        result.value.thighFat == ATHLETE_THIGH_FAT,
                 )
         }
     }
@@ -689,7 +689,7 @@ class AthleteServicesTest {
                 athleteServices.getCharacteristics(
                     SECOND_COACH_ID,
                     FIRST_ATHLETE_ID,
-                    ATHLETE_CHARACTERISTICS_FIRST_DATE
+                    ATHLETE_CHARACTERISTICS_FIRST_DATE,
                 )
         ) {
             is Failure -> assertTrue(result.value is GetCharacteristicsError.NotAthletesCoach)
@@ -990,14 +990,11 @@ class AthleteServicesTest {
         }
     }
 
-
     /**
      * Set Calendar Tests
      */
 
     // TODO: Implement set calendar tests
-
-
 
     /**
      * Get calendar
@@ -1027,11 +1024,13 @@ class AthleteServicesTest {
         when (val result = athleteServices.getCalendar(FIRST_COACH_ID, FIRST_ATHLETE_ID, "gym")) {
             is Failure -> fail("Unexpected $result")
             is Success -> {
-                assertTrue(result.value.all { mesocycle ->
-                    mesocycle.microcycles.all { microcycle ->
-                        microcycle.activities.all { it.type == ActivityType.GYM }
-                    }
-                })
+                assertTrue(
+                    result.value.all { mesocycle ->
+                        mesocycle.microcycles.all { microcycle ->
+                            microcycle.activities.all { it.type == ActivityType.GYM }
+                        }
+                    },
+                )
             }
         }
     }
@@ -1044,14 +1043,15 @@ class AthleteServicesTest {
         when (val result = athleteServices.getCalendar(FIRST_COACH_ID, FIRST_ATHLETE_ID, "water")) {
             is Failure -> fail("Unexpected $result")
             is Success -> {
-                assertTrue(result.value.all { mesocycle ->
-                    mesocycle.microcycles.all { microcycle ->
-                        microcycle.activities.all { it.type == ActivityType.WATER }
-                    }
-                })
+                assertTrue(
+                    result.value.all { mesocycle ->
+                        mesocycle.microcycles.all { microcycle ->
+                            microcycle.activities.all { it.type == ActivityType.WATER }
+                        }
+                    },
+                )
             }
         }
-
     }
 
     @Test
@@ -1075,7 +1075,6 @@ class AthleteServicesTest {
             is Success -> fail("Unexpected $result")
         }
     }
-
 
     /**
      * Get Water Activities Tests
@@ -1119,7 +1118,6 @@ class AthleteServicesTest {
         }
     }
 
-
     companion object {
         private fun randomString() = "String_${abs(Random.nextLong())}"
 
@@ -1161,18 +1159,20 @@ class AthleteServicesTest {
 
         private const val MAX_TOKENS_PER_USER = 5
 
-        private val EXERCISES_LIST = listOf(
-            ExerciseInputInfo(
-                sets = listOf(
-                    SetInputInfo(
-                        reps = 10,
-                        weight = 60f,
-                        restTime = 60f,
-                    ),
+        private val EXERCISES_LIST =
+            listOf(
+                ExerciseInputInfo(
+                    sets =
+                        listOf(
+                            SetInputInfo(
+                                reps = 10,
+                                weight = 60f,
+                                restTime = 60f,
+                            ),
+                        ),
+                    gymExerciseId = 1,
                 ),
-                gymExerciseId = 1
             )
-        )
 
         private fun createAthleteServices(
             testClock: TestClock,
@@ -1195,7 +1195,7 @@ class AthleteServicesTest {
             ),
             ActivityDomain(),
             CloudinaryServices(cloudinary),
-            testClock
+            testClock,
         )
 
         private val jdbi =
@@ -1205,12 +1205,13 @@ class AthleteServicesTest {
                 },
             ).configureWithAppRequirements()
 
-        private val cloudinary = Cloudinary(
-            mapOf(
-                "cloud_name" to "",
-                "api_key" to "",
-                "api_secret" to ""
+        private val cloudinary =
+            Cloudinary(
+                mapOf(
+                    "cloud_name" to "",
+                    "api_key" to "",
+                    "api_secret" to "",
+                ),
             )
-        )
     }
 }

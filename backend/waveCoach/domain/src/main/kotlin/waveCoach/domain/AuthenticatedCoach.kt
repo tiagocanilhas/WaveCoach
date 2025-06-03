@@ -1,6 +1,6 @@
 package waveCoach.domain
 
-data class AuthenticatedCoach (
+data class AuthenticatedCoach(
     val info: User,
     val token: String,
 )

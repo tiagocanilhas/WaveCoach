@@ -9,15 +9,39 @@ class JdbiWaterActivityRepositoryTest {
         testWithHandleAndRollback { handle ->
             val waterActivityRepository = JdbiWaterActivityRepository(handle)
 
-            val activityId = waterActivityRepository.storeWaterActivity(
-                FIRST_WATER_ACTIVITY_ID,
-                FIRST_PSE,
-                FIRST_CONDITION,
-                FIRST_HEART_RATE,
-                FIRST_DURATION
-            )
+            val activityId =
+                waterActivityRepository.storeWaterActivity(
+                    WATER_ACTIVITY_ID_TO_BE_CREATED,
+                    FIRST_RPE,
+                    FIRST_CONDITION,
+                    FIRST_TRIMP,
+                    FIRST_DURATION,
+                )
 
             assertTrue(activityId > 0)
+        }
+
+    @Test
+    fun `get water activity`() =
+        testWithHandleAndRollback { handle ->
+            val waterActivityRepository = JdbiWaterActivityRepository(handle)
+
+            val activityId =
+                waterActivityRepository.storeWaterActivity(
+                    FIRST_ACTIVITY_ID,
+                    FIRST_RPE,
+                    FIRST_CONDITION,
+                    FIRST_TRIMP,
+                    FIRST_DURATION,
+                )
+
+            val waterActivity = waterActivityRepository.getWaterActivity(activityId)
+
+            assertTrue(waterActivity != null)
+            assertTrue(waterActivity!!.id == activityId)
+            assertTrue(waterActivity.rpe == FIRST_RPE)
+            assertTrue(waterActivity.condition == FIRST_CONDITION)
+            assertTrue(waterActivity.trimp == FIRST_TRIMP)
         }
 
     @Test
@@ -36,19 +60,22 @@ class JdbiWaterActivityRepositoryTest {
         testWithHandleAndRollback { handle ->
             val waterActivityRepository = JdbiWaterActivityRepository(handle)
 
-            val activityId = waterActivityRepository.storeWaterActivity(
-                FIRST_ACTIVITY_ID,
-                FIRST_PSE,
-                FIRST_CONDITION,
-                FIRST_HEART_RATE,
-                FIRST_DURATION
-            )
+            val activityId =
+                waterActivityRepository.storeWaterActivity(
+                    FIRST_ACTIVITY_ID,
+                    FIRST_RPE,
+                    FIRST_CONDITION,
+                    FIRST_TRIMP,
+                    FIRST_DURATION,
+                )
 
-            val waveId = waterActivityRepository.storeWave(
-                activityId,
-                null,
-                1
-            )
+            val waveId =
+                waterActivityRepository.storeWave(
+                    activityId,
+                    null,
+                    true,
+                    1,
+                )
 
             assertTrue(waveId > 0)
         }
@@ -58,63 +85,43 @@ class JdbiWaterActivityRepositoryTest {
         testWithHandleAndRollback { handle ->
             val waterActivityRepository = JdbiWaterActivityRepository(handle)
 
-            val activityId = waterActivityRepository.storeWaterActivity(
-                FIRST_ACTIVITY_ID,
-                FIRST_PSE,
-                FIRST_CONDITION,
-                FIRST_HEART_RATE,
-                FIRST_DURATION
-            )
+            val activityId =
+                waterActivityRepository.storeWaterActivity(
+                    FIRST_ACTIVITY_ID,
+                    FIRST_RPE,
+                    FIRST_CONDITION,
+                    FIRST_TRIMP,
+                    FIRST_DURATION,
+                )
 
-            val waveId = waterActivityRepository.storeWave(
-                activityId,
-                null,
-                1
-            )
+            val waveId =
+                waterActivityRepository.storeWave(
+                    activityId,
+                    null,
+                    true,
+                    1,
+                )
 
-            val maneuverId = waterActivityRepository.storeManeuver(
-                waveId,
-                1,
-                rightSide = true,
-                true,
-                1
-            )
+            val maneuverId =
+                waterActivityRepository.storeManeuver(
+                    waveId,
+                    1,
+                    true,
+                    1,
+                )
 
             assertTrue(maneuverId > 0)
         }
 
-    @Test
-    fun `get water activity`() =
-        testWithHandleAndRollback { handle ->
-            val waterActivityRepository = JdbiWaterActivityRepository(handle)
 
-            val activityId = waterActivityRepository.storeWaterActivity(
-                FIRST_ACTIVITY_ID,
-                FIRST_PSE,
-                FIRST_CONDITION,
-                FIRST_HEART_RATE,
-                FIRST_DURATION
-            )
-
-            val waterActivity = waterActivityRepository.getWaterActivity(activityId)
-
-            assertTrue(waterActivity != null)
-            assertTrue(waterActivity!!.id == activityId)
-            assertTrue(waterActivity.pse == FIRST_PSE)
-            assertTrue(waterActivity.condition == FIRST_CONDITION)
-            assertTrue(waterActivity.heartRate == FIRST_HEART_RATE)
-        }
-
-
-
-    companion object{
+    companion object {
         const val FIRST_ACTIVITY_ID = 1
 
-        const val FIRST_WATER_ACTIVITY_ID = 2
+        const val WATER_ACTIVITY_ID_TO_BE_CREATED = 4
         const val SECOND_WATER_ACTIVITY_ID = 3
-        const val FIRST_PSE = 5
+        const val FIRST_RPE = 5
         const val FIRST_CONDITION = "Good"
-        const val FIRST_HEART_RATE = 120
+        const val FIRST_TRIMP = 120
         const val FIRST_DURATION = 30
     }
 }

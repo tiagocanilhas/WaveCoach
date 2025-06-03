@@ -3,9 +3,9 @@ package waveCoach.http.model.input
 data class CreateWaterActivityInputModel(
     val athleteId: Int,
     val date: String,
-    val pse: Int,
+    val rpe: Int,
     val condition: String,
-    val heartRate: Int,
+    val trimp: Int,
     val duration: Int,
     val waves: List<WaveInputModel>,
 )

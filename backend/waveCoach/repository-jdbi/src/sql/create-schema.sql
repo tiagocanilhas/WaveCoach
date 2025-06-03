@@ -40,29 +40,31 @@ CREATE TABLE waveCoach.athlete (
     uid INTEGER PRIMARY KEY,
     coach INTEGER,
     name VARCHAR(64) NOT NULL,
-    birth_date BIGINT NOT NULL,
+    birthdate BIGINT NOT NULL,
     credentials_changed BOOLEAN DEFAULT FALSE NOT NULL,
     url VARCHAR(256) DEFAULT NULL,
-    FOREIGN KEY (coach) REFERENCES waveCoach.coach(uid),
-    FOREIGN KEY (uid) REFERENCES waveCoach.user(id)
+    FOREIGN KEY (coach) REFERENCES waveCoach.coach(uid) ON DELETE CASCADE,
+    FOREIGN KEY (uid) REFERENCES waveCoach.user(id) ON DELETE CASCADE
 );
 
 CREATE TABLE waveCoach.code (
     code VARCHAR(256) PRIMARY KEY,
-    uid INTEGER UNIQUE REFERENCES waveCoach.athlete(uid),
-    created_time BIGINT DEFAULT EXTRACT(EPOCH FROM CURRENT_TIMESTAMP) NOT NULL
+    uid INTEGER UNIQUE,
+    created_time BIGINT DEFAULT EXTRACT(EPOCH FROM CURRENT_TIMESTAMP) NOT NULL,
+    FOREIGN KEY (uid) REFERENCES waveCoach.athlete(uid) ON DELETE CASCADE
 );
 
 CREATE TABLE waveCoach.token (
     token VARCHAR(256) PRIMARY KEY,
-    uid INTEGER REFERENCES waveCoach.user(id),
+    uid INTEGER,
     created_time BIGINT DEFAULT EXTRACT(EPOCH FROM CURRENT_TIMESTAMP) NOT NULL,
-    used_time BIGINT DEFAULT EXTRACT(EPOCH FROM CURRENT_TIMESTAMP) NOT NULL
+    used_time BIGINT DEFAULT EXTRACT(EPOCH FROM CURRENT_TIMESTAMP) NOT NULL,
+    FOREIGN KEY (uid) REFERENCES waveCoach.user(id) ON DELETE CASCADE
 );
 
 CREATE TABLE waveCoach.characteristics (
     date BIGINT DEFAULT EXTRACT(EPOCH FROM CURRENT_TIMESTAMP) NOT NULL,
-    uid INTEGER REFERENCES waveCoach.athlete(uid),
+    uid INTEGER,
     weight FLOAT,
     height INTEGER,
     bmi FLOAT GENERATED ALWAYS AS (weight / ((height / 100.0) * (height / 100.0))) STORED,
@@ -74,34 +76,39 @@ CREATE TABLE waveCoach.characteristics (
     tricep_fat INTEGER,
     abdomen_fat INTEGER,
     thigh_fat INTEGER,
-    PRIMARY KEY (date, uid)
+    PRIMARY KEY (date, uid),
+    FOREIGN KEY (uid) REFERENCES waveCoach.athlete(uid) ON DELETE CASCADE
 );
 
 CREATE TABLE waveCoach.mesocycle(
     id SERIAL PRIMARY KEY,
-    uid INTEGER REFERENCES waveCoach.athlete(uid),
+    uid INTEGER,
     start_time BIGINT NOT NULL,
-    end_time BIGINT NOT NULL
+    end_time BIGINT NOT NULL,
+    FOREIGN KEY (uid) REFERENCES waveCoach.athlete(uid) ON DELETE CASCADE
 );
 
 CREATE TABLE waveCoach.microcycle(
     id SERIAL PRIMARY KEY,
-    mesocycle INTEGER REFERENCES waveCoach.mesocycle(id),
+    mesocycle INTEGER,
     start_time BIGINT NOT NULL,
-    end_time BIGINT NOT NULL
+    end_time BIGINT NOT NULL,
+    FOREIGN KEY (mesocycle) REFERENCES waveCoach.mesocycle(id) ON DELETE CASCADE
 );
 
 CREATE TABLE waveCoach.activity(
     id SERIAL PRIMARY KEY,
-    uid INTEGER REFERENCES waveCoach.athlete(uid),
-    microcycle INTEGER REFERENCES waveCoach.microcycle(id),
+    uid INTEGER,
+    microcycle INTEGER,
     date BIGINT DEFAULT EXTRACT(EPOCH FROM CURRENT_TIMESTAMP) NOT NULL,
-    type VARCHAR(64)
+    type VARCHAR(64),
+    FOREIGN KEY (uid) REFERENCES waveCoach.athlete(uid) ON DELETE CASCADE,
+    FOREIGN KEY (microcycle) REFERENCES waveCoach.microcycle(id) ON DELETE CASCADE
 );
 
 CREATE TABLE waveCoach.gym(
     activity INTEGER PRIMARY KEY,
-    FOREIGN KEY (activity) REFERENCES waveCoach.activity(id)
+    FOREIGN KEY (activity) REFERENCES waveCoach.activity(id) ON DELETE CASCADE
 );
 
 CREATE TABLE waveCoach.gym_exercise(
@@ -113,43 +120,48 @@ CREATE TABLE waveCoach.gym_exercise(
 
 CREATE TABLE waveCoach.exercise(
     id SERIAL PRIMARY KEY,
-    activity INTEGER REFERENCES waveCoach.gym(activity),
-    exercise INTEGER REFERENCES waveCoach.gym_exercise(id),
-    exercise_order INTEGER
+    activity INTEGER,
+    exercise INTEGER,
+    exercise_order INTEGER,
+    FOREIGN KEY (activity) REFERENCES waveCoach.gym(activity) ON DELETE CASCADE,
+    FOREIGN KEY (exercise) REFERENCES waveCoach.gym_exercise(id) ON DELETE CASCADE
 );
 
-CREATE TABLE waveCoach.sets(
+CREATE TABLE waveCoach.set(
     id SERIAL PRIMARY KEY,
-    exercise_id INTEGER REFERENCES waveCoach.exercise(id),
+    exercise_id INTEGER,
     weight FLOAT,
     reps INTEGER,
     rest_time FLOAT,
-    set_order INTEGER
+    set_order INTEGER,
+    FOREIGN KEY (exercise_id) REFERENCES waveCoach.exercise(id) ON DELETE CASCADE
 );
 
 CREATE TABLE waveCoach.water(
     activity INTEGER PRIMARY KEY,
-    pse INTEGER,
+    rpe INTEGER,
     condition VARCHAR(64),
-    heart_rate INTEGER,
+    trimp INTEGER,
     duration INTEGER,
-    FOREIGN KEY (activity) REFERENCES waveCoach.activity(id)
+    FOREIGN KEY (activity) REFERENCES waveCoach.activity(id) ON DELETE CASCADE
+);
+CREATE TABLE waveCoach.questionnaire(
+    id SERIAL PRIMARY KEY,
+    activity INTEGER,
+    sleep INTEGER,
+    fatigue INTEGER,
+    stress INTEGER,
+    muscle_pain INTEGER,
+    FOREIGN KEY (activity) REFERENCES waveCoach.water(activity) ON DELETE CASCADE
 );
 
 CREATE TABLE waveCoach.wave(
     id SERIAL PRIMARY KEY,
-    activity INTEGER REFERENCES waveCoach.water(activity),
+    activity INTEGER,
     points FLOAT,
-    wave_order INTEGER
-);
-
-CREATE TABLE waveCoach.questionnaire(
-    id SERIAL PRIMARY KEY,
-    activity INTEGER REFERENCES waveCoach.water(activity),
-    sleep INTEGER,
-    fatigue INTEGER,
-    stress INTEGER,
-    muscle_pain INTEGER
+    right_side BOOLEAN,
+    wave_order INTEGER,
+    FOREIGN KEY (activity) REFERENCES waveCoach.water(activity) ON DELETE CASCADE
 );
 
 CREATE TABLE waveCoach.water_maneuver(
@@ -160,17 +172,21 @@ CREATE TABLE waveCoach.water_maneuver(
 
 CREATE TABLE waveCoach.maneuver(
     id SERIAL PRIMARY KEY,
-    wave INTEGER REFERENCES waveCoach.wave(id),
-    maneuver INTEGER REFERENCES waveCoach.water_maneuver(id),
-    right_side BOOLEAN,
+    wave INTEGER,
+    maneuver INTEGER,
     success BOOLEAN,
-    maneuver_order INTEGER
+    maneuver_order INTEGER,
+    FOREIGN KEY (wave) REFERENCES waveCoach.wave(id) ON DELETE CASCADE,
+    FOREIGN KEY (maneuver) REFERENCES waveCoach.water_maneuver(id) ON DELETE CASCADE
 );
 
 CREATE TABLE waveCoach.competition(
     id SERIAL PRIMARY KEY,
+    uid INTEGER,
     date BIGINT DEFAULT EXTRACT(EPOCH FROM CURRENT_TIMESTAMP) NOT NULL,
-    location VARCHAR(64)
+    location VARCHAR(64),
+    place VARCHAR(64),
+    FOREIGN KEY (uid) REFERENCES waveCoach.athlete(uid) ON DELETE CASCADE
 );
 
 CREATE TABLE waveCoach.athlete_competition(
@@ -181,10 +197,17 @@ CREATE TABLE waveCoach.athlete_competition(
 );
 
 CREATE TABLE waveCoach.heat(
+    id SERIAL,
+    competition INTEGER,
+    date BIGINT DEFAULT EXTRACT(EPOCH FROM CURRENT_TIMESTAMP) NOT NULL,
+    location VARCHAR(64),
+    PRIMARY KEY (id, competition),
+    FOREIGN KEY (competition) REFERENCES waveCoach.competition(id) ON DELETE CASCADE
 );
 
 
 
+-- Create triggers to set user roles and activity types
 
 CREATE OR REPLACE FUNCTION set_coach()
 RETURNS TRIGGER AS $$

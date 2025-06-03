@@ -12,9 +12,9 @@ import { CustomTimePicker } from '../CustomTimePicker'
 // import { Wave } from '../../types/Wave'
 import { WaveToAdd } from '../../types/WaveToAdd'
 
-import { createWaterActivity } from '../../services/waterServices'
+import { createWaterActivity } from '../../../services/waterServices'
 
-import { handleError } from '../../utils/handleError'
+import { handleError } from '../../../utils/handleError'
 
 import styles from './styles.module.css'
 

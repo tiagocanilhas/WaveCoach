@@ -208,22 +208,22 @@ class Problem(
                 URI("$BASE_URI/invalid-category"),
             )
 
-        val invalidSets =
+        val invalidSet =
             Problem(
                 "Invalid set",
                 URI("$BASE_URI/invalid-set"),
             )
 
-        val invalidPse =
+        val invalidRpe =
             Problem(
-                "Invalid PSE",
-                URI("$BASE_URI/invalid-pse"),
+                "Invalid RPE",
+                URI("$BASE_URI/invalid-rpe"),
             )
 
-        val invalidHeartRate =
+        val invalidTrimp =
             Problem(
-                "Invalid heart rate",
-                URI("$BASE_URI/invalid-heart-rate"),
+                "Invalid TRIMP",
+                URI("$BASE_URI/invalid-trimp"),
             )
 
         val invalidDuration =

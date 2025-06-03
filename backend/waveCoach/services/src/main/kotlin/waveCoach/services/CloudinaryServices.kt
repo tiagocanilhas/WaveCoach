@@ -7,22 +7,29 @@ import org.springframework.web.multipart.MultipartFile
 
 @Component
 class CloudinaryServices(
-    private val cloudinary: Cloudinary
+    private val cloudinary: Cloudinary,
 ) {
-    private fun uploadImage(file: MultipartFile, folder: String = ""): String? {
-        val options = mapOf(
-            "folder" to folder,
-            "transformation" to listOf(
-                mapOf("width" to 500, "height" to 500, "crop" to "fit")
+    private fun uploadImage(
+        file: MultipartFile,
+        folder: String = "",
+    ): String? {
+        val options =
+            mapOf(
+                "folder" to folder,
+                "transformation" to
+                    listOf(
+                        mapOf("width" to 500, "height" to 500, "crop" to "fit"),
+                    ),
             )
-        )
 
         val res = cloudinary.uploader().upload(file.bytes, options)
         return res["secure_url"] as String?
     }
 
     fun uploadAthleteImage(file: MultipartFile): String? = uploadImage(file, "athletes")
+
     fun uploadExerciseImage(file: MultipartFile): String? = uploadImage(file, "exercises")
+
     fun uploadManeuverImage(file: MultipartFile): String? = uploadImage(file, "maneuvers")
 
     fun deleteImage(url: String): Boolean {

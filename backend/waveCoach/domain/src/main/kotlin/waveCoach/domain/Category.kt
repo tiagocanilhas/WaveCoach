@@ -1,7 +1,12 @@
 package waveCoach.domain
 
 enum class Category {
-    CHEST, BACK, LEGS, ARMS, SHOULDERS;
+    CHEST,
+    BACK,
+    LEGS,
+    ARMS,
+    SHOULDERS,
+    ;
 
     override fun toString(): String = name.lowercase()
 

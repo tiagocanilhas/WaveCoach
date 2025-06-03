@@ -5,5 +5,5 @@ data class UpdateSetInputModel(
     val reps: Int?,
     val weight: Float?,
     val rest: Float?,
-    val setOrder: Int?
+    val setOrder: Int?,
 )

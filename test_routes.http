@@ -1,13 +1,12 @@
-@token = ZKBt0tOrXp-58Uvme1en2Ls0M8jDPh34mbYpsQLoU4Y=
+@token = VL6-hrQm9Zfa8JEfGG07RUQIfIjW73gsn9QtrRhVs8I=
 
 ### Create Coach
 POST http://localhost:8080/api/coaches
-Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "username": "test",
-  "password": "Test123!",
+  "username": "abfe",
+  "password": "Test123!"
 }
 
 
@@ -16,7 +15,7 @@ POST http://localhost:8080/api/login
 Content-Type: application/json
 
 {
-  "username": "admin",
+  "username": "user2",
   "password": "Admin123!"
 }
 
@@ -69,12 +68,19 @@ Authorization: Bearer {{token}}
 ### create Athlete
 POST http://localhost:8080/api/athletes
 Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="input"
 Content-Type: application/json
 
 {
   "name": "asdasdasdasd",
   "birthDate": "01-01-2025"
 }
+--boundary--
+
+
 
 ### Generate Code
 POST http://localhost:8080/api/athletes/6/code
@@ -123,4 +129,35 @@ GET http://localhost:8080/api/athletes/3/calendar?type=wasdsadasd
 Authorization: Bearer {{token}}
 
 
+
+### Get Gym Workout
+GET http://localhost:8080/api/gym/31
+Authorization: Bearer {{token}}
+
+### Create Water Maneuver
+POST http://localhost:8080/api/water/maneuver
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "other name"
+}
+
+
+### Get Water Maneuvers
+GET http://localhost:8080/api/water/maneuver
+Authorization: Bearer {{token}}
+
+
+
+
+### Get water activity
+GET http://localhost:8080/api/water/28
+Authorization: Bearer {{token}}
+
+
+
+### Get water activities
+GET http://localhost:8080/api/athletes/3/water
+Authorization: Bearer {{token}}
 

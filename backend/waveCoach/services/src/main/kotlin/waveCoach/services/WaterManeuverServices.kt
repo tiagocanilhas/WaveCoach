@@ -22,25 +22,26 @@ typealias CreateWaterManeuverResult = Either<CreateWaterManeuverError, Int>
 class WaterManeuverServices(
     private val transactionManager: TransactionManager,
     private val waterManeuverDomain: WaterManeuverDomain,
-    private val cloudinaryServices: CloudinaryServices
+    private val cloudinaryServices: CloudinaryServices,
 ) {
-
     fun createWaterManeuver(
         name: String,
-        photo: MultipartFile?
+        photo: MultipartFile?,
     ): CreateWaterManeuverResult {
         if (!waterManeuverDomain.isNameValid(name)) return failure(CreateWaterManeuverError.InvalidName)
 
         return transactionManager.run {
             val waterManeuverRepository = it.waterManeuverRepository
 
-            if (waterManeuverRepository.getWaterManeuverByName(name) != null)
+            if (waterManeuverRepository.getWaterManeuverByName(name) != null) {
                 return@run failure(CreateWaterManeuverError.NameAlreadyExists)
-
-            val url = photo?.let { file ->
-                cloudinaryServices.uploadManeuverImage(file)
-                    ?: return@run failure(CreateWaterManeuverError.InvalidPhoto)
             }
+
+            val url =
+                photo?.let { file ->
+                    cloudinaryServices.uploadManeuverImage(file)
+                        ?: return@run failure(CreateWaterManeuverError.InvalidPhoto)
+                }
 
             success(waterManeuverRepository.storeWaterManeuver(name, url))
         }

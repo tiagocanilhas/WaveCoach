@@ -1,8 +1,8 @@
 package waveCoach.http.model.output
 
-data class MesocycleOutputModel (
+data class MesocycleOutputModel(
     val id: Int,
     val startTime: Long,
     val endTime: Long,
-    val microcycles: List<MicrocycleOutputModel>
+    val microcycles: List<MicrocycleOutputModel>,
 )

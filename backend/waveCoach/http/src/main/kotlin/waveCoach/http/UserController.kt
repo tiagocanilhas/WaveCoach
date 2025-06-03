@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import waveCoach.domain.AuthenticatedUser
-import waveCoach.http.model.output.AuthCheckOutputModel
 import waveCoach.http.model.input.LoginInputModel
 import waveCoach.http.model.input.UserUpdateInputModel
+import waveCoach.http.model.output.AuthCheckOutputModel
 import waveCoach.http.model.output.LoginOutputModel
 import waveCoach.http.model.output.Problem
 import waveCoach.services.CheckCredentialsError
@@ -31,7 +31,6 @@ class UserController(
         .httpOnly(true)
         .sameSite("Strict")
         .secure(true)
-        .path("/")
         .maxAge(maxAgeSeconds)
         .build()
 
@@ -70,9 +69,7 @@ class UserController(
     }
 
     @GetMapping(Uris.Users.AUTH_CHECK)
-    fun authCheck(
-        user: AuthenticatedUser
-    ): ResponseEntity<*> {
+    fun authCheck(user: AuthenticatedUser): ResponseEntity<*> {
         return ResponseEntity
             .status(200)
             .body(AuthCheckOutputModel(user.info.id, user.info.username, user.info.isCoach))
@@ -83,7 +80,7 @@ class UserController(
         user: AuthenticatedUser,
         @RequestBody input: UserUpdateInputModel,
     ): ResponseEntity<*> {
-        val result = userServices.updateCredentials(user.info.id, input.username, input.password,)
+        val result = userServices.updateCredentials(user.info.id, input.username, input.password)
 
         return when (result) {
             is Success ->

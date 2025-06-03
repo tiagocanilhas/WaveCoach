@@ -3,5 +3,5 @@ package waveCoach.http.model.output
 data class WaterManeuverOutputModel(
     val id: Int,
     val name: String,
-    val url: String?
+    val url: String?,
 )

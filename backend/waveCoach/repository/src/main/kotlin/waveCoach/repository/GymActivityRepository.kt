@@ -14,7 +14,11 @@ interface GymActivityRepository {
 
     fun removeGymActivity(activityId: Int)
 
-    fun storeExercise(activityID: Int, exerciseID: Int, exerciseOrder: Int): Int
+    fun storeExercise(
+        activityID: Int,
+        exerciseID: Int,
+        exerciseOrder: Int,
+    ): Int
 
     fun getExercises(activityId: Int): List<Exercise>
 
@@ -22,7 +26,13 @@ interface GymActivityRepository {
 
     fun removeExercisesByActivity(activityId: Int)
 
-    fun storeSet(exerciseId: Int, reps: Int, weight: Float, rest: Float, setOrder: Int): Int
+    fun storeSet(
+        exerciseId: Int,
+        reps: Int,
+        weight: Float,
+        rest: Float,
+        setOrder: Int,
+    ): Int
 
     fun getSets(exerciseId: Int): List<Sets>
 
@@ -30,16 +40,23 @@ interface GymActivityRepository {
 
     fun removeSetsByActivity(activityId: Int)
 
-    fun storeGymExercise(name: String, category: String, url: String?): Int
+    fun storeGymExercise(
+        name: String,
+        category: String,
+        url: String?,
+    ): Int
 
     fun getGymExerciseByName(name: String): GymExercise?
 
     fun getAllGymExercises(): List<GymExercise>
 
-    fun updateGymExercise(exerciseId: Int, name: String, category: String)
+    fun updateGymExercise(
+        exerciseId: Int,
+        name: String,
+        category: String,
+    )
 
     fun removeGymExercise(exerciseId: Int)
 
     fun isGymExerciseValid(exerciseId: Int): Boolean
-
 }

@@ -10,7 +10,7 @@ import { AddExercisePopup } from '../AddExercisePopup'
 import { Exercise } from '../../types/Exercise'
 import { SetData } from '../../types/SetData'
 
-import { getGymExercises } from '../../services/gymExerciseServices'
+import { getGymExercises } from '../../../services/gymExerciseServices'
 
 import styles from './styles.module.css'
 

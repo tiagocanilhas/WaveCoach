@@ -6,9 +6,9 @@ import { Popup } from '../../components/Popup'
 import { Button } from '../../components/Button'
 import { ImageSelector } from '../ImageSelector'
 
-import { createAthlete, updateAthlete } from '../../services/athleteServices'
+import { createAthlete, updateAthlete } from '../../../services/athleteServices'
 
-import { handleError } from '../../utils/handleError'
+import { handleError } from '../../../utils/handleError'
 
 import styles from './styles.module.css'
 

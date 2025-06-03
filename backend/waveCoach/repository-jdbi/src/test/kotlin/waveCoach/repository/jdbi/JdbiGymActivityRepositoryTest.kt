@@ -71,7 +71,6 @@ class JdbiGymActivityRepositoryTest {
             assertTrue { exerciseList.isNotEmpty() }
 
             assertEquals(exerciseId, exerciseList[0].id)
-
         }
 
     @Test

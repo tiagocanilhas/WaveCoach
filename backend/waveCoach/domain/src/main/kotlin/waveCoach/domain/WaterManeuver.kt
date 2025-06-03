@@ -1,7 +1,7 @@
 package waveCoach.domain
 
-data class WaterManeuver (
+data class WaterManeuver(
     val id: Int,
     val name: String,
-    val url: String?
+    val url: String?,
 )

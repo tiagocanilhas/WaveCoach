@@ -5,7 +5,6 @@ data class Maneuver(
     val waterManeuverId: Int,
     val waterManeuverName: String,
     val url: String?,
-    val rightSide: Boolean,
     val success: Boolean,
     val order: Int,
 )

@@ -11,7 +11,11 @@ import waveCoach.repository.ActivityRepository
 class JdbiActivityRepository(
     private val handle: Handle,
 ) : ActivityRepository {
-    override fun storeActivity(uid: Int, date: Long, microcycle: Int): Int =
+    override fun storeActivity(
+        uid: Int,
+        date: Long,
+        microcycle: Int,
+    ): Int =
         handle.createUpdate("insert into waveCoach.activity (uid, date, microcycle) values (:uid, :date, :microcycle)")
             .bind("uid", uid)
             .bind("date", date)
@@ -28,7 +32,7 @@ class JdbiActivityRepository(
         handle.createUpdate(
             """
             insert into waveCoach.mesocycle (uid, start_time, end_time) values (:uid, :start_time, :end_time)
-        """.trimIndent()
+            """.trimIndent(),
         )
             .bind("uid", uid)
             .bind("start_time", startTime)
@@ -51,7 +55,7 @@ class JdbiActivityRepository(
         handle.createUpdate(
             """
             update waveCoach.mesocycle set start_time = :start_time, end_time = :end_time where id = :id
-        """.trimIndent()
+            """.trimIndent(),
         )
             .bind("id", id)
             .bind("start_time", startTime)
@@ -72,7 +76,7 @@ class JdbiActivityRepository(
         handle.createUpdate(
             """
             insert into waveCoach.microcycle (mesocycle, start_time, end_time) values (:mesocycle, :start_time, :end_time)
-        """.trimIndent()
+            """.trimIndent(),
         )
             .bind("mesocycle", mesocycle)
             .bind("start_time", startTime)
@@ -95,7 +99,7 @@ class JdbiActivityRepository(
             """
             select * from waveCoach.microcycle 
             where start_time <= :date and end_time >= :date
-        """.trimIndent()
+            """.trimIndent(),
         )
             .bind("date", date)
             .bind("uid", uid)
@@ -110,7 +114,7 @@ class JdbiActivityRepository(
         handle.createUpdate(
             """
             update waveCoach.microcycle set start_time = :start_time, end_time = :end_time where id = :id
-        """.trimIndent()
+            """.trimIndent(),
         )
             .bind("id", id)
             .bind("start_time", startTime)
@@ -121,7 +125,7 @@ class JdbiActivityRepository(
         handle.createUpdate(
             """
             delete from waveCoach.microcycle where mesocycle in (select id from waveCoach.mesocycle where uid = :uid)
-        """.trimIndent()
+            """.trimIndent(),
         )
             .bind("uid", uid)
             .execute()
@@ -144,7 +148,8 @@ class JdbiActivityRepository(
         uid: Int,
         type: ActivityType?,
     ): List<Mesocycle> {
-        val query = """
+        val query =
+            """
             select 
                 m.id as meso_id, m.uid as uid, m.start_time as meso_start, m.end_time as meso_end,
                 mi.id as micro_id, mi.start_time as micro_start, mi.end_time as micro_end,
@@ -154,12 +159,13 @@ class JdbiActivityRepository(
             left join waveCoach.activity a on a.microcycle = mi.id
             where m.uid = :uid and (:type is null or a.type = :type)
             order by m.start_time, mi.start_time, a.date
-        """.trimIndent()
+            """.trimIndent()
 
-        val rows = handle.createQuery(query)
-            .bind("uid", uid)
-            .bind("type", type?.toString())
-            .mapTo<Row>()
+        val rows =
+            handle.createQuery(query)
+                .bind("uid", uid)
+                .bind("type", type?.toString())
+                .mapTo<Row>()
 
         return rows.groupBy { it.mesoId }
             .map { (mesoId, mesoRows) ->
@@ -169,29 +175,31 @@ class JdbiActivityRepository(
                     uid = mesoInfo.uid,
                     startTime = mesoInfo.mesoStart,
                     endTime = mesoInfo.mesoEnd,
-                    microcycles = mesoRows
-                        .filter { it.microId != null }
-                        .groupBy { it.microId }
-                        .map { (microId, microRows) ->
-                            val microInfo = microRows.first()
-                            Microcycle(
-                                id = microId!!,
-                                mesocycle = mesoId,
-                                startTime = microInfo.microStart!!,
-                                endTime = microInfo.microEnd!!,
-                                activities = microRows
-                                    .filter { it.activityId != null }
-                                    .map {
-                                        Activity(
-                                            id = it.activityId!!,
-                                            uid = uid,
-                                            microcycle = microId,
-                                            date = it.activityDate!!,
-                                            type = it.activityType
-                                        )
-                                    }
-                            )
-                        }
+                    microcycles =
+                        mesoRows
+                            .filter { it.microId != null }
+                            .groupBy { it.microId }
+                            .map { (microId, microRows) ->
+                                val microInfo = microRows.first()
+                                Microcycle(
+                                    id = microId!!,
+                                    mesocycle = mesoId,
+                                    startTime = microInfo.microStart!!,
+                                    endTime = microInfo.microEnd!!,
+                                    activities =
+                                        microRows
+                                            .filter { it.activityId != null }
+                                            .map {
+                                                Activity(
+                                                    id = it.activityId!!,
+                                                    uid = uid,
+                                                    microcycle = microId,
+                                                    date = it.activityDate!!,
+                                                    type = it.activityType,
+                                                )
+                                            },
+                                )
+                            },
                 )
             }
     }

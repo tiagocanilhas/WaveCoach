@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.*
 import waveCoach.domain.AuthenticatedCoach
 import waveCoach.domain.AuthenticatedUser
 import waveCoach.http.model.input.CreateGymActivityInputModel
-import waveCoach.http.model.output.GymActivityWithExercisesOutputModel
 import waveCoach.http.model.output.ExerciseWithSetsOutputModel
+import waveCoach.http.model.output.GymActivityWithExercisesOutputModel
 import waveCoach.http.model.output.Problem
 import waveCoach.http.model.output.SetOutputModel
 import waveCoach.services.*
@@ -22,17 +22,19 @@ class GymActivityController(
         coach: AuthenticatedCoach,
         @RequestBody input: CreateGymActivityInputModel,
     ): ResponseEntity<*> {
-        val result = gymActivityServices.createGymActivity(
-            coach.info.id,
-            input.athleteId,
-            input.date,
-            input.exercises.map { inputModel ->
-                ExerciseInputInfo(
-                    sets = inputModel.sets.map { SetInputInfo(it.reps, it.weight, it.restTime) },
-                    gymExerciseId = inputModel.gymExerciseId
-                )
-            }
-        )
+        val result =
+            gymActivityServices.createGymActivity(
+                coach.info.id,
+                input.athleteId,
+                input.date,
+                input.exercises.map { inputModel ->
+                    ExerciseInputInfo(
+                        inputModel.sets.map { SetInputInfo(it.reps, it.weight, it.restTime) },
+                        inputModel.gymExerciseId,
+                    )
+                },
+            )
+
         return when (result) {
             is Success ->
                 ResponseEntity
@@ -45,13 +47,10 @@ class GymActivityController(
                     CreateGymActivityError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
                     CreateGymActivityError.InvalidDate -> Problem.response(400, Problem.invalidDate)
                     CreateGymActivityError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
-                    CreateGymActivityError.ActivityWithoutMicrocycle -> Problem.response(
-                        400,
-                        Problem.activityWithoutMicrocycle
-                    )
-
+                    CreateGymActivityError.ActivityWithoutMicrocycle ->
+                        Problem.response(400, Problem.activityWithoutMicrocycle)
                     CreateGymActivityError.InvalidGymExercise -> Problem.response(400, Problem.invalidGymExercise)
-                    CreateGymActivityError.InvalidSet -> Problem.response(400, Problem.invalidSets)
+                    CreateGymActivityError.InvalidSet -> Problem.response(400, Problem.invalidSet)
                 }
         }
     }

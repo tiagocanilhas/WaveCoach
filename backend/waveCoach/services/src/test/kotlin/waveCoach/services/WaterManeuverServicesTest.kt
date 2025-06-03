@@ -15,7 +15,6 @@ import kotlin.random.Random
 import kotlin.test.assertTrue
 
 class WaterManeuverServicesTest {
-
     /**
      * Create WaterManeuver Test
      */
@@ -26,7 +25,7 @@ class WaterManeuverServicesTest {
 
         val name = randomString()
 
-        when(val result = waterManeuversServices.createWaterManeuver(name, null)) {
+        when (val result = waterManeuversServices.createWaterManeuver(name, null)) {
             is Failure -> fail("Unexpected $result")
             is Success -> assertTrue(result.value > 0)
         }
@@ -38,7 +37,7 @@ class WaterManeuverServicesTest {
 
         val name = ""
 
-        when(val result = waterManeuversServices.createWaterManeuver(name, null)) {
+        when (val result = waterManeuversServices.createWaterManeuver(name, null)) {
             is Failure -> assertTrue(result.value is CreateWaterManeuverError.InvalidName)
             is Success -> fail("Unexpected $result")
         }
@@ -50,12 +49,12 @@ class WaterManeuverServicesTest {
 
         val name = randomString()
 
-        when(val result = waterManeuversServices.createWaterManeuver(name, null)) {
+        when (val result = waterManeuversServices.createWaterManeuver(name, null)) {
             is Failure -> fail("Unexpected $result")
             is Success -> assertTrue(result.value > 0)
         }
 
-        when(val result = waterManeuversServices.createWaterManeuver(name, null)) {
+        when (val result = waterManeuversServices.createWaterManeuver(name, null)) {
             is Failure -> assertTrue(result.value is CreateWaterManeuverError.NameAlreadyExists)
             is Success -> fail("Unexpected $result")
         }
@@ -80,11 +79,12 @@ class WaterManeuverServicesTest {
     companion object {
         private fun randomString() = "String_${abs(Random.nextLong())}"
 
-        private fun createWaterManeuverServices() = WaterManeuverServices (
-            JdbiTransactionManager(jdbi),
-            WaterManeuverDomain(),
-            CloudinaryServices(cloudinary),
-        )
+        private fun createWaterManeuverServices() =
+            WaterManeuverServices(
+                JdbiTransactionManager(jdbi),
+                WaterManeuverDomain(),
+                CloudinaryServices(cloudinary),
+            )
 
         private val jdbi =
             Jdbi.create(
@@ -93,13 +93,13 @@ class WaterManeuverServicesTest {
                 },
             ).configureWithAppRequirements()
 
-        private val cloudinary = Cloudinary(
-            mapOf(
-                "cloud_name" to "",
-                "api_key" to "",
-                "api_secret" to ""
+        private val cloudinary =
+            Cloudinary(
+                mapOf(
+                    "cloud_name" to "",
+                    "api_key" to "",
+                    "api_secret" to "",
+                ),
             )
-        )
-
     }
 }

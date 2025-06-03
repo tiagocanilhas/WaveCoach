@@ -9,7 +9,11 @@ import kotlin.jvm.Throws
 
 class ActivityTypeMapper : ColumnMapper<ActivityType> {
     @Throws(SQLException::class)
-    override fun map(r: ResultSet, columnNumber: Int, ctx: StatementContext): ActivityType {
+    override fun map(
+        r: ResultSet,
+        columnNumber: Int,
+        ctx: StatementContext,
+    ): ActivityType {
         return ActivityType.valueOf(r.getString(columnNumber))
     }
 }

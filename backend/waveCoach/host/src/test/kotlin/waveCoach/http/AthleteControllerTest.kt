@@ -34,9 +34,10 @@ class AthleteControllerTest {
                 "birthDate" to VALID_DATE,
             )
 
-        val body = MultipartBodyBuilder().apply {
-            part("input", input)
-        }.build()
+        val body =
+            MultipartBodyBuilder().apply {
+                part("input", input)
+            }.build()
 
         client.post().uri("/athletes")
             .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
@@ -60,9 +61,10 @@ class AthleteControllerTest {
                 "birthDate" to VALID_DATE,
             )
 
-        val body = MultipartBodyBuilder().apply {
-            part("input", input)
-        }.build()
+        val body =
+            MultipartBodyBuilder().apply {
+                part("input", input)
+            }.build()
 
         client.post().uri("/athletes")
             .contentType(MediaType.MULTIPART_FORM_DATA)
@@ -81,9 +83,10 @@ class AthleteControllerTest {
                 "birthDate" to INVALID_DATE,
             )
 
-        val body = MultipartBodyBuilder().apply {
-            part("input", input)
-        }.build()
+        val body =
+            MultipartBodyBuilder().apply {
+                part("input", input)
+            }.build()
 
         client.post().uri("/athletes")
             .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
@@ -113,9 +116,10 @@ class AthleteControllerTest {
                     "birthDate" to VALID_DATE,
                 )
 
-            val body = MultipartBodyBuilder().apply {
-                part("input", input)
-            }.build()
+            val body =
+                MultipartBodyBuilder().apply {
+                    part("input", input)
+                }.build()
 
             client.post().uri("/athletes")
                 .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
@@ -139,9 +143,10 @@ class AthleteControllerTest {
                 "birthDate" to VALID_DATE,
             )
 
-        val body = MultipartBodyBuilder().apply {
-            part("input", input)
-        }.build()
+        val body =
+            MultipartBodyBuilder().apply {
+                part("input", input)
+            }.build()
 
         client.post().uri("/athletes")
             .header("Authorization", "Bearer $FIRST_ATHLETE_TOKEN")
@@ -153,9 +158,6 @@ class AthleteControllerTest {
             .expectBody()
             .jsonPath("type").isEqualTo(Problem.userIsNotACoach.type.toString())
     }
-
-
-
 
     /**
      * Get Athlete Tests
@@ -256,8 +258,6 @@ class AthleteControllerTest {
             .jsonPath("type").isEqualTo(Problem.notAthletesCoach.type.toString())
     }
 
-
-
     /**
      * Get Athlete List Tests
      */
@@ -296,8 +296,6 @@ class AthleteControllerTest {
             .expectBody()
             .jsonPath("type").isEqualTo(Problem.userIsNotACoach.type.toString())
     }
-
-
 
     /**
      * Update Athlete Tests
@@ -476,8 +474,6 @@ class AthleteControllerTest {
             .jsonPath("type").isEqualTo(Problem.userIsNotACoach.type.toString())
     }
 
-
-
     /**
      * Remove Athlete Tests
      */
@@ -493,7 +489,7 @@ class AthleteControllerTest {
     }
 
     @Test
-    fun `remove an athlete - unauthorized`(){
+    fun `remove an athlete - unauthorized`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
         client.delete().uri("/athletes/$FIRST_ATHLETE_ID")
@@ -556,8 +552,6 @@ class AthleteControllerTest {
             .expectBody()
             .jsonPath("type").isEqualTo(Problem.userIsNotACoach.type.toString())
     }
-
-
 
     /**
      * Generate Code Tests
@@ -629,7 +623,7 @@ class AthleteControllerTest {
     }
 
     @Test
-    fun `generate code - credentials already changed`(){
+    fun `generate code - credentials already changed`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
         client.post().uri("/athletes/$SECOND_ATHLETE_ID/code")
@@ -642,7 +636,7 @@ class AthleteControllerTest {
     }
 
     @Test
-    fun `generate code - user is not a coach`(){
+    fun `generate code - user is not a coach`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
         client.post().uri("/athletes/$SECOND_ATHLETE_ID/code")
@@ -653,8 +647,6 @@ class AthleteControllerTest {
             .expectBody()
             .jsonPath("type").isEqualTo(Problem.userIsNotACoach.type.toString())
     }
-
-
 
     /**
      * Get by Code Tests
@@ -684,8 +676,6 @@ class AthleteControllerTest {
             .expectBody()
             .jsonPath("type").isEqualTo(Problem.invalidCode.type.toString())
     }
-
-
 
     /**
      * Change credentials Tests
@@ -771,8 +761,6 @@ class AthleteControllerTest {
             .expectBody()
             .jsonPath("type").isEqualTo(Problem.invalidCode.type.toString())
     }
-
-
 
     /**
      * Create Characteristics Tests
@@ -1036,7 +1024,7 @@ class AthleteControllerTest {
     }
 
     @Test
-    fun `create characteristics - user is not a coach`(){
+    fun `create characteristics - user is not a coach`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
         val body =
@@ -1064,8 +1052,6 @@ class AthleteControllerTest {
             .expectBody()
             .jsonPath("type").isEqualTo(Problem.userIsNotACoach.type.toString())
     }
-
-
 
     /**
      * Get Characteristics Tests
@@ -1197,8 +1183,6 @@ class AthleteControllerTest {
             .jsonPath("type").isEqualTo(Problem.characteristicsNotFound.type.toString())
     }
 
-
-
     /**
      * Get Characteristics List Tests
      */
@@ -1280,8 +1264,6 @@ class AthleteControllerTest {
             .expectBody()
             .jsonPath("type").isEqualTo(Problem.notAthletesCoach.type.toString())
     }
-
-
 
     /**
      * Update Characteristics Tests
@@ -1532,8 +1514,6 @@ class AthleteControllerTest {
             .jsonPath("type").isEqualTo(Problem.userIsNotACoach.type.toString())
     }
 
-
-
     /**
      * Remove Characteristics Tests
      */
@@ -1639,15 +1619,11 @@ class AthleteControllerTest {
             .jsonPath("type").isEqualTo(Problem.userIsNotACoach.type.toString())
     }
 
-
-
     /**
      * Create Calendar tests
      */
 
     // TODO: Implement create calendar tests
-
-
 
     /**
      * Get Calendar tests
@@ -1723,8 +1699,6 @@ class AthleteControllerTest {
             .expectBody()
             .jsonPath("type").isEqualTo(Problem.notAthletesCoach.type.toString())
     }
-
-
 
     /**
      * Get Water Activities

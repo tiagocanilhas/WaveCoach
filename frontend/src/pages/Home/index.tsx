@@ -10,9 +10,9 @@ import { ObjectList } from '../../components/ObjectList'
 import { Dropdown } from '../../components/Dropdown'
 import { ScrollableText } from '../../components/ScrollableText'
 
-import { getAthletes } from '../../services/athleteServices'
-import { generateCode } from '../../services/athleteServices'
-import { deleteAthlete } from '../../services/athleteServices'
+import { getAthletes } from '../../../services/athleteServices'
+import { generateCode } from '../../../services/athleteServices'
+import { deleteAthlete } from '../../../services/athleteServices'
 
 import { useAuthentication } from '../../hooks/useAuthentication'
 

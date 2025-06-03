@@ -3,7 +3,7 @@ import { useState } from 'react'
 
 import { Button } from '../Button'
 
-import { epochConverter } from '../../utils/epochConverter'
+import { epochConverter } from '../../../utils/epochConverter'
 
 import styles from './styles.module.css'
 

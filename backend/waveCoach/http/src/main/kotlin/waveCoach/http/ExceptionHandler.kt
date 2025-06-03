@@ -8,8 +8,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import waveCoach.http.model.output.Problem
 
 @ControllerAdvice
-class ExceptionHandler : ResponseEntityExceptionHandler(){
-
+class ExceptionHandler : ResponseEntityExceptionHandler() {
     @ExceptionHandler(AccessDeniedException::class)
     fun handleAccessDenied(ex: AccessDeniedException): ResponseEntity<*> {
         return Problem.response(403, Problem.userIsNotACoach)

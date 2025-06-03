@@ -28,27 +28,28 @@ class WaterActivityController(
         coach: AuthenticatedCoach,
         @RequestBody input: CreateWaterActivityInputModel,
     ): ResponseEntity<*> {
-        val result = waterActivityService.createWaterActivity(
-            coach.info.id,
-            input.athleteId,
-            input.date,
-            input.pse,
-            input.condition,
-            input.heartRate,
-            input.duration,
-            input.waves.map { waveInputModel ->
-                WaveInputInfo(
-                    waveInputModel.points,
-                    waveInputModel.maneuvers.map { maneuverInputModel ->
-                        ManeuverInputInfo(
-                            maneuverInputModel.waterManeuverId,
-                            maneuverInputModel.rightSide,
-                            maneuverInputModel.success
-                        )
-                    }
-                )
-            }
-        )
+        val result =
+            waterActivityService.createWaterActivity(
+                coach.info.id,
+                input.athleteId,
+                input.date,
+                input.rpe,
+                input.condition,
+                input.trimp,
+                input.duration,
+                input.waves.map { waveInputModel ->
+                    WaveInputInfo(
+                        waveInputModel.points,
+                        waveInputModel.rightSide,
+                        waveInputModel.maneuvers.map { maneuverInputModel ->
+                            ManeuverInputInfo(
+                                maneuverInputModel.waterManeuverId,
+                                maneuverInputModel.success,
+                            )
+                        },
+                    )
+                },
+            )
         return when (result) {
             is Success ->
                 ResponseEntity
@@ -61,18 +62,13 @@ class WaterActivityController(
                     CreateWaterActivityError.InvalidDate -> Problem.response(400, Problem.invalidDate)
                     CreateWaterActivityError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
                     CreateWaterActivityError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
-                    CreateWaterActivityError.ActivityWithoutMicrocycle -> Problem.response(
-                        400,
-                        Problem.activityWithoutMicrocycle
-                    )
-
-                    CreateWaterActivityError.InvalidPse -> Problem.response(400, Problem.invalidPse)
-                    CreateWaterActivityError.InvalidHeartRate -> Problem.response(400, Problem.invalidHeartRate)
+                    CreateWaterActivityError.ActivityWithoutMicrocycle ->
+                        Problem.response(400, Problem.activityWithoutMicrocycle)
+                    CreateWaterActivityError.InvalidRpe -> Problem.response(400, Problem.invalidRpe)
+                    CreateWaterActivityError.InvalidTrimp -> Problem.response(400, Problem.invalidTrimp)
                     CreateWaterActivityError.InvalidDuration -> Problem.response(400, Problem.invalidDuration)
-                    CreateWaterActivityError.InvalidWaterManeuver -> Problem.response(
-                        400,
-                        Problem.invalidWaterManeuver
-                    )
+                    CreateWaterActivityError.InvalidWaterManeuver ->
+                        Problem.response(400, Problem.invalidWaterManeuver)
                 }
         }
     }
@@ -96,26 +92,26 @@ class WaterActivityController(
                             result.value.athleteId,
                             result.value.microcycleId,
                             result.value.date,
-                            result.value.pse,
+                            result.value.rpe,
                             result.value.condition,
-                            result.value.heartRate,
+                            result.value.trimp,
                             result.value.duration,
                             result.value.waves.map { wave ->
                                 WaveOutputModel(
                                     wave.id,
                                     wave.points,
+                                    wave.rightSide,
                                     wave.maneuvers.map { maneuver ->
                                         ManeuverOutputModel(
                                             maneuver.id,
                                             maneuver.waterManeuverId,
                                             maneuver.waterManeuverName,
                                             maneuver.url,
-                                            maneuver.rightSide,
-                                            maneuver.success
+                                            maneuver.success,
                                         )
-                                    }
+                                    },
                                 )
-                            }
+                            },
                         ),
                     )
 
@@ -152,53 +148,56 @@ class WaterActivityController(
     fun createQuestionnaire(
         coach: AuthenticatedCoach,
         @RequestBody input: QuestionnaireCreateInputModel,
-        @PathVariable activityId: String
-    ): ResponseEntity<*>{
+        @PathVariable activityId: String,
+    ): ResponseEntity<*> {
         val id = activityId.toIntOrNull() ?: return Problem.response(400, Problem.invalidWaterActivityId)
 
         val result = waterActivityService.createQuestionnaire(coach.info.id, id, input.sleep, input.fatigue, input.stress, input.musclePain)
 
-        return when (result){
+        return when (result) {
             is Success -> ResponseEntity.status(204).build<Unit>()
 
-            is Failure -> when (result.value) {
-                CreateQuestionnaireError.AlreadyExists -> Problem.response(409, Problem.questionnaireAlreadyExists)
-                CreateQuestionnaireError.ActivityNotFound -> Problem.response(404, Problem.waterActivityNotFound)
-                CreateQuestionnaireError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
-                CreateQuestionnaireError.InvalidSleep -> Problem.response(400, Problem.invalidSleep)
-                CreateQuestionnaireError.InvalidFatigue -> Problem.response(400, Problem.invalidFatigue)
-                CreateQuestionnaireError.InvalidStress -> Problem.response(400, Problem.invalidStress)
-                CreateQuestionnaireError.InvalidMusclePain -> Problem.response(400, Problem.invalidMusclePain)
-            }
+            is Failure ->
+                when (result.value) {
+                    CreateQuestionnaireError.AlreadyExists -> Problem.response(409, Problem.questionnaireAlreadyExists)
+                    CreateQuestionnaireError.ActivityNotFound -> Problem.response(404, Problem.waterActivityNotFound)
+                    CreateQuestionnaireError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
+                    CreateQuestionnaireError.InvalidSleep -> Problem.response(400, Problem.invalidSleep)
+                    CreateQuestionnaireError.InvalidFatigue -> Problem.response(400, Problem.invalidFatigue)
+                    CreateQuestionnaireError.InvalidStress -> Problem.response(400, Problem.invalidStress)
+                    CreateQuestionnaireError.InvalidMusclePain -> Problem.response(400, Problem.invalidMusclePain)
+                }
         }
     }
 
     @GetMapping(Uris.WaterActivity.GET_QUESTIONNAIRE)
     fun getQuestionnaire(
         user: AuthenticatedUser,
-        @PathVariable activityId: String
+        @PathVariable activityId: String,
     ): ResponseEntity<*> {
         val id = activityId.toIntOrNull() ?: return Problem.response(400, Problem.invalidWaterActivityId)
 
         val result = waterActivityService.getQuestionnaire(user.info.id, id)
 
         return when (result) {
-            is Success -> ResponseEntity
-                .status(200)
-                .body(
-                    QuestionnaireOutputModel(
-                        result.value.sleep,
-                        result.value.fatigue,
-                        result.value.stress,
-                        result.value.musclePain
+            is Success ->
+                ResponseEntity
+                    .status(200)
+                    .body(
+                        QuestionnaireOutputModel(
+                            result.value.sleep,
+                            result.value.fatigue,
+                            result.value.stress,
+                            result.value.musclePain,
+                        ),
                     )
-                )
 
-            is Failure -> when (result.value) {
-                GetQuestionnaireError.ActivityNotFound -> Problem.response(404, Problem.waterActivityNotFound)
-                GetQuestionnaireError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
-                GetQuestionnaireError.QuestionnaireNotFound -> Problem.response(404, Problem.questionnaireNotFound)
-            }
+            is Failure ->
+                when (result.value) {
+                    GetQuestionnaireError.ActivityNotFound -> Problem.response(404, Problem.waterActivityNotFound)
+                    GetQuestionnaireError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
+                    GetQuestionnaireError.QuestionnaireNotFound -> Problem.response(404, Problem.questionnaireNotFound)
+                }
         }
     }
 }

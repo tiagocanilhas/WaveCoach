@@ -1,5 +1,5 @@
 package waveCoach.http.model.output
 
-data class WaterActivitiesCalendar (
+data class WaterActivitiesCalendar(
     val mesocycles: List<MesocycleWaterOutputModel>,
 )
