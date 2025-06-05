@@ -64,7 +64,7 @@ class Problem(
                 URI.create("$BASE_URI/invalid-athlete-id"),
             )
 
-        val invalidbirthdate =
+        val invalidBirthdate =
             Problem(
                 "Invalid birth date",
                 URI.create("$BASE_URI/invalid-birth-date"),

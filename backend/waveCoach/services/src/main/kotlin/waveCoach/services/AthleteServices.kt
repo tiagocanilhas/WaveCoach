@@ -41,7 +41,7 @@ data class MicrocycleInputInfo(
 )
 
 sealed class CreateAthleteError {
-    data object Invalidbirthdate : CreateAthleteError()
+    data object InvalidBirthdate : CreateAthleteError()
 
     data object InvalidName : CreateAthleteError()
 
@@ -211,7 +211,7 @@ class AthleteServices(
             userDomain.createPasswordValidationInformation(athleteDomain.athleteDefaultPassword)
 
         if (!athleteDomain.isNameValid(name)) return failure(CreateAthleteError.InvalidName)
-        val date = dateToLongWithVerification(birthdate) ?: return failure(CreateAthleteError.Invalidbirthdate)
+        val date = dateToLongWithVerification(birthdate) ?: return failure(CreateAthleteError.InvalidBirthdate)
 
         val url =
             photo?.let {

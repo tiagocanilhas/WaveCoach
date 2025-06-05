@@ -70,7 +70,7 @@ class AthleteServicesTest {
 
         invalidBirthDays.forEach { birthdate ->
             when (val result = athleteServices.createAthlete(name, FIRST_COACH_ID, birthdate, null)) {
-                is Failure -> assertTrue(result.value is CreateAthleteError.Invalidbirthdate)
+                is Failure -> assertTrue(result.value is CreateAthleteError.InvalidBirthdate)
                 is Success -> fail("Unexpected $result")
             }
         }

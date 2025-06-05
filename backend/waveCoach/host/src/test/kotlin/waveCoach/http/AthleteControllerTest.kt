@@ -96,7 +96,7 @@ class AthleteControllerTest {
             .expectStatus().isBadRequest
             .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
             .expectBody()
-            .jsonPath("type").isEqualTo(Problem.invalidbirthdate.type.toString())
+            .jsonPath("type").isEqualTo(Problem.invalidBirthdate.type.toString())
     }
 
     @Test
@@ -354,7 +354,7 @@ class AthleteControllerTest {
             .expectStatus().isBadRequest
             .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
             .expectBody()
-            .jsonPath("type").isEqualTo(Problem.invalidbirthdate.type.toString())
+            .jsonPath("type").isEqualTo(Problem.invalidBirthdate.type.toString())
     }
 
     @Test

@@ -41,7 +41,7 @@ class AthleteController(
 
             is Failure ->
                 when (result.value) {
-                    CreateAthleteError.Invalidbirthdate -> Problem.response(400, Problem.invalidbirthdate)
+                    CreateAthleteError.InvalidBirthdate -> Problem.response(400, Problem.invalidBirthdate)
                     CreateAthleteError.InvalidName -> Problem.response(400, Problem.invalidName)
                     CreateAthleteError.InvalidPhoto -> Problem.response(400, Problem.invalidPhoto)
                 }
@@ -116,7 +116,7 @@ class AthleteController(
             is Failure ->
                 when (result.value) {
                     UpdateAthleteError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
-                    UpdateAthleteError.Invalidbirthdate -> Problem.response(400, Problem.invalidbirthdate)
+                    UpdateAthleteError.Invalidbirthdate -> Problem.response(400, Problem.invalidBirthdate)
                     UpdateAthleteError.InvalidName -> Problem.response(400, Problem.invalidName)
                     UpdateAthleteError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
                 }
