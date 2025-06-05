@@ -13,6 +13,8 @@ interface WaterActivityRepository {
         duration: Int,
     ): Int
 
+    fun isWaterActivityValid(activityId: Int): Boolean
+
     fun removeWaterActivity(activityId: Int)
 
     fun removeWaterActivities(athleteId: Int)

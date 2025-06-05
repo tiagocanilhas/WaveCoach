@@ -512,6 +512,15 @@ class WaterActivityControllerTest {
     }
 
     @Test
+    fun `remove water activity - unauthorized`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.delete().uri("/water/$FIRST_ACTIVITY_ID")
+            .exchange()
+            .expectStatus().isUnauthorized
+    }
+
+    @Test
     fun `remove water activity - not athletes coach`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
@@ -559,6 +568,20 @@ class WaterActivityControllerTest {
             .expectBody()
             .jsonPath("type").isEqualTo(Problem.invalidWaterActivityId.type.toString())
     }
+
+    @Test
+    fun `remove water activity - user is not a coach`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.delete().uri("/water/invalid-id")
+            .header("Authorization", "Bearer $FIRST_ATHLETE_TOKEN")
+            .exchange()
+            .expectStatus().isForbidden
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.userIsNotACoach.type.toString())
+    }
+
 
     /**
      * Create Questionnaire Test

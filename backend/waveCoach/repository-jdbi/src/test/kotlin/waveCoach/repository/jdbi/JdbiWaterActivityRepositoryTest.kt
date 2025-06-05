@@ -8,17 +8,23 @@ class JdbiWaterActivityRepositoryTest {
     fun `store water activity`() =
         testWithHandleAndRollback { handle ->
             val waterActivityRepository = JdbiWaterActivityRepository(handle)
+            val activityRepository = JdbiActivityRepository(handle)
 
-            val activityId =
-                waterActivityRepository.storeWaterActivity(
-                    WATER_ACTIVITY_ID_TO_BE_CREATED,
-                    FIRST_RPE,
-                    FIRST_CONDITION,
-                    FIRST_TRIMP,
-                    FIRST_DURATION,
-                )
+            val activityId = activityRepository.storeActivity(
+                ATHLETE_ID,
+                DATE_LONG,
+                MICROCYCLE_ID
+            )
 
-            assertTrue(activityId > 0)
+            val waterActivityId = waterActivityRepository.storeWaterActivity(
+                activityId,
+                FIRST_RPE,
+                FIRST_CONDITION,
+                FIRST_TRIMP,
+                FIRST_DURATION
+            )
+
+            assertTrue(waterActivityId == activityId)
         }
 
     @Test
@@ -51,31 +57,46 @@ class JdbiWaterActivityRepositoryTest {
 
             waterActivityRepository.removeWaterActivity(SECOND_WATER_ACTIVITY_ID)
 
-            val waterActivity = waterActivityRepository.getWaterActivity(SECOND_WATER_ACTIVITY_ID)
-            assertTrue(waterActivity == null)
+            val activity = waterActivityRepository.isWaterActivityValid(SECOND_WATER_ACTIVITY_ID)
+            assertTrue(!activity)
+        }
+
+    @Test
+    fun `is water activity valid`() =
+        testWithHandleAndRollback { handle ->
+            val waterActivityRepository = JdbiWaterActivityRepository(handle)
+
+            val isValid = waterActivityRepository.isWaterActivityValid(SECOND_WATER_ACTIVITY_ID)
+
+            assertTrue(isValid)
         }
 
     @Test
     fun `store wave`() =
         testWithHandleAndRollback { handle ->
             val waterActivityRepository = JdbiWaterActivityRepository(handle)
+            val activityRepository = JdbiActivityRepository(handle)
 
-            val activityId =
-                waterActivityRepository.storeWaterActivity(
-                    FIRST_ACTIVITY_ID,
-                    FIRST_RPE,
-                    FIRST_CONDITION,
-                    FIRST_TRIMP,
-                    FIRST_DURATION,
-                )
+            val activityId = activityRepository.storeActivity(
+                ATHLETE_ID,
+                DATE_LONG,
+                MICROCYCLE_ID
+            )
 
-            val waveId =
-                waterActivityRepository.storeWave(
-                    activityId,
-                    null,
-                    true,
-                    1,
-                )
+            val waterActivityId = waterActivityRepository.storeWaterActivity(
+                activityId,
+                FIRST_RPE,
+                FIRST_CONDITION,
+                FIRST_TRIMP,
+                FIRST_DURATION
+            )
+
+            val waveId = waterActivityRepository.storeWave(
+                waterActivityId,
+                null,
+                true,
+                1
+            )
 
             assertTrue(waveId > 0)
         }
@@ -84,23 +105,28 @@ class JdbiWaterActivityRepositoryTest {
     fun `store maneuver`() =
         testWithHandleAndRollback { handle ->
             val waterActivityRepository = JdbiWaterActivityRepository(handle)
+            val activityRepository = JdbiActivityRepository(handle)
 
-            val activityId =
-                waterActivityRepository.storeWaterActivity(
-                    FIRST_ACTIVITY_ID,
-                    FIRST_RPE,
-                    FIRST_CONDITION,
-                    FIRST_TRIMP,
-                    FIRST_DURATION,
-                )
+            val activityId = activityRepository.storeActivity(
+                ATHLETE_ID,
+                DATE_LONG,
+                MICROCYCLE_ID
+            )
 
-            val waveId =
-                waterActivityRepository.storeWave(
-                    activityId,
-                    null,
-                    true,
-                    1,
-                )
+            val waterActivityId = waterActivityRepository.storeWaterActivity(
+                activityId,
+                FIRST_RPE,
+                FIRST_CONDITION,
+                FIRST_TRIMP,
+                FIRST_DURATION
+            )
+
+            val waveId = waterActivityRepository.storeWave(
+                waterActivityId,
+                null,
+                true,
+                1
+            )
 
             val maneuverId =
                 waterActivityRepository.storeManeuver(
@@ -113,11 +139,91 @@ class JdbiWaterActivityRepositoryTest {
             assertTrue(maneuverId > 0)
         }
 
+    @Test
+    fun `remove waves`() =
+        testWithHandleAndRollback { handle ->
+            val waterActivityRepository = JdbiWaterActivityRepository(handle)
+            val activityRepository = JdbiActivityRepository(handle)
 
-    companion object {
+            val activityId = activityRepository.storeActivity(
+                ATHLETE_ID,
+                DATE_LONG,
+                MICROCYCLE_ID
+            )
+
+            val waterActivityId = waterActivityRepository.storeWaterActivity(
+                activityId,
+                FIRST_RPE,
+                FIRST_CONDITION,
+                FIRST_TRIMP,
+                FIRST_DURATION
+            )
+
+            waterActivityRepository.storeWave(
+                waterActivityId,
+                null,
+                true,
+                1
+            )
+
+            waterActivityRepository.removeWavesByActivity(activityId)
+
+            val activity = waterActivityRepository.getWaterActivity(waterActivityId)
+            assertTrue(activity!!.waves.isEmpty())
+        }
+
+    @Test
+    fun `remove maneuver`() =
+        testWithHandleAndRollback { handle ->
+            val waterActivityRepository = JdbiWaterActivityRepository(handle)
+            val activityRepository = JdbiActivityRepository(handle)
+
+            val activityId = activityRepository.storeActivity(
+                ATHLETE_ID,
+                DATE_LONG,
+                MICROCYCLE_ID
+            )
+
+            val waterActivityId = waterActivityRepository.storeWaterActivity(
+                activityId,
+                FIRST_RPE,
+                FIRST_CONDITION,
+                FIRST_TRIMP,
+                FIRST_DURATION
+            )
+
+            val waveId = waterActivityRepository.storeWave(
+                waterActivityId,
+                null,
+                true,
+                1
+            )
+
+            waterActivityRepository.storeManeuver(
+                waveId,
+                1,
+                true,
+                1
+            )
+
+            waterActivityRepository.removeManeuversByActivity(waterActivityId)
+
+            val activity = waterActivityRepository.getWaterActivity(waterActivityId)
+            assertTrue(activity!!.waves.all { it.maneuvers.isEmpty() })
+        }
+
+
+
+
+
+
+
+    companion object{
         const val FIRST_ACTIVITY_ID = 1
+        const val DATE_LONG = 1633036800000L
+        const val MICROCYCLE_ID = 1
+        const val ATHLETE_ID = 3
 
-        const val WATER_ACTIVITY_ID_TO_BE_CREATED = 4
         const val SECOND_WATER_ACTIVITY_ID = 3
         const val FIRST_RPE = 5
         const val FIRST_CONDITION = "Good"

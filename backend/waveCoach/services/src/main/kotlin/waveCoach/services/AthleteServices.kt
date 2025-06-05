@@ -181,6 +181,15 @@ sealed class GetWaterActivitiesError {
 }
 typealias GetWaterActivitiesResult = Either<GetWaterActivitiesError, List<MesocycleWater>>
 
+sealed class CreateCompetitionError {
+    data object InvalidDate : CreateCompetitionError()
+
+    data object AthleteNotFound : CreateCompetitionError()
+
+    data object NotAthletesCoach : CreateCompetitionError()
+}
+typealias CreateCompetitionResult = Either<CreateCompetitionError, Int>
+
 @Component
 class AthleteServices(
     private val transactionManager: TransactionManager,
@@ -202,7 +211,7 @@ class AthleteServices(
             userDomain.createPasswordValidationInformation(athleteDomain.athleteDefaultPassword)
 
         if (!athleteDomain.isNameValid(name)) return failure(CreateAthleteError.InvalidName)
-        val date = dateToLong(birthDate) ?: return failure(CreateAthleteError.InvalidBirthDate)
+        val date = dateToLongWithVerification(birthDate) ?: return failure(CreateAthleteError.InvalidBirthDate)
 
         val url =
             photo?.let {
@@ -251,7 +260,7 @@ class AthleteServices(
         name: String,
         birthDate: String,
     ): UpdateAthleteResult {
-        val date = dateToLong(birthDate) ?: return failure(UpdateAthleteError.InvalidBirthDate)
+        val date = dateToLongWithVerification(birthDate) ?: return failure(UpdateAthleteError.InvalidBirthDate)
 
         if (!athleteDomain.isNameValid(name)) return failure(UpdateAthleteError.InvalidName)
 
@@ -369,7 +378,7 @@ class AthleteServices(
         thighFat: Int?,
     ): CreateCharacteristicsResult {
         val dateLong =
-            date?.let { dateToLong(it) }
+            date?.let { dateToLongWithVerification(it) }
                 ?: if (date != null) return failure(CreateCharacteristicsError.InvalidDate) else null
 
         if (!characteristicsDomain.checkCharacteristics(
@@ -414,7 +423,7 @@ class AthleteServices(
         aid: Int,
         date: String,
     ): GetCharacteristicsResult {
-        val dateLong = dateToLong(date) ?: return failure(GetCharacteristicsError.InvalidDate)
+        val dateLong = dateToLongWithVerification(date) ?: return failure(GetCharacteristicsError.InvalidDate)
 
         return transactionManager.run {
             val characteristicsRepository = it.characteristicsRepository
@@ -468,7 +477,7 @@ class AthleteServices(
         abdomenFat: Int?,
         thighFat: Int?,
     ): UpdateCharacteristicsResult {
-        val dateLong = dateToLong(date) ?: return failure(UpdateCharacteristicsError.InvalidDate)
+        val dateLong = dateToLongWithVerification(date) ?: return failure(UpdateCharacteristicsError.InvalidDate)
 
         if (!characteristicsDomain.checkCharacteristics(
                 height,
@@ -517,7 +526,7 @@ class AthleteServices(
         uid: Int,
         date: String,
     ): RemoveCharacteristicsResult {
-        val dateLong = dateToLong(date) ?: return failure(RemoveCharacteristicsError.InvalidDate)
+        val dateLong = dateToLongWithVerification(date) ?: return failure(RemoveCharacteristicsError.InvalidDate)
 
         return transactionManager.run {
             val characteristicsRepository = it.characteristicsRepository
@@ -628,7 +637,29 @@ class AthleteServices(
         }
     }
 
-    private fun dateToLong(date: String): Long? {
+    fun createCompetition(
+        coachId: Int,
+        athleteId: Int,
+        date: String,
+        location: String
+    ): CreateCompetitionResult {
+        val dateLong = dateToLong(date) ?: return failure(CreateCompetitionError.InvalidDate)
+
+        return transactionManager.run {
+            val athleteRepository = it.athleteRepository
+            val competitionRepository = it.competitionRepository
+
+            val athlete = athleteRepository.getAthlete(athleteId)
+                ?: return@run failure(CreateCompetitionError.AthleteNotFound)
+
+            if (athlete.coach != coachId) return@run failure(CreateCompetitionError.NotAthletesCoach)
+
+            val competitionId = competitionRepository.storeCompetition(athleteId, dateLong, location)
+            success(competitionId)
+        }
+    }
+
+    private fun dateToLongWithVerification(date: String): Long? {
         return try {
             val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
             val dateParsed = LocalDate.parse(date, formatter)

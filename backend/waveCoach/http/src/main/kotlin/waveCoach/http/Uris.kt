@@ -104,6 +104,11 @@ object Uris {
 
         const val GET_WATER_ACTIVITIES = "$ATHLETES/{aid}/water"
 
+        const val CREATE_COMPETITION = "$ATHLETES/{aid}/competition"
+        const val GET_COMPETITION_BY_ID = "$ATHLETES/{aid}/competition/{id}"
+
+        fun competitionById(aid: Int, id: Int): URI = UriTemplate(GET_COMPETITION_BY_ID).expand(aid, id)
+
         fun byId(id: Int): URI = UriTemplate(GET_BY_ID).expand(id)
 
         fun characteristicsByDate(

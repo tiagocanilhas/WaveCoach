@@ -387,7 +387,7 @@ class AthleteServicesTest {
                 "Abc12!", // smaller than 6 characters
             )
 
-        val code = (athleteServices.generateCode(SECOND_COACH_ID, FOURTH_ATHLETE_ID)as Success).value.code
+        val code = (athleteServices.generateCode(SECOND_COACH_ID, FOURTH_ATHLETE_ID) as Success).value.code
 
         insecurePasswords.forEach { password ->
             when (val result = athleteServices.changeCredentials(code, randomString(), password)) {
@@ -1114,6 +1114,94 @@ class AthleteServicesTest {
 
         when (val result = athleteServices.getWaterActivities(SECOND_COACH_ID, FIRST_ATHLETE_ID)) {
             is Failure -> assertTrue(result.value is GetWaterActivitiesError.NotAthletesCoach)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
+    /**
+     * CREATE COMPETITION TESTS
+     */
+
+    @Test
+    fun `create competition - success`() {
+        val testClock = TestClock()
+        val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (
+            val result =
+                athleteServices.createCompetition(
+                    FIRST_COACH_ID,
+                    FIRST_ATHLETE_ID,
+                    "01-01-2023",
+                    "Location",
+                )
+        ) {
+            is Failure -> fail("Unexpected $result")
+            is Success -> assertTrue(result.value > 0)
+        }
+    }
+
+    @Test
+    fun `create competition - invalid date`() {
+        val testClock = TestClock()
+        val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        val invalidDates =
+            listOf(
+                "32-01-2000",
+                "2000-01-01",
+            )
+
+        invalidDates.forEach { date ->
+            when (
+                val result =
+                    athleteServices.createCompetition(
+                        FIRST_COACH_ID,
+                        FIRST_ATHLETE_ID,
+                        date,
+                        "Location",
+                    )
+            ) {
+                is Failure -> assertTrue(result.value is CreateCompetitionError.InvalidDate)
+                is Success -> fail("Unexpected $result")
+            }
+        }
+    }
+
+    @Test
+    fun `create competition - athlete not found`() {
+        val testClock = TestClock()
+        val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (
+            val result =
+                athleteServices.createCompetition(
+                    FIRST_COACH_ID,
+                    0,
+                    "01-01-2023",
+                    "Location",
+                )
+        ) {
+            is Failure -> assertTrue(result.value is CreateCompetitionError.AthleteNotFound)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
+    @Test
+    fun `create competition - not athlete's coach`() {
+        val testClock = TestClock()
+        val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (
+            val result =
+                athleteServices.createCompetition(
+                    SECOND_COACH_ID,
+                    FIRST_ATHLETE_ID,
+                    "01-01-2023",
+                    "Location",
+                )
+        ) {
+            is Failure -> assertTrue(result.value is CreateCompetitionError.NotAthletesCoach)
             is Success -> fail("Unexpected $result")
         }
     }

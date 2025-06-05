@@ -17,6 +17,9 @@ tags:
     
   - name: Athletes
     description: Operations about athletes
+    
+  - name: Gym
+    description: Operations about Gym Activities
 
 paths:
   /login:
@@ -767,19 +770,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/AthleteNotFound'
 
-  /athletes/{aid}/gym:
-    description: The resource that represents gym activities of an athlete
+  /gym:
+    description: The resource that represents gym activities 
     post:
       tags:
-        - Athletes
-      summary: Create a gym activity for an athlete
-      parameters:
-        - name: aid
-          in: path
-          required: true
-          description: The ID of the athlete
-          schema:
-            type: string
+        - Gym
+      summary: Create a gym activity 
       requestBody:
         required: true
         content:
@@ -789,7 +785,25 @@ paths:
             examples:
               validRequest:
                 value:
-                  date: "01-01-2023"
+                 athleteId: 1
+                 date: "01-01-2023"
+                 exercises:
+                  - sets:
+                      - reps: 10
+                        weight: 60
+                        restTime: 60
+                      - reps: 8
+                        weight: 65
+                        restTime: 60
+                    gymExerciseId: 1
+                  - sets:
+                      - reps: 12
+                        weight: 80
+                        restTime: 90
+                      - reps: 10
+                        weight: 85
+                        restTime: 90
+                    gymExerciseId: 2
       responses:
         201:
           description: Gym activity was created
@@ -798,20 +812,81 @@ paths:
               description: The URL of the created gym activity resource
               schema:
                 type: string
-                example: "/athletes/123/gym/1"
+                example: "/gym/1"
         400:
-          description: Invalid athlete ID or date
+          description: Invalid date, activity without microcycle, invalid gym exercise or invalid set
           content:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: '#/components/schemas/InvalidAthleteId'
                   - $ref: '#/components/schemas/InvalidDate'
+                  - $ref: '#/components/schemas/ActivityWithoutMicrocycle'
+                  - $ref: '#/components/schemas/InvalidGymExercise'
+                  - $ref: '#/components/schemas/InvalidSet'
               examples:
-                invalidAthleteId:
-                  $ref: '#/components/examples/InvalidAthleteId'
                 invalidDate:
                   $ref: '#/components/examples/InvalidDate'
+                activityWithoutMicrocycle:
+                  $ref: '#/components/examples/activityWithoutMicrocycle'
+                invalidGymExercise:
+                  $ref: '#/components/examples/invalidGymExercise'
+                invalidSet:
+                  $ref: '#/components/examples/invalidSet'
+        401:
+          description: The user is not authenticated
+        403:
+          description: The coach is not the athlete's coach or the athlete is not a coach
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/NotAthletesCoach'
+                  - $ref: '#/components/schemas/UserIsNotACoach'
+              examples:
+                notAthletesCoach:
+                  $ref: '#/components/examples/NotAthletesCoach'
+                userIsNotACoach:
+                  $ref: '#/components/examples/UserIsNotACoach'
+        404:
+          description: The athlete was not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/AthleteNotFound'
+ 
+  /gym/{activityId}:
+    description: The resource that represents a specific gym activity
+    get:
+      tags:
+        - Gym
+      summary: Get a specific gym activity
+      parameters:
+        - name: activityId
+          in: path
+          required: true
+          description: The ID of the gym activity
+          schema:
+            type: integer
+      responses:
+        200:
+          description: The gym activity was found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GymActivityWithExercisesOutputModel'
+        400:
+          description: Invalid activity ID
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/InvalidActivityId'
+                  - $ref: '#/components/schemas/NotGymActivity'
+              examples:
+                invalidActivityId:
+                  $ref: '#/components/examples/InvalidActivityId'
+                notGymActivity:
+                  $ref: '#/components/examples/NotGymActivity'
         401:
           description: The user is not authenticated
         403:
@@ -819,13 +894,13 @@ paths:
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/NotAthletesCoach'
+                - $ref: '#/components/schemas/NotAthletesCoach'
         404:
-          description: The athlete was not found
+          description: The gym activity was not found
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/AthleteNotFound'
+                $ref: '#/components/schemas/GymActivityNotFound'
 
 components:
   schemas:  
@@ -951,13 +1026,54 @@ components:
 
     CreateGymActivityInputModel:
       required:
+        - athleteId
         - date
+        - exercises
       type: object
       properties:
+        athleteId:
+          type: integer
+          example: 1
         date:
           type: string
           format: date
           example: "01-01-2023"
+        exercises:
+          type: array
+          items:
+            $ref: '#/components/schemas/GymExerciseInputModel'
+
+    GymExerciseInputModel:
+      required:
+        - gymExerciseId
+        - sets
+      type: object
+      properties:
+        gymExerciseId:
+          type: integer
+          example: 1
+        sets:
+          type: array
+          items:
+            $ref: '#/components/schemas/SetInputModel'
+
+    SetInputModel:
+      required:
+        - reps
+        - weight
+        - restTime
+      type: object
+      properties:
+        reps:
+          type: integer
+          example: 10
+        weight:
+          type: number
+          format: float
+          example: 60.0
+        restTime:
+          type: float
+          example: 60.0
     
     UserUpdateInputModel:
       required:
@@ -1024,8 +1140,8 @@ components:
           type: string
           example: "123"
         date:
-          type: string
-          example: "01-01-2023"
+          type: long
+          example: 1672531199
         weight:
           type: number
           format: float
@@ -1094,8 +1210,8 @@ components:
           type: string
           example: "name"
         birthdate:
-          type: string
-          example: "1970-01-01"
+          type: long
+          example: 1672531199
 
     AthleteGetOutputModel:
       required:
@@ -1115,8 +1231,8 @@ components:
           type: string
           example: "name"
         birthdate:
-          type: string
-          example: "01-01-1970"
+          type: long
+          example: 1672531199
     
     AuthCheckOutputModel:
       required:
@@ -1142,8 +1258,8 @@ components:
           type: string
           example: 1
         date:
-          type: string
-          example: "01-01-1970"
+          type: long
+          example: 1672531199
         value:
           type: string
           example: "value"
@@ -1164,6 +1280,102 @@ components:
         token:
           type: string
           example: "token"
+
+    GymExerciseListOutputModel:
+      type: array
+      items:
+        $ref: '#/components/schemas/GymExerciseOutputModel'
+
+    GymExerciseOutputModel:
+      required:
+        - id
+        - name
+        - category
+        - url
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Bench Press"
+        category:
+          type: string
+          example: "Chest"
+        url:
+          type: string
+          example: "https://example.com/bench-press"
+
+    GymActivityWithExercisesOutputModel:
+      required:
+        - id
+        - date
+        - exercises
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        date:
+          type: long
+          example: 1672531199
+        exercises:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExerciseWithSetsOutputModel'
+
+    ExerciseWithSetsOutputModel:
+      required:
+        - id
+        - name
+        - order
+        - url
+        - sets
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Bench Press"
+        order:
+          type: integer
+          example: 1
+        url:
+          type: string
+          example: "https://example.com/bench-press"
+        sets:
+          type: array
+          items:
+            $ref: '#/components/schemas/SetOutputModel'
+
+    SetOutputModel:
+      required:
+        - id
+        - reps
+        - weight
+        - restTime
+        - order
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        reps:
+          type: integer
+          example: 10
+        weight:
+          type: number
+          format: float
+          example: 60.0
+        restTime:
+          type: float
+          example: 60.0
+        order:
+          type: integer
+          example: 1
 
 
 
@@ -1330,7 +1542,52 @@ components:
         type:
           type: string
           example: ""
-  
+
+    ActivityWithoutMicrocycle:
+      required:
+        - type
+      type: object
+      properties:
+        type:
+          type: string
+          example: ""
+
+    InvalidGymExercise:
+      required:
+        - type
+      type: object
+      properties:
+        type:
+          type: string
+          example: ""
+
+    InvalidSet:
+      required:
+        - type
+      type: object
+      properties:
+        type:
+          type: string
+          example: ""
+
+    UserIsNotACoach:
+      required:
+        - type
+      type: object
+      properties:
+        type:
+          type: string
+          example: ""
+
+    NotGymActivity:
+      required:
+        - type
+      type: object
+      properties:
+        type:
+          type: string
+          example: ""
+
   examples:
   
     InsecurePassword:
@@ -1396,3 +1653,24 @@ components:
     CharacteristicsAlreadyExists:
       value:
         type: ""
+
+    activityWithoutMicrocycle:
+      value:
+        type: ""
+
+    invalidGymExercise:
+      value:
+        type: ""
+
+    invalidSet:
+      value:
+        type: ""
+
+    UserIsNotACoach:
+      value:
+        type: ""
+
+    NotGymActivity:
+      value:
+        type: "" 
+    

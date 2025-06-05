@@ -548,4 +548,29 @@ class AthleteController(
                 }
         }
     }
+
+    @PostMapping(Uris.Athletes.CREATE_COMPETITION)
+    fun createCompetition(
+        coach: AuthenticatedCoach,
+        @PathVariable aid: String,
+        @RequestBody input: CreateCompetitionInputModel,
+    ): ResponseEntity<*> {
+        val uid = aid.toIntOrNull() ?: return Problem.response(400, Problem.invalidAthleteId)
+        val result = athleteServices.createCompetition(coach.info.id, uid, input.date, input.location)
+
+        return when (result) {
+            is Success ->
+                ResponseEntity
+                    .status(201)
+                    .header("Location", Uris.Athletes.competitionById(uid, result.value).toASCIIString())
+                    .build<Unit>()
+
+            is Failure ->
+                when (result.value) {
+                    CreateCompetitionError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
+                    CreateCompetitionError.InvalidDate -> Problem.response(400, Problem.invalidDate)
+                    CreateCompetitionError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
+                }
+        }
+    }
 }

@@ -1,14 +1,7 @@
 package waveCoach.repository.jdbi
 
 import org.jdbi.v3.core.Handle
-import waveCoach.repository.ActivityRepository
-import waveCoach.repository.AthleteRepository
-import waveCoach.repository.CharacteristicsRepository
-import waveCoach.repository.CoachRepository
-import waveCoach.repository.GymActivityRepository
-import waveCoach.repository.Transaction
-import waveCoach.repository.UserRepository
-import waveCoach.repository.WaterManeuverRepository
+import waveCoach.repository.*
 
 class JdbiTransaction(
     private val handle: Handle,
@@ -22,6 +15,7 @@ class JdbiTransaction(
     override val waterActivityRepository: waveCoach.repository.WaterActivityRepository =
         JdbiWaterActivityRepository(handle)
     override val waterManeuverRepository: WaterManeuverRepository = JdbiWaterManeuverRepository(handle)
+    override val competitionRepository: CompetitionRepository = JdbiCompetitionRepository(handle)
 
     override fun rollback() {
         handle.rollback()

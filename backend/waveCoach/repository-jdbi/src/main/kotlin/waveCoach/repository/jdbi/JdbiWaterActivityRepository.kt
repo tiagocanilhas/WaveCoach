@@ -35,6 +35,13 @@ class JdbiWaterActivityRepository(
             .mapTo<Int>()
             .one()
 
+    override fun isWaterActivityValid(activityId: Int): Boolean =
+        handle.createQuery("select count(*) from waveCoach.water where activity = :activityId")
+            .bind("activityId", activityId)
+            .mapTo<Int>()
+            .one() > 0
+
+
     override fun removeWaterActivity(activityId: Int) {
         handle.createUpdate("delete from waveCoach.water where activity = :activityId")
             .bind("activityId", activityId)
@@ -108,6 +115,8 @@ class JdbiWaterActivityRepository(
             .executeAndReturnGeneratedKeys()
             .mapTo<Int>()
             .one()
+
+
 
     override fun removeManeuversByActivity(activityId: Int) {
         handle.createUpdate(

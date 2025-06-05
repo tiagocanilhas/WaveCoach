@@ -9,6 +9,7 @@ interface Transaction {
     val gymActivityRepository: GymActivityRepository
     val waterActivityRepository: WaterActivityRepository
     val waterManeuverRepository: WaterManeuverRepository
+    val competitionRepository: CompetitionRepository
 
     // other repository types
     fun rollback()
