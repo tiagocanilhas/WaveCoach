@@ -4,6 +4,13 @@
   gap: 10px;
 }
 
+.questionnaireHeader {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
 .questionnaireDetails {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -48,4 +55,19 @@
   flex-direction: row;
   gap: 10px;
   width: 100%;
+}
+
+.add {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+
+  width: 40px;
+  height: 40px;
+  font-size: 30px;
+  background-color: #ccc;
+  color: white;
+  border-radius: 50%;
+  cursor: pointer;
 }

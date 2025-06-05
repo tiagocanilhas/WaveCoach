@@ -183,10 +183,6 @@ class JdbiWaterActivityRepository(
             .mapTo<Row>()
             .list()
 
-        println("\n\n\nrows: $rows\n" +
-                "\n" +
-                "\n")
-
         val activity = rows.firstOrNull() ?: return null
 
         return WaterActivityWithWaves(

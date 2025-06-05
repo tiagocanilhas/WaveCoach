@@ -189,12 +189,12 @@ INSERT INTO waveCoach.maneuver (wave, maneuver, success, maneuver_order) VALUES 
 INSERT INTO waveCoach.maneuver (wave, maneuver, success, maneuver_order) VALUES (3, 1, false, 4);
 INSERT INTO waveCoach.maneuver (wave, maneuver, success, maneuver_order) VALUES (3, 1, false, 5);
 
-INSERT INTO waveCoach.wave (activity, points, right_side, wave_order) VALUES (28, 2, true, 2);
+INSERT INTO waveCoach.wave (activity, points, right_side, wave_order) VALUES (28, 2, false, 2);
 INSERT INTO waveCoach.maneuver (wave, maneuver, success, maneuver_order) VALUES (4, 1, true, 1);
-INSERT INTO waveCoach.maneuver (wave, maneuver, success, maneuver_order) VALUES (4, 1, true, 2);
+INSERT INTO waveCoach.maneuver (wave, maneuver, success, maneuver_order) VALUES (4, 3, true, 2);
 INSERT INTO waveCoach.maneuver (wave, maneuver, success, maneuver_order) VALUES (4, 1, true, 3);
 INSERT INTO waveCoach.maneuver (wave, maneuver, success, maneuver_order) VALUES (4, 1, true, 4);
-INSERT INTO waveCoach.maneuver (wave, maneuver, success, maneuver_order) VALUES (4, 1, true, 5);
+INSERT INTO waveCoach.maneuver (wave, maneuver, success, maneuver_order) VALUES (4, 5, true, 5);
 INSERT INTO waveCoach.maneuver (wave, maneuver, success, maneuver_order) VALUES (4, 1, false, 6);
 INSERT INTO waveCoach.maneuver (wave, maneuver, success, maneuver_order) VALUES (4, 1, false, 7);
 INSERT INTO waveCoach.maneuver (wave, maneuver, success, maneuver_order) VALUES (4, 1, false, 8);
@@ -202,7 +202,7 @@ INSERT INTO waveCoach.maneuver (wave, maneuver, success, maneuver_order) VALUES 
 INSERT INTO waveCoach.wave (activity, points, right_side, wave_order) VALUES (28, 2, true, 3);
 INSERT INTO waveCoach.maneuver (wave, maneuver, success, maneuver_order) VALUES (5, 3, true, 1);
 
-INSERT INTO waveCoach.wave (activity, points, right_side, wave_order) VALUES (28, 2, true, 4);
+INSERT INTO waveCoach.wave (activity, points, right_side, wave_order) VALUES (28, 2, false, 4);
 INSERT INTO waveCoach.maneuver (wave, maneuver, success, maneuver_order) VALUES (6, 3, true, 1);
 INSERT INTO waveCoach.maneuver (wave, maneuver, success, maneuver_order) VALUES (6, 3, false, 2);
 INSERT INTO waveCoach.maneuver (wave, maneuver, success, maneuver_order) VALUES (6, 3, false, 3);

@@ -16,7 +16,6 @@ import { Characteristics } from '../../types/Characteristics'
 import { getCharacteristics } from '../../../services/athleteServices'
 
 import { epochConverter } from '../../../utils/epochConverter'
-import { handleError } from '../../../utils/handleError'
 
 import { useAuthentication } from '../../hooks/useAuthentication'
 
@@ -24,9 +23,8 @@ import styles from './styles.module.css'
 
 type State = {
   popupOpen: boolean
-  selectedCharacteristicpopupOpen: boolean
   characteristics: Characteristics[]
-  selectedCharacteristic?: Characteristics
+  selectedCharacteristic: Characteristics
 }
 
 type Action =
@@ -41,11 +39,11 @@ function reducer(state: State, action: Action): State {
     case 'toggleShowCharacteristicsPopup':
       return {
         ...state,
-        selectedCharacteristicpopupOpen: !state.selectedCharacteristicpopupOpen,
         selectedCharacteristic: action.selectedCharacteristic,
       }
     case 'setCharacteristics':
-      return { ...state, characteristics: action.characteristics }
+      if (action.characteristics.length === 0) return { ...state, characteristics: null }
+      else return { ...state, characteristics: action.characteristics }
     default:
       return state
   }
@@ -53,8 +51,8 @@ function reducer(state: State, action: Action): State {
 
 const initialState: State = {
   popupOpen: false,
-  selectedCharacteristicpopupOpen: false,
-  characteristics: [],
+  selectedCharacteristic: undefined,
+  characteristics: undefined,
 }
 
 export function Characteristics() {
@@ -67,7 +65,7 @@ export function Characteristics() {
       const res = await getCharacteristics(id)
       dispatch({ type: 'setCharacteristics', characteristics: res.characteristics })
     } catch (error) {
-      dispatch({ type: 'setCharacteristics', characteristics: [] })
+      dispatch({ type: 'setCharacteristics', characteristics: null })
     }
   }
 
@@ -92,75 +90,10 @@ export function Characteristics() {
     dispatch({ type: 'toggleShowCharacteristicsPopup', selectedCharacteristic: selectedCharacteristic })
   }
 
-  const characteristicsData: CharacteristicsData[] = [
-    {
-      label: 'Height',
-      data: state.characteristics.map(characteristic => characteristic.height),
-      backgroundColor: 'rgb(192, 147, 75)',
-      borderColor: 'rgb(192, 147, 75)',
-    },
-    {
-      label: 'Weight',
-      data: state.characteristics.map(characteristic => characteristic.weight),
-      backgroundColor: 'rgb(153, 102, 255)',
-      borderColor: 'rgb(153, 102, 255)',
-    },
-    {
-      label: 'Calories',
-      data: state.characteristics.map(characteristic => characteristic.calories),
-      backgroundColor: 'rgb(75, 192, 192)',
-      borderColor: 'rgb(75, 192, 192)',
-    },
-    {
-      label: 'Body Fat',
-      data: state.characteristics.map(characteristic => characteristic.bodyFat),
-      backgroundColor: 'rgb(255, 99, 132)',
-      borderColor: 'rgb(255, 99, 132)',
-    },
-    {
-      label: 'Waist Size',
-      data: state.characteristics.map(characteristic => characteristic.waistSize),
-      backgroundColor: 'rgb(54, 162, 235)',
-      borderColor: 'rgb(54, 162, 235)',
-    },
-    {
-      label: 'Arm Size',
-      data: state.characteristics.map(characteristic => characteristic.armSize),
-      backgroundColor: 'rgb(255, 206, 86)',
-      borderColor: 'rgb(255, 206, 86)',
-    },
-    {
-      label: 'Thigh Size',
-      data: state.characteristics.map(characteristic => characteristic.thighSize),
-      backgroundColor: 'rgb(75, 192, 192)',
-      borderColor: 'rgb(75, 192, 192)',
-    },
-    {
-      label: 'Tricep Fat',
-      data: state.characteristics.map(characteristic => characteristic.tricepFat),
-      backgroundColor: 'rgb(153, 102, 255)',
-      borderColor: 'rgb(153, 102, 255)',
-    },
-    {
-      label: 'Abdomen Fat',
-      data: state.characteristics.map(characteristic => characteristic.abdomenFat),
-      backgroundColor: 'rgb(192, 147, 75)',
-      borderColor: 'rgb(192, 147, 75)',
-    },
-    {
-      label: 'Thigh Fat',
-      data: state.characteristics.map(characteristic => characteristic.thighFat),
-      backgroundColor: 'rgb(255, 99, 132)',
-      borderColor: 'rgb(255, 99, 132)',
-    },
-  ]
-
   const isAddPopupOpen = state.popupOpen
-  const isSelectedPopupOpen = state.selectedCharacteristicpopupOpen
+  const selectedCharacteristic = state.selectedCharacteristic
 
-  if (state.characteristics === undefined) {
-    return <CircularProgress className={styles.waiting} />
-  }
+  if (state.characteristics === undefined) return <CircularProgress className={styles.waiting} />
 
   return (
     <>
@@ -172,19 +105,23 @@ export function Characteristics() {
               content={
                 <div className={styles.characteristics}>
                   <h2 className={styles.header}>Last Characteristics</h2>
-                  {state.characteristics.slice(-1).map((characteristic, index) => {
-                    const entries = Object.entries(characteristic).slice(1)
-                    return (
-                      <div key={index} className={styles.characteristic}>
-                        {entries.map(([key, value]) => (
-                          <span key={key}>
-                            {key.charAt(0).toUpperCase() + key.slice(1)}:{' '}
-                            {key === 'date' ? (value ? epochConverter(Number(value), 'dd-mm-yyyy') : 'N/A') : value || 'N/A'}
-                          </span>
-                        ))}
-                      </div>
-                    )
-                  })}
+                  {state.characteristics === null ? (
+                    <p>No data available</p>
+                  ) : (
+                    state.characteristics.slice(-1).map((characteristic, index) => {
+                      const entries = Object.entries(characteristic).slice(1)
+                      return (
+                        <div key={index} className={styles.characteristic}>
+                          {entries.map(([key, value]) => (
+                            <span key={key}>
+                              {key.charAt(0).toUpperCase() + key.slice(1)}:{' '}
+                              {key === 'date' ? (value ? epochConverter(Number(value), 'dd-mm-yyyy') : 'N/A') : value || 'N/A'}
+                            </span>
+                          ))}
+                        </div>
+                      )
+                    })
+                  )}
                 </div>
               }
               width="100%"
@@ -196,10 +133,12 @@ export function Characteristics() {
             <Card
               content={
                 <CharacteristicsChart
-                  labels={state.characteristics.map(characteristic =>
-                    characteristic.date ? epochConverter(Number(characteristic.date), 'dd-mm-yyyy') : 'N/A'
-                  )}
-                  dataSetsData={characteristicsData}
+                  labels={
+                    state.characteristics
+                      ? state.characteristics.map(c => (c?.date ? epochConverter(Number(c.date), 'dd-mm-yyyy') : 'N/A'))
+                      : []
+                  }
+                  data={state.characteristics || []}
                   onPointClick={handleShowSelectedCharacteristicsPopup}
                 />
               }
@@ -210,11 +149,11 @@ export function Characteristics() {
       />
       {isAddPopupOpen && <AddCharacteristicsPopup onClose={handlePopup} onSuccess={fetchCharacteristics} />}
 
-      {isSelectedPopupOpen && (
+      {selectedCharacteristic && (
         <ShowSelectedCharacteristicsPopup
           onClose={handleShowSelectedCharacteristicsPopup}
           onSuccess={fetchCharacteristics}
-          data={state.selectedCharacteristic}
+          data={selectedCharacteristic}
         />
       )}
     </>

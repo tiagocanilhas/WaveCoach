@@ -15,9 +15,3 @@
   width: 100px;
   border-radius: 10%;
 }
-
-.side {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}

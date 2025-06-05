@@ -146,13 +146,13 @@ class WaterActivityController(
 
     @PostMapping(Uris.WaterActivity.CREATE_QUESTIONNAIRE)
     fun createQuestionnaire(
-        coach: AuthenticatedCoach,
+        user: AuthenticatedUser,
         @RequestBody input: QuestionnaireCreateInputModel,
         @PathVariable activityId: String,
     ): ResponseEntity<*> {
         val id = activityId.toIntOrNull() ?: return Problem.response(400, Problem.invalidWaterActivityId)
 
-        val result = waterActivityService.createQuestionnaire(coach.info.id, id, input.sleep, input.fatigue, input.stress, input.musclePain)
+        val result = waterActivityService.createQuestionnaire(user.info.id, id, input.sleep, input.fatigue, input.stress, input.musclePain)
 
         return when (result) {
             is Success -> ResponseEntity.status(204).build<Unit>()

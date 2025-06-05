@@ -14,7 +14,7 @@ class JdbiAthleteRepository(
         uid: Int,
         coachId: Int,
         name: String,
-        birthDate: Long,
+        birthdate: Long,
         url: String?,
     ): Int =
         handle.createUpdate(
@@ -26,7 +26,7 @@ class JdbiAthleteRepository(
             .bind("uid", uid)
             .bind("coach", coachId)
             .bind("name", name)
-            .bind("birthdate", birthDate)
+            .bind("birthdate", birthdate)
             .bind("url", url)
             .executeAndReturnGeneratedKeys()
             .mapTo<Int>()
@@ -47,7 +47,7 @@ class JdbiAthleteRepository(
     override fun updateAthlete(
         uid: Int,
         name: String,
-        birthDate: Long,
+        birthdate: Long,
     ) {
         handle.createUpdate(
             """
@@ -58,7 +58,7 @@ class JdbiAthleteRepository(
         )
             .bind("uid", uid)
             .bind("name", name)
-            .bind("birthdate", birthDate)
+            .bind("birthdate", birthdate)
             .execute()
     }
 
@@ -93,7 +93,7 @@ class JdbiAthleteRepository(
         val uid: Int,
         val coach: Int,
         val name: String,
-        val birthDate: Long,
+        val birthdate: Long,
         val credentialsChanged: Boolean,
         val url: String?,
         val username: String,
@@ -102,7 +102,7 @@ class JdbiAthleteRepository(
         val athleteUsernameAndCreatedTime: Triple<Athlete, String, Long>
             get() =
                 Triple(
-                    Athlete(uid, coach, name, birthDate, credentialsChanged, url),
+                    Athlete(uid, coach, name, birthdate, credentialsChanged, url),
                     username,
                     createdTime,
                 )

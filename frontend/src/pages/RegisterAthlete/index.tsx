@@ -34,9 +34,9 @@ export function RegisterAthlete() {
 
   return (
     <div className={styles.container}>
-      {username === undefined 
-        ? <CircularProgress />
-        : (
+      {username === undefined ? (
+        <CircularProgress />
+      ) : (
         <RegisterForm
           title="Register Athlete"
           initialUsername={username}

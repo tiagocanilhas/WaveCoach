@@ -588,7 +588,7 @@ class WaterActivityControllerTest {
      */
 
     @Test
-    fun `create questionnaire - success`() {
+    fun `create questionnaire - success (coach)`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
         val body =
@@ -601,6 +601,26 @@ class WaterActivityControllerTest {
 
         client.post().uri("/water/$FIRST_ACTIVITY_ID/questionnaire")
             .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isNoContent
+    }
+
+    @Test
+    fun `create questionnaire - success (athlete)`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "sleep" to 5,
+                "fatigue" to 3,
+                "stress" to 2,
+                "musclePain" to 1,
+            )
+
+        client.post().uri("/water/$SOME_ACTIVITY_ID/questionnaire")
+            .header("Authorization", "Bearer $FIRST_ATHLETE_TOKEN")
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(body)
             .exchange()
@@ -624,29 +644,6 @@ class WaterActivityControllerTest {
             .bodyValue(body)
             .exchange()
             .expectStatus().isUnauthorized
-    }
-
-    @Test
-    fun `create questionnaire - user is not a coach`() {
-        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
-
-        val body =
-            mapOf(
-                "sleep" to 7,
-                "fatigue" to 3,
-                "stress" to 2,
-                "musclePain" to 1,
-            )
-
-        client.post().uri("/water/$FIRST_ACTIVITY_ID/questionnaire")
-            .header("Authorization", "Bearer $FIRST_ATHLETE_TOKEN")
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(body)
-            .exchange()
-            .expectStatus().isForbidden
-            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
-            .expectBody()
-            .jsonPath("type").isEqualTo(Problem.userIsNotACoach.type.toString())
     }
 
     @Test
@@ -954,6 +951,7 @@ class WaterActivityControllerTest {
         private const val THIRD_ACTIVITY_ID = 5
         private const val NOT_WATER_ACTIVITY_ID = 1
         private const val WATER_ACTIVITY_TO_REMOVE = 6
+        private const val SOME_ACTIVITY_ID = 17
 
         private const val DATE = "03-05-2025" // date long = 1736006400000
         private const val ACTIVITY_DATE = 1746144000000

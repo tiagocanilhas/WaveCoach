@@ -2,7 +2,7 @@ export type Athlete = {
   uid: number
   coach: number
   name: string
-  birthDate: number
+  birthdate: number
   credentialsChanged: boolean
   url?: string
 }

@@ -1,4 +1,4 @@
 export type Problem = {
-  title: string;
-  type: string;
+  title: string
+  type: string
 }

@@ -68,9 +68,9 @@ class AthleteServicesTest {
                 "01-01-2200",
             )
 
-        invalidBirthDays.forEach { birthDate ->
-            when (val result = athleteServices.createAthlete(name, FIRST_COACH_ID, birthDate, null)) {
-                is Failure -> assertTrue(result.value is CreateAthleteError.InvalidBirthDate)
+        invalidBirthDays.forEach { birthdate ->
+            when (val result = athleteServices.createAthlete(name, FIRST_COACH_ID, birthdate, null)) {
+                is Failure -> assertTrue(result.value is CreateAthleteError.Invalidbirthdate)
                 is Success -> fail("Unexpected $result")
             }
         }
@@ -92,7 +92,7 @@ class AthleteServicesTest {
                     result.value.uid == FIRST_ATHLETE_ID &&
                         result.value.coach == FIRST_COACH_ID &&
                         result.value.name == FIRST_ATHLETE_NAME &&
-                        result.value.birthDate == FIRST_ATHLETE_BIRTH_DATE,
+                        result.value.birthdate == FIRST_ATHLETE_BIRTH_DATE,
                 )
         }
     }
@@ -181,9 +181,9 @@ class AthleteServicesTest {
                 "01-01-2200",
             )
 
-        invalidBirthDays.forEach { birthDate ->
-            when (val result = athleteServices.updateAthlete(FIRST_COACH_ID, FIRST_ATHLETE_ID, name, birthDate)) {
-                is Failure -> assertTrue(result.value is UpdateAthleteError.InvalidBirthDate)
+        invalidBirthDays.forEach { birthdate ->
+            when (val result = athleteServices.updateAthlete(FIRST_COACH_ID, FIRST_ATHLETE_ID, name, birthdate)) {
+                is Failure -> assertTrue(result.value is UpdateAthleteError.Invalidbirthdate)
                 is Success -> fail("Unexpected $result")
             }
         }

@@ -1,10 +1,10 @@
 export function epochConverterToAge(time: number): number {
-  const birthDate = new Date(time)
+  const birthdate = new Date(time)
   const today = new Date()
-  const age = today.getFullYear() - birthDate.getFullYear()
-  const monthDiff = today.getMonth() - birthDate.getMonth()
+  const age = today.getFullYear() - birthdate.getFullYear()
+  const monthDiff = today.getMonth() - birthdate.getMonth()
 
-  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) return age - 1
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthdate.getDate())) return age - 1
 
   return age
 }

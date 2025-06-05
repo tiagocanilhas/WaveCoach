@@ -1,17 +1,14 @@
 import * as React from 'react'
 
 import { AthletePopup } from '../AthletePopup'
+import { Athlete } from '../../types/Athlete'
 
 type EditAthletePopupProps = {
   onClose: () => void
   onSuccess: () => void
-  initialValues?: {
-    id: number
-    name: string
-    birthdate: string
-  }
+  data?: Athlete
 }
 
-export function EditAthletePopup({ onClose, onSuccess, initialValues }: EditAthletePopupProps) {
-  return <AthletePopup onClose={onClose} onSuccess={onSuccess} initialValues={initialValues} />
+export function EditAthletePopup({ onClose, onSuccess, data }: EditAthletePopupProps) {
+  return <AthletePopup onClose={onClose} onSuccess={onSuccess} data={data} />
 }

@@ -22,15 +22,6 @@
   justify-content: space-evenly;
 }
 
-.remove {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
 .exerciseInfo {
   display: flex;
   flex-direction: column;

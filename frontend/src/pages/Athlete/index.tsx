@@ -185,7 +185,7 @@ export function Athlete() {
                   )}
                   <img src={athlete.url || '/images/anonymous-user.webp'} alt={athlete.name || 'Anonymous'} />
                   <h2>{athlete.name}</h2>
-                  <p className={styles.age}>{epochConverterToAge(athlete.birthDate)} years</p>
+                  <p className={styles.age}>{epochConverterToAge(athlete.birthdate)} years</p>
                 </div>
               }
               width="100%"
@@ -195,12 +195,14 @@ export function Athlete() {
         }
         right={
           <div className={styles.calendar}>
-            <Card
-              content={
-                <CyclesSelect cycles={state.calendar.mesocycles} cycleSelected={cycleSelected} onSelect={handleCycleSelect} />
-              }
-              width="100%"
-            />
+            {state.calendar.mesocycles.length !== 0 && (
+              <Card
+                content={
+                  <CyclesSelect cycles={state.calendar.mesocycles} cycleSelected={cycleSelected} onSelect={handleCycleSelect} />
+                }
+                width="100%"
+              />
+            )}
             <ObjectList
               items={activities}
               getKey={activity => activity.id}
@@ -210,17 +212,7 @@ export function Athlete() {
         }
       />
 
-      {isEditPopupOpen && (
-        <EditAthletePopup
-          onClose={handleEdit}
-          onSuccess={onSuccess}
-          initialValues={{
-            id: athlete.uid,
-            name: athlete.name,
-            birthdate: epochConverter(athlete.birthDate, 'yyyy-mm-dd'),
-          }}
-        />
-      )}
+      {isEditPopupOpen && <EditAthletePopup onClose={handleEdit} onSuccess={onSuccess} data={athlete} />}
 
       {isCyclesPopupOpen && <CyclesPopup onClose={handleManageCycles} onSuccess={onSuccess} cycles={state.calendar.mesocycles} />}
     </>

@@ -23,7 +23,10 @@ type State = {
   isQuestionnairePopupOpen?: boolean
 }
 
-type Action = { type: 'setWorkout'; workout: WaterWorkout } | { type: 'setQuestionnaire'; payload: Questionnaire } | { type: 'toggleQuestionnairePopup' }
+type Action =
+  | { type: 'setWorkout'; workout: WaterWorkout }
+  | { type: 'setQuestionnaire'; payload: Questionnaire }
+  | { type: 'toggleQuestionnairePopup' }
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
@@ -134,19 +137,23 @@ export function WaterWorkoutsDetails() {
                       }
                     />
                   ) : (
-                      <div className={styles.questionnaireDetails}>
-                        {Object.entries(questionnaire).map(([key, value]) => {
-                          const formattedKey = key.replace(/([A-Z])/g, ' $1')
-                            .trim()
-                            .toLowerCase()
-                            .split(' ')
-                            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                            .join(' ')
+                    <div className={styles.questionnaireDetails}>
+                      {Object.entries(questionnaire).map(([key, value]) => {
+                        const formattedKey = key
+                          .replace(/([A-Z])/g, ' $1')
+                          .trim()
+                          .toLowerCase()
+                          .split(' ')
+                          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                          .join(' ')
 
-                          return <p><strong>{formattedKey}:</strong> {String(value)}</p>
-                        }
-                        )}
-                      </div>
+                        return (
+                          <p>
+                            <strong>{formattedKey}:</strong> {String(value)}
+                          </p>
+                        )
+                      })}
+                    </div>
                   )}
                 </>
               }
@@ -156,46 +163,52 @@ export function WaterWorkoutsDetails() {
         right={
           <>
             <Card
-            content={
-              <>
-                <h1>Waves</h1>
-                <div className={styles.wavesContainer}>
-                  {workout.waves.length === 0 ? <p>No waves for this workout</p> : workout.waves.map((wave, index) => (
-                    <div key={wave.id} className={styles.waveDetails}>
-                      <h2>Wave {index + 1}</h2>
-                      <div className={styles.maneuversContainer}>
-                        {wave.maneuvers.map(maneuver => (
-                          <div key={maneuver.id} className={styles.maneuver}>
-                            <img src={maneuver.url || `/images/no_image.svg`} alt="Maneuver" />
-                            {maneuver.name} - {maneuver.rightSide ? '➡️' : '⬅️'} {maneuver.success ? '✅' : '❌'}
+              content={
+                <>
+                  <h1>Waves</h1>
+                  <div className={styles.wavesContainer}>
+                    {workout.waves.length === 0 ? (
+                      <p>No waves for this workout</p>
+                    ) : (
+                      workout.waves.map((wave, index) => (
+                        <div key={wave.id} className={styles.waveDetails}>
+                          <h2>Wave {index + 1}</h2>
+                          <div className={styles.maneuversContainer}>
+                            {wave.maneuvers.map(maneuver => (
+                              <div key={maneuver.id} className={styles.maneuver}>
+                                <img src={maneuver.url || `/images/no_image.svg`} alt="Maneuver" />
+                                {maneuver.name} - {maneuver.rightSide ? '➡️' : '⬅️'} {maneuver.success ? '✅' : '❌'}
+                              </div>
+                            ))}
                           </div>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </>
               }
             />
-              <div className={styles.maneuversCarrousel}>
+            <div className={styles.maneuversCarrousel}>
               {['Left', 'Right'].map(side => {
                 const maneuvers = side === 'Left' ? leftSideManeuvers : rightSideManeuvers
                 return (
-                  <Card 
+                  <Card
                     key={side}
                     content={
-                    maneuvers.length === 0 
-                      ? <h1>No {side} side maneuvers</h1>
-                      : <>
-                        <h1>{side} Side Maneuvers</h1>
-                        <ManeuversCarrousel maneuvers={maneuvers} />
-                      </>
+                      maneuvers.length === 0 ? (
+                        <h1>No {side} side maneuvers</h1>
+                      ) : (
+                        <>
+                          <h1>{side} Side Maneuvers</h1>
+                          <ManeuversCarrousel maneuvers={maneuvers} />
+                        </>
+                      )
                     }
                     width="100%"
                   />
                 )
               })}
-              </div>
+            </div>
           </>
         }
       />

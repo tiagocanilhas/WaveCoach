@@ -30,14 +30,14 @@ class UserServicesTest {
         val testClock = TestClock()
         val userService = createUserServices(testClock)
 
-        val username = USERNAME_OF_ADMIN
-        val password = PASSWORD_OF_ADMIN
+        val username = USERNAME_TO_LOGIN
+        val password = PASSWORD_TO_LOGIN
 
         val result = userService.checkCredentials(username, password)
         when (result) {
             is Failure -> fail("Unexpected $result")
             is Success -> {
-                assertEquals(ID_OF_ADMIN, result.value.id)
+                assertEquals(ID_OF_THIRD_COACH, result.value.id)
                 assertEquals(username, result.value.username)
                 assertTrue(result.value.tokenValue.isNotEmpty())
             }
@@ -104,12 +104,12 @@ class UserServicesTest {
         val testClock = TestClock()
         val userService = createUserServices(testClock)
 
-        val result = userService.getUserByToken(TOKEN_OF_ADMIN)
+        val result = userService.getUserByToken(TOKEN_OF_THIRD_COACH)
         when (result) {
             is Failure -> fail("Unexpected $result")
             is Success -> {
-                assertEquals(ID_OF_ADMIN, result.value.id)
-                assertEquals(USERNAME_OF_ADMIN, result.value.username)
+                assertEquals(ID_OF_THIRD_COACH, result.value.id)
+                assertEquals(USERNAME_TO_LOGIN, result.value.username)
             }
         }
     }
@@ -293,7 +293,14 @@ class UserServicesTest {
         private val TOKEN_OF_ADMIN = "i_aY-4lpMqAIMuhkimTbKy4xYEuyvgFPaaTpVS0lctQ="
 
         private val ID_OF_SECOND_COACH = 2
+        private val USERNAME_OF_SECOND_COACH = "user2"
         private val TOKEN_OF_SECOND_COACH = "fM5JjtPOUqtnZg1lB7jnJhXBP5gI2WbIIBoO3JhYM5M="
+
+
+        private val ID_OF_THIRD_COACH = 8
+        private val USERNAME_TO_LOGIN = "user3"
+        private val PASSWORD_TO_LOGIN = "Admin123!"
+        private val TOKEN_OF_THIRD_COACH = "jxuHflgoufWumSnj3IWryNxPEZHusJwgBPbeFhU8784="
 
         private fun createUserServices(
             testClock: TestClock,

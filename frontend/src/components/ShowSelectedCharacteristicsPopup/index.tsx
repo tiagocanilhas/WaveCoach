@@ -132,7 +132,7 @@ export function ShowSelectedCharacteristicsPopup({ data, onClose, onSuccess }: S
 
   return (
     <Popup
-      title={`Selected Characteristics: ${data.date || 'N/A'}`}
+      title="Selected Characteristics"
       content={
         <div className={styles.characteristics}>
           {state.tag === 'showing' && <Showing data={state.values} handleUpdate={handleUpdate} handleDelete={handleDelete} />}
@@ -156,17 +156,23 @@ function Showing({ data, handleUpdate, handleDelete }: ShowingProps) {
   const [user] = useAuthentication()
   return (
     <form className={styles.form}>
-      <TextField label="Height" value={data.height || 'N/A'} inputProps={{ readOnly: true }} />
-      <TextField label="Weight" value={data.weight || 'N/A'} inputProps={{ readOnly: true }} />
-      <TextField label="Calories" value={data.calories || 'N/A'} inputProps={{ readOnly: true }} />
-      <TextField label="Body Fat" value={data.bodyFat || 'N/A'} inputProps={{ readOnly: true }} />
-      <TextField label="Waist Size" value={data.waistSize || 'N/A'} inputProps={{ readOnly: true }} />
-      <TextField label="Arm Size" value={data.armSize || 'N/A'} inputProps={{ readOnly: true }} />
-      <TextField label="Thigh Size" value={data.thighSize || 'N/A'} inputProps={{ readOnly: true }} />
-      <TextField label="Tricep Fat" value={data.tricepFat || 'N/A'} inputProps={{ readOnly: true }} />
-      <TextField label="Abdomen Fat" value={data.abdomenFat || 'N/A'} inputProps={{ readOnly: true }} />
-      <TextField label="Thigh Fat" value={data.thighFat || 'N/A'} inputProps={{ readOnly: true }} />
-
+      <div className={styles.row}>
+        <div className={styles.column}>
+          <TextField value={data.date || 'N/A'} inputProps={{ readOnly: true }} label="Date" InputLabelProps={{ shrink: true }} />
+          <TextField label="Height (cm)" value={data.height || 'N/A'} inputProps={{ readOnly: true }} />
+          <TextField label="Weight (kg)" value={data.weight || 'N/A'} inputProps={{ readOnly: true }} />
+          <TextField label="Calories (kcal)" value={data.calories || 'N/A'} inputProps={{ readOnly: true }} />
+          <TextField label="Body Fat (%)" value={data.bodyFat || 'N/A'} inputProps={{ readOnly: true }} />
+        </div>
+        <div className={styles.column}>
+          <TextField label="Waist Size (cm)" value={data.waistSize || 'N/A'} inputProps={{ readOnly: true }} />
+          <TextField label="Arm Size (cm)" value={data.armSize || 'N/A'} inputProps={{ readOnly: true }} />
+          <TextField label="Thigh Size (cm)" value={data.thighSize || 'N/A'} inputProps={{ readOnly: true }} />
+          <TextField label="Tricep Fat (mm)" value={data.tricepFat || 'N/A'} inputProps={{ readOnly: true }} />
+          <TextField label="Abdomen Fat (mm)" value={data.abdomenFat || 'N/A'} inputProps={{ readOnly: true }} />
+          <TextField label="Thigh Fat (mm)" value={data.thighFat || 'N/A'} inputProps={{ readOnly: true }} />
+        </div>
+      </div>
       {user.isCoach && (
         <div className={styles.actions}>
           <Button text="Update" onClick={handleUpdate} width="100%" height="25px" />
@@ -185,19 +191,36 @@ type EditingProps = {
 }
 
 function Editing({ data, handleEdit, handleUpdate, handleSubmit }: EditingProps) {
+  // dd-mm-yyyy to dd/mm/yyyy format conversion
+  const dateNewFormat = data.date
+    ? new Date(data.date.split('-').reverse().join('-')).toISOString().split('T')[0]
+    : new Date().toISOString().split('T')[0]
   return (
     <form onSubmit={handleSubmit} className={styles.form}>
-      <TextField label="Height" value={data.height} onChange={handleEdit} name="height" type="number" />
-      <TextField label="Weight" value={data.weight} onChange={handleEdit} name="weight" type="number" />
-      <TextField label="Calories" value={data.calories} onChange={handleEdit} name="calories" type="number" />
-      <TextField label="Body Fat" value={data.bodyFat} onChange={handleEdit} name="bodyFat" type="number" />
-      <TextField label="Waist Size" value={data.waistSize} onChange={handleEdit} name="waistSize" type="number" />
-      <TextField label="Arm Size" value={data.armSize} onChange={handleEdit} name="armSize" type="number" />
-      <TextField label="Thigh Size" value={data.thighSize} onChange={handleEdit} name="thighSize" type="number" />
-      <TextField label="Tricep Fat" value={data.tricepFat} onChange={handleEdit} name="tricepFat" type="number" />
-      <TextField label="Abdomen Fat" value={data.abdomenFat} onChange={handleEdit} name="abdomenFat" type="number" />
-      <TextField label="Thigh Fat" value={data.thighFat} onChange={handleEdit} name="thighFat" type="number" />
-
+      <div className={styles.row}>
+        <div className={styles.column}>
+          <TextField
+            value={dateNewFormat}
+            onChange={handleEdit}
+            name="date"
+            type="date"
+            label="Date"
+            InputLabelProps={{ shrink: true }}
+          />
+          <TextField label="Height (cm)" value={data.height} onChange={handleEdit} name="height" type="number" />
+          <TextField label="Weight (kg)" value={data.weight} onChange={handleEdit} name="weight" type="number" />
+          <TextField label="Calories (kcal)" value={data.calories} onChange={handleEdit} name="calories" type="number" />
+          <TextField label="Body Fat (%)" value={data.bodyFat} onChange={handleEdit} name="bodyFat" type="number" />
+        </div>
+        <div className={styles.column}>
+          <TextField label="Waist Size (cm)" value={data.waistSize} onChange={handleEdit} name="waistSize" type="number" />
+          <TextField label="Arm Size (cm)" value={data.armSize} onChange={handleEdit} name="armSize" type="number" />
+          <TextField label="Thigh Size (cm)" value={data.thighSize} onChange={handleEdit} name="thighSize" type="number" />
+          <TextField label="Tricep Fat (mm)" value={data.tricepFat} onChange={handleEdit} name="tricepFat" type="number" />
+          <TextField label="Abdomen Fat (mm)" value={data.abdomenFat} onChange={handleEdit} name="abdomenFat" type="number" />
+          <TextField label="Thigh Fat (mm)" value={data.thighFat} onChange={handleEdit} name="thighFat" type="number" />
+        </div>
+      </div>
       <div className={styles.actions}>
         <Button text="Confirm" type="submit" width="100%" height="25px" />
         <Button text="Cancel" onClick={handleUpdate} width="100%" height="25px" />

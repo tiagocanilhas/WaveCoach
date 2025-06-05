@@ -21,6 +21,7 @@ export type WaterCalendar = {
         waves: {
           id: number
           points: number
+          rightSide: boolean
           order: number
           maneuvers: Maneuver[]
         }[]

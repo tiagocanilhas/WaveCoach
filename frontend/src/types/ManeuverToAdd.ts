@@ -1,6 +1,7 @@
+import { WaterManeuver } from './WaterManeuver'
+
 export type ManeuverToAdd = {
-  waterManeuverId: number
-  name: string
-  rightSide: boolean
+  tempId: string
+  maneuver: WaterManeuver
   success: boolean
 }

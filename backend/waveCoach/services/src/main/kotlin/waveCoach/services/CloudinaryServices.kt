@@ -16,10 +16,7 @@ class CloudinaryServices(
         val options =
             mapOf(
                 "folder" to folder,
-                "transformation" to
-                    listOf(
-                        mapOf("width" to 500, "height" to 500, "crop" to "fit"),
-                    ),
+                "transformation" to "c_fit,h_500,w_500"
             )
 
         val res = cloudinary.uploader().upload(file.bytes, options)

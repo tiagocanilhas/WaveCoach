@@ -31,7 +31,7 @@ class AthleteControllerTest {
         val input =
             mapOf(
                 "name" to randomString(),
-                "birthDate" to VALID_DATE,
+                "birthdate" to VALID_DATE,
             )
 
         val body =
@@ -58,7 +58,7 @@ class AthleteControllerTest {
         val input =
             mapOf(
                 "name" to randomString(),
-                "birthDate" to VALID_DATE,
+                "birthdate" to VALID_DATE,
             )
 
         val body =
@@ -80,7 +80,7 @@ class AthleteControllerTest {
         val input =
             mapOf(
                 "name" to randomString(),
-                "birthDate" to INVALID_DATE,
+                "birthdate" to INVALID_DATE,
             )
 
         val body =
@@ -96,7 +96,7 @@ class AthleteControllerTest {
             .expectStatus().isBadRequest
             .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
             .expectBody()
-            .jsonPath("type").isEqualTo(Problem.invalidBirthDate.type.toString())
+            .jsonPath("type").isEqualTo(Problem.invalidbirthdate.type.toString())
     }
 
     @Test
@@ -113,7 +113,7 @@ class AthleteControllerTest {
             val input =
                 mapOf(
                     "name" to name,
-                    "birthDate" to VALID_DATE,
+                    "birthdate" to VALID_DATE,
                 )
 
             val body =
@@ -140,7 +140,7 @@ class AthleteControllerTest {
         val input =
             mapOf(
                 "name" to randomString(),
-                "birthDate" to VALID_DATE,
+                "birthdate" to VALID_DATE,
             )
 
         val body =
@@ -175,7 +175,7 @@ class AthleteControllerTest {
             .jsonPath("uid").isEqualTo(FIRST_ATHLETE_ID)
             .jsonPath("coach").isEqualTo(FIRST_COACH_ID)
             .jsonPath("name").isEqualTo(FIRST_ATHLETE_NAME)
-            .jsonPath("birthDate").isEqualTo(FIRST_ATHLETE_BIRTH_DATE)
+            .jsonPath("birthdate").isEqualTo(FIRST_ATHLETE_BIRTH_DATE)
     }
 
     @Test
@@ -190,7 +190,7 @@ class AthleteControllerTest {
             .jsonPath("uid").isEqualTo(FIRST_ATHLETE_ID)
             .jsonPath("coach").isEqualTo(FIRST_COACH_ID)
             .jsonPath("name").isEqualTo(FIRST_ATHLETE_NAME)
-            .jsonPath("birthDate").isEqualTo(FIRST_ATHLETE_BIRTH_DATE)
+            .jsonPath("birthdate").isEqualTo(FIRST_ATHLETE_BIRTH_DATE)
     }
 
     @Test
@@ -308,7 +308,7 @@ class AthleteControllerTest {
         val body =
             mapOf(
                 "name" to randomString(),
-                "birthDate" to VALID_DATE,
+                "birthdate" to VALID_DATE,
             )
 
         client.put().uri("/athletes/$FIRST_ATHLETE_ID")
@@ -326,7 +326,7 @@ class AthleteControllerTest {
         val body =
             mapOf(
                 "name" to randomString(),
-                "birthDate" to VALID_DATE,
+                "birthdate" to VALID_DATE,
             )
 
         client.put().uri("/athletes/$FIRST_ATHLETE_ID")
@@ -343,7 +343,7 @@ class AthleteControllerTest {
         val body =
             mapOf(
                 "name" to randomString(),
-                "birthDate" to INVALID_DATE,
+                "birthdate" to INVALID_DATE,
             )
 
         client.put().uri("/athletes/$FIRST_ATHLETE_ID")
@@ -354,7 +354,7 @@ class AthleteControllerTest {
             .expectStatus().isBadRequest
             .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
             .expectBody()
-            .jsonPath("type").isEqualTo(Problem.invalidBirthDate.type.toString())
+            .jsonPath("type").isEqualTo(Problem.invalidbirthdate.type.toString())
     }
 
     @Test
@@ -371,7 +371,7 @@ class AthleteControllerTest {
             val body =
                 mapOf(
                     "name" to name,
-                    "birthDate" to VALID_DATE,
+                    "birthdate" to VALID_DATE,
                 )
 
             client.put().uri("/athletes/$FIRST_ATHLETE_ID")
@@ -395,7 +395,7 @@ class AthleteControllerTest {
         val body =
             mapOf(
                 "name" to randomString(),
-                "birthDate" to VALID_DATE,
+                "birthdate" to VALID_DATE,
             )
 
         client.put().uri("/athletes/$id")
@@ -418,7 +418,7 @@ class AthleteControllerTest {
         val body =
             mapOf(
                 "name" to randomString(),
-                "birthDate" to VALID_DATE,
+                "birthdate" to VALID_DATE,
             )
 
         client.put().uri("/athletes/$id")
@@ -439,7 +439,7 @@ class AthleteControllerTest {
         val body =
             mapOf(
                 "name" to randomString(),
-                "birthDate" to VALID_DATE,
+                "birthdate" to VALID_DATE,
             )
 
         client.put().uri("/athletes/$FIRST_ATHLETE_ID")
@@ -460,7 +460,7 @@ class AthleteControllerTest {
         val body =
             mapOf(
                 "name" to randomString(),
-                "birthDate" to VALID_DATE,
+                "birthdate" to VALID_DATE,
             )
 
         client.put().uri("/athletes/$FIRST_ATHLETE_ID")

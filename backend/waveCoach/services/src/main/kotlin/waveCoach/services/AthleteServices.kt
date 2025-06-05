@@ -41,7 +41,7 @@ data class MicrocycleInputInfo(
 )
 
 sealed class CreateAthleteError {
-    data object InvalidBirthDate : CreateAthleteError()
+    data object Invalidbirthdate : CreateAthleteError()
 
     data object InvalidName : CreateAthleteError()
 
@@ -57,7 +57,7 @@ sealed class GetAthleteError {
 typealias GetAthleteResult = Either<GetAthleteError, Athlete>
 
 sealed class UpdateAthleteError {
-    data object InvalidBirthDate : UpdateAthleteError()
+    data object Invalidbirthdate : UpdateAthleteError()
 
     data object InvalidName : UpdateAthleteError()
 
@@ -203,7 +203,7 @@ class AthleteServices(
     fun createAthlete(
         name: String,
         coachId: Int,
-        birthDate: String,
+        birthdate: String,
         photo: MultipartFile?,
     ): CreateAthleteResult {
         val username = athleteDomain.createAthleteUsername()
@@ -211,7 +211,7 @@ class AthleteServices(
             userDomain.createPasswordValidationInformation(athleteDomain.athleteDefaultPassword)
 
         if (!athleteDomain.isNameValid(name)) return failure(CreateAthleteError.InvalidName)
-        val date = dateToLongWithVerification(birthDate) ?: return failure(CreateAthleteError.InvalidBirthDate)
+        val date = dateToLongWithVerification(birthdate) ?: return failure(CreateAthleteError.Invalidbirthdate)
 
         val url =
             photo?.let {
@@ -258,9 +258,9 @@ class AthleteServices(
         coachId: Int,
         aid: Int,
         name: String,
-        birthDate: String,
+        birthdate: String,
     ): UpdateAthleteResult {
-        val date = dateToLongWithVerification(birthDate) ?: return failure(UpdateAthleteError.InvalidBirthDate)
+        val date = dateToLongWithVerification(birthdate) ?: return failure(UpdateAthleteError.Invalidbirthdate)
 
         if (!athleteDomain.isNameValid(name)) return failure(UpdateAthleteError.InvalidName)
 

@@ -78,7 +78,6 @@ export function Login() {
       return
     }
   }
-  
 
   function handleOnChange(ev: React.ChangeEvent<HTMLInputElement>) {
     dispatch({ type: 'edit', name: ev.currentTarget.name, value: ev.currentTarget.value })

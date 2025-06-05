@@ -62,6 +62,7 @@ const WATER = {
   update: (id: string) => `${WATER_URL}/${id}`,
   delete: (id: string) => `${WATER_URL}/${id}`,
   
+  createQuestionnaire: (id: string) => `${WATER_URL}/${id}/questionnaire`,
   getQuestionnaire: (id: string) => `${WATER_URL}/${id}/questionnaire`,
 }
 

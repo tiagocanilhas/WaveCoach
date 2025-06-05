@@ -14,41 +14,55 @@ import styles from './styles.module.css'
 import { createGymActivity } from '../../../services/gymServices'
 import { useParams } from 'react-router-dom'
 import { handleError } from '../../../utils/handleError'
+import { ExerciseToAdd } from '../../types/ExerciseToAdd'
+import { VerticalReorderableList } from '../VerticalReordabelList'
+import { AddExercisePopup } from '../AddExercisePopup'
 
 type State = {
-  isOpen: boolean
+  isAdding: boolean
   date: string
-  exercises: any[]
+  exercises: ExerciseToAdd[]
+  exerciseToEdit: ExerciseToAdd | null
   error?: string
 }
 
 type Action =
-  | { type: 'openPopup' }
-  | { type: 'closePopup' }
+  | { type: 'toggleAdding' }
   | { type: 'setDate'; date: string }
-  | { type: 'addExercise'; payload: { exercise: Exercise; sets: SetData[] } }
-  | { type: 'removeExercise'; id: number }
+  | { type: 'addExercise'; exercise: ExerciseToAdd }
+  | { type: 'setExerciseToEdit'; exercise: ExerciseToAdd }
+  | { type: 'updateExercise'; exercise: ExerciseToAdd }
+  | { type: 'removeExercise'; id: string }
+  | { type: 'setExercises'; exercises: ExerciseToAdd[] }
   | { type: 'error'; error: string }
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
-    case 'openPopup':
-      return { ...state, isOpen: true }
-    case 'closePopup':
-      return { ...state, isOpen: false }
+    case 'toggleAdding':
+      return { ...state, isAdding: !state.isAdding }
     case 'setDate':
       return { ...state, date: action.date }
     case 'addExercise':
       return {
         ...state,
-        isOpen: false,
-        exercises: [...state.exercises, action.payload],
+        isAdding: true,
+        exercises: [...state.exercises, action.exercise],
+      }
+    case 'setExerciseToEdit':
+      return { ...state, exerciseToEdit: action.exercise }
+    case 'updateExercise':
+      return {
+        ...state,
+        exercises: state.exercises.map(info => (info.exercise.id === action.exercise.exercise.id ? action.exercise : info)),
+        exerciseToEdit: null,
       }
     case 'removeExercise':
       return {
         ...state,
-        exercises: state.exercises.filter(info => info.exercise.id !== action.id),
+        exercises: state.exercises.filter(info => info.tempId !== action.id),
       }
+    case 'setExercises':
+      return { ...state, exercises: action.exercises }
     case 'error':
       return { ...state, error: action.error }
     default:
@@ -62,25 +76,39 @@ type AddGymWorkoutPopupProps = {
 }
 
 const initialState: State = {
+  isAdding: false,
   date: new Date().toISOString().split('T')[0],
-  isOpen: false,
   exercises: [],
+  exerciseToEdit: null,
+  error: undefined,
 }
 
 export function AddGymWorkoutPopup({ onClose, onSuccess }: AddGymWorkoutPopupProps) {
   const [state, dispatch] = useReducer(reducer, initialState)
   const id = useParams().aid
 
-  function handleAddExercise() {
-    dispatch({ type: 'openPopup' })
-  }
-
-  function handleCloseExercise() {
-    dispatch({ type: 'closePopup' })
+  function handleToggleAdding() {
+    dispatch({ type: 'toggleAdding' })
   }
 
   function onAddExercise(exercise: Exercise, sets: SetData[]) {
-    dispatch({ type: 'addExercise', payload: { exercise, sets } })
+    dispatch({ type: 'addExercise', exercise: { tempId: Date.now().toString(), exercise, sets } })
+  }
+
+  function handleSetExerciseToEdit(exercise: ExerciseToAdd) {
+    dispatch({ type: 'setExerciseToEdit', exercise })
+  }
+
+  function handleUpdateExercise(exercise: Exercise, sets: SetData[]) {
+    dispatch({ type: 'updateExercise', exercise: { ...state.exerciseToEdit, exercise, sets } })
+  }
+
+  function handleOnDelete(id: string) {
+    dispatch({ type: 'removeExercise', id })
+  }
+
+  function handleReorder(exercises: ExerciseToAdd[]) {
+    dispatch({ type: 'setExercises', exercises })
   }
 
   function handleOnChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -108,7 +136,7 @@ export function AddGymWorkoutPopup({ onClose, onSuccess }: AddGymWorkoutPopupPro
     }
   }
 
-  const isOpen = state.isOpen
+  const isAdding = state.isAdding
   const date = state.date
   const exercises = state.exercises
   const error = state.error
@@ -123,37 +151,27 @@ export function AddGymWorkoutPopup({ onClose, onSuccess }: AddGymWorkoutPopupPro
             <form className={styles.addWorkout} onSubmit={handleOnSubmit}>
               <TextField type="date" name="date" value={date} onChange={handleOnChange} />
               <div className={styles.exercisesContainer}>
-                {exercises.map((info, index) => (
-                  <Card
-                    key={index}
-                    content={
-                      <div className={styles.exercise}>
-                        <div className={styles.remove} onClick={() => dispatch({ type: 'removeExercise', id: info.exercise.id })}>
-                          🗑️
-                        </div>
-                        <div className={styles.exerciseInfo}>
-                          <img src={`/images/no_image.svg`} alt="Exercise" />
-                          <h3>{info.exercise.name}</h3>
-                        </div>
-                        <ul>
-                          {info.sets.map((set, idx) => (
-                            <li key={idx}>
-                              Set {idx + 1}: {set.reps} x {set.weight} kg - {set.restTime}'
-                            </li>
-                          ))}
-                        </ul>
+                <VerticalReorderableList<ExerciseToAdd>
+                  list={exercises}
+                  onReorder={handleReorder}
+                  renderItem={item => (
+                    <div className={styles.exercise}>
+                      <div className={styles.exerciseInfo}>
+                        <img src={item.exercise.url || `/images/no_image.svg`} alt="Exercise" />
+                        <h3>{item.exercise.name}</h3>
                       </div>
-                    }
-                    width="600px"
-                  />
-                ))}
-                <Card
-                  content={
-                    <div className={styles.add} onClick={handleAddExercise}>
-                      +
+                      <ul>
+                        {item.sets.map((set, idx) => (
+                          <li key={idx}>
+                            Set {idx + 1}: {set.reps} x {set.weight} kg - {set.restTime}'
+                          </li>
+                        ))}
+                      </ul>
                     </div>
-                  }
-                  width="600px"
+                  )}
+                  onClick={item => handleSetExerciseToEdit(item)}
+                  onDelete={item => handleOnDelete(item.tempId)}
+                  onAdd={handleToggleAdding}
                 />
               </div>
               <Button text="Add" type="submit" disabled={disabled} width="100%" height="30px" />
@@ -164,7 +182,16 @@ export function AddGymWorkoutPopup({ onClose, onSuccess }: AddGymWorkoutPopupPro
         onClose={onClose}
       />
 
-      {isOpen && <SelectExercisePopup onAdd={onAddExercise} onClose={handleCloseExercise} />}
+      {isAdding && <SelectExercisePopup onAdd={onAddExercise} onClose={handleToggleAdding} />}
+
+      {state.exerciseToEdit && (
+        <AddExercisePopup
+          data={state.exerciseToEdit}
+          exercise={state.exerciseToEdit.exercise}
+          onAdd={handleUpdateExercise}
+          onClose={() => handleSetExerciseToEdit(null)}
+        />
+      )}
     </>
   )
 }

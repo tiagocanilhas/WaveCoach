@@ -1,14 +1,24 @@
-
-.add {
+.container {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: auto;
+  flex-direction: column;
+  gap: 20px;
+  width: 30vw;
+}
 
-  width: 17%;
-  font-size: 80px;
-  background-color: #ccc;
-  color: white;
-  border-radius: 50%;
-  cursor: pointer;
+.sliderContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+  justify-content: flex-end;
+}
+
+.sliderContainer label {
+  width: 110px;
+  text-align: right;
+}
+
+.errorMessage {
+  color: red;
+  font-size: 14px;
 }

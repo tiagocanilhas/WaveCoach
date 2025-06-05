@@ -11,9 +11,10 @@ import { createAthlete, updateAthlete } from '../../../services/athleteServices'
 import { handleError } from '../../../utils/handleError'
 
 import styles from './styles.module.css'
+import { epochConverter } from '../../../utils/epochConverter'
 
 type State =
-  | { tag: 'editing'; inputs: { name: string; birthdate: string }; image: File; error?: string }
+  | { tag: 'editing'; inputs: { name: string; birthdate: string; url?: string }; image: File; error?: string }
   | { tag: 'submitting'; name: string; birthdate: string; image: File | null }
   | { tag: 'submitted' }
 
@@ -65,21 +66,17 @@ function reducer(state: State, action: Action): State {
 type AthletePopupProps = {
   onClose: () => void
   onSuccess: () => void
-  initialValues?: {
-    id: number
-    name: string
-    birthdate: string
-  }
+  data?: { uid: number; name: string; birthdate: number; url?: string }
 }
 
-export function AthletePopup({ onClose, onSuccess, initialValues }: AthletePopupProps) {
-  const isEditing = initialValues ? true : false
+export function AthletePopup({ onClose, onSuccess, data }: AthletePopupProps) {
+  const isEditing = data ? true : false
 
-  const initialRef = useRef(initialValues)
+  const initialRef = useRef(data)
 
   const initialState: State = {
     tag: 'editing',
-    inputs: { name: initialValues?.name || '', birthdate: initialValues?.birthdate || '' },
+    inputs: { name: data?.name || '', birthdate: epochConverter(data?.birthdate, 'yyyy-mm-dd'), url: data?.url },
     image: null,
   }
   const [state, dispatch] = useReducer(reducer, initialState)
@@ -90,9 +87,13 @@ export function AthletePopup({ onClose, onSuccess, initialValues }: AthletePopup
 
     dispatch({ type: 'submit' })
 
+    const name = state.inputs.name.trim()
+    const birthdate = state.inputs.birthdate.trim()
+    const image = state.image
+
     try {
-      if (isEditing) await updateAthlete(initialValues.id.toString(), state.inputs.name, state.inputs.birthdate)
-      else await createAthlete(state.inputs.name, state.inputs.birthdate, state.image)
+      if (isEditing) await updateAthlete(data.uid.toString(), name, birthdate)
+      else await createAthlete(name, birthdate, image)
 
       dispatch({ type: 'success' })
       onSuccess()
@@ -112,11 +113,12 @@ export function AthletePopup({ onClose, onSuccess, initialValues }: AthletePopup
 
   const name = state.tag === 'editing' ? state.inputs.name : ''
   const birthdate = state.tag === 'editing' ? state.inputs.birthdate : ''
+  const url = state.tag === 'editing' ? state.inputs.url : undefined
   const disabled =
     state.tag === 'submitting' ||
     name.trim() === '' ||
     birthdate.trim() === '' ||
-    (isEditing && name === initialRef.current?.name && birthdate === initialRef.current?.birthdate)
+    (isEditing && name === initialRef.current?.name && birthdate === epochConverter(initialRef.current?.birthdate, 'yyyy-mm-dd'))
 
   return (
     <Popup
@@ -125,14 +127,22 @@ export function AthletePopup({ onClose, onSuccess, initialValues }: AthletePopup
       content={
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.container}>
-            <ImageSelector defaultImage={'/images/anonymous-user.webp'} onImageSelect={handleImageChange} />
+            <ImageSelector defaultImage={url || '/images/anonymous-user.webp'} onImageSelect={handleImageChange} />
             <div className={styles.inputs}>
               <TextField name="name" label="Name" value={name} onChange={handleChange} required />
-              <TextField name="birthdate" type="date" value={birthdate} onChange={handleChange} required />
+              <TextField
+                name="birthdate"
+                type="date"
+                value={birthdate}
+                onChange={handleChange}
+                label="birthdate"
+                InputLabelProps={{ shrink: true }}
+                required
+              />
             </div>
           </div>
-          <Button text={isEditing ? 'Save Changes' : 'Add'} type="submit" disabled={disabled} width="100%" height="25px" />
-          {state.tag === 'editing' && state.error && <div className={styles.error}>{state.error}</div>}
+          <Button text={isEditing ? 'Save' : 'Add'} type="submit" disabled={disabled} width="100%" height="25px" />
+          {state.tag === 'editing' && state.error && <p className={styles.error}>{state.error}</p>}
         </form>
       }
     />

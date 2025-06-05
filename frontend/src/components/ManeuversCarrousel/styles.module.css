@@ -8,9 +8,17 @@
 }
 
 .chartWrapper {
+  position: relative;
   width: 100%;
   height: 400px;
   margin-bottom: 10px;
+  overflow: hidden;
+}
+
+.chartContent {
+  position: absolute;
+  width: 100%;
+  height: 100%;
 }
 
 .buttons {

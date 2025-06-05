@@ -30,7 +30,7 @@ class AthleteController(
         @RequestPart("input") input: AthleteCreateInputModel,
         @RequestPart("photo") photo: MultipartFile?,
     ): ResponseEntity<*> {
-        val result = athleteServices.createAthlete(input.name, coach.info.id, input.birthDate, photo)
+        val result = athleteServices.createAthlete(input.name, coach.info.id, input.birthdate, photo)
 
         return when (result) {
             is Success ->
@@ -41,7 +41,7 @@ class AthleteController(
 
             is Failure ->
                 when (result.value) {
-                    CreateAthleteError.InvalidBirthDate -> Problem.response(400, Problem.invalidBirthDate)
+                    CreateAthleteError.Invalidbirthdate -> Problem.response(400, Problem.invalidbirthdate)
                     CreateAthleteError.InvalidName -> Problem.response(400, Problem.invalidName)
                     CreateAthleteError.InvalidPhoto -> Problem.response(400, Problem.invalidPhoto)
                 }
@@ -65,7 +65,7 @@ class AthleteController(
                             result.value.uid,
                             result.value.coach,
                             result.value.name,
-                            result.value.birthDate,
+                            result.value.birthdate,
                             result.value.credentialsChanged,
                             result.value.url,
                         ),
@@ -92,7 +92,7 @@ class AthleteController(
                             it.uid,
                             it.coach,
                             it.name,
-                            it.birthDate,
+                            it.birthdate,
                             it.credentialsChanged,
                             it.url,
                         )
@@ -108,7 +108,7 @@ class AthleteController(
         @RequestBody input: AthleteUpdateInputModel,
     ): ResponseEntity<*> {
         val uid = aid.toIntOrNull() ?: return Problem.response(400, Problem.invalidAthleteId)
-        val result = athleteServices.updateAthlete(coach.info.id, uid, input.name, input.birthDate)
+        val result = athleteServices.updateAthlete(coach.info.id, uid, input.name, input.birthdate)
 
         return when (result) {
             is Success -> ResponseEntity.status(204).build<Unit>()
@@ -116,7 +116,7 @@ class AthleteController(
             is Failure ->
                 when (result.value) {
                     UpdateAthleteError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
-                    UpdateAthleteError.InvalidBirthDate -> Problem.response(400, Problem.invalidBirthDate)
+                    UpdateAthleteError.Invalidbirthdate -> Problem.response(400, Problem.invalidbirthdate)
                     UpdateAthleteError.InvalidName -> Problem.response(400, Problem.invalidName)
                     UpdateAthleteError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
                 }

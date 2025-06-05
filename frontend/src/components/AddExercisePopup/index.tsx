@@ -12,13 +12,14 @@ import { SetData } from '../../types/SetData'
 import styles from './styles.module.css'
 
 type AddExercisePopupProps = {
+  data?: { sets: SetData[] }
   exercise: Exercise
   onAdd: (exercise: Exercise, sets: SetData[]) => void
   onClose: () => void
 }
 
-export function AddExercisePopup({ exercise, onAdd, onClose }: AddExercisePopupProps) {
-  const [sets, setSets] = useState<SetData[]>([{ reps: undefined, weight: undefined, restTime: undefined }])
+export function AddExercisePopup({ data, exercise, onAdd, onClose }: AddExercisePopupProps) {
+  const [sets, setSets] = useState<SetData[]>(data?.sets || [{ reps: undefined, weight: undefined, restTime: undefined }])
 
   function handleAddSet() {
     setSets(prev => [...prev, { reps: undefined, weight: undefined, restTime: undefined }])

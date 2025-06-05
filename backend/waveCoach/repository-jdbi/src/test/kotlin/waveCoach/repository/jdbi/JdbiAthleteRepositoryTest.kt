@@ -22,7 +22,7 @@ class JdbiAthleteRepositoryTest {
             val uid = userRepository.storeUser(USERNAME, PasswordValidationInfo(PASSWORD))
 
             val name = randomString()
-            val aid = athleteRepository.storeAthlete(uid, COACH_ID, name, BIRTHDATE, null)
+            val aid = athleteRepository.storeAthlete(uid, COACH_ID, name, birthdate, null)
 
             assertNotNull(aid)
         }
@@ -36,7 +36,7 @@ class JdbiAthleteRepositoryTest {
             val uid = userRepository.storeUser(USERNAME, PasswordValidationInfo(PASSWORD))
 
             val name = randomString()
-            val aid = athleteRepository.storeAthlete(uid, COACH_ID, name, BIRTHDATE, null)
+            val aid = athleteRepository.storeAthlete(uid, COACH_ID, name, birthdate, null)
 
             val athlete = athleteRepository.getAthlete(aid)
 
@@ -59,7 +59,7 @@ class JdbiAthleteRepositoryTest {
             val athleteRepository = JdbiAthleteRepository(handle)
 
             val updatedName = randomString()
-            athleteRepository.updateAthlete(ATHLETE_ID, updatedName, BIRTHDATE)
+            athleteRepository.updateAthlete(ATHLETE_ID, updatedName, birthdate)
 
             val athlete = athleteRepository.getAthlete(ATHLETE_ID)
 
@@ -77,7 +77,7 @@ class JdbiAthleteRepositoryTest {
             val uid = userRepository.storeUser(USERNAME, PasswordValidationInfo(PASSWORD))
 
             val name = randomString()
-            val aid = athleteRepository.storeAthlete(uid, COACH_ID, name, BIRTHDATE, null)
+            val aid = athleteRepository.storeAthlete(uid, COACH_ID, name, birthdate, null)
 
             athleteRepository.removeAthlete(aid)
 
@@ -120,7 +120,7 @@ class JdbiAthleteRepositoryTest {
     companion object {
         private fun randomString() = "String_${abs(Random.nextLong())}"
 
-        private const val BIRTHDATE = 958815600000 // (15-05-2000)
+        private const val birthdate = 958815600000 // (15-05-2000)
         private const val COACH_ID = 1
         private const val USERNAME = "athlete test"
         private const val PASSWORD = "changeit"

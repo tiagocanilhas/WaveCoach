@@ -207,17 +207,30 @@ export function AddCharacteristicsPopup({ onClose, onSuccess }: AddCharacteristi
       onClose={onClose}
       content={
         <form onSubmit={handleSubmit} className={styles.form}>
-          <TextField name="date" type="date" label="Date" value={date} onChange={handleChange} />
-          <TextField name="height" type="number" label="Height" value={height} onChange={handleChange} />
-          <TextField name="weight" type="number" label="Weight" value={weight} onChange={handleChange} />
-          <TextField name="calories" type="number" label="Calories" value={calories} onChange={handleChange} />
-          <TextField name="bodyFat" type="number" label="Body Fat" value={bodyFat} onChange={handleChange} />
-          <TextField name="waistSize" type="number" label="Waist Size" value={waistSize} onChange={handleChange} />
-          <TextField name="armSize" type="number" label="Arm Size" value={armSize} onChange={handleChange} />
-          <TextField name="thighSize" type="number" label="Thigh Size" value={thighSize} onChange={handleChange} />
-          <TextField name="tricepFat" type="number" label="Tricep Fat" value={tricepFat} onChange={handleChange} />
-          <TextField name="abdomenFat" type="number" label="Abdomen Fat" value={abdomenFat} onChange={handleChange} />
-          <TextField name="thighFat" type="number" label="Thigh Fat" value={thighFat} onChange={handleChange} />
+          <div className={styles.row}>
+            <div className={styles.column}>
+              <TextField
+                name="date"
+                type="date"
+                value={date}
+                onChange={handleChange}
+                label="Date"
+                InputLabelProps={{ shrink: true }}
+              />
+              <TextField name="height" type="number" label="Height (cm)" value={height} onChange={handleChange} />
+              <TextField name="weight" type="number" label="Weight (kg)" value={weight} onChange={handleChange} />
+              <TextField name="calories" type="number" label="Calories (kcal)" value={calories} onChange={handleChange} />
+              <TextField name="bodyFat" type="number" label="Body Fat (%)" value={bodyFat} onChange={handleChange} />
+            </div>
+            <div className={styles.column}>
+              <TextField name="waistSize" type="number" label="Waist Size (cm)" value={waistSize} onChange={handleChange} />
+              <TextField name="armSize" type="number" label="Arm Size(cm)" value={armSize} onChange={handleChange} />
+              <TextField name="thighSize" type="number" label="Thigh Size(cm)" value={thighSize} onChange={handleChange} />
+              <TextField name="tricepFat" type="number" label="Tricep Fat (mm)" value={tricepFat} onChange={handleChange} />
+              <TextField name="abdomenFat" type="number" label="Abdomen Fat (mm)" value={abdomenFat} onChange={handleChange} />
+              <TextField name="thighFat" type="number" label="Thigh Fat (mm)" value={thighFat} onChange={handleChange} />
+            </div>
+          </div>
           <Button text="Add" type="submit" disabled={disabled} width="100%" height="25px" />
           {state.tag === 'editing' && state.error && <div className={styles.error}>{state.error}</div>}
         </form>

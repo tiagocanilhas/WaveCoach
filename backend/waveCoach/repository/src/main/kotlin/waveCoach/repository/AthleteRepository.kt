@@ -9,7 +9,7 @@ interface AthleteRepository {
         uid: Int,
         coachId: Int,
         name: String,
-        birthDate: Long,
+        birthdate: Long,
         url: String?,
     ): Int
 
@@ -20,7 +20,7 @@ interface AthleteRepository {
     fun updateAthlete(
         uid: Int,
         name: String,
-        birthDate: Long,
+        birthdate: Long,
     )
 
     fun setCredentialsChangedToTrue(uid: Int)
