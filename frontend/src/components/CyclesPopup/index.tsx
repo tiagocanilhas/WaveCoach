@@ -3,15 +3,14 @@ import { useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 import FullCalendar from '@fullcalendar/react'
-import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin, { Draggable } from '@fullcalendar/interaction'
+import multiMonthPlugin from '@fullcalendar/multimonth'
 
 import { Popup } from '../Popup'
 import { Button } from '../Button'
 
 import { Mesocycle } from '../../types/Mesocycle'
 
-import { parseToEpoch } from '../../../utils/parseToEpoch'
 import { epochConverter } from '../../../utils/epochConverter'
 
 import { createCalendar } from '../../../services/athleteServices'
@@ -206,9 +205,11 @@ export function CyclesPopup({ onClose, onSuccess, cycles }: CyclesPopupProps) {
           )}
           <div className={styles.calendar}>
             <FullCalendar
-              height="70vh"
-              plugins={[dayGridPlugin, interactionPlugin]}
-              initialView="dayGridMonth"
+              height="80vh"
+              plugins={[multiMonthPlugin, interactionPlugin]}
+              initialView="multiMonthYear"
+              multiMonthMaxColumns={2} 
+              showNonCurrentDates={true}
               events={events}
               droppable={true}
               eventReceive={handleReceive}
@@ -217,7 +218,7 @@ export function CyclesPopup({ onClose, onSuccess, cycles }: CyclesPopupProps) {
               eventResize={handleEvent}
               eventContent={eventRender}
               headerToolbar={{
-                left: 'prevYear,prev,next,nextYear today',
+                left: 'prev,next today',
                 right: '',
                 center: 'title',
               }}

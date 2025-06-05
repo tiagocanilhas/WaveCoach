@@ -135,6 +135,7 @@ export function GymWorkouts() {
         onAdd={user.isCoach ? handleAdd : undefined}
         onCycleSelected={handleOnCycleSelected}
         type="gym"
+        onDeleteSuccess={fetchCalendar}
       />
 
       {state.isOpen && <AddGymWorkoutPopup onClose={handleClose} onSuccess={handleOnSuccess} />}

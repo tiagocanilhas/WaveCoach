@@ -150,7 +150,8 @@ export function WaterWorkouts() {
         onAdd={user.isCoach ? handleAdd : undefined}
         onCycleSelected={handleOnCycleSelected}
         type="water"
-      />
+        onDeleteSuccess={fetchCalendar}
+     />
 
       <WaterCharts data={state.calendar} selected={state.selectedCycle} />
 

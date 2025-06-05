@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { ReactNode, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
 
 import { Divisor } from '../Divisor'
 import { Card } from '../Card'
@@ -18,9 +17,10 @@ type WorkoutProps = {
   onCycleSelected: (cycle: { mesocycleId: number; microcycleId: number | null } | null) => void
   type: 'water' | 'gym'
   onAdd: () => void
+  onDeleteSuccess: () => void
 }
 
-export function Workout({ lastWorkoutContent, calendar, onCycleSelected, type, onAdd }: WorkoutProps) {
+export function Workout({ lastWorkoutContent, calendar, onCycleSelected, type, onAdd, onDeleteSuccess }: WorkoutProps) {
   const [cycleSelected, setCycleSelected] = useState<{ mesocycleId: number; microcycleId: number | null } | null>(null)
 
   function handleCycleSelect(cycle: { mesocycleId: number; microcycleId: number | null } | null) {
@@ -73,7 +73,7 @@ export function Workout({ lastWorkoutContent, calendar, onCycleSelected, type, o
             items={workouts}
             getKey={workout => workout.id}
             onAdd={onAdd}
-            renderItem={workout => <Activity activity={{ id: workout.id, type: type, date: workout.date }} />}
+            renderItem={workout => <Activity activity={{ id: workout.id, type: type, date: workout.date }} onDeleteSuccess={onDeleteSuccess} />}
           />
         </>
       }

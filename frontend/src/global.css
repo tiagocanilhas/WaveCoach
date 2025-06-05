@@ -24,11 +24,11 @@
   --background-color: #baa89b;
 
   /* Cycles */
-  --mesocycle-color: #b18a6e;
-  --mesocycle-text-color: #3c2f2f;
+  --mesocycle-color: #cba285;
+  --mesocycle-text-color: #5f4c4c;
   --mesocycle-text-hover-color: #ffffff;
-  --mesocycle-hover-color: #9e785f;
-  --mesocycle-active-color: #8c5f47;
+  --mesocycle-hover-color: #ebc1a5;
+  --mesocycle-active-color: #b88163;
   --mesocycle-active-text-color: #ffffff;
 
   --microcycle-color: #a67c52;

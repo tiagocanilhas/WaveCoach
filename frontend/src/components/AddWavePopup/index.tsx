@@ -40,7 +40,7 @@ function reducer(state: State, action: Action): State {
     case 'addManeuver':
       return {
         ...state,
-        isSelecting: true,
+        isSelecting: false,
         maneuvers: [...state.maneuvers, action.maneuver],
       }
     case 'setManeuverToEdit':

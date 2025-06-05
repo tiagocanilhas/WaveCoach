@@ -45,7 +45,7 @@ function reducer(state: State, action: Action): State {
     case 'addExercise':
       return {
         ...state,
-        isAdding: true,
+        isAdding: false,
         exercises: [...state.exercises, action.exercise],
       }
     case 'setExerciseToEdit':

@@ -75,6 +75,15 @@ export function Athlete() {
   const id = useParams().aid
   const [user, _] = useAuthentication()
   const navigate = useNavigate()
+  
+  async function fetchCalendar() {
+    try {
+      const res = await getCalendar(id)
+      dispatch({ type: 'setCalendar', calendar: res })
+    } catch (error) {
+      console.error('Error fetching Activities:', error)
+    }
+  }
 
   useEffect(() => {
     async function fetchAthlete() {
@@ -83,14 +92,6 @@ export function Athlete() {
         dispatch({ type: 'setAthlete', athlete: res })
       } catch (error) {
         console.error('Error fetching athlete:', error)
-      }
-    }
-    async function fetchCalendar() {
-      try {
-        const res = await getCalendar(id)
-        dispatch({ type: 'setCalendar', calendar: res })
-      } catch (error) {
-        console.error('Error fetching Activities:', error)
       }
     }
 
@@ -125,7 +126,7 @@ export function Athlete() {
   }
 
   function onSuccess() {
-    window.location.reload()
+    fetchCalendar()
   }
 
   function handleCycleSelect(select: SelectedCycle) {
@@ -206,7 +207,7 @@ export function Athlete() {
             <ObjectList
               items={activities}
               getKey={activity => activity.id}
-              renderItem={activity => <Activity activity={activity} />}
+              renderItem={activity => <Activity activity={activity} onDeleteSuccess={onSuccess} />}
             />
           </div>
         }

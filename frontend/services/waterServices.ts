@@ -26,6 +26,10 @@ export async function getWaterActivity(wid: string) {
   return customFetch(URIS.WATER.getById(wid), 'GET')
 }
 
+export async function deleteWaterActivity(wid: string) {
+  return customFetch(URIS.WATER.delete(wid), 'DELETE')
+}
+
 export async function createQuestionnaire(wid: string, sleep: number, fatigue: number, stress: number, musclePain: number) {
   return customFetch(URIS.WATER.createQuestionnaire(wid), 'POST', { sleep, fatigue, stress, musclePain })
 }
