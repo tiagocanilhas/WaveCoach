@@ -16,7 +16,7 @@ import { deleteAthlete } from '../../../services/athleteServices'
 
 import { useAuthentication } from '../../hooks/useAuthentication'
 
-import { Athlete } from '../../types/Athlete'
+import { Athlete } from '../../types/athlete'
 
 import styles from './styles.module.css'
 

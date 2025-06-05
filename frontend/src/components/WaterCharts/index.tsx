@@ -53,10 +53,10 @@ export function WaterCharts({ data, selected }: WaterChartsProps) {
     const { waterTime, waveCount, maneuverAttempts } = getExternalLoadVolumeData(workouts)
     const { wavesPerMinute, maneuversPerWave } = getExternalLoadIntensityData(workouts)
 
-    const maneuvers = workouts.flatMap(w => w.waves.flatMap(wave => wave.maneuvers))
+    const waves = workouts.flatMap(w => w.waves)
 
     // Maneuvers Attempts Data (Right Side)
-    const maneuverR = maneuvers.filter(m => m.rightSide)
+    const maneuverR = waves.filter(w => w.rightSide).flatMap(wave => wave.maneuvers)
     const maneuversRLabels = maneuverR.map(m => m.name).filter((value, index, self) => self.indexOf(value) === index)
 
     const rightManeuvers = mesocycle.microcycles.map(microcycle => {
@@ -96,7 +96,7 @@ export function WaterCharts({ data, selected }: WaterChartsProps) {
     )
 
     // Maneuvers Attempts Data (Left Side)
-    const maneuverL = maneuvers.filter(m => !m.rightSide)
+    const maneuverL = waves.filter(w => !w.rightSide).flatMap(wave => wave.maneuvers)
     const maneuversLLabels = maneuverL.map(m => m.name).filter((value, index, self) => self.indexOf(value) === index)
 
     const leftManeuvers = mesocycle.microcycles.map(microcycle => {
@@ -229,10 +229,10 @@ export function WaterCharts({ data, selected }: WaterChartsProps) {
     const { waterTime, waveCount, maneuverAttempts } = getExternalLoadVolumeData(workouts)
     const { wavesPerMinute, maneuversPerWave } = getExternalLoadIntensityData(workouts)
 
-    const maneuvers = workouts.flatMap(w => w.waves.flatMap(wave => wave.maneuvers))
+    const waves = workouts.flatMap(w => w.waves)
 
     // Maneuvers Attempts Data (Right Side)
-    const maneuverR = maneuvers.filter(m => m.rightSide)
+    const maneuverR = waves.filter(w => w.rightSide).flatMap(wave => wave.maneuvers)
     const maneuversRLabels = maneuverR.map(m => m.name).filter((value, index, self) => self.indexOf(value) === index)
 
     const rightManeuvers = countManeuvers(maneuverR)
@@ -244,7 +244,7 @@ export function WaterCharts({ data, selected }: WaterChartsProps) {
     })
 
     // Maneuvers Attempts Data (Left Side)
-    const maneuverL = maneuvers.filter(m => !m.rightSide)
+    const maneuverL = waves.filter(w => !w.rightSide).flatMap(wave => wave.maneuvers)
     const maneuversLLabels = maneuverL.map(m => m.name).filter((value, index, self) => self.indexOf(value) === index)
     const leftManeuvers = countManeuvers(maneuverL)
     const leftSuccessesData = Object.keys(leftManeuvers).map(label => leftManeuvers[label].success || 0)

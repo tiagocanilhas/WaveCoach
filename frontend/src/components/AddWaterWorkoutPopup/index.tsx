@@ -3,13 +3,11 @@ import { useReducer } from 'react'
 import { useParams } from 'react-router-dom'
 
 import { Slider, TextField } from '@mui/material'
-import { Card } from '../Card'
 import { Popup } from '../Popup'
 import { Button } from '../Button'
 import { AddWavePopup } from '../AddWavePopup'
 import { CustomTimePicker } from '../CustomTimePicker'
 
-// import { Wave } from '../../types/Wave'
 import { WaveToAdd } from '../../types/WaveToAdd'
 
 import { createWaterActivity } from '../../../services/waterServices'
@@ -17,51 +15,69 @@ import { createWaterActivity } from '../../../services/waterServices'
 import { handleError } from '../../../utils/handleError'
 
 import styles from './styles.module.css'
+import { ManeuverToAdd } from '../../types/ManeuverToAdd'
+import { VerticalReorderableList } from '../VerticalReordabelList'
 
 type State = {
-  isOpen: boolean
+  isAdding: boolean
   date: string
   condition: string
-  pse: number
+  rpe: number
   time: number
-  heartRate: number
+  trimp: number
+  waveToEdit: WaveToAdd | null
   waves: WaveToAdd[]
   error?: string
 }
 
 type Action =
-  | { type: 'openPopup' }
-  | { type: 'closePopup' }
+  | { type: 'toggleIsAdding' }
   | { type: 'setDate'; date: string }
   | { type: 'setCondition'; condition: string }
-  | { type: 'setPse'; pse: number }
+  | { type: 'setRpe'; rpe: number }
   | { type: 'setTime'; time: number }
-  | { type: 'setHeartRate'; heartRate: number }
+  | { type: 'setTrimp'; trimp: number }
   | { type: 'addWave'; wave: WaveToAdd }
+  | { type: 'setWaveToEdit'; wave: WaveToAdd | null }
+  | { type: 'updateWave'; wave: WaveToAdd }
+  | { type: 'deleteWave'; tempId: string }
+  | { type: 'setWaves'; waves: WaveToAdd[] }
   | { type: 'error'; error: string }
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
-    case 'openPopup':
-      return { ...state, isOpen: true }
-    case 'closePopup':
-      return { ...state, isOpen: false }
+    case 'toggleIsAdding':
+      return { ...state, isAdding: !state.isAdding }
     case 'setDate':
       return { ...state, date: action.date }
     case 'setCondition':
       return { ...state, condition: action.condition }
-    case 'setPse':
-      return { ...state, pse: action.pse }
+    case 'setRpe':
+      return { ...state, rpe: action.rpe }
     case 'setTime':
       return { ...state, time: action.time }
-    case 'setHeartRate':
-      return { ...state, heartRate: action.heartRate }
+    case 'setTrimp':
+      return { ...state, trimp: action.trimp }
     case 'addWave':
       return {
         ...state,
-        isOpen: false,
+        isAdding: false,
         waves: [...state.waves, action.wave],
       }
+    case 'setWaveToEdit':
+      return { ...state, waveToEdit: action.wave }
+    case 'updateWave':
+      return {
+        ...state,
+        waves: state.waves.map(wave =>
+          wave.tempId === action.wave.tempId ? action.wave : wave
+        ),
+        waveToEdit: null,
+      }
+    case 'deleteWave':
+      return { ...state, waves: state.waves.filter(wave => wave.tempId !== action.tempId) }
+    case 'setWaves':
+      return { ...state, waves: action.waves }
     case 'error':
       return { ...state, error: action.error }
     default:
@@ -76,11 +92,12 @@ type AddWaterWorkoutPopupProps = {
 
 const initialState: State = {
   date: new Date().toISOString().split('T')[0],
-  isOpen: false,
+  isAdding: false,
   condition: '',
-  pse: 0,
+  rpe: 0,
   time: 0,
-  heartRate: 0,
+  trimp: 0,
+  waveToEdit: null,
   waves: [],
 }
 
@@ -88,16 +105,28 @@ export function AddWaterWorkoutPopup({ onClose, onSuccess }: AddWaterWorkoutPopu
   const [state, dispatch] = useReducer(reducer, initialState)
   const id = useParams().aid
 
-  function handleAddExercise() {
-    dispatch({ type: 'openPopup' })
+  function handleToggleIsAdding() {
+    dispatch({ type: 'toggleIsAdding' })
   }
 
-  function handleCloseExercise() {
-    dispatch({ type: 'closePopup' })
+  function onAddWave(maneuvers: ManeuverToAdd[], rightSide: boolean) {
+    dispatch({ type: 'addWave', wave: { tempId: Date.now().toString(), maneuvers, rightSide } })
   }
 
-  function onAddWave(wave: WaveToAdd) {
-    dispatch({ type: 'addWave', wave })
+  function handleSetWaveToEdit(wave: WaveToAdd) {
+    dispatch({ type: 'setWaveToEdit', wave })
+  }
+
+  function handleUpdateWave(maneuvers: ManeuverToAdd[], rightSide: boolean) {
+    dispatch({ type: 'updateWave', wave: { ...state.waveToEdit, maneuvers, rightSide } })
+  }
+
+  function handleDeleteWave(tempId: string) {
+    dispatch({ type: 'deleteWave', tempId })
+  }
+
+  function handleSetWaves(waves: WaveToAdd[]) {
+    dispatch({ type: 'setWaves', waves })
   }
 
   function handleOnChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -118,11 +147,11 @@ export function AddWaterWorkoutPopup({ onClose, onSuccess }: AddWaterWorkoutPopu
     const target = event.target as HTMLInputElement
     const name = target.name
     switch (name) {
-      case 'pse':
-        dispatch({ type: 'setPse', pse: newValue })
+      case 'rpe':
+        dispatch({ type: 'setRpe', rpe: newValue })
         break
-      case 'heartRate':
-        dispatch({ type: 'setHeartRate', heartRate: newValue })
+      case 'trimp':
+        dispatch({ type: 'setTrimp', trimp: newValue })
         break
       default:
         break
@@ -138,32 +167,33 @@ export function AddWaterWorkoutPopup({ onClose, onSuccess }: AddWaterWorkoutPopu
 
     const date = state.date
     const condition = state.condition
-    const pse = state.pse
+    const rpe = state.rpe
     const time = state.time
-    const heartRate = state.heartRate
+    const trimp = state.trimp
     const waves = state.waves.map(wave => ({
+      rightSide: wave.rightSide,
       maneuvers: wave.maneuvers.map(m => ({
-        waterManeuverId: m.waterManeuverId,
-        rightSide: m.rightSide,
+        waterManeuverId: m.maneuver.id,
         success: m.success,
       })),
     }))
 
     try {
-      await createWaterActivity(id, date, pse, condition, heartRate, time, waves)
+      await createWaterActivity(id, date, rpe, condition, trimp, time, waves)
       onSuccess()
     } catch (error) {
       dispatch({ type: 'error', error: handleError(error) })
     }
   }
 
-  const isOpen = state.isOpen
+  const isAdding = state.isAdding
   const date = state.date
   const condition = state.condition
-  const pse = state.pse
+  const rpe = state.rpe
   const time = state.time
-  const heartRate = state.heartRate
+  const trimp = state.trimp
   const waves = state.waves
+  const waveToEdit = state.waveToEdit
   const disabled = state.waves.length === 0 || date.length === 0
 
   return (
@@ -176,12 +206,12 @@ export function AddWaterWorkoutPopup({ onClose, onSuccess }: AddWaterWorkoutPopu
               <TextField type="date" name="date" value={date} onChange={handleOnChange} />
               <TextField type="text" name="condition" label="Condition" value={condition} onChange={handleOnChange} />
               <div className={styles.sliderContainer}>
-                <label>PSE</label>
+                <label>RPE</label>
                 <Slider
-                  name="pse"
-                  value={pse}
+                  name="rpe"
+                  value={rpe}
                   onChange={handleOnChangeSlider}
-                  min={0}
+                  min={1}
                   max={10}
                   step={1}
                   marks
@@ -190,10 +220,10 @@ export function AddWaterWorkoutPopup({ onClose, onSuccess }: AddWaterWorkoutPopu
               </div>
               <CustomTimePicker onChange={handleOnChangeTime} defaultValue={time} />
               <div className={styles.sliderContainer}>
-                <label>Heart Rate</label>
+                <label>TRIMP</label>
                 <Slider
-                  name="heartRate"
-                  value={heartRate}
+                  name="trimp"
+                  value={trimp}
                   min={50}
                   max={190}
                   onChange={handleOnChangeSlider}
@@ -203,29 +233,23 @@ export function AddWaterWorkoutPopup({ onClose, onSuccess }: AddWaterWorkoutPopu
                 />
               </div>
               <div className={styles.wavesContainer}>
-                {waves.map(info => (
-                  <Card
-                    content={
-                      <div className={styles.exercise}>
-                        {info.maneuvers.map(m => {
-                          return (
+                <VerticalReorderableList<WaveToAdd>
+                  list={waves}
+                  renderItem={info => (
+                      <div>
+                        <p>Side: {info.rightSide ? '➡️' : '⬅️'}</p>
+                        {info.maneuvers.map(m => (
                             <p>
-                              {m.name} - {m.rightSide ? '➡️' : '⬅️'} {m.success ? '✅' : '❌'}
+                              {m.maneuver.name} {m.success ? '✅' : '❌'}
                             </p>
                           )
-                        })}
+                        )}
                       </div>
-                    }
-                    width="600px"
-                  />
-                ))}
-                <Card
-                  content={
-                    <div className={styles.add} onClick={handleAddExercise}>
-                      +
-                    </div>
-                  }
-                  width="600px"
+                  )}
+                  onReorder={handleSetWaves}
+                  onClick={item => handleSetWaveToEdit(item)}
+                  onDelete={item => handleDeleteWave(item.tempId)}
+                  onAdd={handleToggleIsAdding}
                 />
               </div>
               <Button text="Add" type="submit" disabled={disabled} width="100%" height="30px" />
@@ -236,7 +260,11 @@ export function AddWaterWorkoutPopup({ onClose, onSuccess }: AddWaterWorkoutPopu
         onClose={onClose}
       />
 
-      {isOpen && <AddWavePopup onAdd={onAddWave} onClose={handleCloseExercise} />}
+      {(isAdding || waveToEdit) && <AddWavePopup 
+        data={waveToEdit} 
+        onAdd={waveToEdit ? handleUpdateWave : onAddWave}
+        onClose={waveToEdit ? () => handleSetWaveToEdit(null) : handleToggleIsAdding}
+        />}
     </>
   )
 }

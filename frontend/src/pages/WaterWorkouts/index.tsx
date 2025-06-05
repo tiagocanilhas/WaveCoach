@@ -18,18 +18,19 @@ import { WaterCalendar } from '../../types/WaterCalendar'
 
 import styles from './styles.module.css'
 import { epochConverter } from '../../../utils/epochConverter'
+import { WaterWorkout } from '../../types/WaterWorkout'
 
 type State = {
   calendar: WaterCalendar
   isOpen: boolean
-  workout: any
+  workout: WaterWorkout
   selectedCycle?: { mesocycleId: number; microcycleId: number | null }
   error?: string
 }
 
 type Action =
   | { type: 'setCalendar'; payload: WaterCalendar }
-  | { type: 'setLastWorkout'; payload: any }
+  | { type: 'setLastWorkout'; payload: WaterWorkout }
   | { type: 'addWorkout' }
   | { type: 'closeWorkout' }
   | { type: 'setSelectedCycle'; payload: { mesocycleId: number; microcycleId: number | null } | null }
@@ -120,21 +121,20 @@ export function WaterWorkouts() {
               <div className={styles.lastWorkout}>
                 <h2>{epochConverter(workout.date, 'dd-mm-yyyy')}</h2>
                 <div className={styles.lastWorkoutDetails}>
-                  <p>PSE: {workout.pse} (0-10)</p>
+                  <p>RPE: {workout.rpe} (0-10)</p>
                   <p>Condition: {workout.condition}</p>
-                  <p>Heart Rate: {workout.heartRate} bpm</p>
+                  <p>TRIMP: {workout.trimp}</p>
                   <div>Duration: {workout.duration / 60} min</div>
                 </div>
                 {workout.waves.map((wave, index) => (
                   <div className={styles.wave} key={wave.id}>
-                    <h2>{`Wave ${index + 1}`}</h2>
+                    <h2>{`Wave ${index + 1}`} {wave.rightSide ? '➡️' : '⬅️'}</h2>
                     <div className={styles.maneuvers}>
                       {wave.maneuvers.map(maneuver => (
                         <div key={maneuver.id} className={styles.maneuver}>
                           <img src={maneuver.url || `/images/no_image.svg`} alt="Maneuver" />
                           <div className={styles.maneuverDetails}>
                             <p>{maneuver.name}</p>
-                            <p>{maneuver.rightSide ? '➡️' : '⬅️'}</p>
                             <p>{maneuver.success ? '✅' : '❌'}</p>
                           </div>
                         </div>

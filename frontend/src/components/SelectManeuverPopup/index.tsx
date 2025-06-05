@@ -48,7 +48,7 @@ function reducer(state: State, action: Action): State {
 }
 
 type SelectManeuverPopupProps = {
-  onAdd: (maneuver: WaterManeuver, rightSide: boolean, success: boolean) => void
+  onAdd: (maneuver: WaterManeuver, success: boolean) => void
   onClose: () => void
 }
 

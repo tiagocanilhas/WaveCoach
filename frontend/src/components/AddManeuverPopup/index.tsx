@@ -3,24 +3,20 @@ import { useReducer, useState } from 'react'
 
 import { Popup } from '../Popup'
 import { Button } from '../Button'
-import { Switch, TextField } from '@mui/material'
-import { Card } from '../Card'
 
 import { WaterManeuver } from '../../types/WaterManeuver'
 
 import styles from './styles.module.css'
+import { LabeledSwitch } from '../LabeledSwitch'
 
 type State = {
-  isRight: boolean
   success: boolean
 }
 
-type Action = { type: 'toggleSide' } | { type: 'toggleSuccess' }
+type Action =  { type: 'toggleSuccess' }
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
-    case 'toggleSide':
-      return { ...state, isRight: !state.isRight }
     case 'toggleSuccess':
       return { ...state, success: !state.success }
     default:
@@ -29,35 +25,30 @@ function reducer(state: State, action: Action): State {
 }
 
 type AddManeuverPopupProps = {
+  data?: {success: boolean}
   maneuver: WaterManeuver
-  onAdd: (maneuver: WaterManeuver, isRight: boolean, success: boolean) => void
+  onAdd: (maneuver: WaterManeuver, success: boolean) => void
   onClose: () => void
 }
 
-export function AddManeuverPopup({ maneuver, onAdd, onClose }: AddManeuverPopupProps) {
-  const initialState: State = { isRight: false, success: true }
+export function AddManeuverPopup({ data, maneuver, onAdd, onClose }: AddManeuverPopupProps) {
+  const initialState: State = { success: data?.success ?? true }
   const [state, dispatch] = useReducer(reducer, initialState)
-
-  function toggleSide() {
-    dispatch({ type: 'toggleSide' })
-  }
 
   function toggleSuccess() {
     dispatch({ type: 'toggleSuccess' })
   }
-
-  const isRight = state.isRight
   const success = state.success
   const disabled = false
 
   function handleAddExercise() {
-    onAdd(maneuver, isRight, success)
+    onAdd(maneuver, success)
     onClose()
   }
 
   return (
     <Popup
-      title="Add Maneuver"
+      title={data ? 'Edit Maneuver' : 'Add Maneuver' }
       content={
         <div className={styles.container}>
           <div className={styles.maneuver}>
@@ -65,19 +56,14 @@ export function AddManeuverPopup({ maneuver, onAdd, onClose }: AddManeuverPopupP
             <h2>{maneuver.name}</h2>
           </div>
 
-          <div className={styles.side}>
-            Left
-            <Switch checked={isRight} onChange={toggleSide} />
-            Right
-          </div>
+          <LabeledSwitch
+           leftLabel='Failed'
+            rightLabel='Succeded'
+            checked={success} 
+            onChange={toggleSuccess} 
+            />
 
-          <div className={styles.success}>
-            Failed
-            <Switch checked={success} onChange={toggleSuccess} />
-            Success
-          </div>
-
-          <Button text="Add" disabled={disabled} onClick={handleAddExercise} width="100%" height="30px" />
+          <Button text={data ? 'Edit' : 'Add' } disabled={disabled} onClick={handleAddExercise} width="100%" height="30px" />
         </div>
       }
       onClose={onClose}

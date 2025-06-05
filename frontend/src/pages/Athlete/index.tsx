@@ -14,7 +14,7 @@ import { Button } from '../../components/Button'
 import { CyclesPopup } from '../../components/CyclesPopup'
 
 import { Calendar } from '../../types/Calendar'
-import { Athlete } from '../../types/Athlete'
+import { Athlete } from '../../types/athlete'
 
 import { epochConverter } from '../../../utils/epochConverter'
 import { epochConverterToAge } from '../../../utils/epochConverterToAge'

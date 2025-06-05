@@ -1,7 +1,7 @@
 import * as React from 'react'
 
 import { AthletePopup } from '../AthletePopup'
-import { Athlete } from '../../types/Athlete'
+import { Athlete } from '../../types/athlete'
 
 type EditAthletePopupProps = {
   onClose: () => void

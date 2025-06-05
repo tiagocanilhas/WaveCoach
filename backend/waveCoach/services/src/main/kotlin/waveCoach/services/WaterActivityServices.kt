@@ -121,7 +121,7 @@ class WaterActivityServices(
 
             val activityId = activityRepository.storeActivity(athleteId, dateLong, micro.id)
 
-            if (!waterActivityDomain.checkPse(pse)) {
+            if (!waterActivityDomain.checkRpe(pse)) {
                 return@run failure(CreateWaterActivityError.InvalidRpe)
             }
 

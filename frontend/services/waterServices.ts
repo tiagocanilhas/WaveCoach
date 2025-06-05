@@ -9,7 +9,7 @@ export async function createWaterActivity(
   condition: string,
   heartRate: number,
   duration: number,
-  waves: { points?: number; maneuvers?: { waterManeuverId: number; rightSide: boolean; success: boolean }[] }[]
+  waves: { points?: number; rightSide: boolean; maneuvers?: { waterManeuverId: number; success: boolean }[] }[]
 ) {
   return customFetch(URIS.WATER.create, 'POST', {
     athleteId,
@@ -24,6 +24,10 @@ export async function createWaterActivity(
 
 export async function getWaterActivity(wid: string) {
   return customFetch(URIS.WATER.getById(wid), 'GET')
+}
+
+export async function createQuestionnaire(wid: string, sleep: number, fatigue: number, stress: number, musclePain: number) {
+  return customFetch(URIS.WATER.createQuestionnaire(wid), 'POST', { sleep, fatigue, stress, musclePain })
 }
 
 export async function getQuestionnaire(wid: string) {

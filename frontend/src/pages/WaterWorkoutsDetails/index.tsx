@@ -81,9 +81,8 @@ export function WaterWorkoutsDetails() {
   const numberOfWavesPerMinute = (numberOfWaves / durationInMinutes).toFixed(2)
   const questionnaire = state.questionnaire
 
-  const maneuvers = workout.waves.flatMap(wave => wave.maneuvers)
-  const leftSideManeuvers = maneuvers.filter(maneuver => !maneuver.rightSide)
-  const rightSideManeuvers = maneuvers.filter(maneuver => maneuver.rightSide)
+  const leftSideManeuvers = workout.waves.filter(wave => wave.rightSide).flatMap(wave => wave.maneuvers)
+  const rightSideManeuvers = workout.waves.filter(wave => !wave.rightSide).flatMap(wave => wave.maneuvers)
 
   return (
     <>
@@ -98,10 +97,13 @@ export function WaterWorkoutsDetails() {
                   <div className={styles.workoutDetailsRow}>
                     <h2>Internal</h2>
                     <p>
-                      <strong>PSE:</strong> {workout.pse}
+                      <strong>RPE:</strong> {workout.rpe} (0-10)
                     </p>
                     <p>
-                      <strong>Session PSE:</strong> {workout.pse * durationInMinutes}
+                      <strong>Session RPE:</strong> {workout.rpe * durationInMinutes}
+                    </p>
+                    <p>
+                      <strong>Condition:</strong> {workout.condition}
                     </p>
                   </div>
                   <div>
@@ -125,18 +127,21 @@ export function WaterWorkoutsDetails() {
             <Card
               content={
                 <>
+                <div className={styles.questionnaireHeader}>
                   <h1>Wellness Questionnaire</h1>
-                  {questionnaire === undefined ? (
-                    <CircularProgress />
-                  ) : questionnaire === null ? (
+                  {questionnaire === null && (
                     <Card
                       content={
                         <div className={styles.add} onClick={handleAddQuestionnaire}>
                           +
                         </div>
                       }
-                    />
-                  ) : (
+                      />
+                  )}
+                </div>
+                  {questionnaire === undefined ? (
+                    <CircularProgress />
+                  ) : questionnaire !== null && (
                     <div className={styles.questionnaireDetails}>
                       {Object.entries(questionnaire).map(([key, value]) => {
                         const formattedKey = key
@@ -172,12 +177,12 @@ export function WaterWorkoutsDetails() {
                     ) : (
                       workout.waves.map((wave, index) => (
                         <div key={wave.id} className={styles.waveDetails}>
-                          <h2>Wave {index + 1}</h2>
+                          <h2>Wave {index + 1} {wave.rightSide ? '➡️' : '⬅️'}</h2>
                           <div className={styles.maneuversContainer}>
                             {wave.maneuvers.map(maneuver => (
                               <div key={maneuver.id} className={styles.maneuver}>
-                                <img src={maneuver.url || `/images/no_image.svg`} alt="Maneuver" />
-                                {maneuver.name} - {maneuver.rightSide ? '➡️' : '⬅️'} {maneuver.success ? '✅' : '❌'}
+                                <img src={maneuver.url ||`/images/no_image.svg`} alt="Maneuver" />
+                                {maneuver.name} - {maneuver.success ? '✅' : '❌'}
                               </div>
                             ))}
                           </div>
@@ -213,7 +218,7 @@ export function WaterWorkoutsDetails() {
         }
       />
 
-      {state.isQuestionnairePopupOpen && <AddQuestionnairePopup onClose={handleAddQuestionnaire} />}
+      {state.isQuestionnairePopupOpen && <AddQuestionnairePopup onClose={handleAddQuestionnaire} onSuccess={() => {}} />}
     </>
   )
 }

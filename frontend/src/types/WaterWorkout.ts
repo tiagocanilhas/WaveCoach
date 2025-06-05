@@ -4,14 +4,15 @@ export type WaterWorkout = {
   id: number
   athleteId: number
   date: number
-  pse: number
+  rpe: number
   condition: string
-  heartRate: number
+  trimp: number
   duration: number
   waves: {
     id: number
     points?: number
     order: number
+    rightSide: boolean
     maneuvers: Maneuver[]
   }[]
 }

@@ -11,61 +11,100 @@ import { ManeuverToAdd } from '../../types/ManeuverToAdd'
 import { WaveToAdd } from '../../types/WaveToAdd'
 
 import styles from './styles.module.css'
+import { VerticalReorderableList } from '../VerticalReordabelList'
+import { LabeledSwitch } from '../LabeledSwitch'
+import { AddManeuverPopup } from '../AddManeuverPopup'
 
 type State = {
-  isOpen: boolean
+  isSelecting: boolean
+  rightSide: boolean
+  maneuverToEdit: ManeuverToAdd | null
   maneuvers: ManeuverToAdd[] | undefined
 }
 
-type Action = { type: 'openPopup' } | { type: 'closePopup' } | { type: 'addManeuver'; maneuver: ManeuverToAdd }
+type Action = 
+| { type: 'toggleIsSelecting' }
+| { type: 'toggleRightSide' }
+| { type: 'addManeuver'; maneuver: ManeuverToAdd }
+| { type: 'setManeuverToEdit'; maneuver: ManeuverToAdd | null }
+| { type: 'updateManeuver'; maneuver: ManeuverToAdd }
+| { type: 'deleteManeuver'; id: string }
+| { type: 'setManeuvers'; maneuvers: ManeuverToAdd[] }
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
-    case 'openPopup':
-      return { ...state, isOpen: true }
-    case 'closePopup':
-      return { ...state, isOpen: false }
+    case 'toggleIsSelecting':
+      return { ...state, isSelecting: !state.isSelecting }
+    case 'toggleRightSide':
+      return { ...state, rightSide: !state.rightSide }
     case 'addManeuver':
       return {
         ...state,
-        isOpen: false,
+        isSelecting: true,
         maneuvers: [...state.maneuvers, action.maneuver],
       }
+    case 'setManeuverToEdit':
+      return {...state, maneuverToEdit: action.maneuver }
+    case 'updateManeuver':
+      return {
+        ...state,
+        maneuvers: state.maneuvers.map(m => m.tempId === action.maneuver.tempId ? action.maneuver : m),
+        maneuverToEdit: null,
+      }
+    case 'deleteManeuver':
+      return { ...state, maneuvers: state.maneuvers.filter(m => m.tempId !== action.id) }
+    case 'setManeuvers':
+      return { ...state, maneuvers: action.maneuvers }
     default:
       return state
   }
 }
 
 type AddWavePopupProps = {
-  onAdd: (wave: WaveToAdd) => void
+  data?: { maneuvers: ManeuverToAdd[], rightSide: boolean }
+  onAdd: (maneuvers: ManeuverToAdd[], rightSide: boolean) => void
   onClose: () => void
 }
 
-const initialState: State = { isOpen: false, maneuvers: [] }
-
-export function AddWavePopup({ onClose, onAdd }: AddWavePopupProps) {
+export function AddWavePopup({ data, onClose, onAdd }: AddWavePopupProps) {
+  const initialState: State = {   
+    isSelecting: false,
+    rightSide: data?.rightSide ?? false,
+    maneuverToEdit: null,
+    maneuvers: data?.maneuvers ?? [],
+  }
   const [state, dispatch] = useReducer(reducer, initialState)
 
-  function handleAddManuever() {
-    dispatch({ type: 'openPopup' })
+  function handleToggleSelect() {
+    dispatch({ type: 'toggleIsSelecting' })
   }
 
-  function handleOnClose() {
-    dispatch({ type: 'closePopup' })
+  function handleToggleRightSide() {
+    dispatch({ type: 'toggleRightSide' })
   }
 
-  function handleOnAdd(maneuver: WaterManeuver, rightSide: boolean, success: boolean) {
-    const maneuverToAdd: ManeuverToAdd = {
-      waterManeuverId: maneuver.id,
-      name: maneuver.name,
-      rightSide: rightSide,
-      success: success,
-    }
-    dispatch({ type: 'addManeuver', maneuver: maneuverToAdd })
+  function handleOnAdd(maneuver: WaterManeuver, success: boolean) {
+    dispatch({ type: 'addManeuver', maneuver: { tempId: Date.now().toString(), maneuver, success } })
+  }
+
+  function handleOnEdit(maneuver: ManeuverToAdd) {
+    dispatch({ type: 'setManeuverToEdit', maneuver })
+  }
+
+  function handleOnUpdate(maneuver: WaterManeuver, success: boolean) {
+    dispatch({ type: 'updateManeuver', maneuver: { ...state.maneuverToEdit, maneuver, success } })
+  }
+
+  function handleOnDelete(id: string) {
+    dispatch({ type: 'deleteManeuver', id })
+  }
+
+  function handleOnReorder(newList: ManeuverToAdd[]) {
+    dispatch({ type: 'setManeuvers', maneuvers: newList })
   }
 
   function handleOnClick() {
-    onAdd({ maneuvers: state.maneuvers })
+    onAdd(state.maneuvers, state.rightSide)
   }
 
   const maneuvers = state.maneuvers
@@ -74,35 +113,33 @@ export function AddWavePopup({ onClose, onAdd }: AddWavePopupProps) {
   return (
     <>
       <Popup
-        title="Add Wave"
+        title={data ? 'Edit Wave' : 'Add Wave'}
         content={
           <div className={styles.addWave}>
             <div className={styles.maneuversContainer}>
-              {maneuvers.map(info => (
-                <Card
-                  content={
-                    <p>
-                      {info.name} - {info.rightSide ? '➡️' : '⬅️'} {info.success ? '✅' : '❌'}
-                    </p>
-                  }
-                />
-              ))}
-              <Card
-                content={
-                  <div className={styles.add} onClick={handleAddManuever}>
-                    +
-                  </div>
-                }
-                width="600px"
+              <LabeledSwitch leftLabel='Left Side' rightLabel='Right Side' onChange={handleToggleRightSide} checked={state.rightSide} />
+              <VerticalReorderableList<ManeuverToAdd>
+                list={maneuvers}
+                renderItem={info => (
+                  <p>
+                    {info.maneuver.name} - {info.success ? '✅' : '❌'}
+                  </p>
+                )}
+                onReorder={handleOnReorder}
+                onClick={info => handleOnEdit(info)}
+                onDelete={info => handleOnDelete(info.tempId)}
+                onAdd={handleToggleSelect}
               />
             </div>
-            <Button text="Add" onClick={handleOnClick} disabled={disabled} width="100%" height="30px" />
+            <Button text={data ? 'Edit' : 'Add'} onClick={handleOnClick} disabled={disabled} width="100%" height="30px" />
           </div>
         }
         onClose={onClose}
       />
 
-      {state.isOpen && <SelectManeuverPopup onClose={handleOnClose} onAdd={handleOnAdd} />}
+      {state.isSelecting && <SelectManeuverPopup onClose={handleToggleSelect} onAdd={handleOnAdd} />}
+
+      {state.maneuverToEdit && <AddManeuverPopup data={state.maneuverToEdit} maneuver={state.maneuverToEdit.maneuver} onAdd={handleOnUpdate} onClose={() => handleOnEdit(null)} />}
     </>
   )
 }

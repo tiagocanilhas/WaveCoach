@@ -7,15 +7,15 @@ import styles from './styles.module.css'
 type LabeledSwitchProps = {
   leftLabel?: string
   rightLabel?: string
-  success: boolean
-  toggleSuccess: () => void
+  checked: boolean
+  onChange: () => void
 }
 
-export function LabeledSwitch({ leftLabel, rightLabel, success, toggleSuccess }: LabeledSwitchProps) {
+export function LabeledSwitch({ leftLabel, rightLabel, checked, onChange }: LabeledSwitchProps) {
   return (
     <div className={styles.switch}>
       {leftLabel && <span className={styles.label}>{leftLabel}</span>}
-      <Switch checked={success} onChange={toggleSuccess} />
+      <Switch checked={checked} onChange={onChange} />
       {rightLabel && <span className={styles.label}>{rightLabel}</span>}
     </div>
   )
