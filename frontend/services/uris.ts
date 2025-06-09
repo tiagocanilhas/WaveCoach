@@ -1,7 +1,9 @@
+const MOBILE_URL = ''
+
 const BASE_URL =
   false
-    ? 'https://8d7f-94-63-166-47.ngrok-free.app/api'
-    : 'http://localhost:8080/api';
+    ? `${MOBILE_URL}/api`
+    : '/api';
 
 const USERS_URL = `${BASE_URL}/users`
 const USERS = {
