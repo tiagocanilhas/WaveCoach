@@ -1,4 +1,7 @@
-const BASE_URL = '/api'
+const BASE_URL =
+  false
+    ? 'https://8d7f-94-63-166-47.ngrok-free.app/api'
+    : 'http://localhost:8080/api';
 
 const USERS_URL = `${BASE_URL}/users`
 const USERS = {
@@ -32,7 +35,7 @@ const ATHLETES = {
   deleteCharacteristics: (id: string, date: string) => `${ATHLETES_URL}/${id}/characteristics/${date}`,
 
   createCalendar: (id: string) => `${ATHLETES_URL}/${id}/calendar`,
-  getCalendar: (id: string, type: string) => `${ATHLETES_URL}/${id}/calendar?type=${type}`,
+  getCalendar: (id: string, type?: string) => `${ATHLETES_URL}/${id}/calendar?type=${type}`,
   getActivities: (id: string) => `${ATHLETES_URL}/${id}/activities`,
 
   getWaterActivities: (id: string) => `${ATHLETES_URL}/${id}/water`,

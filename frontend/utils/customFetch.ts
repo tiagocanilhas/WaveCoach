@@ -4,13 +4,23 @@ function isMediaTypeProblem(res: Response): boolean {
 
 type method = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'OPTIONS' | 'HEAD'
 
-export async function customFetch(url: string, method: method, body?: object): Promise<any> {
+export async function customFetch(url: string, method: method, body?: object, token?: string): Promise<any> {
   const options: RequestInit = { method: method }
+
+  if (token) {
+    options.headers = {
+      ...(options.headers || {}),
+      'Authorization': `Bearer ${token}`,
+    };
+  }
 
   if (body instanceof FormData) {
     options.body = body
   } else if (body) {
-    options.headers = { 'Content-Type': 'application/json' }
+    options.headers = {
+      ...(options.headers || {}),
+      'Content-Type': 'application/json',
+    };
     options.body = JSON.stringify(body)
   }
 

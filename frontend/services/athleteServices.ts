@@ -6,8 +6,8 @@ export async function getAthlete(id: string) {
   return await customFetch(URIS.ATHLETES.getById(id), 'GET')
 }
 
-export async function getAthletes() {
-  return await customFetch(URIS.ATHLETES.getByCoach, 'GET')
+export async function getAthletes(token?: string) {
+  return await customFetch(URIS.ATHLETES.getByCoach, 'GET', undefined, token)
 }
 
 export async function createAthlete(name: string, birthdate: string, image?: File) {
