@@ -285,5 +285,47 @@ class Problem(
                 "Questionnaire not found",
                 URI("$BASE_URI/questionnaire-not-found"),
             )
+
+        val invalidExerciseId =
+            Problem(
+                "Invalid exercise id",
+                URI("$BASE_URI/invalid-exercise-id"),
+            )
+
+        val notActivityExercise =
+            Problem(
+                "Not an activity exercise",
+                URI("$BASE_URI/not-activity-exercise"),
+            )
+
+        val invalidOrder =
+            Problem(
+                "Invalid order",
+                URI("$BASE_URI/invalid-order"),
+            )
+
+        val invalidSetId =
+            Problem(
+                "Invalid set id",
+                URI("$BASE_URI/invalid-set-id"),
+            )
+
+        val setNotFound =
+            Problem(
+                "Set not found",
+                URI("$BASE_URI/set-not-found"),
+            )
+
+        val notExerciseSet =
+            Problem(
+                "Not an exercise set",
+                URI("$BASE_URI/not-exercise-set"),
+            )
+
+        val exerciseNotFound =
+            Problem(
+                "Exercise not found",
+                URI("$BASE_URI/exercise-not-found"),
+            )
     }
 }

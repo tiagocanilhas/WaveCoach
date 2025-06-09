@@ -113,6 +113,7 @@ INSERT INTO waveCoach.water (activity, rpe, condition, trimp, duration) VALUES (
 -- Activities for Microcycle 3 (2025-06-01 to 2025-06-08)
 INSERT INTO waveCoach.activity (uid, microcycle, date) VALUES (3, 3, 1748736000000); -- 2025-06-01
 INSERT INTO waveCoach.gym (activity) VALUES (7);
+INSERT INTO waveCoach.exercise (activity, exercise, exercise_order) VALUES (7, 1, 1);
 
 INSERT INTO waveCoach.activity (uid, microcycle, date) VALUES (3, 3, 1748822400000); -- 2025-06-02
 INSERT INTO waveCoach.water (activity, rpe, condition, trimp, duration) VALUES (8, 6, 'Good', 112, 5400);

@@ -1,6 +1,7 @@
 package waveCoach.repository.jdbi
 
 import waveCoach.domain.Category
+import waveCoach.domain.SetToInsert
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -108,6 +109,18 @@ class JdbiGymActivityRepositoryTest {
         }
 
     @Test
+    fun `verify exercise order`() =
+        testWithHandleAndRollback { handle ->
+            val gymActivityRepository = JdbiGymActivityRepository(handle)
+
+            val result1 = gymActivityRepository.verifyExerciseOrder(FIRST_GYM_ACTIVITY_ID, 1)
+            val result2 = gymActivityRepository.verifyExerciseOrder(FIRST_GYM_ACTIVITY_ID, 10)
+
+            assertTrue { result1 }
+            assertFalse { result2 }
+        }
+
+    @Test
     fun `store and get sets`() =
         testWithHandleAndRollback { handle ->
             val gymActivityRepository = JdbiGymActivityRepository(handle)
@@ -131,6 +144,28 @@ class JdbiGymActivityRepositoryTest {
         }
 
     @Test
+    fun `store multiple sets`() =
+        testWithHandleAndRollback { handle ->
+            val gymActivityRepository = JdbiGymActivityRepository(handle)
+            val activityRepository = JdbiActivityRepository(handle)
+
+            val activityId = activityRepository.storeActivity(FIRST_ATHLETE_ID, DATE, MICRO_ID)
+
+            val gymActivityId = gymActivityRepository.storeGymActivity(activityId)
+
+            val exerciseId = gymActivityRepository.storeExercise(gymActivityId, 1, 1)
+
+            val setsToInsert = listOf(
+                SetToInsert(exerciseId, 10, 20f, 30f, 1),
+                SetToInsert(exerciseId, 15, 25f, 35f, 2)
+            )
+
+            val setIds = gymActivityRepository.storeSets(setsToInsert)
+
+            assertTrue { setIds.size == 2 }
+        }
+
+    @Test
     fun `get sets`() =
         testWithHandleAndRollback { handle ->
             val gymActivityRepository = JdbiGymActivityRepository(handle)
@@ -138,6 +173,17 @@ class JdbiGymActivityRepositoryTest {
             val setList = gymActivityRepository.getSets(FIRST_EXERCISE_ID)
 
             assertTrue { setList.isNotEmpty() }
+        }
+
+    @Test
+    fun `get set by id`() =
+        testWithHandleAndRollback { handle ->
+            val gymActivityRepository = JdbiGymActivityRepository(handle)
+
+            val set = gymActivityRepository.getSetById(SET_ID)
+
+            assertTrue { set != null }
+            assertEquals(SET_ID, set?.id)
         }
 
     @Test
@@ -162,6 +208,42 @@ class JdbiGymActivityRepositoryTest {
             val setList = gymActivityRepository.getSets(FIRST_EXERCISE_ID)
 
             assertTrue { setList.isEmpty() }
+        }
+
+    @Test
+    fun `remove set by id`() =
+        testWithHandleAndRollback { handle ->
+            val gymActivityRepository = JdbiGymActivityRepository(handle)
+
+            gymActivityRepository.removeSetById(SET_ID)
+
+            val setList = gymActivityRepository.getSets(FIRST_EXERCISE_ID)
+
+            assertTrue { setList.size == 2 }
+        }
+
+    @Test
+    fun `set belongs to exercise`() =
+        testWithHandleAndRollback { handle ->
+            val gymActivityRepository = JdbiGymActivityRepository(handle)
+
+            val belongsToExercise = gymActivityRepository.setBelongsToExercise(FIRST_EXERCISE_ID, SET_ID)
+            val doesNotBelongToExercise = gymActivityRepository.setBelongsToExercise(FIRST_EXERCISE_ID, 10)
+
+            assertTrue { belongsToExercise }
+            assertFalse { doesNotBelongToExercise }
+        }
+
+    @Test
+    fun `verify set order`() =
+        testWithHandleAndRollback { handle ->
+            val gymActivityRepository = JdbiGymActivityRepository(handle)
+
+            val result1 = gymActivityRepository.verifySetOrder(FIRST_EXERCISE_ID, 1)
+            val result2 = gymActivityRepository.verifySetOrder(FIRST_EXERCISE_ID, 10)
+
+            assertTrue { result1 }
+            assertFalse { result2 }
         }
 
     @Test
@@ -247,5 +329,6 @@ class JdbiGymActivityRepositoryTest {
         private const val FIRST_EXERCISE_ID = 1
         private const val SECOND_GYM_ACTIVITY_ID = 2
         private const val FOURTH_GYM_ACTIVITY_ID = 4
+        private const val SET_ID = 1
     }
 }

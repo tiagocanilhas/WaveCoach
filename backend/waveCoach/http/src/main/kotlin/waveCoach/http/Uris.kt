@@ -40,6 +40,18 @@ object Uris {
         const val REMOVE = "$GYM_ACTIVITY/{activityId}"
 
         fun byId(id: Int): URI = UriTemplate(GET_BY_ID).expand(id)
+
+        const val ADD_EXERCISE = "$GYM_ACTIVITY/{activityId}/exercise"
+        const val REMOVE_EXERCISE = "$GYM_ACTIVITY/{activityId}/exercise/{exerciseId}"
+
+        fun exerciseById(activityId: Int, exerciseId: Int): URI =
+            UriTemplate(REMOVE_EXERCISE).expand(activityId, exerciseId)
+
+        const val ADD_SET = "$GYM_ACTIVITY/{activityId}/exercise/{exerciseId}/set"
+        const val REMOVE_SET = "$GYM_ACTIVITY/{activityId}/exercise/{exerciseId}/set/{setId}"
+
+        fun setById(activityId: Int, exerciseId: Int, setId: Int): URI =
+            UriTemplate(REMOVE_SET).expand(activityId, exerciseId, setId)
     }
 
     object GymExercise {
