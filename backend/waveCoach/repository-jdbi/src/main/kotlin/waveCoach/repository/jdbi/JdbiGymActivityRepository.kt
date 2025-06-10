@@ -59,6 +59,24 @@ class JdbiGymActivityRepository(
             .mapTo<Int>()
             .one()
 
+    override fun storeExercises(exercises: List<ExerciseToInsert>): List<Int> =
+        handle.prepareBatch(
+            """
+            insert into waveCoach.exercise (activity, exercise, exercise_order) 
+            values (:activity, :exercise, :exerciseOrder)
+            """
+        ).use { batch ->
+            exercises.forEach { exercise ->
+                batch.bind("activity", exercise.activityId)
+                    .bind("exercise", exercise.gymExerciseId)
+                    .bind("exerciseOrder", exercise.order)
+                    .add()
+            }
+            batch.executeAndReturnGeneratedKeys()
+                .mapTo<Int>()
+                .list()
+        }
+
     override fun getExercises(activityId: Int): List<Exercise> =
         handle.createQuery(
             """

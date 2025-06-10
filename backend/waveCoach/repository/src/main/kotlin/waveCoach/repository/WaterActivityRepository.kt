@@ -1,8 +1,10 @@
 package waveCoach.repository
 
+import waveCoach.domain.ManeuverToInsert
 import waveCoach.domain.MesocycleWater
 import waveCoach.domain.Questionnaire
 import waveCoach.domain.WaterActivityWithWaves
+import waveCoach.domain.WaveToInsert
 
 interface WaterActivityRepository {
     fun storeWaterActivity(
@@ -26,6 +28,8 @@ interface WaterActivityRepository {
         order: Int,
     ): Int
 
+    fun storeWaves(waves: List<WaveToInsert>): List<Int>
+
     fun removeWavesByActivity(activityId: Int)
 
     fun removeWavesByAthlete(athleteId: Int)
@@ -36,6 +40,8 @@ interface WaterActivityRepository {
         success: Boolean,
         order: Int,
     ): Int
+
+    fun storeManeuvers(maneuvers: List<ManeuverToInsert>): List<Int>
 
     fun removeManeuversByActivity(activityId: Int)
 

@@ -13,6 +13,8 @@ interface GymActivityRepository {
 
     fun storeExercise(activityID: Int, exerciseID: Int, exerciseOrder: Int): Int
 
+    fun storeExercises(exercises: List<ExerciseToInsert>): List<Int>
+
     fun getExercises(activityId: Int): List<Exercise>
 
     fun getExerciseById(exerciseId: Int): Exercise?

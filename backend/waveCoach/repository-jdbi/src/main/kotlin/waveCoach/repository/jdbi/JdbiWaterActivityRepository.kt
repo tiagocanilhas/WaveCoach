@@ -3,10 +3,12 @@ package waveCoach.repository.jdbi
 import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.kotlin.mapTo
 import waveCoach.domain.Maneuver
+import waveCoach.domain.ManeuverToInsert
 import waveCoach.domain.MesocycleWater
 import waveCoach.domain.MicrocycleWater
 import waveCoach.domain.Questionnaire
 import waveCoach.domain.WaterActivityWithWaves
+import waveCoach.domain.WaveToInsert
 import waveCoach.domain.WaveWithManeuvers
 import waveCoach.repository.WaterActivityRepository
 
@@ -79,6 +81,26 @@ class JdbiWaterActivityRepository(
             .mapTo<Int>()
             .one()
 
+
+    override fun storeWaves(waves: List<WaveToInsert>): List<Int> =
+        handle.prepareBatch(
+            """
+            insert into waveCoach.wave (activity, points, right_side, wave_order)
+            values (:activityId, :points, :rightSide, :order)
+            """.trimIndent(),
+        ).use { batch ->
+            waves.forEach { wave ->
+                batch.bind("activityId", wave.activityId)
+                    .bind("points", wave.points)
+                    .bind("rightSide", wave.rightSide)
+                    .bind("order", wave.order)
+                    .add()
+            }
+            batch.executeAndReturnGeneratedKeys()
+                .mapTo<Int>()
+                .list()
+        }
+
     override fun removeWavesByActivity(activityId: Int) {
         handle.createUpdate("delete from waveCoach.wave where activity = :activityId")
             .bind("activityId", activityId)
@@ -115,6 +137,25 @@ class JdbiWaterActivityRepository(
             .executeAndReturnGeneratedKeys()
             .mapTo<Int>()
             .one()
+
+    override fun storeManeuvers(maneuvers: List<ManeuverToInsert>): List<Int> =
+        handle.prepareBatch(
+            """
+            insert into waveCoach.maneuver (wave, maneuver, success, maneuver_order) 
+            values (:waveId, :waterManeuverId, :success, :order)
+            """.trimIndent(),
+        ).use { batch ->
+            maneuvers.forEach { maneuver ->
+                batch.bind("waveId", maneuver.waveId)
+                    .bind("waterManeuverId", maneuver.waterManeuverId)
+                    .bind("success", maneuver.success)
+                    .bind("order", maneuver.order)
+                    .add()
+            }
+            batch.executeAndReturnGeneratedKeys()
+                .mapTo<Int>()
+                .list()
+        }
 
 
 
