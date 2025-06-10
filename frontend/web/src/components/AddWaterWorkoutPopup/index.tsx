@@ -16,7 +16,7 @@ import { handleError } from '../../../../utils/handleError'
 
 import styles from './styles.module.css'
 import { ManeuverToAdd } from '../../types/ManeuverToAdd'
-import { VerticalReorderableList } from '../VerticalReordabelList'
+import { VerticalReorderableList } from '../VerticalReorderableList'
 
 type State = {
   isAdding: boolean

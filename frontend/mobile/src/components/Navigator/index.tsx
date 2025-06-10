@@ -3,7 +3,7 @@ import { StatusBar } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import Ionicons from '@expo/vector-icons/Ionicons';
+import Ionicons from '@expo/vector-icons/Ionicons'
 
 import { Login } from '@screens/Login'
 import { Home } from '@screens/Home'
@@ -32,12 +32,34 @@ const Stack = createNativeStackNavigator<RootStackParamList>()
 function TabNavigator() {
   return (
     <Tab.Navigator screenOptions={styles.tabBarStyle}>
-      <Tab.Screen name="Home" component={Home} options={{ headerShown: false, tabBarIcon: ({ size, focused }) => (
-        <Ionicons name={focused ? 'home' : 'home-outline'} size={size} color={focused ? styles.focusedColor : styles.unfocusedColor} />
-      )}} />
-      <Tab.Screen name="Settings" component={Settings} options={{ headerShown: false, tabBarIcon: ({ size, focused }) => (
-        <Ionicons name={focused ? 'settings' : 'settings-outline'} size={size} color={focused ? styles.focusedColor : styles.unfocusedColor} />
-      )}} />
+      <Tab.Screen
+        name="Home"
+        component={Home}
+        options={{
+          headerShown: false,
+          tabBarIcon: ({ size, focused }) => (
+            <Ionicons
+              name={focused ? 'home' : 'home-outline'}
+              size={size}
+              color={focused ? styles.focusedColor : styles.unfocusedColor}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Settings"
+        component={Settings}
+        options={{
+          headerShown: false,
+          tabBarIcon: ({ size, focused }) => (
+            <Ionicons
+              name={focused ? 'settings' : 'settings-outline'}
+              size={size}
+              color={focused ? styles.focusedColor : styles.unfocusedColor}
+            />
+          ),
+        }}
+      />
     </Tab.Navigator>
   )
 }
@@ -46,7 +68,7 @@ function AuthenticatedStack() {
   return (
     <Stack.Navigator initialRouteName="Home">
       <Stack.Screen name="Home" component={TabNavigator} options={{ headerShown: false }} />
-      <Stack.Screen name="AddingWaterWorkout" component={AddingWaterWorkout} options={{ headerTitle: '' }} />
+      <Stack.Screen name="AddingWaterWorkout" component={AddingWaterWorkout} options={{ headerShown: false }} />
     </Stack.Navigator>
   )
 }

@@ -20,25 +20,25 @@ export function Settings() {
       'Logout',
       'Are you sure you want to logout?',
       [
-      {
-        text: 'Cancel',
-        style: 'cancel',
-      },
-      {
-        text: 'Logout',
-        onPress: async () => {
-          const token = await Storage.getToken()
-          await logout(token ?? '')
-          await Storage.clearAll()
-          setUser(undefined)
+        {
+          text: 'Cancel',
+          style: 'cancel',
         },
-        style: 'destructive',
-      },
+        {
+          text: 'Logout',
+          onPress: async () => {
+            const token = await Storage.getToken()
+            await logout(token ?? '')
+            await Storage.clearAll()
+            setUser(undefined)
+          },
+          style: 'destructive',
+        },
       ],
       { cancelable: false }
     )
   }
-  
+
   return (
     <MainView>
       <Text style={styles.title}>Settings</Text>

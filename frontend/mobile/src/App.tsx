@@ -1,11 +1,14 @@
 import * as React from 'react'
 import { Navigator } from '@components/Navigator'
 import { AuthenticationProvider } from '@components/AuthenticationProvider'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
 export function App() {
   return (
-    <AuthenticationProvider>
-      <Navigator />
-    </AuthenticationProvider>
+    <GestureHandlerRootView>
+      <AuthenticationProvider>
+        <Navigator />
+      </AuthenticationProvider>
+    </GestureHandlerRootView>
   )
 }
