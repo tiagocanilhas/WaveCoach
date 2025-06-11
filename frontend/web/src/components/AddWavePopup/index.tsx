@@ -11,7 +11,7 @@ import { ManeuverToAdd } from '../../types/ManeuverToAdd'
 import { WaveToAdd } from '../../types/WaveToAdd'
 
 import styles from './styles.module.css'
-import { VerticalReorderableList } from '../VerticalReordabelList'
+import { VerticalReorderableList } from '../VerticalReorderableList'
 import { LabeledSwitch } from '../LabeledSwitch'
 import { AddManeuverPopup } from '../AddManeuverPopup'
 

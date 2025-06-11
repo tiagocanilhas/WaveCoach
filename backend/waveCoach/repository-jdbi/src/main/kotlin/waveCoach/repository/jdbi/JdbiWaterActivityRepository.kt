@@ -2,7 +2,14 @@ package waveCoach.repository.jdbi
 
 import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.kotlin.mapTo
-import waveCoach.domain.*
+import waveCoach.domain.Maneuver
+import waveCoach.domain.ManeuverToInsert
+import waveCoach.domain.MesocycleWater
+import waveCoach.domain.MicrocycleWater
+import waveCoach.domain.Questionnaire
+import waveCoach.domain.WaterActivityWithWaves
+import waveCoach.domain.WaveToInsert
+import waveCoach.domain.WaveWithManeuvers
 import waveCoach.repository.WaterActivityRepository
 
 class JdbiWaterActivityRepository(
@@ -73,6 +80,26 @@ class JdbiWaterActivityRepository(
             .executeAndReturnGeneratedKeys()
             .mapTo<Int>()
             .one()
+
+
+    override fun storeWaves(waves: List<WaveToInsert>): List<Int> =
+        handle.prepareBatch(
+            """
+            insert into waveCoach.wave (activity, points, right_side, wave_order)
+            values (:activityId, :points, :rightSide, :order)
+            """.trimIndent(),
+        ).use { batch ->
+            waves.forEach { wave ->
+                batch.bind("activityId", wave.activityId)
+                    .bind("points", wave.points)
+                    .bind("rightSide", wave.rightSide)
+                    .bind("order", wave.order)
+                    .add()
+            }
+            batch.executeAndReturnGeneratedKeys()
+                .mapTo<Int>()
+                .list()
+        }
 
     override fun getWaveById(waveId: Int): Wave? =
         handle.createQuery("select * from waveCoach.wave where id = :waveId")

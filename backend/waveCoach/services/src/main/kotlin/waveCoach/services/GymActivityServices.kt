@@ -1,6 +1,7 @@
 package waveCoach.services
 
 import org.springframework.stereotype.Component
+import waveCoach.domain.ExerciseToInsert
 import waveCoach.domain.ExerciseWithSets
 import waveCoach.domain.GymActivityWithExercises
 import waveCoach.domain.SetToInsert
@@ -164,33 +165,47 @@ class GymActivityServices(
             val activityRepository = it.activityRepository
             val gymActivityRepository = it.gymActivityRepository
 
-            val athlete =
-                athleteRepository.getAthlete(uid)
-                    ?: return@run failure(CreateGymActivityError.AthleteNotFound)
+            val athlete = athleteRepository.getAthlete(uid)
+                ?: return@run failure(CreateGymActivityError.AthleteNotFound)
 
             if (athlete.coach != coachId) return@run failure(CreateGymActivityError.NotAthletesCoach)
 
-            val micro =
-                activityRepository.getMicrocycleByDate(dateLong, uid)
-                    ?: return@run failure(CreateGymActivityError.ActivityWithoutMicrocycle)
+            val micro = activityRepository.getMicrocycleByDate(dateLong, uid)
+                ?: return@run failure(CreateGymActivityError.ActivityWithoutMicrocycle)
 
             val activityID = activityRepository.storeActivity(uid, dateLong, micro.id)
             gymActivityRepository.storeGymActivity(activityID)
 
-            exercises.forEachIndexed { exerciseOrder, exercise ->
-                if (!gymActivityRepository.isGymExerciseValid(exercise.gymExerciseId)) {
+            val exercisesToInsert = exercises.mapIndexed { exerciseOrder, exercise ->
+                if (!gymActivityRepository.isGymExerciseValid(exercise.gymExerciseId))
                     return@run failure(CreateGymActivityError.InvalidGymExercise)
-                }
 
-                val exerciseId = gymActivityRepository.storeExercise(activityID, exercise.gymExerciseId, exerciseOrder)
-                exercise.sets.forEachIndexed { setOrder, set ->
-                    if (!setsDomain.checkSet(set.reps, set.weight, set.restTime)) {
+                ExerciseToInsert(
+                    activityID,
+                    exercise.gymExerciseId,
+                    exerciseOrder,
+                )
+            }
+
+            val exercisesIds = gymActivityRepository.storeExercises(exercisesToInsert)
+
+            val setsToInsert = exercises.flatMapIndexed { exerciseIndex, exercise ->
+                exercise.sets.mapIndexed { setOrder, set ->
+                    if (!setsDomain.checkSet(set.reps, set.weight, set.restTime))
                         return@run failure(CreateGymActivityError.InvalidSet)
-                    }
 
-                    gymActivityRepository.storeSet(exerciseId, set.reps, set.weight, set.restTime, setOrder)
+                    SetToInsert(
+                        exercisesIds[exerciseIndex],
+                        set.reps,
+                        set.weight,
+                        set.restTime,
+                        setOrder,
+                    )
                 }
             }
+
+            gymActivityRepository.storeSets(setsToInsert)
+
             success(activityID)
         }
     }

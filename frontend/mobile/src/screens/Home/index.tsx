@@ -113,6 +113,29 @@ export function Home() {
     dispatch({ type: 'toggleExtended' })
   }
 
+  function select(athlete: AthleteType) {
+    Alert.alert(
+      'Add workout',
+      'Do you want to edit the last workout or create a new one?',
+      [
+        {
+          text: 'Edit last',
+          onPress: () => createWaterWorkout(athlete),
+        },
+        {
+          text: 'Create new',
+          onPress: () => createWaterWorkout(athlete),
+        },
+        {
+          text: 'Cancel',
+          style: 'cancel',
+          onPress: () => null,
+        },
+      ],
+      { cancelable: true }
+    )
+  }
+
   async function createWaterWorkout(athlete: AthleteType) {
     navigation.navigate('AddingWaterWorkout', { athlete })
     await new Promise(resolve => setTimeout(resolve, 600))
@@ -130,12 +153,14 @@ export function Home() {
         <Loading />
       </MainView>
     )
+
   if (error)
     return (
       <MainView style={styles.container}>
         <Text style={styles.title}>Error: {error}</Text>
       </MainView>
     )
+
   if (athletes.length === 0)
     return (
       <MainView style={styles.container}>
@@ -157,7 +182,7 @@ export function Home() {
         <View style={[styles.athletesContainer, isExtended ? styles.extended : styles.notExtended]}>
           {filteredAthletes.map(athlete => {
             const AthleteComponent = isExtended ? AthleteExtended : Athlete
-            return <AthleteComponent athlete={athlete} key={athlete.uid} onPress={createWaterWorkout} />
+            return <AthleteComponent athlete={athlete} key={athlete.uid} onPress={select} />
           })}
         </View>
       </ScrollView>

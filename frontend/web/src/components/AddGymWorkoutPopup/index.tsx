@@ -15,7 +15,7 @@ import { createGymActivity } from '../../../../services/gymServices'
 import { useParams } from 'react-router-dom'
 import { handleError } from '../../../../utils/handleError'
 import { ExerciseToAdd } from '../../types/ExerciseToAdd'
-import { VerticalReorderableList } from '../VerticalReordabelList'
+import { VerticalReorderableList } from '../VerticalReorderableList'
 import { AddExercisePopup } from '../AddExercisePopup'
 
 type State = {

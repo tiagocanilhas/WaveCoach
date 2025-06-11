@@ -10,16 +10,16 @@ export const styles = StyleSheet.create({
     color: 'rgb(255, 255, 255)',
   },
   header: {
-    flexDirection: 'row', 
-    justifyContent: 'space-between', 
-    alignItems: 'center', 
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     padding: 10,
     gap: 10,
   },
   input: {
     width: '80%',
   },
-  button: { 
+  button: {
     padding: 10,
     backgroundColor: 'lightgray',
     borderRadius: 5,

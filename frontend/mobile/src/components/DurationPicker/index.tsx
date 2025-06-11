@@ -12,18 +12,15 @@ type State = {
 }
 
 type Action =
-  | { type: 'setHours'; payload: number }
-  | { type: 'setMinutes'; payload: number }
-  | { type: 'setSeconds'; payload: number }
+| { type: 'setValue'; name: string; value: number }
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
-    case 'setHours':
-      return { ...state, hours: action.payload }
-    case 'setMinutes':
-      return { ...state, minutes: action.payload }
-    case 'setSeconds':
-      return { ...state, seconds: action.payload }
+    case 'setValue':
+      return {
+        ...state,
+        [action.name]: action.value,
+      }
     default:
       return state
   }
@@ -42,6 +39,12 @@ export function DurationPicker({ value, onChange }: DurationPickerProps) {
   }
 
   const [state, dispatch] = useReducer(reducer, initialState)
+
+  function handleOnChange(name: string, value: number) {
+    dispatch({ type: 'setValue', name, value })
+    const totalSeconds = state.hours * 3600 + state.minutes * 60 + state.seconds
+    onChange(totalSeconds)
+  }
 
   const hourOptions = Array.from({ length: 1000 }, (_, i) => `${i}`)
   const minuteOptions = Array.from({ length: 60 }, (_, i) => `${i}`)
@@ -62,7 +65,7 @@ export function DurationPicker({ value, onChange }: DurationPickerProps) {
             height={styles.wheelPicker.height}
             initialSelectedIndex={hours}
             items={hourOptions.map(item => ({ label: item, value: item }))}
-            onChange={({ index }) => dispatch({ type: 'setHours', payload: index })}
+            onChange={({ index }) => handleOnChange('hours', index)}
           />
         </View>
       </View>
@@ -75,7 +78,7 @@ export function DurationPicker({ value, onChange }: DurationPickerProps) {
             height={styles.wheelPicker.height}
             initialSelectedIndex={minutes}
             items={minuteOptions.map(item => ({ label: item, value: item }))}
-            onChange={({ index }) => dispatch({ type: 'setMinutes', payload: index })}
+            onChange={({ index }) => handleOnChange('minutes', index)}
           />
         </View>
       </View>
@@ -88,10 +91,11 @@ export function DurationPicker({ value, onChange }: DurationPickerProps) {
             height={styles.wheelPicker.height}
             initialSelectedIndex={seconds}
             items={secondOptions.map(item => ({ label: item, value: item }))}
-            onChange={({ index }) => dispatch({ type: 'setSeconds', payload: index })}
+            onChange={({ index }) => handleOnChange('seconds', index)}
           />
         </View>
       </View>
     </View>
   )
 }
+

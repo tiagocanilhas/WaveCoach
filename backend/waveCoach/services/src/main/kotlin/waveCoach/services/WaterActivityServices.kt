@@ -1,7 +1,12 @@
 package waveCoach.services
 
 import org.springframework.stereotype.Component
-import waveCoach.domain.*
+import waveCoach.domain.ActivityType
+import waveCoach.domain.ManeuverToInsert
+import waveCoach.domain.Questionnaire
+import waveCoach.domain.WaterActivityDomain
+import waveCoach.domain.WaterActivityWithWaves
+import waveCoach.domain.WaveToInsert
 import waveCoach.repository.TransactionManager
 import waveCoach.utils.Either
 import waveCoach.utils.failure
@@ -199,26 +204,33 @@ class WaterActivityServices(
                     duration,
                 )
 
-            waves.forEachIndexed { waveOrder, wave ->
-                val waveId = waterActivityRepository.storeWave(
-                    waterActivityId,
-                    wave.points,
-                    wave.rightSide,
-                    waveOrder,
-                )
+            val wavesToInsert =
+                waves.mapIndexed { order, wave ->
+                    WaveToInsert(
+                        waterActivityId,
+                        wave.points,
+                        wave.rightSide,
+                        order,
+                    )
+                }
 
-                wave.maneuvers.forEachIndexed { maneuverOrder, maneuver ->
+            val wavesIds = waterActivityRepository.storeWaves(wavesToInsert)
+
+            val maneuversToInsert = waves.flatMapIndexed { wavesIndex, wave ->
+                wave.maneuvers.mapIndexed { maneuverOrder, maneuver ->
                     if (waterManeuverRepository.getWaterManeuverById(maneuver.waterManeuverId) == null)
                         return@run failure(CreateWaterActivityError.InvalidWaterManeuver)
 
-                    waterActivityRepository.storeManeuver(
-                        waveId,
+                    ManeuverToInsert(
+                        wavesIds[wavesIndex],
                         maneuver.waterManeuverId,
                         maneuver.success,
                         maneuverOrder,
                     )
                 }
             }
+
+            waterActivityRepository.storeManeuvers(maneuversToInsert)
 
             success(waterActivityId)
         }
