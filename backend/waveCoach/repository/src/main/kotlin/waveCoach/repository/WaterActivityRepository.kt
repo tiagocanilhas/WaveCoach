@@ -38,8 +38,6 @@ interface WaterActivityRepository {
 
     fun getManeuverById(maneuverId: Int): Maneuver?
 
-    fun storeManeuvers(maneuvers: List<ManeuverToInsert>): List<Int>
-
     fun removeManeuversByActivity(activityId: Int)
 
     fun removeManeuversByAthlete(athleteId: Int)

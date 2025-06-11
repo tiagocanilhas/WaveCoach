@@ -10,6 +10,7 @@ import waveCoach.domain.Questionnaire
 import waveCoach.domain.WaterActivityWithWaves
 import waveCoach.domain.WaveToInsert
 import waveCoach.domain.WaveWithManeuvers
+import waveCoach.domain.Wave
 import waveCoach.repository.WaterActivityRepository
 
 class JdbiWaterActivityRepository(
