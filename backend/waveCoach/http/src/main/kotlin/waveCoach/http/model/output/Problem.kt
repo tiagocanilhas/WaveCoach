@@ -294,7 +294,7 @@ class Problem(
 
         val notActivityExercise =
             Problem(
-                "Not an activity exercise",
+                "Not activity's exercise",
                 URI("$BASE_URI/not-activity-exercise"),
             )
 
@@ -318,7 +318,7 @@ class Problem(
 
         val notExerciseSet =
             Problem(
-                "Not an exercise set",
+                "Not exercise's set",
                 URI("$BASE_URI/not-exercise-set"),
             )
 
@@ -326,6 +326,42 @@ class Problem(
             Problem(
                 "Exercise not found",
                 URI("$BASE_URI/exercise-not-found"),
+            )
+
+        val invalidWaveId =
+            Problem(
+                "Invalid wave id",
+                URI("$BASE_URI/invalid-wave-id"),
+            )
+
+        val waveNotFound =
+            Problem(
+                "Wave not found",
+                URI("$BASE_URI/wave-not-found"),
+            )
+
+        val notActivityWave =
+            Problem(
+                "Not activity's wave",
+                URI("$BASE_URI/not-activity-wave"),
+            )
+
+        val invalidManeuverId =
+            Problem(
+                "Invalid maneuver id",
+                URI("$BASE_URI/invalid-maneuver-id"),
+            )
+
+        val maneuverNotFound =
+            Problem(
+                "Maneuver not found",
+                URI("$BASE_URI/maneuver-not-found"),
+            )
+
+        val notWaveManeuver =
+            Problem(
+                "Not wave's maneuver",
+                URI("$BASE_URI/not-wave-maneuver"),
             )
     }
 }

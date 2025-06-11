@@ -95,9 +95,12 @@ INSERT INTO waveCoach.wave (activity, points, right_side, wave_order) VALUES (2,
 INSERT INTO waveCoach.maneuver (wave, maneuver, success, maneuver_order) VALUES (1, 1, true, 1);
 INSERT INTO waveCoach.maneuver (wave, maneuver, success, maneuver_order) VALUES (1, 2, true, 2);
 INSERT INTO waveCoach.wave (activity, points, right_side, wave_order) VALUES (2, 2, false, 2);
+INSERT INTO waveCoach.maneuver (wave, maneuver, success, maneuver_order) VALUES (2, 1, true, 1);
 
 INSERT INTO waveCoach.activity (uid, microcycle, date) VALUES (3, 1, 1746230400000); -- 2025-05-03
 INSERT INTO waveCoach.water (activity, rpe, condition, trimp, duration) VALUES (3, 6, 'Good', 115, 45);
+INSERT INTO waveCoach.wave (activity, points, right_side, wave_order) VALUES (3, 4, true, 1);
+INSERT INTO waveCoach.maneuver (wave, maneuver, success, maneuver_order) VALUES (3, 1, true, 1);
 
 INSERT INTO waveCoach.questionnaire (activity, sleep, fatigue, stress, muscle_pain) VALUES (3, 7, 3, 2, 4);
 
@@ -106,6 +109,8 @@ INSERT INTO waveCoach.activity (uid, microcycle, date) VALUES (3, 2, 17473392000
 
 INSERT INTO waveCoach.activity (uid, microcycle, date) VALUES (3, 2, 1747425600000); -- 2025-05-16
 INSERT INTO waveCoach.water (activity, rpe, condition, trimp, duration) VALUES (5, 7, 'Good', 110, 3600);
+INSERT INTO waveCoach.wave (activity, points, right_side, wave_order) VALUES (5, 6, true, 1);
+INSERT INTO waveCoach.maneuver (wave, maneuver, success, maneuver_order) VALUES (4, 1, true, 1);
 
 INSERT INTO waveCoach.activity (uid, microcycle, date) VALUES (3, 2, 1747512000000); -- 2025-05-17
 INSERT INTO waveCoach.water (activity, rpe, condition, trimp, duration) VALUES (6, 6, 'Good', 115, 3600);

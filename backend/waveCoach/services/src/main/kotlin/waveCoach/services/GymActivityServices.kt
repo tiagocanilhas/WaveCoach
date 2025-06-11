@@ -364,7 +364,7 @@ class GymActivityServices(
                 return@run failure(AddExerciseError.InvalidGymExercise)
             }
 
-            if (gymActivityRepository.verifyExerciseOrder(activityId, order) || order < 0)
+            if (order <= 0 || gymActivityRepository.verifyExerciseOrder(activityId, order))
                 return@run failure(AddExerciseError.InvalidOrder)
 
             val exerciseId = gymActivityRepository.storeExercise(activityId, gymExerciseId, order)
@@ -403,9 +403,9 @@ class GymActivityServices(
                 activityRepository.getActivityById(activityId)
                     ?: return@run failure(RemoveExerciseError.ActivityNotFound)
 
-            if (activity.type != waveCoach.domain.ActivityType.GYM) {
+            if (activity.type != waveCoach.domain.ActivityType.GYM)
                 return@run failure(RemoveExerciseError.NotGymActivity)
-            }
+
 
             val exercise = gymActivityRepository.getExerciseById(exerciseId)
                 ?: return@run failure(RemoveExerciseError.ExerciseNotFound)
@@ -457,7 +457,7 @@ class GymActivityServices(
             if (!setsDomain.checkSet(reps, weight, restTime))
                 return@run failure(AddSetError.InvalidSet)
 
-            if (gymActivityRepository.verifySetOrder(exerciseId, order) || order < 0)
+            if (order <= 0 || gymActivityRepository.verifySetOrder(exerciseId, order))
                 return@run failure(AddSetError.InvalidOrder)
 
             val setId = gymActivityRepository.storeSet(exerciseId, reps, weight, restTime, order)

@@ -77,6 +77,18 @@ object Uris {
         const val CREATE_QUESTIONNAIRE = "$WATER_ACTIVITY/{activityId}/questionnaire"
         const val GET_QUESTIONNAIRE = "$WATER_ACTIVITY/{activityId}/questionnaire"
 
+        const val ADD_WAVE = "$WATER_ACTIVITY/{activityId}/wave"
+        const val REMOVE_WAVE = "$WATER_ACTIVITY/{activityId}/wave/{waveId}"
+
+        fun waveById(activityId: Int, waveId: Int): URI =
+            UriTemplate(REMOVE_WAVE).expand(activityId, waveId)
+
+        const val ADD_MANEUVER = "$WATER_ACTIVITY/{activityId}/wave/{waveId}/maneuver"
+        const val REMOVE_MANEUVER = "$WATER_ACTIVITY/{activityId}/wave/{waveId}/maneuver/{maneuverId}"
+
+        fun maneuverById(activityId: Int, waveId: Int, maneuverId: Int): URI =
+            UriTemplate(REMOVE_MANEUVER).expand(activityId, waveId, maneuverId)
+
         fun byId(id: Int): URI = UriTemplate(GET_BY_ID).expand(id)
     }
 

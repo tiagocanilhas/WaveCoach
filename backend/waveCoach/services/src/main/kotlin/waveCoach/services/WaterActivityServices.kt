@@ -1,10 +1,7 @@
 package waveCoach.services
 
 import org.springframework.stereotype.Component
-import waveCoach.domain.ActivityType
-import waveCoach.domain.Questionnaire
-import waveCoach.domain.WaterActivityDomain
-import waveCoach.domain.WaterActivityWithWaves
+import waveCoach.domain.*
 import waveCoach.repository.TransactionManager
 import waveCoach.utils.Either
 import waveCoach.utils.failure
@@ -83,6 +80,66 @@ sealed class GetQuestionnaireError {
     data object NotAthletesCoach : GetQuestionnaireError()
 }
 typealias GetQuestionnaireResult = Either<GetQuestionnaireError, Questionnaire>
+
+sealed class AddWaveError {
+    data object ActivityNotFound : AddWaveError()
+
+    data object NotAthletesCoach : AddWaveError()
+
+    data object NotWaterActivity : AddWaveError()
+
+    data object InvalidWaterManeuver : AddWaveError()
+
+    data object InvalidOrder : AddWaveError()
+}
+typealias AddWaveResult = Either<AddWaveError, Int>
+
+sealed class RemoveWaveError {
+    data object ActivityNotFound : RemoveWaveError()
+
+    data object NotAthletesCoach : RemoveWaveError()
+
+    data object NotWaterActivity : RemoveWaveError()
+
+    data object WaveNotFound : RemoveWaveError()
+
+    data object NotActivityWave : RemoveWaveError()
+}
+typealias RemoveWaveResult = Either<RemoveWaveError, Int>
+
+sealed class AddManeuverError {
+    data object ActivityNotFound : AddManeuverError()
+
+    data object NotAthletesCoach : AddManeuverError()
+
+    data object NotWaterActivity : AddManeuverError()
+
+    data object InvalidWaterManeuver : AddManeuverError()
+
+    data object InvalidOrder : AddManeuverError()
+
+    data object WaveNotFound : AddManeuverError()
+
+    data object NotActivityWave : AddManeuverError()
+}
+typealias AddManeuverResult = Either<AddManeuverError, Int>
+
+sealed class RemoveManeuverError {
+    data object ActivityNotFound : RemoveManeuverError()
+
+    data object NotAthletesCoach : RemoveManeuverError()
+
+    data object NotWaterActivity : RemoveManeuverError()
+
+    data object WaveNotFound : RemoveManeuverError()
+
+    data object NotActivityWave : RemoveManeuverError()
+
+    data object ManeuverNotFound : RemoveManeuverError()
+
+    data object NotWaveManeuver : RemoveManeuverError()
+}
+typealias RemoveManeuverResult = Either<RemoveManeuverError, Int>
 
 @Component
 class WaterActivityServices(
@@ -295,6 +352,151 @@ class WaterActivityServices(
                     ?: return@run failure(GetQuestionnaireError.QuestionnaireNotFound)
 
             success(questionnaire)
+        }
+    }
+
+    fun addWave(
+        coachId: Int,
+        activityId: Int,
+        points: Float?,
+        rightSide: Boolean,
+        maneuvers: List<ManeuverInputInfo>,
+        order: Int,
+    ): AddWaveResult {
+        return transactionManager.run {
+            val athleteRepository = it.athleteRepository
+            val activityRepository = it.activityRepository
+            val waterActivityRepository = it.waterActivityRepository
+            val waterManeuverRepository = it.waterManeuverRepository
+
+            val activity =
+                activityRepository.getActivityById(activityId) ?: return@run failure(AddWaveError.ActivityNotFound)
+
+            if (activity.type != ActivityType.WATER) return@run failure(AddWaveError.NotWaterActivity)
+
+            val athlete = athleteRepository.getAthlete(activity.uid)!!
+
+            if (athlete.coach != coachId) return@run failure(AddWaveError.NotAthletesCoach)
+
+            if (order <= 0 || waterActivityRepository.verifyWaveOrder(activityId, order))
+                return@run failure(AddWaveError.InvalidOrder)
+
+            val waveId = waterActivityRepository.storeWave(activityId, points, rightSide, order)
+
+            val maneuversToInsert = maneuvers.mapIndexed { maneuverOrder, maneuver ->
+                if (waterManeuverRepository.getWaterManeuverById(maneuver.waterManeuverId) == null)
+                    return@run failure(AddWaveError.InvalidWaterManeuver)
+
+                ManeuverToInsert(waveId, maneuver.waterManeuverId, maneuver.success, maneuverOrder)
+            }
+
+            waterActivityRepository.storeManeuvers(maneuversToInsert)
+
+            success(waveId)
+        }
+    }
+
+    fun removeWave(
+        coachId: Int,
+        activityId: Int,
+        waveId: Int,
+    ): RemoveWaveResult {
+        return transactionManager.run {
+            val athleteRepository = it.athleteRepository
+            val activityRepository = it.activityRepository
+            val waterActivityRepository = it.waterActivityRepository
+
+            val activity =
+                activityRepository.getActivityById(activityId) ?: return@run failure(RemoveWaveError.ActivityNotFound)
+
+            if (activity.type != ActivityType.WATER) return@run failure(RemoveWaveError.NotWaterActivity)
+
+            val athlete = athleteRepository.getAthlete(activity.uid)!!
+
+            if (athlete.coach != coachId) return@run failure(RemoveWaveError.NotAthletesCoach)
+
+            val wave = waterActivityRepository.getWaveById(waveId) ?: return@run failure(RemoveWaveError.WaveNotFound)
+
+            if (wave.activity != activityId) return@run failure(RemoveWaveError.NotActivityWave)
+
+            waterActivityRepository.removeWaveById(waveId)
+
+            success(waveId)
+        }
+    }
+
+    fun addManeuver(
+        coachId: Int,
+        activityId: Int,
+        waveId: Int,
+        waterManeuverId: Int,
+        success: Boolean,
+        order: Int,
+    ): AddManeuverResult {
+        return transactionManager.run {
+            val athleteRepository = it.athleteRepository
+            val activityRepository = it.activityRepository
+            val waterActivityRepository = it.waterActivityRepository
+            val waterManeuverRepository = it.waterManeuverRepository
+
+            val activity =
+                activityRepository.getActivityById(activityId) ?: return@run failure(AddManeuverError.ActivityNotFound)
+
+            if (activity.type != ActivityType.WATER) return@run failure(AddManeuverError.NotWaterActivity)
+
+            val athlete = athleteRepository.getAthlete(activity.uid)!!
+
+            if (athlete.coach != coachId) return@run failure(AddManeuverError.NotAthletesCoach)
+
+            if (waterManeuverRepository.getWaterManeuverById(waterManeuverId) == null)
+                return@run failure(AddManeuverError.InvalidWaterManeuver)
+
+            val wave = waterActivityRepository.getWaveById(waveId) ?: return@run failure(AddManeuverError.WaveNotFound)
+
+            if (wave.activity != activityId) return@run failure(AddManeuverError.NotActivityWave)
+
+            if (order <= 0 || waterActivityRepository.verifyManeuverOrder(waveId, order))
+                return@run failure(AddManeuverError.InvalidOrder)
+
+            val maneuverId = waterActivityRepository.storeManeuver(waveId, waterManeuverId, success, order)
+
+            success(maneuverId)
+        }
+    }
+
+    fun removeManeuver(
+        coachId: Int,
+        activityId: Int,
+        waveId: Int,
+        maneuverId: Int,
+    ): RemoveManeuverResult {
+        return transactionManager.run {
+            val athleteRepository = it.athleteRepository
+            val activityRepository = it.activityRepository
+            val waterActivityRepository = it.waterActivityRepository
+
+            val activity = activityRepository.getActivityById(activityId)
+                ?: return@run failure(RemoveManeuverError.ActivityNotFound)
+
+            if (activity.type != ActivityType.WATER) return@run failure(RemoveManeuverError.NotWaterActivity)
+
+            val athlete = athleteRepository.getAthlete(activity.uid)!!
+
+            if (athlete.coach != coachId) return@run failure(RemoveManeuverError.NotAthletesCoach)
+
+            val wave = waterActivityRepository.getWaveById(waveId)
+                ?: return@run failure(RemoveManeuverError.WaveNotFound)
+
+            if (wave.activity != activityId) return@run failure(RemoveManeuverError.NotActivityWave)
+
+            val maneuver = waterActivityRepository.getManeuverById(maneuverId)
+                ?: return@run failure(RemoveManeuverError.ManeuverNotFound)
+
+            if (maneuver.wave != waveId) return@run failure(RemoveManeuverError.NotWaveManeuver)
+
+            waterActivityRepository.removeManeuverById(maneuverId)
+
+            success(maneuverId)
         }
     }
 }

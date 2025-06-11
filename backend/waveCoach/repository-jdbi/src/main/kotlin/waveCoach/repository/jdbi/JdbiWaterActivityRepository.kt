@@ -2,12 +2,7 @@ package waveCoach.repository.jdbi
 
 import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.kotlin.mapTo
-import waveCoach.domain.Maneuver
-import waveCoach.domain.MesocycleWater
-import waveCoach.domain.MicrocycleWater
-import waveCoach.domain.Questionnaire
-import waveCoach.domain.WaterActivityWithWaves
-import waveCoach.domain.WaveWithManeuvers
+import waveCoach.domain.*
 import waveCoach.repository.WaterActivityRepository
 
 class JdbiWaterActivityRepository(
@@ -79,6 +74,12 @@ class JdbiWaterActivityRepository(
             .mapTo<Int>()
             .one()
 
+    override fun getWaveById(waveId: Int): Wave? =
+        handle.createQuery("select * from waveCoach.wave where id = :waveId")
+            .bind("waveId", waveId)
+            .mapTo<Wave>()
+            .singleOrNull()
+
     override fun removeWavesByActivity(activityId: Int) {
         handle.createUpdate("delete from waveCoach.wave where activity = :activityId")
             .bind("activityId", activityId)
@@ -95,6 +96,25 @@ class JdbiWaterActivityRepository(
             .bind("athleteId", athleteId)
             .execute()
     }
+
+    override fun removeWaveById(waveId: Int) {
+        handle.createUpdate("delete from waveCoach.wave where id = :waveId")
+            .bind("waveId", waveId)
+            .execute()
+    }
+
+    override fun verifyWaveOrder(activityId: Int, order: Int): Boolean =
+        handle.createQuery(
+            """
+            select exists (select 1 from waveCoach.wave 
+                where activity = :activityId and wave_order = :order
+            )
+            """.trimIndent(),
+        )
+            .bind("activityId", activityId)
+            .bind("order", order)
+            .mapTo<Boolean>()
+            .one()
 
     override fun storeManeuver(
         waveId: Int,
@@ -116,7 +136,38 @@ class JdbiWaterActivityRepository(
             .mapTo<Int>()
             .one()
 
+    override fun storeManeuvers(maneuvers: List<ManeuverToInsert>): List<Int> =
+        handle.prepareBatch(
+            """
+            insert into waveCoach.maneuver (wave, maneuver, success, maneuver_order) 
+            values (:waveId, :waterManeuverId, :success, :order)
+            """
+        ).use { batch ->
+            maneuvers.forEach {
+                batch.bind("waveId", it.waveId)
+                    .bind("waterManeuverId", it.waterManeuverId)
+                    .bind("success", it.success)
+                    .bind("order", it.order)
+                    .add()
+            }
+            batch.executeAndReturnGeneratedKeys()
+                .mapTo<Int>()
+                .list()
+        }
 
+    override fun getManeuverById(maneuverId: Int): Maneuver? =
+        handle.createQuery(
+            """
+            select m.id, m.wave, wm.id as water_maneuver_id, wm.name as water_maneuver_name, 
+                   wm.url, m.success, m.maneuver_order
+            from waveCoach.maneuver m
+            join waveCoach.water_maneuver wm on m.maneuver = wm.id
+            where m.id = :maneuverId
+        """.trimIndent()
+        )
+            .bind("maneuverId", maneuverId)
+            .mapTo<Maneuver>()
+            .singleOrNull()
 
     override fun removeManeuversByActivity(activityId: Int) {
         handle.createUpdate(
@@ -141,6 +192,25 @@ class JdbiWaterActivityRepository(
             .bind("athleteId", athleteId)
             .execute()
     }
+
+    override fun removeManeuverById(maneuverId: Int) {
+        handle.createUpdate("delete from waveCoach.maneuver where id = :maneuverId")
+            .bind("maneuverId", maneuverId)
+            .execute()
+    }
+
+    override fun verifyManeuverOrder(waveId: Int, order: Int): Boolean =
+        handle.createQuery(
+            """
+            select exists (select 1 from waveCoach.maneuver 
+                where wave = :waveId and maneuver_order = :order
+            )
+            """.trimIndent(),
+        )
+            .bind("waveId", waveId)
+            .bind("order", order)
+            .mapTo<Boolean>()
+            .one()
 
     private data class Row(
         val activityId: Int,
@@ -207,11 +277,12 @@ class JdbiWaterActivityRepository(
                                 if (maneuverRow.maneuverId != null) {
                                     Maneuver(
                                         id = maneuverRow.maneuverId,
+                                        wave = info.waveId,
                                         waterManeuverId = maneuverRow.waterManeuverId!!,
                                         waterManeuverName = maneuverRow.waterManeuverName!!,
                                         url = maneuverRow.url,
                                         success = maneuverRow.success!!,
-                                        order = maneuverRow.maneuverOrder!!,
+                                        maneuverOrder = maneuverRow.maneuverOrder!!,
                                     )
                                 } else {
                                     null
@@ -325,11 +396,12 @@ class JdbiWaterActivityRepository(
                                                                             .mapNotNull { maneuverRow ->
                                                                                 Maneuver(
                                                                                     id = maneuverRow.maneuverId!!,
+                                                                                    wave = info.waveId,
                                                                                     waterManeuverId = maneuverRow.waterManeuverId!!,
                                                                                     waterManeuverName = maneuverRow.waterManeuverName!!,
                                                                                     url = maneuverRow.url,
                                                                                     success = maneuverRow.success!!,
-                                                                                    order = maneuverRow.maneuverOrder!!,
+                                                                                    maneuverOrder = maneuverRow.maneuverOrder!!,
                                                                                 )
                                                                             },
                                                                 )
