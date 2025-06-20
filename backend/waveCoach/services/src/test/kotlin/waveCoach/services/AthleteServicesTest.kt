@@ -90,9 +90,9 @@ class AthleteServicesTest {
             is Success ->
                 assertTrue(
                     result.value.uid == FIRST_ATHLETE_ID &&
-                        result.value.coach == FIRST_COACH_ID &&
-                        result.value.name == FIRST_ATHLETE_NAME &&
-                        result.value.birthdate == FIRST_ATHLETE_BIRTH_DATE,
+                            result.value.coach == FIRST_COACH_ID &&
+                            result.value.name == FIRST_ATHLETE_NAME &&
+                            result.value.birthdate == FIRST_ATHLETE_BIRTH_DATE,
                 )
         }
     }
@@ -621,18 +621,18 @@ class AthleteServicesTest {
             is Success ->
                 assertTrue(
                     result.value.uid == FIRST_ATHLETE_ID &&
-                        result.value.date == ATHLETE_CHARACTERISTICS_FIRST_DATE_LONG &&
-                        result.value.height == ATHLETE_HEIGHT &&
-                        result.value.weight == ATHLETE_WEIGHT &&
-                        result.value.bmi == ATHLETE_BMI &&
-                        result.value.calories == ATHLETE_CALORIES &&
-                        result.value.bodyFat == ATHLETE_BODY_FAT &&
-                        result.value.waistSize == ATHLETE_WAIST_SIZE &&
-                        result.value.armSize == ATHLETE_ARM_SIZE &&
-                        result.value.thighSize == ATHLETE_THIGH_SIZE &&
-                        result.value.tricepFat == ATHLETE_TRICEP_FAT &&
-                        result.value.abdomenFat == ATHLETE_ABDOMEN_FAT &&
-                        result.value.thighFat == ATHLETE_THIGH_FAT,
+                            result.value.date == ATHLETE_CHARACTERISTICS_FIRST_DATE_LONG &&
+                            result.value.height == ATHLETE_HEIGHT &&
+                            result.value.weight == ATHLETE_WEIGHT &&
+                            result.value.bmi == ATHLETE_BMI &&
+                            result.value.calories == ATHLETE_CALORIES &&
+                            result.value.bodyFat == ATHLETE_BODY_FAT &&
+                            result.value.waistSize == ATHLETE_WAIST_SIZE &&
+                            result.value.armSize == ATHLETE_ARM_SIZE &&
+                            result.value.thighSize == ATHLETE_THIGH_SIZE &&
+                            result.value.tricepFat == ATHLETE_TRICEP_FAT &&
+                            result.value.abdomenFat == ATHLETE_ABDOMEN_FAT &&
+                            result.value.thighFat == ATHLETE_THIGH_FAT,
                 )
         }
     }
@@ -1132,8 +1132,10 @@ class AthleteServicesTest {
                 athleteServices.createCompetition(
                     FIRST_COACH_ID,
                     FIRST_ATHLETE_ID,
-                    "01-01-2023",
+                    DATE,
                     "Location",
+                    2,
+                    emptyList()
                 )
         ) {
             is Failure -> fail("Unexpected $result")
@@ -1160,6 +1162,8 @@ class AthleteServicesTest {
                         FIRST_ATHLETE_ID,
                         date,
                         "Location",
+                        1,
+                        emptyList()
                     )
             ) {
                 is Failure -> assertTrue(result.value is CreateCompetitionError.InvalidDate)
@@ -1178,8 +1182,10 @@ class AthleteServicesTest {
                 athleteServices.createCompetition(
                     FIRST_COACH_ID,
                     0,
-                    "01-01-2023",
+                    DATE,
                     "Location",
+                    1,
+                    emptyList()
                 )
         ) {
             is Failure -> assertTrue(result.value is CreateCompetitionError.AthleteNotFound)
@@ -1197,8 +1203,10 @@ class AthleteServicesTest {
                 athleteServices.createCompetition(
                     SECOND_COACH_ID,
                     FIRST_ATHLETE_ID,
-                    "01-01-2023",
+                    DATE,
                     "Location",
+                    2,
+                    emptyList()
                 )
         ) {
             is Failure -> assertTrue(result.value is CreateCompetitionError.NotAthletesCoach)
@@ -1206,9 +1214,422 @@ class AthleteServicesTest {
         }
     }
 
+    @Test
+    fun `create competition - activity without microcycle`() {
+        val testClock = TestClock()
+        val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (
+            val result =
+                athleteServices.createCompetition(
+                    FIRST_COACH_ID,
+                    FIRST_ATHLETE_ID,
+                    VALID_DATE,
+                    randomString(),
+                    2,
+                    listOf(
+                        HeatInputInfo(
+                            score = 2f,
+                            waterActivity = WaterActivityInputInfo(
+                                athleteId = FIRST_ATHLETE_ID,
+                                rpe = 4,
+                                condition = randomString(),
+                                trimp = 2,
+                                duration = 60,
+                                waves = listOf(
+                                    WaveInputInfo(
+                                        points = null,
+                                        rightSide = true,
+                                        maneuvers = listOf(
+                                            ManeuverInputInfo(
+                                                waterManeuverId = 1,
+                                                success = true
+                                            ),
+                                        )
+                                    ),
+                                ),
+                            ),
+                        ),
+                    )
+                )
+        ) {
+            is Failure -> assertTrue(result.value is CreateCompetitionError.ActivityWithoutMicrocycle)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
+    @Test
+    fun `create competition - invalid duration`() {
+        val testClock = TestClock()
+        val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (
+            val result =
+                athleteServices.createCompetition(
+                    FIRST_COACH_ID,
+                    FIRST_ATHLETE_ID,
+                    DATE,
+                    randomString(),
+                    2,
+                    listOf(
+                        HeatInputInfo(
+                            score = 2f,
+                            waterActivity = WaterActivityInputInfo(
+                                athleteId = FIRST_ATHLETE_ID,
+                                rpe = 4,
+                                condition = randomString(),
+                                trimp = 2,
+                                duration = -60, // Invalid duration
+                                waves = listOf(
+                                    WaveInputInfo(
+                                        points = null,
+                                        rightSide = true,
+                                        maneuvers = listOf(
+                                            ManeuverInputInfo(
+                                                waterManeuverId = 1,
+                                                success = true
+                                            ),
+                                        )
+                                    ),
+                                ),
+                            ),
+                        ),
+                    )
+                )
+        ) {
+            is Failure -> assertTrue(result.value is CreateCompetitionError.InvalidDuration)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
+    @Test
+    fun `create competition - invalid rpe`() {
+        val testClock = TestClock()
+        val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (
+            val result =
+                athleteServices.createCompetition(
+                    FIRST_COACH_ID,
+                    FIRST_ATHLETE_ID,
+                    DATE,
+                    randomString(),
+                    2,
+                    listOf(
+                        HeatInputInfo(
+                            score = 2f,
+                            waterActivity = WaterActivityInputInfo(
+                                athleteId = FIRST_ATHLETE_ID,
+                                rpe = -1, // Invalid RPE
+                                condition = randomString(),
+                                trimp = 2,
+                                duration = 60,
+                                waves = listOf(
+                                    WaveInputInfo(
+                                        points = null,
+                                        rightSide = true,
+                                        maneuvers = listOf(
+                                            ManeuverInputInfo(
+                                                waterManeuverId = 1,
+                                                success = true
+                                            ),
+                                        )
+                                    ),
+                                ),
+                            ),
+                        ),
+                    )
+                )
+        ) {
+            is Failure -> assertTrue(result.value is CreateCompetitionError.InvalidRpe)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
+    @Test
+    fun `create competition - invalid trimp`() {
+        val testClock = TestClock()
+        val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (
+            val result =
+                athleteServices.createCompetition(
+                    FIRST_COACH_ID,
+                    FIRST_ATHLETE_ID,
+                    DATE,
+                    randomString(),
+                    2,
+                    listOf(
+                        HeatInputInfo(
+                            score = 2f,
+                            waterActivity = WaterActivityInputInfo(
+                                athleteId = FIRST_ATHLETE_ID,
+                                rpe = 4,
+                                condition = randomString(),
+                                trimp = -1, // Invalid TRIMP
+                                duration = 60,
+                                waves = listOf(
+                                    WaveInputInfo(
+                                        points = null,
+                                        rightSide = true,
+                                        maneuvers = listOf(
+                                            ManeuverInputInfo(
+                                                waterManeuverId = 1,
+                                                success = true
+                                            ),
+                                        )
+                                    ),
+                                ),
+                            ),
+                        ),
+                    )
+                )
+        ) {
+            is Failure -> assertTrue(result.value is CreateCompetitionError.InvalidTrimp)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
+    @Test
+    fun `create competition - invalid score`() {
+        val testClock = TestClock()
+        val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (
+            val result =
+                athleteServices.createCompetition(
+                    FIRST_COACH_ID,
+                    FIRST_ATHLETE_ID,
+                    VALID_DATE,
+                    randomString(),
+                    2,
+                    listOf(
+                        HeatInputInfo(
+                            score = -1f, // Invalid score
+                            waterActivity = WaterActivityInputInfo(
+                                athleteId = FIRST_ATHLETE_ID,
+                                rpe = 4,
+                                condition = randomString(),
+                                trimp = 2,
+                                duration = 60,
+                                waves = listOf(
+                                    WaveInputInfo(
+                                        points = null,
+                                        rightSide = true,
+                                        maneuvers = listOf(
+                                            ManeuverInputInfo(
+                                                waterManeuverId = 1,
+                                                success = true
+                                            ),
+                                        )
+                                    ),
+                                ),
+                            ),
+                        ),
+                    )
+                )
+        ) {
+            is Failure -> assertTrue(result.value is CreateCompetitionError.InvalidScore)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
+    @Test
+    fun `create competition - invalid water maneuver`() {
+        val testClock = TestClock()
+        val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (
+            val result =
+                athleteServices.createCompetition(
+                    FIRST_COACH_ID,
+                    FIRST_ATHLETE_ID,
+                    DATE,
+                    randomString(),
+                    2,
+                    listOf(
+                        HeatInputInfo(
+                            score = 2f,
+                            waterActivity = WaterActivityInputInfo(
+                                athleteId = FIRST_ATHLETE_ID,
+                                rpe = 4,
+                                condition = randomString(),
+                                trimp = 2,
+                                duration = 60,
+                                waves = listOf(
+                                    WaveInputInfo(
+                                        points = null,
+                                        rightSide = true,
+                                        maneuvers = listOf(
+                                            ManeuverInputInfo(
+                                                waterManeuverId = 0, // Invalid water maneuver ID
+                                                success = true
+                                            ),
+                                        )
+                                    ),
+                                ),
+                            ),
+                        ),
+                    )
+                )
+        ) {
+            is Failure -> assertTrue(result.value is CreateCompetitionError.InvalidWaterManeuver)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
+    /**
+     * Get Competition Tests
+     */
+
+    @Test
+    fun `get competition - success`() {
+        val testClock = TestClock()
+        val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (
+            val result =
+                athleteServices.getCompetition(FIRST_COACH_ID, FIRST_ATHLETE_ID, FIRST_COMPETITION_ID)
+        ) {
+            is Failure -> fail("Unexpected $result")
+            is Success -> assertTrue(result.value.id == FIRST_COMPETITION_ID)
+        }
+    }
+
+    @Test
+    fun `get competition - athlete not found`() {
+        val testClock = TestClock()
+        val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (
+            val result =
+                athleteServices.getCompetition(FIRST_COACH_ID, 0, FIRST_COMPETITION_ID)
+        ) {
+            is Failure -> assertTrue(result.value is GetCompetitionError.AthleteNotFound)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
+    @Test
+    fun `get competition - not athlete's coach`() {
+        val testClock = TestClock()
+        val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (
+            val result =
+                athleteServices.getCompetition(SECOND_COACH_ID, FIRST_ATHLETE_ID, FIRST_COMPETITION_ID)
+        ) {
+            is Failure -> assertTrue(result.value is GetCompetitionError.NotAthletesCoach)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
+    @Test
+    fun `get competition - competition not found`() {
+        val testClock = TestClock()
+        val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (
+            val result =
+                athleteServices.getCompetition(FIRST_COACH_ID, FIRST_ATHLETE_ID, 0)
+        ) {
+            is Failure -> assertTrue(result.value is GetCompetitionError.CompetitionNotFound)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
+    @Test
+    fun `get competition - not athlete's competition`() {
+        val testClock = TestClock()
+        val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (
+            val result =
+                athleteServices.getCompetition(SECOND_COACH_ID, FOURTH_ATHLETE_ID, FIRST_COMPETITION_ID)
+        ) {
+            is Failure -> assertTrue(result.value is GetCompetitionError.NotAthletesCompetition)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
+    /**
+     * Remove Competition Tests
+     */
+
+    @Test
+    fun `remove competition - success`() {
+        val testClock = TestClock()
+        val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (
+            val result =
+                athleteServices.removeCompetition(FIRST_COACH_ID, FIRST_ATHLETE_ID, SECOND_COMPETITION_ID)
+        ) {
+            is Failure -> fail("Unexpected $result")
+            is Success -> assertTrue(result.value == SECOND_COMPETITION_ID)
+        }
+    }
+
+    @Test
+    fun `remove competition - athlete not found`() {
+        val testClock = TestClock()
+        val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (
+            val result =
+                athleteServices.removeCompetition(FIRST_COACH_ID, 0, FIRST_COMPETITION_ID)
+        ) {
+            is Failure -> assertTrue(result.value is RemoveCompetitionError.AthleteNotFound)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
+    @Test
+    fun `remove competition - not athlete's coach`() {
+        val testClock = TestClock()
+        val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (
+            val result =
+                athleteServices.removeCompetition(SECOND_COACH_ID, FIRST_ATHLETE_ID, SECOND_COMPETITION_ID)
+        ) {
+            is Failure -> assertTrue(result.value is RemoveCompetitionError.NotAthletesCoach)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
+    @Test
+    fun `remove competition - competition not found`() {
+        val testClock = TestClock()
+        val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (
+            val result =
+                athleteServices.removeCompetition(FIRST_COACH_ID, FIRST_ATHLETE_ID, 0)
+        ) {
+            is Failure -> assertTrue(result.value is RemoveCompetitionError.CompetitionNotFound)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
+    @Test
+    fun `remove competition - not athlete's competition`() {
+        val testClock = TestClock()
+        val athleteServices = createAthleteServices(testClock, maxTokensPerUser = MAX_TOKENS_PER_USER)
+
+        when (
+            val result =
+                athleteServices.removeCompetition(SECOND_COACH_ID, FOURTH_ATHLETE_ID, FIRST_COMPETITION_ID)
+        ) {
+            is Failure -> assertTrue(result.value is RemoveCompetitionError.NotAthletesCompetition)
+            is Success -> fail("Unexpected $result")
+        }
+    }
+
     companion object {
         private fun randomString() = "String_${abs(Random.nextLong())}"
 
+        private const val DATE = "03-05-2025"
         private const val VALID_DATE = "01-01-2000"
         private const val FIRST_COACH_ID = 1
         private const val SECOND_COACH_ID = 2
@@ -1241,9 +1662,8 @@ class AthleteServicesTest {
         private const val ATHLETE_ABDOMEN_FAT = 1
         private const val ATHLETE_THIGH_FAT = 1
 
-        private const val FIRST_GYM_ACTIVITY_ID = 1
-        private const val SECOND_GYM_ACTIVITY_ID = 2
-        private const val THIRD_GYM_ACTIVITY_ID = 3
+        private const val FIRST_COMPETITION_ID = 1
+        private const val SECOND_COMPETITION_ID = 2
 
         private const val MAX_TOKENS_PER_USER = 5
 
@@ -1282,6 +1702,7 @@ class AthleteServicesTest {
                 ),
             ),
             ActivityDomain(),
+            WaterActivityDomain(),
             CloudinaryServices(cloudinary),
             testClock,
         )

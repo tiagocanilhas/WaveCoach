@@ -385,6 +385,7 @@ class AthleteController(
                     RemoveCharacteristicsError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
                     RemoveCharacteristicsError.CharacteristicsNotFound ->
                         Problem.response(404, Problem.characteristicsNotFound)
+
                     RemoveCharacteristicsError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
                 }
         }
@@ -556,7 +557,37 @@ class AthleteController(
         @RequestBody input: CreateCompetitionInputModel,
     ): ResponseEntity<*> {
         val uid = aid.toIntOrNull() ?: return Problem.response(400, Problem.invalidAthleteId)
-        val result = athleteServices.createCompetition(coach.info.id, uid, input.date, input.location)
+        val result = athleteServices.createCompetition(
+            coach.info.id,
+            uid,
+            input.date,
+            input.location,
+            input.place,
+            input.heats.map { heatInputModel ->
+                HeatInputInfo(
+                    heatInputModel.score,
+                    WaterActivityInputInfo(
+                        heatInputModel.waterActivity.athleteId,
+                        heatInputModel.waterActivity.rpe,
+                        heatInputModel.waterActivity.condition,
+                        heatInputModel.waterActivity.trimp,
+                        heatInputModel.waterActivity.duration,
+                        heatInputModel.waterActivity.waves.map { waveInputModel ->
+                            WaveInputInfo(
+                                waveInputModel.points,
+                                waveInputModel.rightSide,
+                                waveInputModel.maneuvers.map { maneuverInputModel ->
+                                    ManeuverInputInfo(
+                                        maneuverInputModel.waterManeuverId,
+                                        maneuverInputModel.success,
+                                    )
+                                },
+                            )
+                        },
+                    )
+                )
+            },
+        )
 
         return when (result) {
             is Success ->
@@ -570,6 +601,108 @@ class AthleteController(
                     CreateCompetitionError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
                     CreateCompetitionError.InvalidDate -> Problem.response(400, Problem.invalidDate)
                     CreateCompetitionError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
+                    CreateCompetitionError.ActivityWithoutMicrocycle -> Problem.response(
+                        400,
+                        Problem.activityWithoutMicrocycle
+                    )
+
+                    CreateCompetitionError.InvalidDuration -> Problem.response(400, Problem.invalidDuration)
+                    CreateCompetitionError.InvalidRpe -> Problem.response(400, Problem.invalidRpe)
+                    CreateCompetitionError.InvalidScore -> Problem.response(400, Problem.invalidScore)
+                    CreateCompetitionError.InvalidTrimp -> Problem.response(400, Problem.invalidTrimp)
+                    CreateCompetitionError.InvalidWaterManeuver -> Problem.response(400, Problem.invalidWaterManeuver)
+                }
+        }
+    }
+
+    @GetMapping(Uris.Athletes.GET_COMPETITION_BY_ID)
+    fun getCompetitionById(
+        user: AuthenticatedUser,
+        @PathVariable aid: String,
+        @PathVariable id: String,
+    ): ResponseEntity<*> {
+        val uid = aid.toIntOrNull() ?: return Problem.response(400, Problem.invalidAthleteId)
+        val competitionId = id.toIntOrNull() ?: return Problem.response(400, Problem.invalidCompetitionId)
+        val result = athleteServices.getCompetition(user.info.id, uid, competitionId)
+
+        return when (result) {
+            is Success ->
+                ResponseEntity
+                    .status(200)
+                    .body(
+                        CompetitionOutputModel(
+                            result.value.id,
+                            result.value.uid,
+                            result.value.date,
+                            result.value.location,
+                            result.value.place,
+                            result.value.heats.map { heat ->
+                                HeatOutputModel(
+                                    heat.id,
+                                    heat.score,
+                                    WaterActivityOutputModel(
+                                        heat.waterActivity.id,
+                                        heat.waterActivity.athleteId,
+                                        heat.waterActivity.microcycleId,
+                                        heat.waterActivity.date,
+                                        heat.waterActivity.rpe,
+                                        heat.waterActivity.condition,
+                                        heat.waterActivity.trimp,
+                                        heat.waterActivity.duration,
+                                        heat.waterActivity.waves.map { wave ->
+                                            WaveOutputModel(
+                                                wave.id,
+                                                wave.points,
+                                                wave.rightSide,
+                                                wave.maneuvers.map { maneuver ->
+                                                    ManeuverOutputModel(
+                                                        maneuver.id,
+                                                        maneuver.waterManeuverId,
+                                                        maneuver.waterManeuverName,
+                                                        maneuver.url,
+                                                        maneuver.success,
+                                                    )
+                                                },
+                                            )
+                                        },
+                                    ),
+                                )
+                            },
+                        ),
+                    )
+
+            is Failure ->
+                when (result.value) {
+                    GetCompetitionError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
+                    GetCompetitionError.CompetitionNotFound -> Problem.response(404, Problem.competitionNotFound)
+                    GetCompetitionError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
+                    GetCompetitionError.NotAthletesCompetition -> Problem.response(400, Problem.notAthletesCompetition)
+                }
+        }
+    }
+
+    @DeleteMapping(Uris.Athletes.REMOVE_COMPETITION)
+    fun removeCompetition(
+        coach: AuthenticatedCoach,
+        @PathVariable aid: String,
+        @PathVariable id: String,
+    ): ResponseEntity<*> {
+        val uid = aid.toIntOrNull() ?: return Problem.response(400, Problem.invalidAthleteId)
+        val competitionId = id.toIntOrNull() ?: return Problem.response(400, Problem.invalidCompetitionId)
+        val result = athleteServices.removeCompetition(coach.info.id, uid, competitionId)
+
+        return when (result) {
+            is Success -> ResponseEntity.status(204).build<Unit>()
+
+            is Failure ->
+                when (result.value) {
+                    RemoveCompetitionError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
+                    RemoveCompetitionError.CompetitionNotFound -> Problem.response(404, Problem.competitionNotFound)
+                    RemoveCompetitionError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
+                    RemoveCompetitionError.NotAthletesCompetition -> Problem.response(
+                        400,
+                        Problem.notAthletesCompetition
+                    )
                 }
         }
     }

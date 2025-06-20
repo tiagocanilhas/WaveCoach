@@ -155,7 +155,7 @@ class WaterActivityServices(
         coachId: Int,
         athleteId: Int,
         date: String,
-        pse: Int,
+        rpe: Int,
         condition: String,
         trimp: Int,
         duration: Int,
@@ -183,7 +183,7 @@ class WaterActivityServices(
 
             val activityId = activityRepository.storeActivity(athleteId, dateLong, micro.id)
 
-            if (!waterActivityDomain.checkRpe(pse)) {
+            if (!waterActivityDomain.checkRpe(rpe)) {
                 return@run failure(CreateWaterActivityError.InvalidRpe)
             }
 
@@ -198,7 +198,7 @@ class WaterActivityServices(
             val waterActivityId =
                 waterActivityRepository.storeWaterActivity(
                     activityId,
-                    pse,
+                    rpe,
                     condition,
                     trimp,
                     duration,

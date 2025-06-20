@@ -185,24 +185,18 @@ CREATE TABLE waveCoach.competition(
     uid INTEGER,
     date BIGINT DEFAULT EXTRACT(EPOCH FROM CURRENT_TIMESTAMP) NOT NULL,
     location VARCHAR(64),
-    place VARCHAR(64),
+    place INTEGER,
     FOREIGN KEY (uid) REFERENCES waveCoach.athlete(uid) ON DELETE CASCADE
-);
-
-CREATE TABLE waveCoach.athlete_competition(
-    athlete INTEGER REFERENCES waveCoach.athlete(uid),
-    competition INTEGER REFERENCES waveCoach.competition(id),
-    score INTEGER,
-    PRIMARY KEY (athlete, competition)
 );
 
 CREATE TABLE waveCoach.heat(
     id SERIAL,
     competition INTEGER,
-    date BIGINT DEFAULT EXTRACT(EPOCH FROM CURRENT_TIMESTAMP) NOT NULL,
-    location VARCHAR(64),
+    water_activity INTEGER,
+    score INTEGER,
     PRIMARY KEY (id, competition),
-    FOREIGN KEY (competition) REFERENCES waveCoach.competition(id) ON DELETE CASCADE
+    FOREIGN KEY (competition) REFERENCES waveCoach.competition(id) ON DELETE CASCADE,
+    FOREIGN KEY (water_activity) REFERENCES waveCoach.water(activity) ON DELETE CASCADE
 );
 
 

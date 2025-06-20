@@ -363,5 +363,29 @@ class Problem(
                 "Not wave's maneuver",
                 URI("$BASE_URI/not-wave-maneuver"),
             )
+
+        val invalidScore =
+            Problem(
+                "Invalid score",
+                URI("$BASE_URI/invalid-score"),
+            )
+
+        val invalidCompetitionId =
+            Problem(
+                "Invalid competition id",
+                URI("$BASE_URI/invalid-competition-id"),
+            )
+
+        val competitionNotFound =
+            Problem(
+                "Competition not found",
+                URI("$BASE_URI/competition-not-found"),
+            )
+
+        val notAthletesCompetition =
+            Problem(
+                "Not athlete's competition",
+                URI("$BASE_URI/not-athletes-competition"),
+            )
     }
 }

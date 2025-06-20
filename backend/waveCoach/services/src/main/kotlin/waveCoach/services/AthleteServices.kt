@@ -4,15 +4,7 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import org.springframework.stereotype.Component
 import org.springframework.web.multipart.MultipartFile
-import waveCoach.domain.ActivityDomain
-import waveCoach.domain.Athlete
-import waveCoach.domain.AthleteCode
-import waveCoach.domain.AthleteDomain
-import waveCoach.domain.Characteristics
-import waveCoach.domain.CharacteristicsDomain
-import waveCoach.domain.Mesocycle
-import waveCoach.domain.MesocycleWater
-import waveCoach.domain.UserDomain
+import waveCoach.domain.*
 import waveCoach.repository.TransactionManager
 import waveCoach.utils.Either
 import waveCoach.utils.failure
@@ -38,6 +30,20 @@ data class MicrocycleInputInfo(
     val id: Int?,
     val startTime: Long,
     val endTime: Long,
+)
+
+data class HeatInputInfo(
+    val score: Float,
+    val waterActivity: WaterActivityInputInfo,
+)
+
+data class WaterActivityInputInfo(
+    val athleteId: Int,
+    val rpe: Int,
+    val condition: String,
+    val trimp: Int,
+    val duration: Int,
+    val waves: List<WaveInputInfo>,
 )
 
 sealed class CreateAthleteError {
@@ -187,8 +193,42 @@ sealed class CreateCompetitionError {
     data object AthleteNotFound : CreateCompetitionError()
 
     data object NotAthletesCoach : CreateCompetitionError()
+
+    data object ActivityWithoutMicrocycle : CreateCompetitionError()
+
+    data object InvalidRpe : CreateCompetitionError()
+
+    data object InvalidTrimp : CreateCompetitionError()
+
+    data object InvalidDuration : CreateCompetitionError()
+
+    data object InvalidWaterManeuver : CreateCompetitionError()
+
+    data object InvalidScore : CreateCompetitionError()
 }
 typealias CreateCompetitionResult = Either<CreateCompetitionError, Int>
+
+sealed class GetCompetitionError {
+    data object CompetitionNotFound : GetCompetitionError()
+
+    data object AthleteNotFound : GetCompetitionError()
+
+    data object NotAthletesCoach : GetCompetitionError()
+
+    data object NotAthletesCompetition : GetCompetitionError()
+}
+typealias GetCompetitionResult = Either<GetCompetitionError, CompetitionWithHeats>
+
+sealed class RemoveCompetitionError {
+    data object AthleteNotFound : RemoveCompetitionError()
+
+    data object CompetitionNotFound : RemoveCompetitionError()
+
+    data object NotAthletesCoach : RemoveCompetitionError()
+
+    data object NotAthletesCompetition : RemoveCompetitionError()
+}
+typealias RemoveCompetitionResult = Either<RemoveCompetitionError, Int>
 
 @Component
 class AthleteServices(
@@ -197,6 +237,7 @@ class AthleteServices(
     private val characteristicsDomain: CharacteristicsDomain,
     private val userDomain: UserDomain,
     private val activityDomain: ActivityDomain,
+    private val waterActivityDomain: WaterActivityDomain,
     private val cloudinaryServices: CloudinaryServices,
     private val clock: Clock,
 ) {
@@ -592,7 +633,13 @@ class AthleteServices(
                             activityRepository.getMicrocycle(micro.id)
                                 ?: return@run failure(SetCalendarError.MicrocycleNotFound)
 
-                        if (activityDomain.compareCycles(microDb.startTime, microDb.endTime, micro.startTime, micro.endTime)) {
+                        if (activityDomain.compareCycles(
+                                microDb.startTime,
+                                microDb.endTime,
+                                micro.startTime,
+                                micro.endTime
+                            )
+                        ) {
                             activityRepository.updateMicrocycle(micro.id, micro.startTime, micro.endTime)
                         }
                     } else {
@@ -630,7 +677,8 @@ class AthleteServices(
             val athleteRepository = it.athleteRepository
             val waterActivityRepository = it.waterActivityRepository
 
-            val athlete = athleteRepository.getAthlete(aid) ?: return@run failure(GetWaterActivitiesError.AthleteNotFound)
+            val athlete =
+                athleteRepository.getAthlete(aid) ?: return@run failure(GetWaterActivitiesError.AthleteNotFound)
             if (uid != aid && athlete.coach != uid) return@run failure(GetWaterActivitiesError.NotAthletesCoach)
 
             success(waterActivityRepository.getWaterActivities(aid))
@@ -641,20 +689,139 @@ class AthleteServices(
         coachId: Int,
         athleteId: Int,
         date: String,
-        location: String
+        location: String,
+        place: Int,
+        heats: List<HeatInputInfo>,
     ): CreateCompetitionResult {
         val dateLong = dateToLong(date) ?: return failure(CreateCompetitionError.InvalidDate)
 
         return transactionManager.run {
             val athleteRepository = it.athleteRepository
             val competitionRepository = it.competitionRepository
+            val waterActivityRepository = it.waterActivityRepository
+            val waterManeuverRepository = it.waterManeuverRepository
+            val activityRepository = it.activityRepository
 
             val athlete = athleteRepository.getAthlete(athleteId)
                 ?: return@run failure(CreateCompetitionError.AthleteNotFound)
 
             if (athlete.coach != coachId) return@run failure(CreateCompetitionError.NotAthletesCoach)
 
-            val competitionId = competitionRepository.storeCompetition(athleteId, dateLong, location)
+            val competitionId = competitionRepository.storeCompetition(athleteId, dateLong, location, place)
+
+            val heatsToInsert = heats.map { heat ->
+                if (heat.score < 0)
+                    return@run failure(CreateCompetitionError.InvalidScore)
+
+                val micro =
+                    activityRepository.getMicrocycleByDate(dateLong, athleteId)
+                        ?: return@run failure(CreateCompetitionError.ActivityWithoutMicrocycle)
+
+                val activityId = activityRepository.storeActivity(athleteId, dateLong, micro.id)
+
+                if (!waterActivityDomain.checkRpe(heat.waterActivity.rpe))
+                    return@run failure(CreateCompetitionError.InvalidRpe)
+
+                if (!waterActivityDomain.checkTrimp(heat.waterActivity.trimp))
+                    return@run failure(CreateCompetitionError.InvalidTrimp)
+
+                if (!waterActivityDomain.checkDuration(heat.waterActivity.duration))
+                    return@run failure(CreateCompetitionError.InvalidDuration)
+
+                val waterActivityId =
+                    waterActivityRepository.storeWaterActivity(
+                        activityId,
+                        heat.waterActivity.rpe,
+                        heat.waterActivity.condition,
+                        heat.waterActivity.trimp,
+                        heat.waterActivity.duration,
+                    )
+
+                val wavesToInsert =
+                    heat.waterActivity.waves.mapIndexed { order, wave ->
+                        WaveToInsert(
+                            waterActivityId,
+                            wave.points,
+                            wave.rightSide,
+                            order,
+                        )
+                    }
+
+                val wavesIds = waterActivityRepository.storeWaves(wavesToInsert)
+
+                val maneuversToInsert = heat.waterActivity.waves.flatMapIndexed { wavesIndex, wave ->
+                    wave.maneuvers.mapIndexed { maneuverOrder, maneuver ->
+                        if (waterManeuverRepository.getWaterManeuverById(maneuver.waterManeuverId) == null)
+                            return@run failure(CreateCompetitionError.InvalidWaterManeuver)
+
+                        ManeuverToInsert(
+                            wavesIds[wavesIndex],
+                            maneuver.waterManeuverId,
+                            maneuver.success,
+                            maneuverOrder,
+                        )
+                    }
+                }
+
+                waterActivityRepository.storeManeuvers(maneuversToInsert)
+
+                HeatToInsert(
+                    competitionId,
+                    waterActivityId,
+                    heat.score,
+                )
+            }
+
+            competitionRepository.storeHeats(heatsToInsert)
+            success(competitionId)
+        }
+    }
+
+    fun getCompetition(
+        uid: Int,
+        athleteId: Int,
+        competitionId: Int,
+    ): GetCompetitionResult {
+        return transactionManager.run {
+            val athleteRepository = it.athleteRepository
+            val competitionRepository = it.competitionRepository
+
+            val competition =
+                competitionRepository.getCompetition(competitionId)
+                    ?: return@run failure(GetCompetitionError.CompetitionNotFound)
+
+            val athlete = athleteRepository.getAthlete(athleteId)
+                ?: return@run failure(GetCompetitionError.AthleteNotFound)
+
+            if (uid != athleteId && athlete.coach != uid) return@run failure(GetCompetitionError.NotAthletesCoach)
+
+            if (competition.uid != athleteId) return@run failure(GetCompetitionError.NotAthletesCompetition)
+
+            success(competition)
+        }
+    }
+
+    fun removeCompetition(
+        coachId: Int,
+        athleteId: Int,
+        competitionId: Int,
+    ): RemoveCompetitionResult {
+        return transactionManager.run {
+            val athleteRepository = it.athleteRepository
+            val competitionRepository = it.competitionRepository
+
+            val competition =
+                competitionRepository.getCompetition(competitionId)
+                    ?: return@run failure(RemoveCompetitionError.CompetitionNotFound)
+
+            val athlete = athleteRepository.getAthlete(athleteId)
+                ?: return@run failure(RemoveCompetitionError.AthleteNotFound)
+
+            if (athlete.coach != coachId) return@run failure(RemoveCompetitionError.NotAthletesCoach)
+
+            if (competition.uid != athleteId) return@run failure(RemoveCompetitionError.NotAthletesCompetition)
+
+            competitionRepository.removeCompetition(competitionId)
             success(competitionId)
         }
     }

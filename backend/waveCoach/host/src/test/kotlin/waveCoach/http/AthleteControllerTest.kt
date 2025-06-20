@@ -1792,8 +1792,42 @@ class AthleteControllerTest {
 
         val body =
             mapOf(
-                "date" to VALID_DATE,
-                "location" to randomString()
+                "date" to DATE,
+                "location" to randomString(),
+                "place" to 1,
+                "heats" to
+                        listOf(
+                            mapOf(
+                                "score" to 2f,
+                                "waterActivity" to
+                                        mapOf(
+                                            "athleteId" to FIRST_ATHLETE_ID,
+                                            "rpe" to 5,
+                                            "condition" to "good",
+                                            "trimp" to 120,
+                                            "duration" to 60,
+                                            "waves" to
+                                                    listOf(
+                                                        mapOf(
+                                                            "points" to null,
+                                                            "maneuvers" to
+                                                                    listOf(
+                                                                        mapOf(
+                                                                            "waterManeuverId" to 1,
+                                                                            "rightSide" to true,
+                                                                            "success" to true,
+                                                                        ),
+                                                                        mapOf(
+                                                                            "waterManeuverId" to 2,
+                                                                            "rightSide" to false,
+                                                                            "success" to false,
+                                                                        ),
+                                                                    ),
+                                                        ),
+                                                    ),
+                                        )
+                            )
+                        )
             )
 
         client.post().uri("/athletes/$FIRST_ATHLETE_ID/competition")
@@ -1803,7 +1837,8 @@ class AthleteControllerTest {
             .exchange()
             .expectStatus().isCreated.expectStatus().isCreated
             .expectHeader().exists("Location")
-            .expectHeader().value("location") {
+            .expectHeader().value("location")
+            {
                 assertTrue(it.startsWith("/api/athletes/$FIRST_ATHLETE_ID/competition/"))
             }
     }
@@ -1814,8 +1849,42 @@ class AthleteControllerTest {
 
         val body =
             mapOf(
-                "date" to VALID_DATE,
-                "location" to randomString()
+                "date" to DATE,
+                "location" to randomString(),
+                "place" to 1,
+                "heats" to
+                        listOf(
+                            mapOf(
+                                "score" to 2f,
+                                "waterActivity" to
+                                        mapOf(
+                                            "athleteId" to FIRST_ATHLETE_ID,
+                                            "rpe" to 5,
+                                            "condition" to "good",
+                                            "trimp" to 120,
+                                            "duration" to 60,
+                                            "waves" to
+                                                    listOf(
+                                                        mapOf(
+                                                            "points" to null,
+                                                            "maneuvers" to
+                                                                    listOf(
+                                                                        mapOf(
+                                                                            "waterManeuverId" to 1,
+                                                                            "rightSide" to true,
+                                                                            "success" to true,
+                                                                        ),
+                                                                        mapOf(
+                                                                            "waterManeuverId" to 2,
+                                                                            "rightSide" to false,
+                                                                            "success" to false,
+                                                                        ),
+                                                                    ),
+                                                        ),
+                                                    ),
+                                        )
+                            )
+                        )
             )
 
         client.post().uri("/athletes/$FIRST_ATHLETE_ID/competition")
@@ -1832,7 +1901,41 @@ class AthleteControllerTest {
         val body =
             mapOf(
                 "date" to INVALID_DATE,
-                "location" to randomString()
+                "location" to randomString(),
+                "place" to 1,
+                "heats" to
+                        listOf(
+                            mapOf(
+                                "score" to 2f,
+                                "waterActivity" to
+                                        mapOf(
+                                            "athleteId" to FIRST_ATHLETE_ID,
+                                            "rpe" to 5,
+                                            "condition" to "good",
+                                            "trimp" to 120,
+                                            "duration" to 60,
+                                            "waves" to
+                                                    listOf(
+                                                        mapOf(
+                                                            "points" to null,
+                                                            "maneuvers" to
+                                                                    listOf(
+                                                                        mapOf(
+                                                                            "waterManeuverId" to 1,
+                                                                            "rightSide" to true,
+                                                                            "success" to true,
+                                                                        ),
+                                                                        mapOf(
+                                                                            "waterManeuverId" to 2,
+                                                                            "rightSide" to false,
+                                                                            "success" to false,
+                                                                        ),
+                                                                    ),
+                                                        ),
+                                                    ),
+                                        )
+                            )
+                        )
             )
 
         client.post().uri("/athletes/$FIRST_ATHLETE_ID/competition")
@@ -1854,8 +1957,42 @@ class AthleteControllerTest {
 
         val body =
             mapOf(
-                "date" to VALID_DATE,
-                "location" to randomString()
+                "date" to DATE,
+                "location" to randomString(),
+                "place" to 1,
+                "heats" to
+                        listOf(
+                            mapOf(
+                                "score" to 2f,
+                                "waterActivity" to
+                                        mapOf(
+                                            "athleteId" to FIRST_ATHLETE_ID,
+                                            "rpe" to 5,
+                                            "condition" to "good",
+                                            "trimp" to 120,
+                                            "duration" to 60,
+                                            "waves" to
+                                                    listOf(
+                                                        mapOf(
+                                                            "points" to null,
+                                                            "maneuvers" to
+                                                                    listOf(
+                                                                        mapOf(
+                                                                            "waterManeuverId" to 1,
+                                                                            "rightSide" to true,
+                                                                            "success" to true,
+                                                                        ),
+                                                                        mapOf(
+                                                                            "waterManeuverId" to 2,
+                                                                            "rightSide" to false,
+                                                                            "success" to false,
+                                                                        ),
+                                                                    ),
+                                                        ),
+                                                    ),
+                                        )
+                            )
+                        )
             )
 
         client.post().uri("/athletes/$id/competition")
@@ -1877,8 +2014,42 @@ class AthleteControllerTest {
 
         val body =
             mapOf(
-                "date" to VALID_DATE,
-                "location" to randomString()
+                "date" to DATE,
+                "location" to randomString(),
+                "place" to 1,
+                "heats" to
+                        listOf(
+                            mapOf(
+                                "score" to 2f,
+                                "waterActivity" to
+                                        mapOf(
+                                            "athleteId" to FIRST_ATHLETE_ID,
+                                            "rpe" to 5,
+                                            "condition" to "good",
+                                            "trimp" to 120,
+                                            "duration" to 60,
+                                            "waves" to
+                                                    listOf(
+                                                        mapOf(
+                                                            "points" to null,
+                                                            "maneuvers" to
+                                                                    listOf(
+                                                                        mapOf(
+                                                                            "waterManeuverId" to 1,
+                                                                            "rightSide" to true,
+                                                                            "success" to true,
+                                                                        ),
+                                                                        mapOf(
+                                                                            "waterManeuverId" to 2,
+                                                                            "rightSide" to false,
+                                                                            "success" to false,
+                                                                        ),
+                                                                    ),
+                                                        ),
+                                                    ),
+                                        )
+                            )
+                        )
             )
 
         client.post().uri("/athletes/$id/competition")
@@ -1898,8 +2069,42 @@ class AthleteControllerTest {
 
         val body =
             mapOf(
-                "date" to VALID_DATE,
-                "location" to randomString()
+                "date" to DATE,
+                "location" to randomString(),
+                "place" to 1,
+                "heats" to
+                        listOf(
+                            mapOf(
+                                "score" to 2f,
+                                "waterActivity" to
+                                        mapOf(
+                                            "athleteId" to SECOND_ATHLETE_ID,
+                                            "rpe" to 5,
+                                            "condition" to "good",
+                                            "trimp" to 120,
+                                            "duration" to 60,
+                                            "waves" to
+                                                    listOf(
+                                                        mapOf(
+                                                            "points" to null,
+                                                            "maneuvers" to
+                                                                    listOf(
+                                                                        mapOf(
+                                                                            "waterManeuverId" to 1,
+                                                                            "rightSide" to true,
+                                                                            "success" to true,
+                                                                        ),
+                                                                        mapOf(
+                                                                            "waterManeuverId" to 2,
+                                                                            "rightSide" to false,
+                                                                            "success" to false,
+                                                                        ),
+                                                                    ),
+                                                        ),
+                                                    ),
+                                        )
+                            )
+                        )
             )
 
         client.post().uri("/athletes/$SECOND_ATHLETE_ID/competition")
@@ -1919,8 +2124,42 @@ class AthleteControllerTest {
 
         val body =
             mapOf(
-                "date" to VALID_DATE,
-                "location" to randomString()
+                "date" to DATE,
+                "location" to randomString(),
+                "place" to 1,
+                "heats" to
+                        listOf(
+                            mapOf(
+                                "score" to 2f,
+                                "waterActivity" to
+                                        mapOf(
+                                            "athleteId" to FIRST_ATHLETE_ID,
+                                            "rpe" to 5,
+                                            "condition" to "good",
+                                            "trimp" to 120,
+                                            "duration" to 60,
+                                            "waves" to
+                                                    listOf(
+                                                        mapOf(
+                                                            "points" to null,
+                                                            "maneuvers" to
+                                                                    listOf(
+                                                                        mapOf(
+                                                                            "waterManeuverId" to 1,
+                                                                            "rightSide" to true,
+                                                                            "success" to true,
+                                                                        ),
+                                                                        mapOf(
+                                                                            "waterManeuverId" to 2,
+                                                                            "rightSide" to false,
+                                                                            "success" to false,
+                                                                        ),
+                                                                    ),
+                                                        ),
+                                                    ),
+                                        )
+                            )
+                        )
             )
 
         client.post().uri("/athletes/$FIRST_ATHLETE_ID/competition")
@@ -1934,9 +2173,577 @@ class AthleteControllerTest {
             .jsonPath("type").isEqualTo(Problem.userIsNotACoach.type.toString())
     }
 
+    @Test
+    fun `create competition - activity without microcycle`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "date" to VALID_DATE,
+                "location" to randomString(),
+                "place" to 1,
+                "heats" to
+                        listOf(
+                            mapOf(
+                                "score" to 2f,
+                                "waterActivity" to
+                                        mapOf(
+                                            "athleteId" to FIRST_ATHLETE_ID,
+                                            "rpe" to 5,
+                                            "condition" to "good",
+                                            "trimp" to 120,
+                                            "duration" to 60,
+                                            "waves" to
+                                                    listOf(
+                                                        mapOf(
+                                                            "points" to null,
+                                                            "maneuvers" to
+                                                                    listOf(
+                                                                        mapOf(
+                                                                            "waterManeuverId" to 1,
+                                                                            "rightSide" to true,
+                                                                            "success" to true,
+                                                                        ),
+                                                                        mapOf(
+                                                                            "waterManeuverId" to 2,
+                                                                            "rightSide" to false,
+                                                                            "success" to false,
+                                                                        ),
+                                                                    ),
+                                                        ),
+                                                    ),
+                                        )
+                            )
+                        )
+            )
+
+        client.post().uri("/athletes/$FIRST_ATHLETE_ID/competition")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.activityWithoutMicrocycle.type.toString())
+    }
+
+    @Test
+    fun `create competition - invalid duration`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "date" to DATE,
+                "location" to randomString(),
+                "place" to 1,
+                "heats" to
+                        listOf(
+                            mapOf(
+                                "score" to 2f,
+                                "waterActivity" to
+                                        mapOf(
+                                            "athleteId" to FIRST_ATHLETE_ID,
+                                            "rpe" to 5,
+                                            "condition" to "good",
+                                            "trimp" to 120,
+                                            "duration" to -60, // Invalid duration
+                                            "waves" to
+                                                    listOf(
+                                                        mapOf(
+                                                            "points" to null,
+                                                            "maneuvers" to
+                                                                    listOf(
+                                                                        mapOf(
+                                                                            "waterManeuverId" to 1,
+                                                                            "rightSide" to true,
+                                                                            "success" to true,
+                                                                        ),
+                                                                        mapOf(
+                                                                            "waterManeuverId" to 2,
+                                                                            "rightSide" to false,
+                                                                            "success" to false,
+                                                                        ),
+                                                                    ),
+                                                        ),
+                                                    ),
+                                        )
+                            )
+                        )
+            )
+
+        client.post().uri("/athletes/$FIRST_ATHLETE_ID/competition")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidDuration.type.toString())
+    }
+
+    @Test
+    fun `create competition - invalid rpe`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "date" to DATE,
+                "location" to randomString(),
+                "place" to 1,
+                "heats" to
+                        listOf(
+                            mapOf(
+                                "score" to 2f,
+                                "waterActivity" to
+                                        mapOf(
+                                            "athleteId" to FIRST_ATHLETE_ID,
+                                            "rpe" to -5, // Invalid RPE
+                                            "condition" to "good",
+                                            "trimp" to 120,
+                                            "duration" to 60,
+                                            "waves" to
+                                                    listOf(
+                                                        mapOf(
+                                                            "points" to null,
+                                                            "maneuvers" to
+                                                                    listOf(
+                                                                        mapOf(
+                                                                            "waterManeuverId" to 1,
+                                                                            "rightSide" to true,
+                                                                            "success" to true,
+                                                                        ),
+                                                                        mapOf(
+                                                                            "waterManeuverId" to 2,
+                                                                            "rightSide" to false,
+                                                                            "success" to false,
+                                                                        ),
+                                                                    ),
+                                                        ),
+                                                    ),
+                                        )
+                            )
+                        )
+            )
+
+        client.post().uri("/athletes/$FIRST_ATHLETE_ID/competition")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidRpe.type.toString())
+    }
+
+    @Test
+    fun `create competition - invalid score`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "date" to DATE,
+                "location" to randomString(),
+                "place" to 1,
+                "heats" to
+                        listOf(
+                            mapOf(
+                                "score" to -2f, // Invalid score
+                                "waterActivity" to
+                                        mapOf(
+                                            "athleteId" to FIRST_ATHLETE_ID,
+                                            "rpe" to 5,
+                                            "condition" to "good",
+                                            "trimp" to 120,
+                                            "duration" to 60,
+                                            "waves" to
+                                                    listOf(
+                                                        mapOf(
+                                                            "points" to null,
+                                                            "maneuvers" to
+                                                                    listOf(
+                                                                        mapOf(
+                                                                            "waterManeuverId" to 1,
+                                                                            "rightSide" to true,
+                                                                            "success" to true,
+                                                                        ),
+                                                                        mapOf(
+                                                                            "waterManeuverId" to 2,
+                                                                            "rightSide" to false,
+                                                                            "success" to false,
+                                                                        ),
+                                                                    ),
+                                                        ),
+                                                    ),
+                                        )
+                            )
+                        )
+            )
+
+        client.post().uri("/athletes/$FIRST_ATHLETE_ID/competition")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidScore.type.toString())
+    }
+
+    @Test
+    fun `create competition - invalid trimp`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "date" to DATE,
+                "location" to randomString(),
+                "place" to 1,
+                "heats" to
+                        listOf(
+                            mapOf(
+                                "score" to 2f,
+                                "waterActivity" to
+                                        mapOf(
+                                            "athleteId" to FIRST_ATHLETE_ID,
+                                            "rpe" to 5,
+                                            "condition" to "good",
+                                            "trimp" to -120, // Invalid TRIMP
+                                            "duration" to 60,
+                                            "waves" to
+                                                    listOf(
+                                                        mapOf(
+                                                            "points" to null,
+                                                            "maneuvers" to
+                                                                    listOf(
+                                                                        mapOf(
+                                                                            "waterManeuverId" to 1,
+                                                                            "rightSide" to true,
+                                                                            "success" to true,
+                                                                        ),
+                                                                        mapOf(
+                                                                            "waterManeuverId" to 2,
+                                                                            "rightSide" to false,
+                                                                            "success" to false,
+                                                                        ),
+                                                                    ),
+                                                        ),
+                                                    ),
+                                        )
+                            )
+                        )
+            )
+
+        client.post().uri("/athletes/$FIRST_ATHLETE_ID/competition")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidTrimp.type.toString())
+    }
+
+    @Test
+    fun `create competition - invalid water maneuver id`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "date" to DATE,
+                "location" to randomString(),
+                "place" to 1,
+                "heats" to
+                        listOf(
+                            mapOf(
+                                "score" to 2f,
+                                "waterActivity" to
+                                        mapOf(
+                                            "athleteId" to FIRST_ATHLETE_ID,
+                                            "rpe" to 5,
+                                            "condition" to "good",
+                                            "trimp" to 120,
+                                            "duration" to 60,
+                                            "waves" to
+                                                    listOf(
+                                                        mapOf(
+                                                            "points" to null,
+                                                            "maneuvers" to
+                                                                    listOf(
+                                                                        mapOf(
+                                                                            "waterManeuverId" to -1, // Invalid water maneuver ID
+                                                                            "rightSide" to true,
+                                                                            "success" to true,
+                                                                        ),
+                                                                        mapOf(
+                                                                            "waterManeuverId" to 2,
+                                                                            "rightSide" to false,
+                                                                            "success" to false,
+                                                                        ),
+                                                                    ),
+                                                        ),
+                                                    ),
+                                        )
+                            )
+                        )
+            )
+
+        client.post().uri("/athletes/$FIRST_ATHLETE_ID/competition")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidWaterManeuver.type.toString())
+    }
+
+    /**
+     * Get Competition Tests
+     */
+
+    @Test
+    fun `get competition - success`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.get().uri("/athletes/$FIRST_ATHLETE_ID/competition/$FIRST_COMPETITION_ID")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody()
+            .jsonPath("date").isEqualTo(FIRST_COMPETITION_DATE)
+            .jsonPath("location").isEqualTo(COMPETITION_LOCATION)
+            .jsonPath("place").isEqualTo(1)
+            .jsonPath("heats.length()").value<Int> { assertTrue(it > 0) }
+            .jsonPath("heats[0].score").isEqualTo(85)
+    }
+
+    @Test
+    fun `get competition - unauthorized`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.get().uri("/athletes/$FIRST_ATHLETE_ID/competition/$FIRST_COMPETITION_ID")
+            .exchange()
+            .expectStatus().isUnauthorized
+    }
+
+    @Test
+    fun `get competition - invalid athlete id`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val id = "invalid"
+
+        client.get().uri("/athletes/$id/competition/$FIRST_COMPETITION_ID")
+            .header("Authorization", "Bearer $FIRST_ATHLETE_TOKEN")
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidAthleteId.type.toString())
+    }
+
+    @Test
+    fun `get competition - invalid competition id`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val id = "invalid"
+
+        client.get().uri("/athletes/$FIRST_ATHLETE_ID/competition/$id")
+            .header("Authorization", "Bearer $FIRST_ATHLETE_TOKEN")
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidCompetitionId.type.toString())
+    }
+
+    @Test
+    fun `get competition - athlete not found`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val id = 0
+
+        client.get().uri("/athletes/$id/competition/$FIRST_COMPETITION_ID")
+            .header("Authorization", "Bearer $FIRST_ATHLETE_TOKEN")
+            .exchange()
+            .expectStatus().isNotFound
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.athleteNotFound.type.toString())
+    }
+
+    @Test
+    fun `get competition - competition not found`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val id = 0
+
+        client.get().uri("/athletes/$FIRST_ATHLETE_ID/competition/$id")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .exchange()
+            .expectStatus().isNotFound
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.competitionNotFound.type.toString())
+    }
+
+    @Test
+    fun `get competition - not athlete's coach`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.get().uri("/athletes/$SECOND_ATHLETE_ID/competition/$FIRST_COMPETITION_ID")
+            .header("Authorization", "Bearer $FIRST_ATHLETE_TOKEN")
+            .exchange()
+            .expectStatus().isForbidden
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.notAthletesCoach.type.toString())
+    }
+
+    @Test
+    fun `get competition - not athlete's competition`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.get().uri("/athletes/$SECOND_ATHLETE_ID/competition/$FIRST_COMPETITION_ID")
+            .header("Authorization", "Bearer $SECOND_COACH_TOKEN")
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.notAthletesCompetition.type.toString())
+    }
+
+    /**
+     * Remove Competition Tests
+     */
+
+    @Test
+    fun `remove competition - success`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.delete().uri("/athletes/$FIRST_ATHLETE_ID/competition/$SECOND_COMPETITION_ID")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .exchange()
+            .expectStatus().isNoContent
+    }
+
+    @Test
+    fun `remove competition - unauthorized`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.delete().uri("/athletes/$FIRST_ATHLETE_ID/competition/$FIRST_COMPETITION_ID")
+            .exchange()
+            .expectStatus().isUnauthorized
+    }
+
+    @Test
+    fun `remove competition - invalid athlete id`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val id = "invalid"
+
+        client.delete().uri("/athletes/$id/competition/$FIRST_COMPETITION_ID")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidAthleteId.type.toString())
+    }
+
+    @Test
+    fun `remove competition - invalid competition id`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val id = "invalid"
+
+        client.delete().uri("/athletes/$FIRST_ATHLETE_ID/competition/$id")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidCompetitionId.type.toString())
+    }
+
+    @Test
+    fun `remove competition - athlete not found`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val id = 0
+
+        client.delete().uri("/athletes/$id/competition/$FIRST_COMPETITION_ID")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .exchange()
+            .expectStatus().isNotFound
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.athleteNotFound.type.toString())
+    }
+
+    @Test
+    fun `remove competition - competition not found`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val id = 0
+
+        client.delete().uri("/athletes/$FIRST_ATHLETE_ID/competition/$id")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .exchange()
+            .expectStatus().isNotFound
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.competitionNotFound.type.toString())
+    }
+
+    @Test
+    fun `remove competition - not athlete's coach`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.delete().uri("/athletes/$FIRST_ATHLETE_ID/competition/$FIRST_COMPETITION_ID")
+            .header("Authorization", "Bearer $SECOND_COACH_TOKEN")
+            .exchange()
+            .expectStatus().isForbidden
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.notAthletesCoach.type.toString())
+    }
+
+    @Test
+    fun `remove competition - not athlete's competition`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.delete().uri("/athletes/$SECOND_ATHLETE_ID/competition/$FIRST_COMPETITION_ID")
+            .header("Authorization", "Bearer $SECOND_COACH_TOKEN")
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.notAthletesCompetition.type.toString())
+    }
+
+    @Test
+    fun `remove competition - user is not a coach`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.delete().uri("/athletes/$FIRST_ATHLETE_ID/competition/$FIRST_COMPETITION_ID")
+            .header("Authorization", "Bearer $FIRST_ATHLETE_TOKEN")
+            .exchange()
+            .expectStatus().isForbidden
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.userIsNotACoach.type.toString())
+    }
+
     companion object {
         private fun randomString() = "String_${abs(Random.nextLong())}"
 
+        private const val DATE = "03-05-2025"
         private const val VALID_DATE = "01-01-2000"
         private const val ANOTHER_VALID_DATE = "11-01-2000"
         private const val INVALID_DATE = "32-01-2000"
@@ -1974,5 +2781,11 @@ class AthleteControllerTest {
         private const val ATHLETE_THIGH_FAT = 1
 
         private const val FIFTH_ATHLETE_ID = 7
+
+        private const val FIRST_COMPETITION_ID = 1
+        private const val FIRST_COMPETITION_DATE = 1746057600000
+        private const val SECOND_COMPETITION_ID = 2
+        private const val SECOND_COMPETITION_DATE = 1746144000000
+        private const val COMPETITION_LOCATION = "Ocean Beach"
     }
 }
