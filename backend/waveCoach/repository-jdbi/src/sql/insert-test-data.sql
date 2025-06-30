@@ -119,6 +119,12 @@ INSERT INTO waveCoach.water (activity, rpe, condition, trimp, duration) VALUES (
 INSERT INTO waveCoach.activity (uid, microcycle, date) VALUES (3, 3, 1748736000000); -- 2025-06-01
 INSERT INTO waveCoach.gym (activity) VALUES (7);
 INSERT INTO waveCoach.exercise (activity, exercise, exercise_order) VALUES (7, 1, 1);
+INSERT INTO waveCoach.set (exercise_id, weight, reps, rest_time, set_order) VALUES (7, 50.0, 12, 60.0, 1);
+INSERT INTO waveCoach.set (exercise_id, weight, reps, rest_time, set_order) VALUES (7, 55.0, 10, 60.0, 2);
+
+INSERT INTO waveCoach.exercise (activity, exercise, exercise_order) VALUES (7, 4, 2);
+INSERT INTO waveCoach.set (exercise_id, weight, reps, rest_time, set_order) VALUES (8, 40.0, 10, 60.0, 1);
+
 
 INSERT INTO waveCoach.activity (uid, microcycle, date) VALUES (3, 3, 1748822400000); -- 2025-06-02
 INSERT INTO waveCoach.water (activity, rpe, condition, trimp, duration) VALUES (8, 6, 'Good', 112, 5400);

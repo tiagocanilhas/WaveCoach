@@ -63,17 +63,19 @@ export function Workout({ lastWorkoutContent, calendar, onCycleSelected, type, o
       }
       right={
         <>
-        { calendar.mesocycles.length > 0 &&
-          <Card
-            content={<CyclesSelect cycles={calendar.mesocycles} cycleSelected={cycleSelected} onSelect={handleCycleSelect} />}
-            width="100%"
-          />
-        }
+          {calendar.mesocycles.length > 0 && (
+            <Card
+              content={<CyclesSelect cycles={calendar.mesocycles} cycleSelected={cycleSelected} onSelect={handleCycleSelect} />}
+              width="100%"
+            />
+          )}
           <ObjectList<WaterWorkout | GymWorkout>
             items={workouts}
             getKey={workout => workout.id}
             onAdd={onAdd}
-            renderItem={workout => <Activity activity={{ id: workout.id, type: type, date: workout.date }} onDeleteSuccess={onDeleteSuccess} />}
+            renderItem={workout => (
+              <Activity activity={{ id: workout.id, type: type, date: workout.date }} onDeleteSuccess={onDeleteSuccess} />
+            )}
           />
         </>
       }

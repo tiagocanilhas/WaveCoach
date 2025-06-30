@@ -25,7 +25,7 @@ export function Activity({ activity, onDeleteSuccess }: ActivityProps) {
 
   async function handleDeleteActivity() {
     if (confirm('Are you sure you want to delete this activity?')) {
-      try{
+      try {
         switch (activity.type) {
           case 'gym':
             await deleteGymActivity(activity.id.toString())
@@ -36,15 +36,13 @@ export function Activity({ activity, onDeleteSuccess }: ActivityProps) {
           default:
             throw new Error('Unknown activity type')
         }
-        
+
         onDeleteSuccess()
       } catch (error) {
         console.error('Error deleting activity:', error)
       }
     }
-
   }
-
 
   function handleGymActivityClick(activityId: number) {
     navigate(`/athletes/${id}/gym/${activityId}`)
@@ -56,11 +54,7 @@ export function Activity({ activity, onDeleteSuccess }: ActivityProps) {
 
   return (
     <div className={styles.activity}>
-      <Dropdown
-        options={[
-          { label: 'Delete', onClick: handleDeleteActivity }
-        ]}
-      />
+      <Dropdown options={[{ label: 'Delete', onClick: handleDeleteActivity }]} />
       <div className={styles.imageContainer}>
         <img
           src={`/images/no_image.svg`}

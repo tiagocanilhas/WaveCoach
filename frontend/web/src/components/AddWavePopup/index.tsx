@@ -22,14 +22,14 @@ type State = {
   maneuvers: ManeuverToAdd[] | undefined
 }
 
-type Action = 
-| { type: 'toggleIsSelecting' }
-| { type: 'toggleRightSide' }
-| { type: 'addManeuver'; maneuver: ManeuverToAdd }
-| { type: 'setManeuverToEdit'; maneuver: ManeuverToAdd | null }
-| { type: 'updateManeuver'; maneuver: ManeuverToAdd }
-| { type: 'deleteManeuver'; id: string }
-| { type: 'setManeuvers'; maneuvers: ManeuverToAdd[] }
+type Action =
+  | { type: 'toggleIsSelecting' }
+  | { type: 'toggleRightSide' }
+  | { type: 'addManeuver'; maneuver: ManeuverToAdd }
+  | { type: 'setManeuverToEdit'; maneuver: ManeuverToAdd | null }
+  | { type: 'updateManeuver'; maneuver: ManeuverToAdd }
+  | { type: 'deleteManeuver'; id: string }
+  | { type: 'setManeuvers'; maneuvers: ManeuverToAdd[] }
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
@@ -44,11 +44,11 @@ function reducer(state: State, action: Action): State {
         maneuvers: [...state.maneuvers, action.maneuver],
       }
     case 'setManeuverToEdit':
-      return {...state, maneuverToEdit: action.maneuver }
+      return { ...state, maneuverToEdit: action.maneuver }
     case 'updateManeuver':
       return {
         ...state,
-        maneuvers: state.maneuvers.map(m => m.tempId === action.maneuver.tempId ? action.maneuver : m),
+        maneuvers: state.maneuvers.map(m => (m.tempId === action.maneuver.tempId ? action.maneuver : m)),
         maneuverToEdit: null,
       }
     case 'deleteManeuver':
@@ -61,13 +61,13 @@ function reducer(state: State, action: Action): State {
 }
 
 type AddWavePopupProps = {
-  data?: { maneuvers: ManeuverToAdd[], rightSide: boolean }
+  data?: { maneuvers: ManeuverToAdd[]; rightSide: boolean }
   onAdd: (maneuvers: ManeuverToAdd[], rightSide: boolean) => void
   onClose: () => void
 }
 
 export function AddWavePopup({ data, onClose, onAdd }: AddWavePopupProps) {
-  const initialState: State = {   
+  const initialState: State = {
     isSelecting: false,
     rightSide: data?.rightSide ?? false,
     maneuverToEdit: null,
@@ -117,7 +117,12 @@ export function AddWavePopup({ data, onClose, onAdd }: AddWavePopupProps) {
         content={
           <div className={styles.addWave}>
             <div className={styles.maneuversContainer}>
-              <LabeledSwitch leftLabel='Left Side' rightLabel='Right Side' onChange={handleToggleRightSide} checked={state.rightSide} />
+              <LabeledSwitch
+                leftLabel="Left Side"
+                rightLabel="Right Side"
+                onChange={handleToggleRightSide}
+                checked={state.rightSide}
+              />
               <VerticalReorderableList<ManeuverToAdd>
                 list={maneuvers}
                 renderItem={info => (
@@ -139,7 +144,14 @@ export function AddWavePopup({ data, onClose, onAdd }: AddWavePopupProps) {
 
       {state.isSelecting && <SelectManeuverPopup onClose={handleToggleSelect} onAdd={handleOnAdd} />}
 
-      {state.maneuverToEdit && <AddManeuverPopup data={state.maneuverToEdit} maneuver={state.maneuverToEdit.maneuver} onAdd={handleOnUpdate} onClose={() => handleOnEdit(null)} />}
+      {state.maneuverToEdit && (
+        <AddManeuverPopup
+          data={state.maneuverToEdit}
+          maneuver={state.maneuverToEdit.maneuver}
+          onAdd={handleOnUpdate}
+          onClose={() => handleOnEdit(null)}
+        />
+      )}
     </>
   )
 }

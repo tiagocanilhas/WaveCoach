@@ -222,6 +222,20 @@ class JdbiActivityRepository(
             .mapTo<Activity>()
             .singleOrNull()
 
+    override fun updateActivity(
+        id: Int,
+        date: Long?,
+    ): Int =
+        handle.createUpdate(
+            """
+            update waveCoach.activity set date = coalesce(:date, date)
+            where id = :id
+            """.trimIndent(),
+        )
+            .bind("id", id)
+            .bind("date", date)
+            .execute()
+
     override fun removeActivities(uid: Int) {
         handle.createUpdate("delete from waveCoach.activity where uid = :uid")
             .bind("uid", uid)

@@ -8,6 +8,7 @@ import waveCoach.repository.GymActivityRepository
 class JdbiGymActivityRepository(
     private val handle: Handle,
 ) : GymActivityRepository {
+    // Activity methods
     override fun storeGymActivity(activityId: Int): Int =
         handle.createUpdate("insert into waveCoach.gym (activity) values (:activity)")
             .bind("activity", activityId)
@@ -41,6 +42,7 @@ class JdbiGymActivityRepository(
             .execute()
     }
 
+    // Exercise methods
     override fun storeExercise(
         activityID: Int,
         exerciseID: Int,
@@ -104,6 +106,23 @@ class JdbiGymActivityRepository(
             .mapTo<Exercise>()
             .singleOrNull()
 
+    override fun updateExercises(exercises: List<ExerciseToUpdate>) {
+        handle.prepareBatch(
+            """
+            update waveCoach.exercise set exercise_order = coalesce(:exerciseOrder, exercise_order)
+            where id = :id
+            """
+        ).use { batch ->
+            exercises.forEach { exercise ->
+                batch
+                    .bind("id", exercise.id)
+                    .bind("exerciseOrder", exercise.order)
+                    .add()
+            }
+            batch.execute()
+        }
+    }
+
     override fun removeExercisesByAthlete(athleteId: Int) {
         handle.createUpdate(
             """
@@ -137,17 +156,17 @@ class JdbiGymActivityRepository(
             .execute()
     }
 
-    override fun verifyExerciseOrder(activityId: Int, exerciseOrder: Int): Boolean =
-        handle.createQuery(
-            """
-            select exists(select 1 from waveCoach.exercise where activity = :activityId and exercise_order = :exerciseOrder)
-            """.trimIndent(),
-        )
-            .bind("activityId", activityId)
-            .bind("exerciseOrder", exerciseOrder)
-            .mapTo<Boolean>()
-            .one()
+    override fun removeExercisesById(exerciseIds: List<Int>) {
+        handle.prepareBatch("delete from waveCoach.exercise where id = :exerciseId")
+            .use { batch ->
+                exerciseIds.forEach { exerciseId ->
+                    batch.bind("exerciseId", exerciseId).add()
+                }
+                batch.execute()
+            }
+    }
 
+    // Set methods
     override fun storeSet(
         exerciseId: Int,
         reps: Int,
@@ -210,6 +229,30 @@ class JdbiGymActivityRepository(
             .mapTo<Sets>()
             .singleOrNull()
 
+    override fun updateSets(sets: List<SetToUpdate>) {
+        handle.prepareBatch(
+            """
+        update waveCoach.set 
+        set 
+            weight = coalesce(:weight, weight), 
+            reps = coalesce(:reps, reps), 
+            rest_time = coalesce(:restTime, rest_time), 
+            set_order = coalesce(:setOrder, set_order) 
+        where id = :id
+        """
+        ).use { batch ->
+            sets.forEach { set ->
+                batch.bind("id", set.id)
+                    .bind("weight", set.weight)
+                    .bind("reps", set.reps)
+                    .bind("restTime", set.restTime)
+                    .bind("setOrder", set.order)
+                    .add()
+            }
+            batch.execute()
+        }
+    }
+
     override fun removeSetsByAthlete(athleteId: Int) {
         handle.createUpdate(
             """
@@ -243,6 +286,28 @@ class JdbiGymActivityRepository(
             .execute()
     }
 
+    override fun removeSetsById(setIds: List<Int>) {
+        handle.prepareBatch("delete from waveCoach.set where id = :setId")
+            .use { batch ->
+                setIds.forEach { setId ->
+                    batch.bind("setId", setId).add()
+                }
+                batch.execute()
+            }
+    }
+
+    // Verify methods
+    override fun verifyExerciseOrder(activityId: Int, exerciseOrder: Int): Boolean =
+        handle.createQuery(
+            """
+            select exists(select 1 from waveCoach.exercise where activity = :activityId and exercise_order = :exerciseOrder)
+            """.trimIndent(),
+        )
+            .bind("activityId", activityId)
+            .bind("exerciseOrder", exerciseOrder)
+            .mapTo<Boolean>()
+            .one()
+
     override fun setBelongsToExercise(exerciseId: Int, setId: Int): Boolean =
         handle.createQuery(
             """
@@ -264,6 +329,8 @@ class JdbiGymActivityRepository(
             .bind("setOrder", setOrder)
             .mapTo<Boolean>()
             .one()
+
+    // GymExercise methods
 
     override fun storeGymExercise(
         name: String,

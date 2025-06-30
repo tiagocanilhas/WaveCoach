@@ -32,11 +32,12 @@ type State = {
 
 type Action =
   | { type: 'toggleIsAdding' }
-  | { type: 'setDate'; date: string }
-  | { type: 'setCondition'; condition: string }
-  | { type: 'setRpe'; rpe: number }
-  | { type: 'setTime'; time: number }
-  | { type: 'setTrimp'; trimp: number }
+  | { type: 'setValue'; name: string; value: string | number }
+  // | { type: 'setDate'; date: string }
+  // | { type: 'setCondition'; condition: string }
+  // | { type: 'setRpe'; rpe: number }
+  // | { type: 'setTime'; time: number }
+  // | { type: 'setTrimp'; trimp: number }
   | { type: 'addWave'; wave: WaveToAdd }
   | { type: 'setWaveToEdit'; wave: WaveToAdd | null }
   | { type: 'updateWave'; wave: WaveToAdd }
@@ -48,16 +49,18 @@ function reducer(state: State, action: Action): State {
   switch (action.type) {
     case 'toggleIsAdding':
       return { ...state, isAdding: !state.isAdding }
-    case 'setDate':
-      return { ...state, date: action.date }
-    case 'setCondition':
-      return { ...state, condition: action.condition }
-    case 'setRpe':
-      return { ...state, rpe: action.rpe }
-    case 'setTime':
-      return { ...state, time: action.time }
-    case 'setTrimp':
-      return { ...state, trimp: action.trimp }
+    // case 'setDate':
+    //   return { ...state, date: action.date }
+    // case 'setCondition':
+    //   return { ...state, condition: action.condition }
+    // case 'setRpe':
+    //   return { ...state, rpe: action.rpe }
+    // case 'setTime':
+    //   return { ...state, time: action.time }
+    // case 'setTrimp':
+    //   return { ...state, trimp: action.trimp }
+    case 'setValue':
+      return { ...state, [action.name]: action.value }
     case 'addWave':
       return {
         ...state,
@@ -69,9 +72,7 @@ function reducer(state: State, action: Action): State {
     case 'updateWave':
       return {
         ...state,
-        waves: state.waves.map(wave =>
-          wave.tempId === action.wave.tempId ? action.wave : wave
-        ),
+        waves: state.waves.map(wave => (wave.tempId === action.wave.tempId ? action.wave : wave)),
         waveToEdit: null,
       }
     case 'deleteWave':
@@ -129,37 +130,42 @@ export function AddWaterWorkoutPopup({ onClose, onSuccess }: AddWaterWorkoutPopu
     dispatch({ type: 'setWaves', waves })
   }
 
+  // function handleOnChange(event: React.ChangeEvent<HTMLInputElement>) {
+  //   const { name, value } = event.target
+  //   switch (name) {
+  //     case 'date':
+  //       dispatch({ type: 'setDate', date: value })
+  //       break
+  //     case 'condition':
+  //       dispatch({ type: 'setCondition', condition: value })
+  //       break
+  //     default:
+  //       break
+  //   }
+  // }
+
+  // function handleOnChangeSlider(event: Event, newValue: number) {
+  //   const target = event.target as HTMLInputElement
+  //   const name = target.name
+  //   switch (name) {
+  //     case 'rpe':
+  //       dispatch({ type: 'setRpe', rpe: newValue })
+  //       break
+  //     case 'trimp':
+  //       dispatch({ type: 'setTrimp', trimp: newValue })
+  //       break
+  //     default:
+  //       break
+  //   }
+  // }
+
+  // function handleOnChangeTime(value: number) {
+  //   dispatch({ type: 'setTime', time: value })
+  // }
+
   function handleOnChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target
-    switch (name) {
-      case 'date':
-        dispatch({ type: 'setDate', date: value })
-        break
-      case 'condition':
-        dispatch({ type: 'setCondition', condition: value })
-        break
-      default:
-        break
-    }
-  }
-
-  function handleOnChangeSlider(event: Event, newValue: number) {
-    const target = event.target as HTMLInputElement
-    const name = target.name
-    switch (name) {
-      case 'rpe':
-        dispatch({ type: 'setRpe', rpe: newValue })
-        break
-      case 'trimp':
-        dispatch({ type: 'setTrimp', trimp: newValue })
-        break
-      default:
-        break
-    }
-  }
-
-  function handleOnChangeTime(value: number) {
-    dispatch({ type: 'setTime', time: value })
+    dispatch({ type: 'setValue', name, value })
   }
 
   async function handleOnSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -194,7 +200,7 @@ export function AddWaterWorkoutPopup({ onClose, onSuccess }: AddWaterWorkoutPopu
   const trimp = state.trimp
   const waves = state.waves
   const waveToEdit = state.waveToEdit
-  const disabled = state.waves.length === 0 || date.length === 0
+  const disabled = state.waves.length === 0 || date.length === 0 || time === 0
 
   return (
     <>
@@ -210,7 +216,7 @@ export function AddWaterWorkoutPopup({ onClose, onSuccess }: AddWaterWorkoutPopu
                 <Slider
                   name="rpe"
                   value={rpe}
-                  onChange={handleOnChangeSlider}
+                  onChange={(_, value) => handleOnChange({ target: { name: 'rpe', value } } as any)}
                   min={1}
                   max={10}
                   step={1}
@@ -218,7 +224,10 @@ export function AddWaterWorkoutPopup({ onClose, onSuccess }: AddWaterWorkoutPopu
                   valueLabelDisplay="auto"
                 />
               </div>
-              <CustomTimePicker onChange={handleOnChangeTime} defaultValue={time} />
+              <CustomTimePicker
+                defaultValue={time}
+                onChange={value => handleOnChange({ target: { name: 'time', value } } as any)}
+              />
               <div className={styles.sliderContainer}>
                 <label>TRIMP</label>
                 <Slider
@@ -226,7 +235,7 @@ export function AddWaterWorkoutPopup({ onClose, onSuccess }: AddWaterWorkoutPopu
                   value={trimp}
                   min={50}
                   max={190}
-                  onChange={handleOnChangeSlider}
+                  onChange={(_, value) => handleOnChange({ target: { name: 'trimp', value } } as any)}
                   step={1}
                   defaultValue={70}
                   valueLabelDisplay="auto"
@@ -236,15 +245,14 @@ export function AddWaterWorkoutPopup({ onClose, onSuccess }: AddWaterWorkoutPopu
                 <VerticalReorderableList<WaveToAdd>
                   list={waves}
                   renderItem={info => (
-                      <div>
-                        <p>Side: {info.rightSide ? '➡️' : '⬅️'}</p>
-                        {info.maneuvers.map(m => (
-                            <p>
-                              {m.maneuver.name} {m.success ? '✅' : '❌'}
-                            </p>
-                          )
-                        )}
-                      </div>
+                    <div>
+                      <p>Side: {info.rightSide ? '➡️' : '⬅️'}</p>
+                      {info.maneuvers.map(m => (
+                        <p>
+                          {m.maneuver.name} {m.success ? '✅' : '❌'}
+                        </p>
+                      ))}
+                    </div>
                   )}
                   onReorder={handleSetWaves}
                   onClick={item => handleSetWaveToEdit(item)}
@@ -260,11 +268,13 @@ export function AddWaterWorkoutPopup({ onClose, onSuccess }: AddWaterWorkoutPopu
         onClose={onClose}
       />
 
-      {(isAdding || waveToEdit) && <AddWavePopup 
-        data={waveToEdit} 
-        onAdd={waveToEdit ? handleUpdateWave : onAddWave}
-        onClose={waveToEdit ? () => handleSetWaveToEdit(null) : handleToggleIsAdding}
-        />}
+      {(isAdding || waveToEdit) && (
+        <AddWavePopup
+          data={waveToEdit}
+          onAdd={waveToEdit ? handleUpdateWave : onAddWave}
+          onClose={waveToEdit ? () => handleSetWaveToEdit(null) : handleToggleIsAdding}
+        />
+      )}
     </>
   )
 }

@@ -33,7 +33,7 @@ export function Dropdown({ options }: DropdownProps) {
   }, [])
 
   return (
-    <div className={styles.dropdown} ref={dropdownRef}>
+    <div className={styles.dropdown} ref={dropdownRef} data-testid="dropdown">
       <div onClick={toggle} className={styles.dropdownButton}>
         ⋮
       </div>

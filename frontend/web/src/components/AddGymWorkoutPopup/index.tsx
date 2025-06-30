@@ -8,7 +8,7 @@ import { Popup } from '../Popup'
 import { Button } from '../Button'
 
 import { Exercise } from '../../types/Exercise'
-import { SetData } from '../../types/SetData'
+import { SetDataToAdd } from '../../types/SetDataToAdd'
 
 import styles from './styles.module.css'
 import { createGymActivity } from '../../../../services/gymServices'
@@ -91,7 +91,7 @@ export function AddGymWorkoutPopup({ onClose, onSuccess }: AddGymWorkoutPopupPro
     dispatch({ type: 'toggleAdding' })
   }
 
-  function onAddExercise(exercise: Exercise, sets: SetData[]) {
+  function onAddExercise(exercise: Exercise, sets: SetDataToAdd[]) {
     dispatch({ type: 'addExercise', exercise: { tempId: Date.now().toString(), exercise, sets } })
   }
 
@@ -99,7 +99,7 @@ export function AddGymWorkoutPopup({ onClose, onSuccess }: AddGymWorkoutPopupPro
     dispatch({ type: 'setExerciseToEdit', exercise })
   }
 
-  function handleUpdateExercise(exercise: Exercise, sets: SetData[]) {
+  function handleUpdateExercise(exercise: Exercise, sets: SetDataToAdd[]) {
     dispatch({ type: 'updateExercise', exercise: { ...state.exerciseToEdit, exercise, sets } })
   }
 

@@ -1,10 +1,13 @@
 package waveCoach.services
 
 import org.springframework.stereotype.Component
+import waveCoach.domain.ActivityType
 import waveCoach.domain.ExerciseToInsert
+import waveCoach.domain.ExerciseToUpdate
 import waveCoach.domain.ExerciseWithSets
 import waveCoach.domain.GymActivityWithExercises
 import waveCoach.domain.SetToInsert
+import waveCoach.domain.SetToUpdate
 import waveCoach.domain.SetsDomain
 import waveCoach.repository.TransactionManager
 import waveCoach.utils.Either
@@ -22,20 +25,20 @@ data class SetInputInfo(
     val restTime: Float,
 )
 
-/*data class UpdateExerciseInputInfo(
+data class UpdateExerciseInputInfo(
     val id: Int?,
-    val sets: List<UpdateSetInputInfo>?,
     val gymExerciseId: Int?,
-    val exerciseOrder: Int?,
+    val sets: List<UpdateSetInputInfo>?,
+    val order: Int?,
 )
 
 data class UpdateSetInputInfo(
     val id: Int?,
     val reps: Int?,
     val weight: Float?,
-    val rest: Float?,
-    val setOrder: Int?,
-)*/
+    val restTime: Float?,
+    val order: Int?,
+)
 
 sealed class CreateGymActivityError {
     data object InvalidDate : CreateGymActivityError()
@@ -61,20 +64,26 @@ sealed class GetGymActivityError {
 }
 typealias GetGymActivityResult = Either<GetGymActivityError, GymActivityWithExercises>
 
-/*sealed class UpdateGymActivityError {
+sealed class UpdateGymActivityError {
     data object InvalidDate : UpdateGymActivityError()
 
     data object InvalidGymExercise : UpdateGymActivityError()
 
+    data object ExerciseNotFound : UpdateGymActivityError()
+
+    data object InvalidExerciseOrder : UpdateGymActivityError()
+
     data object InvalidSet : UpdateGymActivityError()
 
-    data object AthleteNotFound : UpdateGymActivityError()
+    data object SetNotFound: UpdateGymActivityError()
+
+    data object ActivityNotFound : UpdateGymActivityError()
+
+    data object NotGymActivity : UpdateGymActivityError()
 
     data object NotAthletesCoach : UpdateGymActivityError()
-
-    data object NotAthletesActivity : UpdateGymActivityError()
 }
-typealias UpdateGymActivityResult = Either<UpdateGymActivityError, Int>*/
+typealias UpdateGymActivityResult = Either<UpdateGymActivityError, Int>
 
 sealed class RemoveGymActivityError {
     data object NotAthletesCoach : RemoveGymActivityError()
@@ -223,7 +232,7 @@ class GymActivityServices(
                 activityRepository.getActivityById(activityId)
                     ?: return@run failure(GetGymActivityError.ActivityNotFound)
 
-            if (activity.type != waveCoach.domain.ActivityType.GYM) {
+            if (activity.type != ActivityType.GYM) {
                 return@run failure(GetGymActivityError.NotGymActivity)
             }
 
@@ -260,70 +269,154 @@ class GymActivityServices(
         }
     }
 
-    /*fun updateGymActivity(
-        coachId: Int,
+    fun updateGymActivity(
         uid: Int,
         activityId: Int,
         date: String?,
         exercises: List<UpdateExerciseInputInfo>?,
     ): UpdateGymActivityResult {
-        return transactionManager.run {
+        val dateLong = date?.let { dateToLong(it) ?: return failure(UpdateGymActivityError.InvalidDate) }
+
+        return transactionManager.run { it ->
             val athleteRepository = it.athleteRepository
             val activityRepository = it.activityRepository
             val gymActivityRepository = it.gymActivityRepository
 
-            val athlete =
-                athleteRepository.getAthlete(uid) ?: return@run failure(UpdateGymActivityError.AthleteNotFound)
-            if (athlete.coach != coachId) return@run failure(UpdateGymActivityError.NotAthletesCoach)
+            val activity = activityRepository.getActivityById(activityId)
+                ?: return@run failure(UpdateGymActivityError.ActivityNotFound)
 
-            val activity =
-                activityRepository.getActivityById(activityId)
-                    ?: return@run failure(UpdateGymActivityError.ActivityNotFound)
+            if (activity.type != ActivityType.GYM)
+                return@run failure(UpdateGymActivityError.NotGymActivity)
 
-            if (activity.uid != uid) return@run failure(UpdateGymActivityError.NotAthletesActivity)
+            val athlete = athleteRepository.getAthlete(activity.uid)!!
 
-            if (date != null) {
-                val dateLong = dateToLong(date) ?: return@run failure(UpdateGymActivityError.InvalidDate)
+            if (athlete.coach != uid)
+                return@run failure(UpdateGymActivityError.NotAthletesCoach)
+
+            if (dateLong != null && dateLong != activity.date)
                 activityRepository.updateActivity(activityId, dateLong)
-            }
 
-            exercises?.forEach { exercise ->
-                if (exercise.id == null) return@forEach
+            if (exercises != null){
+                val (create, update, delete) =
+                    separateCreateUpdateDelete(exercises)
 
-                if (exercise.exerciseOrder != null) {
-                    gymActivityRepository.updateExerciseOrder(exercise.id, exercise.exerciseOrder)
-                }
-
-                if (exercise.gymExerciseId != null) {
-                    if (!gymActivityRepository.isGymExerciseValid(exercise.gymExerciseId))
+                // Add New exercises
+                val exercisesToInsert = create.map { exercise ->
+                    if (exercise.gymExerciseId == null || !gymActivityRepository.isGymExerciseValid(exercise.gymExerciseId))
                         return@run failure(UpdateGymActivityError.InvalidGymExercise)
 
-                    gymActivityRepository.updateExercise(exercise.id, exercise.gymExerciseId)
+                    if (exercise.order == null || exercise.order <= 0)
+                        return@run failure(UpdateGymActivityError.InvalidExerciseOrder)
+
+                    ExerciseToInsert(
+                        activityId,
+                        exercise.gymExerciseId,
+                        exercise.order
+                    )
                 }
-                if (exercise.sets != null) {
-                    exercise.sets.forEach { set ->
-                        if (set.id == null) return@forEach
 
-                        if (set.setOrder != null) {
-                            gymActivityRepository.updateSetOrder(set.id, set.setOrder)
-                        }
+                val exercisesCreatedIds = gymActivityRepository.storeExercises(exercisesToInsert)
 
-                        if (!checkSet(set)) return@run failure(UpdateGymActivityError.InvalidSet)
+                val setsToInsert = create.flatMapIndexed { exerciseIndex, exercise ->
+                    exercise.sets.orEmpty().mapIndexed { setOrder, set ->
+                        if (!setsDomain.checkSet(set.reps, set.weight, set.restTime))
+                            return@run failure(UpdateGymActivityError.InvalidSet)
 
-                        gymActivityRepository.updateSet(
-                            set.id,
+                        if (set.reps == null || set.weight == null || set.restTime == null)
+                            return@run failure(UpdateGymActivityError.InvalidSet)
+
+                        SetToInsert(
+                            exercisesCreatedIds[exerciseIndex],
                             set.reps,
                             set.weight,
-                            set.rest,
-                            set.setOrder,
+                            set.restTime,
+                            setOrder,
                         )
                     }
                 }
+
+                val exercisesOnDB = gymActivityRepository.getExercises(activityId)
+
+                // Update existing exercises
+                val exercisesToUpdate = update.map { exercise ->
+                    if (exercise.order != null && exercise.order <= 0)
+                        return@run failure(UpdateGymActivityError.InvalidExerciseOrder)
+
+                    if (exercisesOnDB.none { it.id == exercise.id })
+                        return@run failure(UpdateGymActivityError.ExerciseNotFound)
+
+                    ExerciseToUpdate(
+                        exercise.id!!,
+                        exercise.order
+                    )
+                }
+
+                val setsCreate = mutableListOf<SetToInsert>()
+                val setsUpdate = mutableListOf<SetToUpdate>()
+                val setsDelete = mutableListOf<Int>()
+
+                update.forEachIndexed { exerciseIndex, exercise ->
+                    val (setCreate, setUpdate, setDelete) =
+                        separateCreateUpdateDelete(exercise.sets.orEmpty())
+
+                    // Add New Sets
+                    setCreate.forEachIndexed { setOrder, set ->
+                        if (!setsDomain.checkSet(set.reps!!, set.weight!!, set.restTime!!))
+                            return@run failure(UpdateGymActivityError.InvalidSet)
+
+                        setsCreate.add(
+                            SetToInsert(
+                                update[exerciseIndex].id!!,
+                                set.reps,
+                                set.weight,
+                                set.restTime,
+                                set.order ?: (setOrder + 1),
+                            )
+                        )
+                    }
+
+                    val setsOnDB = gymActivityRepository.getSets(update[exerciseIndex].id!!)
+
+                    // Update existing Sets
+                    setUpdate.forEach {
+                        if (!setsDomain.checkSet(it.reps, it.weight, it.restTime))
+                            return@run failure(UpdateGymActivityError.InvalidSet)
+
+                        if (setsOnDB.none { set -> set.id == it.id })
+                            return@run failure(UpdateGymActivityError.SetNotFound)
+
+                        setsUpdate.add(
+                            SetToUpdate(
+                                it.id!!,
+                                it.reps,
+                                it.weight,
+                                it.restTime,
+                                it.order
+                            )
+                        )
+                    }
+
+                    // Delete Sets
+                    if (setDelete.any { id -> setsOnDB.none { it.id == id } })
+                        return@run failure(UpdateGymActivityError.SetNotFound)
+                    setsDelete.addAll(setDelete)
+                }
+
+                gymActivityRepository.updateExercises(exercisesToUpdate)
+
+                gymActivityRepository.storeSets(setsToInsert + setsCreate)
+                gymActivityRepository.updateSets(setsUpdate)
+                gymActivityRepository.removeSetsById(setsDelete)
+
+                // Delete exercises
+                if (delete.any { id -> exercisesOnDB.none { it.id == id } })
+                    return@run failure(UpdateGymActivityError.ExerciseNotFound)
+                gymActivityRepository.removeExercisesById(delete)
             }
 
-            success(activity.id)
+            success(activityId)
         }
-    }*/
+    }
 
     fun removeGymActivity(
         coachId: Int,
@@ -520,3 +613,4 @@ class GymActivityServices(
         }
     }
 }
+

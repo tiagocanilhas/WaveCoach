@@ -208,7 +208,7 @@ export function CyclesPopup({ onClose, onSuccess, cycles }: CyclesPopupProps) {
               height="80vh"
               plugins={[multiMonthPlugin, interactionPlugin]}
               initialView="multiMonthYear"
-              multiMonthMaxColumns={2} 
+              multiMonthMaxColumns={2}
               showNonCurrentDates={true}
               events={events}
               droppable={true}

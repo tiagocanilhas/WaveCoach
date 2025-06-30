@@ -94,6 +94,8 @@ export function RegisterForm({ title, initialUsername, buttonText, onSubmit }: R
 
   const passwordValidation = validatePassword(password)
   const passwordsMatch = password === confirmPassword
+  const passwordError = password.length > 0 && !Object.values(passwordValidation).every(v => v.valid)
+  const confirmPasswordError = confirmPassword.length > 0 && !passwordsMatch
   const disabled =
     state.tag === 'submitting' ||
     state.inputs.username.trim() === '' ||
@@ -112,15 +114,24 @@ export function RegisterForm({ title, initialUsername, buttonText, onSubmit }: R
           <form onSubmit={handleOnSubmit} className={styles.form}>
             <TextField name="username" type="text" label="Username" value={username} onChange={handleOnChange} required />
             <div className={styles.passwordContainer}>
-              <TextField name="password" type="password" label="Password" value={password} onChange={handleOnChange} required />
-              <p>Password must match the following criteria:</p>
-              <ul>
-                {Object.values(passwordValidation).map((validation, idx) => (
-                  <li key={idx} className={validation.valid ? styles.passwordCriteriaValid : styles.passwordCriteriaInvalid}>
-                    {validation.text}
-                  </li>
-                ))}
-              </ul>
+              <TextField
+                name="password"
+                type="password"
+                label="Password"
+                value={password}
+                onChange={handleOnChange}
+                error={passwordError}
+                helperText={
+                  <ul>
+                    {Object.values(passwordValidation).map((validation, idx) => (
+                      <li key={idx} className={validation.valid ? styles.passwordCriteriaValid : styles.passwordCriteriaInvalid}>
+                        {validation.text}
+                      </li>
+                    ))}
+                  </ul>
+                }
+                required
+              />
             </div>
             <TextField
               name="confirmPassword"
@@ -128,6 +139,7 @@ export function RegisterForm({ title, initialUsername, buttonText, onSubmit }: R
               label="Confirm Password"
               value={confirmPassword}
               onChange={handleOnChange}
+              error={confirmPasswordError}
               required
             />
             <Button text={buttonText} type="submit" width="100%" height="25px" disabled={disabled} />

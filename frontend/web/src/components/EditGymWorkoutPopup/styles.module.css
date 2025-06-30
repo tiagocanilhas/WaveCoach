@@ -1,0 +1,56 @@
+.addWorkout {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.exercisesContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  height: 70vh;
+  padding: 5px;
+  overflow-y: auto;
+}
+
+.exercise {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.exerciseInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.exerciseInfo img {
+  width: 150px;
+  height: 150px;
+  border-radius: 20px;
+}
+
+.add {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+
+  width: 17%;
+  font-size: 80px;
+  background-color: #ccc;
+  color: white;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.error {
+  color: red;
+  font-size: 14px;
+  margin-top: 5px;
+}

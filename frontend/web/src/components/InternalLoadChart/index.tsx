@@ -6,17 +6,17 @@ ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend, Title)
 
 type InternalLoadChartProps = {
   labels: string[]
-  sessionPseData: number[]
+  sessionRpeData: number[]
   trimpData: number[]
 }
 
-export function InternalLoadChart({ labels, sessionPseData, trimpData }: InternalLoadChartProps) {
+export function InternalLoadChart({ labels, sessionRpeData, trimpData }: InternalLoadChartProps) {
   const chartData = {
     labels,
     datasets: [
       {
-        label: 'Session PSE',
-        data: sessionPseData,
+        label: 'Session RPE',
+        data: sessionRpeData,
         backgroundColor: 'rgb(0, 153, 255)',
         borderRadius: 4,
       },

@@ -10,6 +10,10 @@ export async function getGymActivity(gid: string) {
   return await customFetch(URIS.GYM.getById(gid), 'GET')
 }
 
+export async function updateGymActivity(gid: string, date: string, exercises: any[]) {
+  return await customFetch(URIS.GYM.update(gid), 'PATCH', { date: date == null ? null : toDisplayFormat(date), exercises })
+}
+
 export async function deleteGymActivity(gid: string) {
   return await customFetch(URIS.GYM.delete(gid), 'DELETE')
 }

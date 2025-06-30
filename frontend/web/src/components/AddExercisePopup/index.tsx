@@ -7,19 +7,19 @@ import { TextField } from '@mui/material'
 import { Card } from '../Card'
 
 import { Exercise } from '../../types/Exercise'
-import { SetData } from '../../types/SetData'
+import { SetDataToAdd } from '../../types/SetDataToAdd'
 
 import styles from './styles.module.css'
 
 type AddExercisePopupProps = {
-  data?: { sets: SetData[] }
+  data?: { sets: SetDataToAdd[] }
   exercise: Exercise
-  onAdd: (exercise: Exercise, sets: SetData[]) => void
+  onAdd: (exercise: Exercise, sets: SetDataToAdd[]) => void
   onClose: () => void
 }
 
 export function AddExercisePopup({ data, exercise, onAdd, onClose }: AddExercisePopupProps) {
-  const [sets, setSets] = useState<SetData[]>(data?.sets || [{ reps: undefined, weight: undefined, restTime: undefined }])
+  const [sets, setSets] = useState<SetDataToAdd[]>(data?.sets || [{ reps: undefined, weight: undefined, restTime: undefined }])
 
   function handleAddSet() {
     setSets(prev => [...prev, { reps: undefined, weight: undefined, restTime: undefined }])
@@ -29,7 +29,7 @@ export function AddExercisePopup({ data, exercise, onAdd, onClose }: AddExercise
     setSets(prev => prev.filter((_, i) => i !== index))
   }
 
-  function handleChangeInteger(index: number, field: keyof SetData, value: string) {
+  function handleChangeInteger(index: number, field: keyof SetDataToAdd, value: string) {
     if (/^\d*$/.test(value)) {
       const parsed = value === '' ? undefined : parseInt(value, 10)
       setSets(prev => {
@@ -40,7 +40,7 @@ export function AddExercisePopup({ data, exercise, onAdd, onClose }: AddExercise
     }
   }
 
-  function handleChangeFloat(index: number, field: keyof SetData, value: string) {
+  function handleChangeFloat(index: number, field: keyof SetDataToAdd, value: string) {
     const sanitized = value.replace(',', '.')
     if (/^\d*\.?\d*$/.test(sanitized)) {
       const parsed = sanitized === '' ? undefined : parseFloat(sanitized)

@@ -8,7 +8,7 @@ import { AddNewExercise } from '../AddNewExercise'
 import { AddExercisePopup } from '../AddExercisePopup'
 
 import { Exercise } from '../../types/Exercise'
-import { SetData } from '../../types/SetData'
+import { SetDataToAdd } from '../../types/SetDataToAdd'
 
 import { getGymExercises } from '../../../../services/gymExerciseServices'
 
@@ -48,12 +48,12 @@ type Action =
   | { type: 'choose' }
   | { type: 'new'; exerciseType: string }
   | { type: 'add'; exercise: Exercise }
-  | { type: 'setData'; exercises: Exercise[] }
+  | { type: 'SetDataToAdd'; exercises: Exercise[] }
   | { type: 'setName'; name: string }
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
-    case 'setData':
+    case 'SetDataToAdd':
       return { ...state, exercises: arrangeExercisesByType(action.exercises), view: { tag: 'choosing' } }
     case 'choose':
       return { ...state, view: { tag: 'choosing' } }
@@ -69,7 +69,7 @@ function reducer(state: State, action: Action): State {
 }
 
 type SelectExercisePopupProps = {
-  onAdd: (exercise: Exercise, sets: SetData[]) => void
+  onAdd: (exercise: Exercise, sets: SetDataToAdd[]) => void
   onClose: () => void
 }
 
@@ -81,7 +81,7 @@ export function SelectExercisePopup({ onAdd, onClose }: SelectExercisePopupProps
     async function fetchData() {
       try {
         const res = await getGymExercises()
-        dispatch({ type: 'setData', exercises: res.gymExercises })
+        dispatch({ type: 'SetDataToAdd', exercises: res.gymExercises })
       } catch (error) {}
     }
     fetchData()

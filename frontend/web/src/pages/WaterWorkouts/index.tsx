@@ -128,7 +128,9 @@ export function WaterWorkouts() {
                 </div>
                 {workout.waves.map((wave, index) => (
                   <div className={styles.wave} key={wave.id}>
-                    <h2>{`Wave ${index + 1}`} {wave.rightSide ? '➡️' : '⬅️'}</h2>
+                    <h2>
+                      {`Wave ${index + 1}`} {wave.rightSide ? '➡️' : '⬅️'}
+                    </h2>
                     <div className={styles.maneuvers}>
                       {wave.maneuvers.map(maneuver => (
                         <div key={maneuver.id} className={styles.maneuver}>
@@ -151,7 +153,7 @@ export function WaterWorkouts() {
         onCycleSelected={handleOnCycleSelected}
         type="water"
         onDeleteSuccess={fetchCalendar}
-     />
+      />
 
       <WaterCharts data={state.calendar} selected={state.selectedCycle} />
 

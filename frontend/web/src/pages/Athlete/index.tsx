@@ -75,7 +75,7 @@ export function Athlete() {
   const id = useParams().aid
   const [user, _] = useAuthentication()
   const navigate = useNavigate()
-  
+
   async function fetchCalendar() {
     try {
       const res = await getCalendar(id)

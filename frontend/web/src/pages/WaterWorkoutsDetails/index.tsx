@@ -127,38 +127,40 @@ export function WaterWorkoutsDetails() {
             <Card
               content={
                 <>
-                <div className={styles.questionnaireHeader}>
-                  <h1>Wellness Questionnaire</h1>
-                  {questionnaire === null && (
-                    <Card
-                      content={
-                        <div className={styles.add} onClick={handleAddQuestionnaire}>
-                          +
-                        </div>
-                      }
+                  <div className={styles.questionnaireHeader}>
+                    <h1>Wellness Questionnaire</h1>
+                    {questionnaire === null && (
+                      <Card
+                        content={
+                          <div className={styles.add} onClick={handleAddQuestionnaire}>
+                            +
+                          </div>
+                        }
                       />
-                  )}
-                </div>
+                    )}
+                  </div>
                   {questionnaire === undefined ? (
                     <CircularProgress />
-                  ) : questionnaire !== null && (
-                    <div className={styles.questionnaireDetails}>
-                      {Object.entries(questionnaire).map(([key, value]) => {
-                        const formattedKey = key
-                          .replace(/([A-Z])/g, ' $1')
-                          .trim()
-                          .toLowerCase()
-                          .split(' ')
-                          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                          .join(' ')
+                  ) : (
+                    questionnaire !== null && (
+                      <div className={styles.questionnaireDetails}>
+                        {Object.entries(questionnaire).map(([key, value]) => {
+                          const formattedKey = key
+                            .replace(/([A-Z])/g, ' $1')
+                            .trim()
+                            .toLowerCase()
+                            .split(' ')
+                            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                            .join(' ')
 
-                        return (
-                          <p>
-                            <strong>{formattedKey}:</strong> {String(value)}
-                          </p>
-                        )
-                      })}
-                    </div>
+                          return (
+                            <p>
+                              <strong>{formattedKey}:</strong> {String(value)}
+                            </p>
+                          )
+                        })}
+                      </div>
+                    )
                   )}
                 </>
               }
@@ -177,11 +179,13 @@ export function WaterWorkoutsDetails() {
                     ) : (
                       workout.waves.map((wave, index) => (
                         <div key={wave.id} className={styles.waveDetails}>
-                          <h2>Wave {index + 1} {wave.rightSide ? '➡️' : '⬅️'}</h2>
+                          <h2>
+                            Wave {index + 1} {wave.rightSide ? '➡️' : '⬅️'}
+                          </h2>
                           <div className={styles.maneuversContainer}>
                             {wave.maneuvers.map(maneuver => (
                               <div key={maneuver.id} className={styles.maneuver}>
-                                <img src={maneuver.url ||`/images/no_image.svg`} alt="Maneuver" />
+                                <img src={maneuver.url || `/images/no_image.svg`} alt="Maneuver" />
                                 {maneuver.name} - {maneuver.success ? '✅' : '❌'}
                               </div>
                             ))}

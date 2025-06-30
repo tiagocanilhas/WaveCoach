@@ -112,7 +112,7 @@ export function Home() {
       <div className={styles.container}>
         <Card
           content={
-            <TextField type="text" placeholder="Search" value={state.search} onChange={handleSearch} className={styles.search} />
+            <TextField type="text" label="Search" value={state.search} onChange={handleSearch} className={styles.search} />
           }
           width="500px"
         />
@@ -121,7 +121,7 @@ export function Home() {
           items={athletes}
           getKey={athlete => athlete.uid}
           renderItem={athlete => (
-            <div className={styles.athlete}>
+            <div className={styles.athlete} data-testid={`athlete-${athlete.uid}`}>
               <Dropdown
                 options={[
                   { label: 'Generate Code', disabled: athlete.credentialsChanged, onClick: () => handleGetCode(athlete.uid) },

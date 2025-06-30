@@ -5,6 +5,13 @@
   gap: 30px;
 }
 
+.header {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+}
+
 .exercise {
   display: flex;
   flex-direction: row;

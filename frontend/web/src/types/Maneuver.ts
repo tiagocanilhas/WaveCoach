@@ -1,4 +1,4 @@
-import { StringifyOptions } from "querystring"
+import { StringifyOptions } from 'querystring'
 
 export type Maneuver = {
   id: number

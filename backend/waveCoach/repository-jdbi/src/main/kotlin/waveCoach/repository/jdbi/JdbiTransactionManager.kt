@@ -4,6 +4,9 @@ import org.jdbi.v3.core.Jdbi
 import org.springframework.stereotype.Component
 import waveCoach.repository.Transaction
 import waveCoach.repository.TransactionManager
+import waveCoach.utils.Either
+import waveCoach.utils.Failure
+import waveCoach.utils.Success
 
 @Component
 class JdbiTransactionManager(
@@ -12,6 +15,9 @@ class JdbiTransactionManager(
     override fun <R> run(block: (Transaction) -> R): R =
         jdbi.inTransaction<R, Exception> { handle ->
             val transaction = JdbiTransaction(handle)
-            block(transaction)
+            when (val res = block(transaction)) {
+                is Failure<*> -> { transaction.rollback(); res }
+                else -> res
+            }
         }
 }

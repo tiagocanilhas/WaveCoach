@@ -5,18 +5,18 @@ import { toDisplayFormat } from '../utils/toDisplayFormat'
 export async function createWaterActivity(
   athleteId: string,
   date: string,
-  pse: number,
+  rpe: number,
   condition: string,
-  heartRate: number,
+  trimp: number,
   duration: number,
   waves: { points?: number; rightSide: boolean; maneuvers?: { waterManeuverId: number; success: boolean }[] }[]
 ) {
   return customFetch(URIS.WATER.create, 'POST', {
     athleteId,
     date: toDisplayFormat(date),
-    pse,
+    rpe,
     condition,
-    heartRate,
+    trimp,
     duration,
     waves,
   })

@@ -11,7 +11,7 @@ type PopupProps = {
 export function Popup({ title, content, onClose }: PopupProps) {
   return (
     <div className={styles.overlay}>
-      <div className={styles.container}>
+      <div className={styles.container} data-testid="popup">
         <button onClick={onClose} className={styles.closeButton}>
           X
         </button>

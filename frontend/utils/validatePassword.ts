@@ -1,8 +1,8 @@
 export function validatePassword(password: string) {
   return {
     length: {
-      valid: password.length >= 6,
-      text: 'At least 6 characters long',
+      valid: password.length > 6,
+      text: 'At least 7 characters',
     },
     uppercase: {
       valid: /[A-Z]/.test(password),

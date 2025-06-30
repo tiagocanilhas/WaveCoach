@@ -1,12 +1,19 @@
 package waveCoach.http
 
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PatchMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RestController
 import waveCoach.domain.AuthenticatedCoach
 import waveCoach.domain.AuthenticatedUser
 import waveCoach.http.model.input.AddExerciseInputModel
 import waveCoach.http.model.input.AddSetInputModel
 import waveCoach.http.model.input.CreateGymActivityInputModel
+import waveCoach.http.model.input.UpdateGymActivityInputModel
 import waveCoach.http.model.output.ExerciseWithSetsOutputModel
 import waveCoach.http.model.output.GymActivityWithExercisesOutputModel
 import waveCoach.http.model.output.Problem
@@ -103,42 +110,44 @@ class GymActivityController(
         }
     }
 
-    /* @PatchMapping(Uris.Athletes.UPDATE_GYM_ACTIVITY)
+    @PatchMapping(Uris.GymActivity.UPDATE)
     fun updateGymActivity(
         coach: AuthenticatedCoach,
-        @PathVariable aid: String,
         @PathVariable activityId: String,
         @RequestBody input: UpdateGymActivityInputModel,
     ): ResponseEntity<*> {
-        val uid = aid.toIntOrNull() ?: return Problem.response(400, Problem.invalidAthleteId)
         val activityIdInt = activityId.toIntOrNull() ?: return Problem.response(400, Problem.invalidGymActivityId)
-        val result = athleteServices.updateGymActivity(
-            coach.info.id,
-            uid,
-            activityIdInt,
-            input.date,
-            input.exercises?.map { inputModel ->
-                UpdateExerciseInputInfo(
-                    inputModel.id,
-                    inputModel.sets?.map { UpdateSetInputInfo(it.id ,it.reps, it.weight, it.rest, it.setOrder) },
-                    inputModel.gymExerciseId,
-                    inputModel.exerciseOrder
-                )
-            }
-        )
+
+        val exercises = input.exercises?.map { exercise ->
+            UpdateExerciseInputInfo(
+                exercise.id,
+                exercise.gymExerciseId,
+                exercise.sets?.map { set ->
+                    UpdateSetInputInfo(set.id, set.reps, set.weight, set.restTime, set.order)
+                },
+                exercise.order,
+            )
+        }
+
+        val result = gymActivityServices.updateGymActivity(coach.info.id, activityIdInt, input.date, exercises)
+
         return when (result) {
             is Success -> ResponseEntity.status(204).build<Unit>()
 
             is Failure ->
                 when (result.value) {
-                    UpdateGymActivityError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
                     UpdateGymActivityError.InvalidDate -> Problem.response(400, Problem.invalidDate)
-                    UpdateGymActivityError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
                     UpdateGymActivityError.InvalidGymExercise -> Problem.response(400, Problem.invalidGymExercise)
-                    UpdateGymActivityError.InvalidSet -> Problem.response(400, Problem.invalidSets)
+                    UpdateGymActivityError.ExerciseNotFound -> Problem.response(404, Problem.exerciseNotFound)
+                    UpdateGymActivityError.InvalidExerciseOrder -> Problem.response(400, Problem.invalidOrder)
+                    UpdateGymActivityError.SetNotFound -> Problem.response(404, Problem.setNotFound)
+                    UpdateGymActivityError.InvalidSet -> Problem.response(400, Problem.invalidSet)
+                    UpdateGymActivityError.ActivityNotFound -> Problem.response(404, Problem.gymActivityNotFound)
+                    UpdateGymActivityError.NotGymActivity -> Problem.response(400, Problem.notGymActivity)
+                    UpdateGymActivityError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
                 }
         }
-    }*/
+    }
 
     @DeleteMapping(Uris.GymActivity.REMOVE)
     fun remove(

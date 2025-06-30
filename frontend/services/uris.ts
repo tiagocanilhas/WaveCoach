@@ -1,4 +1,4 @@
-const MOBILE_URL = ''
+const MOBILE_URL = 'https://a20c-89-114-64-51.ngrok-free.app'
 
 const BASE_URL =
   false

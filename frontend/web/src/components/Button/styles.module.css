@@ -3,6 +3,8 @@
   color: var(--button-text-color);
   border: none;
   border-radius: 5px;
+  padding: 5px;
+  cursor: pointer;
 }
 
 .btn:hover {

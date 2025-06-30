@@ -13,7 +13,7 @@ type State = {
   success: boolean
 }
 
-type Action =  { type: 'toggleSuccess' }
+type Action = { type: 'toggleSuccess' }
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
@@ -25,7 +25,7 @@ function reducer(state: State, action: Action): State {
 }
 
 type AddManeuverPopupProps = {
-  data?: {success: boolean}
+  data?: { success: boolean }
   maneuver: WaterManeuver
   onAdd: (maneuver: WaterManeuver, success: boolean) => void
   onClose: () => void
@@ -48,7 +48,7 @@ export function AddManeuverPopup({ data, maneuver, onAdd, onClose }: AddManeuver
 
   return (
     <Popup
-      title={data ? 'Edit Maneuver' : 'Add Maneuver' }
+      title={data ? 'Edit Maneuver' : 'Add Maneuver'}
       content={
         <div className={styles.container}>
           <div className={styles.maneuver}>
@@ -56,14 +56,9 @@ export function AddManeuverPopup({ data, maneuver, onAdd, onClose }: AddManeuver
             <h2>{maneuver.name}</h2>
           </div>
 
-          <LabeledSwitch
-           leftLabel='Failed'
-            rightLabel='Succeded'
-            checked={success} 
-            onChange={toggleSuccess} 
-            />
+          <LabeledSwitch leftLabel="Failed" rightLabel="Succeded" checked={success} onChange={toggleSuccess} />
 
-          <Button text={data ? 'Edit' : 'Add' } disabled={disabled} onClick={handleAddExercise} width="100%" height="30px" />
+          <Button text={data ? 'Edit' : 'Add'} disabled={disabled} onClick={handleAddExercise} width="100%" height="30px" />
         </div>
       }
       onClose={onClose}

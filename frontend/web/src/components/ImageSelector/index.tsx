@@ -73,7 +73,7 @@ export function ImageSelector({ defaultImage, onImageSelect }: ImageSelectorProp
       {isCropping && rawUrl ? (
         <ImageCropper image={state.rawUrl} onCancel={handleCancel} onComplete={handleCropComplete} />
       ) : (
-        <div className={styles.container}>
+        <div className={styles.container} data-testid="image-selector">
           <div onClick={handleClick}>
             <img src={state.previewUrl} alt="Preview" />
           </div>

@@ -23,7 +23,12 @@ export function ScrollableText({ text, className }: ScrollableTextProps) {
   }
 
   return (
-    <div onMouseEnter={handleHover} onMouseLeave={() => setIsHovered(false)} className={styles.container}>
+    <div
+      onMouseEnter={handleHover}
+      onMouseLeave={() => setIsHovered(false)}
+      className={styles.container}
+      data-testid="scrollable-text"
+    >
       {isHovered ? (
         <Marquee speed={40} gradient={false}>
           <span style={{ paddingRight: '50px' }} className={className}>

@@ -1,8 +1,8 @@
 import { Exercise } from './Exercise'
-import { SetData } from './SetData'
+import { SetDataToAdd } from './SetDataToAdd'
 
 export type ExerciseToAdd = {
   tempId: string
   exercise: Exercise
-  sets: SetData[]
+  sets: SetDataToAdd[]
 }

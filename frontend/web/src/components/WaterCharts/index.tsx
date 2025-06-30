@@ -24,10 +24,10 @@ type WaterChartsProps = {
 export function WaterCharts({ data, selected }: WaterChartsProps) {
   if (!data || !selected || !selected.mesocycleId) return null
 
-  function getInternalLoadData(workouts: any[]): { sessionPseData: number[]; trimpData: number[] } {
-    const sessionPseData = workouts.map(w => (w.pse * w.duration) / 60)
-    const trimpData = workouts.map(w => w.heartRate)
-    return { sessionPseData, trimpData }
+  function getInternalLoadData(workouts: any[]): { sessionRpeData: number[]; trimpData: number[] } {
+    const sessionRpeData = workouts.map(w => (w.rpe * w.duration) / 60)
+    const trimpData = workouts.map(w => w.trimp)
+    return { sessionRpeData, trimpData }
   }
 
   function getExternalLoadVolumeData(workouts: any[]): { waterTime: number[]; waveCount: number[]; maneuverAttempts: number[] } {
@@ -49,7 +49,7 @@ export function WaterCharts({ data, selected }: WaterChartsProps) {
 
     const dateLabels = workouts.map(w => epochConverter(w.date, 'dd-mm-yyyy'))
 
-    const { sessionPseData, trimpData } = getInternalLoadData(workouts)
+    const { sessionRpeData, trimpData } = getInternalLoadData(workouts)
     const { waterTime, waveCount, maneuverAttempts } = getExternalLoadVolumeData(workouts)
     const { wavesPerMinute, maneuversPerWave } = getExternalLoadIntensityData(workouts)
 
@@ -140,7 +140,7 @@ export function WaterCharts({ data, selected }: WaterChartsProps) {
       <div className={styles.container}>
         <div className={styles.load}>
           <Card
-            content={<InternalLoadChart labels={dateLabels} sessionPseData={sessionPseData} trimpData={trimpData} />}
+            content={<InternalLoadChart labels={dateLabels} sessionRpeData={sessionRpeData} trimpData={trimpData} />}
             width="100%"
           />
           <Card
@@ -225,7 +225,7 @@ export function WaterCharts({ data, selected }: WaterChartsProps) {
 
     const dateLabels = workouts.map(w => epochConverter(w.date, 'dd-mm-yyyy'))
 
-    const { sessionPseData, trimpData } = getInternalLoadData(workouts)
+    const { sessionRpeData, trimpData } = getInternalLoadData(workouts)
     const { waterTime, waveCount, maneuverAttempts } = getExternalLoadVolumeData(workouts)
     const { wavesPerMinute, maneuversPerWave } = getExternalLoadIntensityData(workouts)
 
@@ -258,7 +258,7 @@ export function WaterCharts({ data, selected }: WaterChartsProps) {
       <div className={styles.container}>
         <div className={styles.load}>
           <Card
-            content={<InternalLoadChart labels={dateLabels} sessionPseData={sessionPseData} trimpData={trimpData} />}
+            content={<InternalLoadChart labels={dateLabels} sessionRpeData={sessionRpeData} trimpData={trimpData} />}
             width="100%"
           />
           <Card

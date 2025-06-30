@@ -4,6 +4,10 @@
   gap: 10px;
 }
 
+.item {
+  cursor: grab;
+}
+
 .add {
   display: flex;
   justify-content: center;

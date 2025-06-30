@@ -37,12 +37,12 @@ class GymActivityControllerTest {
                                             mapOf(
                                                 "reps" to 10,
                                                 "weight" to 100.0,
-                                                "rest" to 60.0,
+                                                "restTime" to 60.0,
                                             ),
                                             mapOf(
                                                 "reps" to 20,
                                                 "weight" to 100.0,
-                                                "rest" to 60.0,
+                                                "restTime" to 60.0,
                                             ),
                                         ),
                                 "gymExerciseId" to 1,
@@ -53,12 +53,12 @@ class GymActivityControllerTest {
                                             mapOf(
                                                 "reps" to 10,
                                                 "weight" to 100.0,
-                                                "rest" to 60.0,
+                                                "restTime" to 60.0,
                                             ),
                                             mapOf(
                                                 "reps" to 20,
                                                 "weight" to 100.0,
-                                                "rest" to 60.0,
+                                                "restTime" to 60.0,
                                             ),
                                         ),
                                 "gymExerciseId" to 2,
@@ -94,12 +94,12 @@ class GymActivityControllerTest {
                                             mapOf(
                                                 "reps" to 10,
                                                 "weight" to 100.0,
-                                                "rest" to 60.0,
+                                                "restTime" to 60.0,
                                             ),
                                             mapOf(
                                                 "reps" to 20,
                                                 "weight" to 100.0,
-                                                "rest" to 60.0,
+                                                "restTime" to 60.0,
                                             ),
                                         ),
                                 "gymExerciseId" to 1,
@@ -110,12 +110,12 @@ class GymActivityControllerTest {
                                             mapOf(
                                                 "reps" to 10,
                                                 "weight" to 100.0,
-                                                "rest" to 60.0,
+                                                "restTime" to 60.0,
                                             ),
                                             mapOf(
                                                 "reps" to 20,
                                                 "weight" to 100.0,
-                                                "rest" to 60.0,
+                                                "restTime" to 60.0,
                                             ),
                                         ),
                                 "gymExerciseId" to 2,
@@ -146,12 +146,12 @@ class GymActivityControllerTest {
                                             mapOf(
                                                 "reps" to 10,
                                                 "weight" to 100.0,
-                                                "rest" to 60.0,
+                                                "restTime" to 60.0,
                                             ),
                                             mapOf(
                                                 "reps" to 20,
                                                 "weight" to 100.0,
-                                                "rest" to 60.0,
+                                                "restTime" to 60.0,
                                             ),
                                         ),
                                 "gymExerciseId" to 1,
@@ -162,12 +162,12 @@ class GymActivityControllerTest {
                                             mapOf(
                                                 "reps" to 10,
                                                 "weight" to 100.0,
-                                                "rest" to 60.0,
+                                                "restTime" to 60.0,
                                             ),
                                             mapOf(
                                                 "reps" to 20,
                                                 "weight" to 100.0,
-                                                "rest" to 60.0,
+                                                "restTime" to 60.0,
                                             ),
                                         ),
                                 "gymExerciseId" to 2,
@@ -204,12 +204,12 @@ class GymActivityControllerTest {
                                             mapOf(
                                                 "reps" to 10,
                                                 "weight" to 100.0,
-                                                "rest" to 60.0,
+                                                "restTime" to 60.0,
                                             ),
                                             mapOf(
                                                 "reps" to 20,
                                                 "weight" to 100.0,
-                                                "rest" to 60.0,
+                                                "restTime" to 60.0,
                                             ),
                                         ),
                                 "gymExerciseId" to 1,
@@ -220,12 +220,12 @@ class GymActivityControllerTest {
                                             mapOf(
                                                 "reps" to 10,
                                                 "weight" to 100.0,
-                                                "rest" to 60.0,
+                                                "restTime" to 60.0,
                                             ),
                                             mapOf(
                                                 "reps" to 20,
                                                 "weight" to 100.0,
-                                                "rest" to 60.0,
+                                                "restTime" to 60.0,
                                             ),
                                         ),
                                 "gymExerciseId" to 2,
@@ -260,12 +260,12 @@ class GymActivityControllerTest {
                                             mapOf(
                                                 "reps" to 10,
                                                 "weight" to 100.0,
-                                                "rest" to 60.0,
+                                                "restTime" to 60.0,
                                             ),
                                             mapOf(
                                                 "reps" to 20,
                                                 "weight" to 100.0,
-                                                "rest" to 60.0,
+                                                "restTime" to 60.0,
                                             ),
                                         ),
                                 "gymExerciseId" to 1,
@@ -276,12 +276,12 @@ class GymActivityControllerTest {
                                             mapOf(
                                                 "reps" to 10,
                                                 "weight" to 100.0,
-                                                "rest" to 60.0,
+                                                "restTime" to 60.0,
                                             ),
                                             mapOf(
                                                 "reps" to 20,
                                                 "weight" to 100.0,
-                                                "rest" to 60.0,
+                                                "restTime" to 60.0,
                                             ),
                                         ),
                                 "gymExerciseId" to 2,
@@ -316,12 +316,12 @@ class GymActivityControllerTest {
                                             mapOf(
                                                 "reps" to 10,
                                                 "weight" to 100.0,
-                                                "rest" to 60.0,
+                                                "restTime" to 60.0,
                                             ),
                                             mapOf(
                                                 "reps" to 20,
                                                 "weight" to 100.0,
-                                                "rest" to 60.0,
+                                                "restTime" to 60.0,
                                             ),
                                         ),
                                 "gymExerciseId" to -1,
@@ -356,7 +356,7 @@ class GymActivityControllerTest {
                                             mapOf(
                                                 "reps" to -1,
                                                 "weight" to 100.0,
-                                                "rest" to 60.0,
+                                                "restTime" to 60.0,
                                             ),
                                         ),
                                 "gymExerciseId" to 1,
@@ -391,12 +391,12 @@ class GymActivityControllerTest {
                                             mapOf(
                                                 "reps" to 10,
                                                 "weight" to 100.0,
-                                                "rest" to 60.0,
+                                                "restTime" to 60.0,
                                             ),
                                             mapOf(
                                                 "reps" to 20,
                                                 "weight" to 100.0,
-                                                "rest" to 60.0,
+                                                "restTime" to 60.0,
                                             ),
                                         ),
                                 "gymExerciseId" to 1,
@@ -407,12 +407,12 @@ class GymActivityControllerTest {
                                             mapOf(
                                                 "reps" to 10,
                                                 "weight" to 100.0,
-                                                "rest" to 60.0,
+                                                "restTime" to 60.0,
                                             ),
                                             mapOf(
                                                 "reps" to 20,
                                                 "weight" to 100.0,
-                                                "rest" to 60.0,
+                                                "restTime" to 60.0,
                                             ),
                                         ),
                                 "gymExerciseId" to 2,
@@ -529,6 +529,575 @@ class GymActivityControllerTest {
     }
 
     /**
+     * Update gym activity tests
+     */
+
+    @Test
+    fun `update gym activity - success`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "date" to "02-05-2025",
+                "exercises" to listOf(
+                    mapOf(
+                        "gymExerciseId" to 3,
+                        "sets" to listOf(
+                            mapOf(
+                                "reps" to 10,
+                                "weight" to 100.0,
+                                "restTime" to 60.0,
+                            ),
+                            mapOf(
+                                "reps" to 20,
+                                "weight" to 100.0,
+                                "restTime" to 60.0,
+                            ),
+                        ),
+                        "order" to 1,
+                    ),
+                    mapOf(
+                        "id" to 7,
+                        "sets" to listOf(
+                            mapOf(
+                                "reps" to 10,
+                                "weight" to 100.0,
+                                "restTime" to 60.0,
+                                "order" to 1,
+                            ),
+                            mapOf(
+                                "id" to 17,
+                                "reps" to 20,
+                                "order" to 2,
+                            ),
+                            mapOf(
+                                "id" to 18
+                            ),
+                        ),
+                        "order" to 2,
+                    ),
+                    mapOf(
+                        "id" to 8,
+                    ),
+                ),
+            )
+
+        client.patch().uri("/gym/$SECOND_GYM_ACTIVITY_ID")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isNoContent
+    }
+
+    @Test
+    fun `update gym activity - unauthorized`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "date" to "02-05-2025",
+                "exercises" to listOf(
+                    mapOf(
+                        "gymExerciseId" to 3,
+                        "sets" to listOf(
+                            mapOf(
+                                "reps" to 10,
+                                "weight" to 100.0,
+                                "restTime" to 60.0,
+                            ),
+                            mapOf(
+                                "reps" to 20,
+                                "weight" to 100.0,
+                                "restTime" to 60.0,
+                            ),
+                        ),
+                        "order" to 1,
+                    ),
+                ),
+            )
+
+        client.patch().uri("/gym/$SECOND_GYM_ACTIVITY_ID")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isUnauthorized
+    }
+
+    @Test
+    fun `update gym activity -  user is not a coach`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "date" to "02-05-2025",
+                "exercises" to listOf(
+                    mapOf(
+                        "gymExerciseId" to 3,
+                        "sets" to listOf(
+                            mapOf(
+                                "reps" to 10,
+                                "weight" to 100.0,
+                                "restTime" to 60.0,
+                            ),
+                            mapOf(
+                                "reps" to 20,
+                                "weight" to 100.0,
+                                "restTime" to 60.0,
+                            ),
+                        ),
+                        "order" to 1,
+                    ),
+                ),
+            )
+
+        client.patch().uri("/gym/$SECOND_GYM_ACTIVITY_ID")
+            .header("Authorization", "Bearer $FIRST_ATHLETE_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isForbidden
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.userIsNotACoach.type.toString())
+    }
+
+    @Test
+    fun `update gym activity - invalid gym activity id`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val id = "invalid"
+
+        val body =
+            mapOf(
+                "date" to "02-05-2025",
+                "exercises" to listOf(
+                    mapOf(
+                        "gymExerciseId" to 3,
+                        "sets" to listOf(
+                            mapOf(
+                                "reps" to 10,
+                                "weight" to 100.0,
+                                "restTime" to 60.0,
+                            ),
+                            mapOf(
+                                "reps" to 20,
+                                "weight" to 100.0,
+                                "restTime" to 60.0,
+                            ),
+                        ),
+                        "order" to 1,
+                    ),
+                ),
+            )
+
+        client.patch().uri("/gym/$id")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidGymActivityId.type.toString())
+    }
+
+    @Test
+    fun `update gym activity - invalid date`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "date" to INVALID_DATE,
+                "exercises" to listOf(
+                    mapOf(
+                        "gymExerciseId" to 3,
+                        "sets" to listOf(
+                            mapOf(
+                                "reps" to 10,
+                                "weight" to 100.0,
+                                "restTime" to 60.0,
+                            ),
+                            mapOf(
+                                "reps" to 20,
+                                "weight" to 100.0,
+                                "restTime" to 60.0,
+                            ),
+                        ),
+                        "order" to 1,
+                    ),
+                ),
+            )
+
+        client.patch().uri("/gym/$SECOND_GYM_ACTIVITY_ID")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidDate.type.toString())
+    }
+
+    @Test
+    fun `update gym activity - invalid gym Exercise`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "date" to "02-05-2025",
+                "exercises" to listOf(
+                    mapOf(
+                        "gymExerciseId" to -1,
+                        "sets" to listOf(
+                            mapOf(
+                                "reps" to 10,
+                                "weight" to 100.0,
+                                "restTime" to 60.0,
+                            ),
+                            mapOf(
+                                "reps" to 20,
+                                "weight" to 100.0,
+                                "restTime" to 60.0,
+                            ),
+                        ),
+                        "order" to 1,
+                    ),
+                ),
+            )
+
+        client.patch().uri("/gym/$SECOND_GYM_ACTIVITY_ID")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidGymExercise.type.toString())
+    }
+
+    @Test
+    fun `update gym activity - exercise not found (update)`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val id = 0
+
+        val body =
+            mapOf(
+                "exercises" to listOf(
+                    mapOf(
+                        "id" to id,
+                        "sets" to listOf(
+                            mapOf(
+                                "reps" to 10,
+                                "weight" to 100.0,
+                                "restTime" to 60.0,
+                            ),
+                            mapOf(
+                                "reps" to 20,
+                                "weight" to 100.0,
+                                "restTime" to 60.0,
+                            ),
+                        ),
+                        "order" to 1,
+                    ),
+                ),
+            )
+
+        client.patch().uri("/gym/$SECOND_GYM_ACTIVITY_ID")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isNotFound
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.exerciseNotFound.type.toString())
+    }
+
+    @Test
+    fun `update gym activity - exercise not found (delete)`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val id = 0
+
+        val body =
+            mapOf(
+                "exercises" to listOf(
+                    mapOf(
+                        "id" to id,
+                    ),
+                ),
+            )
+
+        client.patch().uri("/gym/$SECOND_GYM_ACTIVITY_ID")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isNotFound
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.exerciseNotFound.type.toString())
+    }
+
+    @Test
+    fun `update gym activity - invalid exercise order`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "date" to "02-05-2025",
+                "exercises" to listOf(
+                    mapOf(
+                        "gymExerciseId" to 3,
+                        "sets" to listOf(
+                            mapOf(
+                                "reps" to 10,
+                                "weight" to 100.0,
+                                "restTime" to 60.0,
+                            ),
+                            mapOf(
+                                "reps" to 20,
+                                "weight" to 100.0,
+                                "restTime" to 60.0,
+                            ),
+                        ),
+                        "order" to -1,
+                    ),
+                ),
+            )
+
+        client.patch().uri("/gym/$SECOND_GYM_ACTIVITY_ID")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidOrder.type.toString())
+    }
+
+    @Test
+    fun `update gym activity - set not found (update)`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val id = 0
+
+        val body =
+            mapOf(
+                "date" to "02-05-2025",
+                "exercises" to listOf(
+                    mapOf(
+                        "id" to 7,
+                        "sets" to listOf(
+                            mapOf(
+                                "id" to id,
+                                "reps" to 10,
+                                "weight" to 100.0,
+                                "restTime" to 60.0,
+                            ),
+                        ),
+                        "order" to 1,
+                    ),
+                ),
+            )
+
+        client.patch().uri("/gym/$SECOND_GYM_ACTIVITY_ID")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isNotFound
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.setNotFound.type.toString())
+    }
+
+    @Test
+    fun `update gym activity - set not found (delete)`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val id = 0
+
+        val body =
+            mapOf(
+                "exercises" to listOf(
+                    mapOf(
+                        "id" to 7,
+                        "sets" to listOf(
+                            mapOf(
+                                "id" to id,
+                            ),
+                        ),
+                    ),
+                ),
+            )
+
+        client.patch().uri("/gym/$SECOND_GYM_ACTIVITY_ID")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isNotFound
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.setNotFound.type.toString())
+    }
+
+    @Test
+    fun `update gym activity - invalid set`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "date" to "02-05-2025",
+                "exercises" to listOf(
+                    mapOf(
+                        "id" to 7,
+                        "sets" to listOf(
+                            mapOf(
+                                "reps" to -1,
+                                "weight" to 100.0,
+                                "restTime" to 60.0,
+                            ),
+                        ),
+                        "order" to 1,
+                    ),
+                ),
+            )
+
+        client.patch().uri("/gym/$SECOND_GYM_ACTIVITY_ID")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidSet.type.toString())
+    }
+
+    @Test
+    fun `update gym activity - activityNotFound`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val id = 0
+
+        val body =
+            mapOf(
+                "date" to "02-05-2025",
+                "exercises" to listOf(
+                    mapOf(
+                        "gymExerciseId" to 3,
+                        "sets" to listOf(
+                            mapOf(
+                                "reps" to 10,
+                                "weight" to 100.0,
+                                "restTime" to 60.0,
+                            ),
+                            mapOf(
+                                "reps" to 20,
+                                "weight" to 100.0,
+                                "restTime" to 60.0,
+                            ),
+                        ),
+                        "order" to 1,
+                    ),
+                ),
+            )
+
+        client.patch().uri("/gym/$id")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isNotFound
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.gymActivityNotFound.type.toString())
+    }
+
+    @Test
+    fun `update gym activity - not gym activity`(){
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "date" to "02-05-2025",
+                "exercises" to listOf(
+                    mapOf(
+                        "gymExerciseId" to 3,
+                        "sets" to listOf(
+                            mapOf(
+                                "reps" to 10,
+                                "weight" to 100.0,
+                                "restTime" to 60.0,
+                            ),
+                            mapOf(
+                                "reps" to 20,
+                                "weight" to 100.0,
+                                "restTime" to 60.0,
+                            ),
+                        ),
+                        "order" to 1,
+                    ),
+                ),
+            )
+
+        client.patch().uri("/gym/$NOT_GYM_ACTIVITY_ID")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.notGymActivity.type.toString())
+    }
+
+    @Test
+    fun `update gym activity - not athlete's coach`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "date" to "02-05-2025",
+                "exercises" to listOf(
+                    mapOf(
+                        "gymExerciseId" to 3,
+                        "sets" to listOf(
+                            mapOf(
+                                "reps" to 10,
+                                "weight" to 100.0,
+                                "restTime" to 60.0,
+                            ),
+                            mapOf(
+                                "reps" to 20,
+                                "weight" to 100.0,
+                                "restTime" to 60.0,
+                            ),
+                        ),
+                        "order" to 1,
+                    ),
+                ),
+            )
+
+        client.patch().uri("/gym/$FIRST_GYM_ACTIVITY_ID")
+            .header("Authorization", "Bearer $SECOND_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isForbidden
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.notAthletesCoach.type.toString())
+    }
+
+    /**
      * Remove gym activity tests
      */
 
@@ -636,12 +1205,12 @@ class GymActivityControllerTest {
                             mapOf(
                                 "reps" to 10,
                                 "weight" to 100.0,
-                                "rest" to 60.0,
+                                "restTime" to 60.0,
                             ),
                             mapOf(
                                 "reps" to 20,
                                 "weight" to 100.0,
-                                "rest" to 60.0,
+                                "restTime" to 60.0,
                             ),
                         ),
                 "order" to 8,
@@ -671,12 +1240,12 @@ class GymActivityControllerTest {
                             mapOf(
                                 "reps" to 10,
                                 "weight" to 100.0,
-                                "rest" to 60.0,
+                                "restTime" to 60.0,
                             ),
                             mapOf(
                                 "reps" to 20,
                                 "weight" to 100.0,
-                                "rest" to 60.0,
+                                "restTime" to 60.0,
                             ),
                         ),
                 "order" to 8,
@@ -703,12 +1272,12 @@ class GymActivityControllerTest {
                             mapOf(
                                 "reps" to 10,
                                 "weight" to 100.0,
-                                "rest" to 60.0,
+                                "restTime" to 60.0,
                             ),
                             mapOf(
                                 "reps" to 20,
                                 "weight" to 100.0,
-                                "rest" to 60.0,
+                                "restTime" to 60.0,
                             ),
                         ),
                 "order" to 8,
@@ -737,12 +1306,12 @@ class GymActivityControllerTest {
                             mapOf(
                                 "reps" to 10,
                                 "weight" to 100.0,
-                                "rest" to 60.0,
+                                "restTime" to 60.0,
                             ),
                             mapOf(
                                 "reps" to 20,
                                 "weight" to 100.0,
-                                "rest" to 60.0,
+                                "restTime" to 60.0,
                             ),
                         ),
                 "order" to 8,
@@ -773,12 +1342,12 @@ class GymActivityControllerTest {
                             mapOf(
                                 "reps" to 10,
                                 "weight" to 100.0,
-                                "rest" to 60.0,
+                                "restTime" to 60.0,
                             ),
                             mapOf(
                                 "reps" to 20,
                                 "weight" to 100.0,
-                                "rest" to 60.0,
+                                "restTime" to 60.0,
                             ),
                         ),
                 "order" to 8,
@@ -807,12 +1376,12 @@ class GymActivityControllerTest {
                             mapOf(
                                 "reps" to 10,
                                 "weight" to 100.0,
-                                "rest" to 60.0,
+                                "restTime" to 60.0,
                             ),
                             mapOf(
                                 "reps" to 20,
                                 "weight" to 100.0,
-                                "rest" to 60.0,
+                                "restTime" to 60.0,
                             ),
                         ),
                 "order" to 8,
@@ -841,12 +1410,12 @@ class GymActivityControllerTest {
                             mapOf(
                                 "reps" to 10,
                                 "weight" to 100.0,
-                                "rest" to 60.0,
+                                "restTime" to 60.0,
                             ),
                             mapOf(
                                 "reps" to 20,
                                 "weight" to 100.0,
-                                "rest" to 60.0,
+                                "restTime" to 60.0,
                             ),
                         ),
                 "order" to 8,
@@ -875,12 +1444,12 @@ class GymActivityControllerTest {
                             mapOf(
                                 "reps" to 10,
                                 "weight" to 100.0,
-                                "rest" to 60.0,
+                                "restTime" to 60.0,
                             ),
                             mapOf(
                                 "reps" to 20,
                                 "weight" to 100.0,
-                                "rest" to 60.0,
+                                "restTime" to 60.0,
                             ),
                         ),
                 "order" to 8,
@@ -909,7 +1478,7 @@ class GymActivityControllerTest {
                             mapOf(
                                 "reps" to -1,
                                 "weight" to 100.0,
-                                "rest" to 60.0,
+                                "restTime" to 60.0,
                             ),
                         ),
                 "order" to 9,
@@ -938,12 +1507,12 @@ class GymActivityControllerTest {
                             mapOf(
                                 "reps" to 10,
                                 "weight" to 100.0,
-                                "rest" to 60.0,
+                                "restTime" to 60.0,
                             ),
                             mapOf(
                                 "reps" to 20,
                                 "weight" to 100.0,
-                                "rest" to 60.0,
+                                "restTime" to 60.0,
                             ),
                         ),
                 "order" to -1,
@@ -1106,7 +1675,7 @@ class GymActivityControllerTest {
             mapOf(
                 "reps" to 10,
                 "weight" to 100.0,
-                "rest" to 60.0,
+                "restTime" to 60.0,
                 "order" to 4,
             )
 
@@ -1130,7 +1699,7 @@ class GymActivityControllerTest {
             mapOf(
                 "reps" to 10,
                 "weight" to 100.0,
-                "rest" to 60.0,
+                "restTime" to 60.0,
                 "order" to 4,
             )
 
@@ -1151,7 +1720,7 @@ class GymActivityControllerTest {
             mapOf(
                 "reps" to 10,
                 "weight" to 100.0,
-                "rest" to 60.0,
+                "restTime" to 60.0,
                 "order" to 4,
             )
 
@@ -1176,7 +1745,7 @@ class GymActivityControllerTest {
             mapOf(
                 "reps" to 10,
                 "weight" to 100.0,
-                "rest" to 60.0,
+                "restTime" to 60.0,
                 "order" to 4,
             )
 
@@ -1199,7 +1768,7 @@ class GymActivityControllerTest {
             mapOf(
                 "reps" to 10,
                 "weight" to 100.0,
-                "rest" to 60.0,
+                "restTime" to 60.0,
                 "order" to 4,
             )
 
@@ -1224,7 +1793,7 @@ class GymActivityControllerTest {
             mapOf(
                 "reps" to 10,
                 "weight" to 100.0,
-                "rest" to 60.0,
+                "restTime" to 60.0,
                 "order" to 4,
             )
 
@@ -1247,7 +1816,7 @@ class GymActivityControllerTest {
             mapOf(
                 "reps" to 10,
                 "weight" to 100.0,
-                "rest" to 60.0,
+                "restTime" to 60.0,
                 "order" to 4,
             )
 
@@ -1270,7 +1839,7 @@ class GymActivityControllerTest {
             mapOf(
                 "reps" to 10,
                 "weight" to 100.0,
-                "rest" to 60.0,
+                "restTime" to 60.0,
                 "order" to 4,
             )
 
@@ -1295,7 +1864,7 @@ class GymActivityControllerTest {
             mapOf(
                 "reps" to 10,
                 "weight" to 100.0,
-                "rest" to 60.0,
+                "restTime" to 60.0,
                 "order" to 4,
             )
 
@@ -1318,7 +1887,7 @@ class GymActivityControllerTest {
             mapOf(
                 "reps" to 10,
                 "weight" to 100.0,
-                "rest" to 60.0,
+                "restTime" to 60.0,
                 "order" to 4,
             )
 
@@ -1341,7 +1910,7 @@ class GymActivityControllerTest {
             mapOf(
                 "reps" to -1,
                 "weight" to 100.0,
-                "rest" to 60.0,
+                "restTime" to 60.0,
                 "order" to 4,
             )
 
@@ -1364,7 +1933,7 @@ class GymActivityControllerTest {
             mapOf(
                 "reps" to 10,
                 "weight" to 100.0,
-                "rest" to 60.0,
+                "restTime" to 60.0,
                 "order" to -1,
             )
 

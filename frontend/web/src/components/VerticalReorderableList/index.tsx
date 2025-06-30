@@ -26,6 +26,7 @@ export function VerticalReorderableList<T>({
     <Reorder.Group axis="y" values={list} onReorder={onReorder} className={styles.list}>
       {list.map(item => (
         <Reorder.Item
+          className={styles.item}
           key={JSON.stringify(item)}
           value={item}
           whileDrag={{
