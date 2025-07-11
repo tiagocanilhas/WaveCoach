@@ -26,9 +26,9 @@ class WaterActivityServicesTest {
                     FIRST_COACH_ID,
                     FIRST_ATHLETE_ID,
                     DATE,
-                    PSE,
+                    RPE,
                     CONDITION,
-                    HEART_RATE,
+                    TRIMP,
                     DURATION,
                     MANEUVERS_LIST,
                 )
@@ -55,9 +55,9 @@ class WaterActivityServicesTest {
                         FIRST_COACH_ID,
                         FIRST_ATHLETE_ID,
                         date,
-                        PSE,
+                        RPE,
                         CONDITION,
-                        HEART_RATE,
+                        TRIMP,
                         DURATION,
                         MANEUVERS_LIST,
                     )
@@ -78,9 +78,9 @@ class WaterActivityServicesTest {
                     FIRST_COACH_ID,
                     0,
                     DATE,
-                    PSE,
+                    RPE,
                     CONDITION,
-                    HEART_RATE,
+                    TRIMP,
                     DURATION,
                     MANEUVERS_LIST,
                 )
@@ -100,9 +100,9 @@ class WaterActivityServicesTest {
                     SECOND_COACH_ID,
                     FIRST_ATHLETE_ID,
                     DATE,
-                    PSE,
+                    RPE,
                     CONDITION,
-                    HEART_RATE,
+                    TRIMP,
                     DURATION,
                     MANEUVERS_LIST,
                 )
@@ -127,7 +127,7 @@ class WaterActivityServicesTest {
                         DATE,
                         pse,
                         CONDITION,
-                        HEART_RATE,
+                        TRIMP,
                         DURATION,
                         MANEUVERS_LIST,
                     )
@@ -151,7 +151,7 @@ class WaterActivityServicesTest {
                         FIRST_COACH_ID,
                         FIRST_ATHLETE_ID,
                         DATE,
-                        PSE,
+                        RPE,
                         CONDITION,
                         trimp,
                         DURATION,
@@ -176,9 +176,9 @@ class WaterActivityServicesTest {
                     FIRST_COACH_ID,
                     FIRST_ATHLETE_ID,
                     DATE,
-                    PSE,
+                    RPE,
                     CONDITION,
-                    HEART_RATE,
+                    TRIMP,
                     invalidDuration,
                     MANEUVERS_LIST,
                 )
@@ -200,9 +200,9 @@ class WaterActivityServicesTest {
                     FIRST_COACH_ID,
                     FIRST_ATHLETE_ID,
                     DATE,
-                    PSE,
+                    RPE,
                     CONDITION,
-                    HEART_RATE,
+                    TRIMP,
                     DURATION,
                     listOf(
                         WaveInputInfo(
@@ -234,9 +234,9 @@ class WaterActivityServicesTest {
                     FIRST_COACH_ID,
                     FIRST_ATHLETE_ID,
                     DATE_WITHOUT_MICROCYCLE,
-                    PSE,
+                    RPE,
                     CONDITION,
-                    HEART_RATE,
+                    TRIMP,
                     DURATION,
                     MANEUVERS_LIST,
                 )
@@ -295,6 +295,32 @@ class WaterActivityServicesTest {
         ) {
             is Failure -> assertTrue(result.value is GetWaterActivityError.NotWaterActivity)
             is Success -> fail("Unexpected $result")
+        }
+    }
+
+    /**
+     * Update WaterActivity Test
+     */
+
+    @Test
+    fun `update water activity - success`() {
+        val createWaterActivityService = createWaterActivityServices()
+
+        when (
+            val result =
+                createWaterActivityService.updateWaterActivity(
+                    FIRST_COACH_ID,
+                    FIRST_WATER_ACTIVITY_ID,
+                    DATE,
+                    RPE,
+                    "excellent",
+                    TRIMP,
+                    DURATION,
+                    null,
+                )
+        ) {
+            is Failure -> fail("Unexpected $result")
+            is Success -> assertTrue(result.value == FIRST_WATER_ACTIVITY_ID)
         }
     }
 
@@ -978,9 +1004,9 @@ class WaterActivityServicesTest {
 
         private const val NOT_WATER_ACTIVITY_ID = 1
 
-        private const val PSE = 10
+        private const val RPE = 10
         private const val CONDITION = "good"
-        private const val HEART_RATE = 120
+        private const val TRIMP = 120
         private const val DURATION = 60
         private val MANEUVERS_LIST =
             listOf(

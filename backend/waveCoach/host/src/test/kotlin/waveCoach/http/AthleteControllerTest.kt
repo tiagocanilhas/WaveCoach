@@ -1798,7 +1798,7 @@ class AthleteControllerTest {
                 "heats" to
                         listOf(
                             mapOf(
-                                "score" to 2f,
+                                "score" to 2,
                                 "waterActivity" to
                                         mapOf(
                                             "athleteId" to FIRST_ATHLETE_ID,
@@ -1855,7 +1855,7 @@ class AthleteControllerTest {
                 "heats" to
                         listOf(
                             mapOf(
-                                "score" to 2f,
+                                "score" to 2,
                                 "waterActivity" to
                                         mapOf(
                                             "athleteId" to FIRST_ATHLETE_ID,
@@ -1906,7 +1906,7 @@ class AthleteControllerTest {
                 "heats" to
                         listOf(
                             mapOf(
-                                "score" to 2f,
+                                "score" to 2,
                                 "waterActivity" to
                                         mapOf(
                                             "athleteId" to FIRST_ATHLETE_ID,
@@ -1963,7 +1963,7 @@ class AthleteControllerTest {
                 "heats" to
                         listOf(
                             mapOf(
-                                "score" to 2f,
+                                "score" to 2,
                                 "waterActivity" to
                                         mapOf(
                                             "athleteId" to FIRST_ATHLETE_ID,
@@ -2020,7 +2020,7 @@ class AthleteControllerTest {
                 "heats" to
                         listOf(
                             mapOf(
-                                "score" to 2f,
+                                "score" to 2,
                                 "waterActivity" to
                                         mapOf(
                                             "athleteId" to FIRST_ATHLETE_ID,
@@ -2075,7 +2075,7 @@ class AthleteControllerTest {
                 "heats" to
                         listOf(
                             mapOf(
-                                "score" to 2f,
+                                "score" to 2,
                                 "waterActivity" to
                                         mapOf(
                                             "athleteId" to SECOND_ATHLETE_ID,
@@ -2130,7 +2130,7 @@ class AthleteControllerTest {
                 "heats" to
                         listOf(
                             mapOf(
-                                "score" to 2f,
+                                "score" to 2,
                                 "waterActivity" to
                                         mapOf(
                                             "athleteId" to FIRST_ATHLETE_ID,
@@ -2185,7 +2185,7 @@ class AthleteControllerTest {
                 "heats" to
                         listOf(
                             mapOf(
-                                "score" to 2f,
+                                "score" to 2,
                                 "waterActivity" to
                                         mapOf(
                                             "athleteId" to FIRST_ATHLETE_ID,
@@ -2240,7 +2240,7 @@ class AthleteControllerTest {
                 "heats" to
                         listOf(
                             mapOf(
-                                "score" to 2f,
+                                "score" to 2,
                                 "waterActivity" to
                                         mapOf(
                                             "athleteId" to FIRST_ATHLETE_ID,
@@ -2295,7 +2295,7 @@ class AthleteControllerTest {
                 "heats" to
                         listOf(
                             mapOf(
-                                "score" to 2f,
+                                "score" to 2,
                                 "waterActivity" to
                                         mapOf(
                                             "athleteId" to FIRST_ATHLETE_ID,
@@ -2350,7 +2350,7 @@ class AthleteControllerTest {
                 "heats" to
                         listOf(
                             mapOf(
-                                "score" to -2f, // Invalid score
+                                "score" to -2, // Invalid score
                                 "waterActivity" to
                                         mapOf(
                                             "athleteId" to FIRST_ATHLETE_ID,
@@ -2405,7 +2405,7 @@ class AthleteControllerTest {
                 "heats" to
                         listOf(
                             mapOf(
-                                "score" to 2f,
+                                "score" to 2,
                                 "waterActivity" to
                                         mapOf(
                                             "athleteId" to FIRST_ATHLETE_ID,
@@ -2460,7 +2460,7 @@ class AthleteControllerTest {
                 "heats" to
                         listOf(
                             mapOf(
-                                "score" to 2f,
+                                "score" to 2,
                                 "waterActivity" to
                                         mapOf(
                                             "athleteId" to FIRST_ATHLETE_ID,
@@ -2616,6 +2616,67 @@ class AthleteControllerTest {
             .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
             .expectBody()
             .jsonPath("type").isEqualTo(Problem.notAthletesCompetition.type.toString())
+    }
+
+    /**
+     * Update Competition Tests
+     */
+
+    @Test
+    fun `update competition - success`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "date" to DATE,
+                "location" to randomString(),
+                "place" to 2,
+                "heats" to
+                        listOf(
+                            mapOf(
+                                "score" to 90,
+                                "waterActivity" to
+                                        mapOf(
+                                            "athleteId" to FIRST_ATHLETE_ID,
+                                            "rpe" to 6,
+                                            "condition" to "excellent",
+                                            "trimp" to 150,
+                                            "duration" to 75,
+                                            "waves" to
+                                                    listOf(
+                                                        mapOf(
+                                                            "points" to null,
+                                                            "rightSide" to true,
+                                                            "maneuvers" to
+                                                                    listOf(
+                                                                        mapOf(
+                                                                            "waterManeuverId" to 1,
+                                                                            "success" to true,
+                                                                        ),
+                                                                        mapOf(
+                                                                            "waterManeuverId" to 2,
+                                                                            "success" to false,
+                                                                        ),
+                                                                    ),
+                                                        ),
+                                                    ),
+                                        )
+                            ),
+                            mapOf(
+                                "id" to 1,
+                                "score" to null,
+                                "waterActivity" to null
+                            )
+                        )
+            )
+
+        client.patch().uri("/athletes/$FIRST_ATHLETE_ID/competition/$FIRST_COMPETITION_ID")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isNoContent
+
     }
 
     /**

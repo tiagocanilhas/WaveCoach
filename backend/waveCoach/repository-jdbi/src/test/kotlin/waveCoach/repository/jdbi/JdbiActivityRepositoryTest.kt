@@ -1,6 +1,7 @@
 package waveCoach.repository.jdbi
 
 import waveCoach.domain.ActivityType
+import waveCoach.domain.HeatToInsert
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
@@ -45,6 +46,34 @@ class JdbiActivityRepositoryTest {
             val activity = activityRepository.getActivityById(1)
 
             assertTrue(activity != null)
+        }
+
+    @Test
+    fun `get activity by heat id`() =
+        testWithHandleAndRollback { handle ->
+            val activityRepository = JdbiActivityRepository(handle)
+            val waterActivityRepository = JdbiWaterActivityRepository(handle)
+            val competitionRepository = JdbiCompetitionRepository(handle)
+
+            val competition = competitionRepository.storeCompetition(FIRST_ATHLETE_ID, DATE, "Test Location", 1)
+
+            val activity = activityRepository.storeActivity(FIRST_ATHLETE_ID, DATE, MICRO_ID)
+            waterActivityRepository.storeWaterActivity(activity, 1, "good", 5, 10,)
+
+            val heatId = competitionRepository.storeHeats(
+                listOf(
+                    HeatToInsert(
+                        competitionId = competition,
+                        waterActivityId = activity,
+                        score = 10
+                    )
+                )
+            )
+
+            val heatActivity = activityRepository.getActivityByHeatId(heatId[0])
+
+            assertTrue(heatActivity != null)
+            assertTrue { heatActivity.id == activity }
         }
 
     @Test

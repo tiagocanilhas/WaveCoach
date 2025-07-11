@@ -2,6 +2,7 @@ package waveCoach.repository.jdbi
 
 import org.junit.jupiter.api.Assertions.assertTrue
 import waveCoach.domain.HeatToInsert
+import waveCoach.domain.HeatToUpdate
 import kotlin.math.abs
 import kotlin.random.Random
 import kotlin.test.Test
@@ -49,6 +50,38 @@ class JdbiCompetitionRepositoryTest {
         }
 
     @Test
+    fun `update competition`() =
+        testWithHandleAndRollback { handle ->
+            val competitionRepository = JdbiCompetitionRepository(handle)
+
+            val competitionId = competitionRepository.storeCompetition(
+                uid = UID,
+                date = DATE,
+                location = randomString(),
+                place = 1
+            )
+
+            val newLocation = randomString()
+            val newPlace = 2
+
+            competitionRepository.updateCompetition(
+                id = competitionId,
+                date = null,
+                location = newLocation,
+                place = newPlace
+            )
+
+            val updatedCompetition = competitionRepository.getCompetition(competitionId)
+
+            assertTrue(updatedCompetition != null)
+            assertTrue(updatedCompetition!!.id == competitionId)
+            assertTrue(updatedCompetition.uid == UID)
+            assertTrue(updatedCompetition.date == DATE)
+            assertTrue(updatedCompetition.location == newLocation)
+            assertTrue(updatedCompetition.place == newPlace)
+        }
+
+    @Test
     fun `remove competition`() =
         testWithHandleAndRollback { handle ->
             val competitionRepository = JdbiCompetitionRepository(handle)
@@ -93,13 +126,94 @@ class JdbiCompetitionRepositoryTest {
             val heatToInsert = HeatToInsert(
                 competitionId = competitionId,
                 waterActivityId = waterActivityId,
-                score = 2f
+                score = 2
             )
 
             val heatIds = competitionRepository.storeHeats(listOf(heatToInsert))
 
             assertTrue(heatIds.isNotEmpty())
             assertTrue(heatIds[0] > 0)
+        }
+
+    @Test
+    fun `get heats by competition`() =
+        testWithHandleAndRollback { handle ->
+            val competitionRepository = JdbiCompetitionRepository(handle)
+            val activityRepository = JdbiActivityRepository(handle)
+            val waterActivityRepository = JdbiWaterActivityRepository(handle)
+
+            val competitionId = competitionRepository.storeCompetition(
+                uid = UID,
+                date = DATE,
+                location = randomString(),
+                place = 1
+            )
+            val activityId = activityRepository.storeActivity(UID, ANOTHER_DATE, MICRO_ID)
+
+            val waterActivityId = waterActivityRepository.storeWaterActivity(
+                activityId,
+                3,
+                randomString(),
+                4,
+                60,
+            )
+
+            val heatToInsert = HeatToInsert(
+                competitionId = competitionId,
+                waterActivityId = waterActivityId,
+                score = 2
+            )
+
+            competitionRepository.storeHeats(listOf(heatToInsert))
+
+            val heats = competitionRepository.getHeatsByCompetition(competitionId)
+
+            assertTrue(heats.isNotEmpty())
+            assertTrue(heats[0].competition == competitionId)
+        }
+
+    @Test
+    fun `update heats`() =
+        testWithHandleAndRollback { handle ->
+            val competitionRepository = JdbiCompetitionRepository(handle)
+            val activityRepository = JdbiActivityRepository(handle)
+            val waterActivityRepository = JdbiWaterActivityRepository(handle)
+
+            val competitionId = competitionRepository.storeCompetition(
+                uid = UID,
+                date = DATE,
+                location = randomString(),
+                place = 1
+            )
+            val activityId = activityRepository.storeActivity(UID, ANOTHER_DATE, MICRO_ID)
+
+            val waterActivityId = waterActivityRepository.storeWaterActivity(
+                activityId,
+                3,
+                randomString(),
+                4,
+                60,
+            )
+
+            val heatToInsert = HeatToInsert(
+                competitionId = competitionId,
+                waterActivityId = waterActivityId,
+                score = 2
+            )
+
+            val heatIds = competitionRepository.storeHeats(listOf(heatToInsert))
+
+            assertTrue(heatIds.isNotEmpty())
+            assertTrue(heatIds[0] > 0)
+
+            // Update the heat
+            val updatedHeatToInsert = HeatToUpdate(heatIds[0], 3)
+            competitionRepository.updateHeats(listOf(updatedHeatToInsert))
+
+            // Verify the update
+            val heats = competitionRepository.getHeatsByCompetition(competitionId)
+            assertTrue(heats.isNotEmpty())
+            assertTrue(heats[0].score == 3)
         }
 
     companion object {

@@ -145,6 +145,8 @@ class GymActivityController(
                     UpdateGymActivityError.ActivityNotFound -> Problem.response(404, Problem.gymActivityNotFound)
                     UpdateGymActivityError.NotGymActivity -> Problem.response(400, Problem.notGymActivity)
                     UpdateGymActivityError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
+                    UpdateGymActivityError.InvalidSetOrder -> Problem.response(400, Problem.invalidSetOrder)
+                    UpdateGymActivityError.InvalidSets -> Problem.response(400, Problem.invalidSets)
                 }
         }
     }

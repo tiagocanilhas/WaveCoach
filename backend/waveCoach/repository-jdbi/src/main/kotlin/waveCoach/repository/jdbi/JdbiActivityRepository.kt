@@ -222,6 +222,18 @@ class JdbiActivityRepository(
             .mapTo<Activity>()
             .singleOrNull()
 
+    override fun getActivityByHeatId(heatId: Int): Activity? =
+        handle.createQuery(
+            """
+            select a.* from waveCoach.activity a
+            join waveCoach.heat h on a.id = h.water_activity
+            where h.id = :heatId
+            """.trimIndent(),
+        )
+            .bind("heatId", heatId)
+            .mapTo<Activity>()
+            .singleOrNull()
+
     override fun updateActivity(
         id: Int,
         date: Long?,

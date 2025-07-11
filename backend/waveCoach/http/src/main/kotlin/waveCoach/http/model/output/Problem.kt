@@ -387,5 +387,77 @@ class Problem(
                 "Not athlete's competition",
                 URI("$BASE_URI/not-athletes-competition"),
             )
+
+        val invalidWaveOrder =
+            Problem(
+                "Invalid wave order",
+                URI("$BASE_URI/invalid-wave-order"),
+            )
+
+        val invalidManeuverOrder =
+            Problem(
+                "Invalid maneuver order",
+                URI("$BASE_URI/invalid-maneuver-order"),
+            )
+
+        val invalidManeuvers =
+            Problem(
+                "Invalid maneuvers",
+                URI("$BASE_URI/invalid-maneuvers"),
+            )
+
+        val invalidRightSide =
+            Problem(
+                "Invalid right side",
+                URI("$BASE_URI/invalid-right-side"),
+            )
+
+        val invalidSuccess =
+            Problem(
+                "Invalid success",
+                URI("$BASE_URI/invalid-success"),
+            )
+
+        val invalidSetOrder =
+            Problem(
+                "Invalid set order",
+                URI("$BASE_URI/invalid-set-order"),
+            )
+
+        val invalidSets =
+            Problem(
+                "Invalid sets",
+                URI("$BASE_URI/invalid-sets"),
+            )
+
+        val invalidPlace =
+            Problem(
+                "Invalid place",
+                URI("$BASE_URI/invalid-place"),
+            )
+
+        val heatNotFound =
+            Problem(
+                "Heat not found",
+                URI("$BASE_URI/heat-not-found"),
+            )
+
+        val invalidCondition =
+            Problem(
+                "Invalid condition",
+                URI("$BASE_URI/invalid-condition"),
+            )
+
+        val invalidWaterActivity =
+            Problem(
+                "Invalid water activity",
+                URI("$BASE_URI/invalid-water-activity"),
+            )
+
+        val invalidWaves =
+            Problem(
+                "Invalid waves",
+                URI("$BASE_URI/invalid-waves"),
+            )
     }
 }

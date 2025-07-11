@@ -6,5 +6,5 @@ data class WaterActivityInputModel(
     val condition: String,
     val trimp: Int,
     val duration: Int,
-    val waves: List<WaveInputModel>,
+    val waves: List<CompetitionWaveInputModel>,
 )

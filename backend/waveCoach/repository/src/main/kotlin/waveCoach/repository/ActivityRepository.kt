@@ -59,6 +59,8 @@ interface ActivityRepository {
     fun getActivity(uid: Int): Activity?
 
     fun getActivityById(activityId: Int): Activity?
+
+    fun getActivityByHeatId(heatId: Int): Activity?
     
     fun updateActivity(
         id: Int,

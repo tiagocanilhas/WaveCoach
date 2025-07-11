@@ -8,10 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import waveCoach.domain.AuthenticatedCoach
 import waveCoach.domain.AuthenticatedUser
-import waveCoach.http.model.input.AddManeuverInputModel
-import waveCoach.http.model.input.AddWaveInputModel
-import waveCoach.http.model.input.CreateWaterActivityInputModel
-import waveCoach.http.model.input.QuestionnaireCreateInputModel
+import waveCoach.http.model.input.*
+import waveCoach.http.model.input.UpdateWaterActivityInputModel
 import waveCoach.http.model.output.ManeuverOutputModel
 import waveCoach.http.model.output.Problem
 import waveCoach.http.model.output.QuestionnaireOutputModel
@@ -143,6 +141,65 @@ class WaterActivityController(
                     RemoveWaterActivityError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
                     RemoveWaterActivityError.ActivityNotFound -> Problem.response(404, Problem.waterActivityNotFound)
                     RemoveWaterActivityError.NotWaterActivity -> Problem.response(400, Problem.notWaterActivity)
+                }
+        }
+    }
+
+    @PatchMapping(Uris.WaterActivity.UPDATE)
+    fun update(
+        coach: AuthenticatedCoach,
+        @PathVariable activityId: String,
+        @RequestBody input: UpdateWaterActivityInputModel,
+    ): ResponseEntity<*> {
+        val activityIdInt = activityId.toIntOrNull() ?: return Problem.response(400, Problem.invalidWaterActivityId)
+
+        val result =
+            waterActivityService.updateWaterActivity(
+                coach.info.id,
+                activityIdInt,
+                input.date,
+                input.rpe,
+                input.condition,
+                input.trimp,
+                input.duration,
+                input.waves?.map { waveInputModel ->
+                    UpdateWaveInputInfo(
+                        waveInputModel.id,
+                        waveInputModel.points,
+                        waveInputModel.rightSide,
+                        waveInputModel.order,
+                        waveInputModel.maneuvers?.map { maneuverInputModel ->
+                            UpdateManeuverInputInfo(
+                                maneuverInputModel.id,
+                                maneuverInputModel.waterManeuverId,
+                                maneuverInputModel.success,
+                                maneuverInputModel.order,
+                            )
+                        },
+                    )
+                },
+            )
+
+        return when (result) {
+            is Success -> ResponseEntity.status(204).build<Unit>()
+            is Failure ->
+                when (result.value) {
+                    UpdateWaterActivityError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
+                    UpdateWaterActivityError.ActivityNotFound -> Problem.response(404, Problem.waterActivityNotFound)
+                    UpdateWaterActivityError.NotWaterActivity -> Problem.response(400, Problem.notWaterActivity)
+                    UpdateWaterActivityError.InvalidDate -> Problem.response(400, Problem.invalidDate)
+                    UpdateWaterActivityError.InvalidRpe -> Problem.response(400, Problem.invalidRpe)
+                    UpdateWaterActivityError.InvalidTrimp -> Problem.response(400, Problem.invalidTrimp)
+                    UpdateWaterActivityError.InvalidDuration -> Problem.response(400, Problem.invalidDuration)
+                    UpdateWaterActivityError.InvalidWaveOrder -> Problem.response(400, Problem.invalidWaveOrder)
+                    UpdateWaterActivityError.InvalidManeuverOrder -> Problem.response(400, Problem.invalidManeuverOrder)
+                    UpdateWaterActivityError.InvalidWaterManeuver ->
+                        Problem.response(400, Problem.invalidWaterManeuver)
+                    UpdateWaterActivityError.InvalidManeuvers -> Problem.response(400, Problem.invalidManeuvers)
+                    UpdateWaterActivityError.InvalidRightSide -> Problem.response(400, Problem.invalidRightSide)
+                    UpdateWaterActivityError.InvalidSuccess -> Problem.response(400, Problem.invalidSuccess)
+                    UpdateWaterActivityError.ManeuverNotFound -> Problem.response(404, Problem.maneuverNotFound)
+                    UpdateWaterActivityError.WaveNotFound -> Problem.response(404, Problem.waveNotFound)
                 }
         }
     }

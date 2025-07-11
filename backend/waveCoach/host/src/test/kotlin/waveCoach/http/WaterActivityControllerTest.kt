@@ -498,6 +498,578 @@ class WaterActivityControllerTest {
     }
 
     /**
+     * Update Water Activity Test
+     */
+
+    @Test
+    fun `update water activity - success`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "date" to DATE,
+                "rpe" to 6,
+                "condition" to "excellent",
+                "trimp" to 130,
+                "duration" to 60,
+                "waves" to
+                        listOf(
+                            mapOf(
+                                "points" to 10.0,
+                                "rightSide" to true,
+                                "order" to 2,
+                                "maneuvers" to
+                                        listOf(
+                                            mapOf(
+                                                "waterManeuverId" to 1,
+                                                "success" to true,
+                                            ),
+                                            mapOf(
+                                                "waterManeuverId" to 2,
+                                                "success" to false,
+                                            ),
+                                        ),
+                            ),
+                            mapOf(
+                                "id" to 2,
+                                "points" to 12.0,
+                                "rightSide" to false,
+                                "order" to 3,
+                                "maneuvers" to
+                                        listOf(
+                                            mapOf(
+                                                "id" to 3,
+                                                "waterManeuverId" to 2,
+                                                "success" to false,
+                                                "order" to 2,
+                                            ),
+                                        ),
+                            )
+                        ),
+            )
+
+        client.patch().uri("/water/$FIRST_ACTIVITY_ID")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isNoContent
+    }
+
+    @Test
+    fun `update water activity - unauthorized`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "date" to DATE,
+                "rpe" to 6,
+                "condition" to "excellent",
+                "trimp" to 130,
+                "duration" to 60,
+            )
+
+        client.patch().uri("/water/$FIRST_ACTIVITY_ID")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isUnauthorized
+    }
+
+    @Test
+    fun `update water activity - user is not a coach`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "date" to DATE,
+                "rpe" to 6,
+                "condition" to "excellent",
+                "trimp" to 130,
+                "duration" to 60,
+            )
+
+        client.patch().uri("/water/$FIRST_ACTIVITY_ID")
+            .header("Authorization", "Bearer $FIRST_ATHLETE_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isForbidden
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.userIsNotACoach.type.toString())
+    }
+
+    @Test
+    fun `update water activity - invalid water activity id`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val id = "invalid"
+
+        val body =
+            mapOf(
+                "date" to DATE,
+                "rpe" to 6,
+                "condition" to "excellent",
+                "trimp" to 130,
+                "duration" to 60,
+            )
+
+        client.patch().uri("/water/$id")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidWaterActivityId.type.toString())
+    }
+
+    @Test
+    fun `update water activity - not athletes coach`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "date" to DATE,
+                "rpe" to 6,
+                "condition" to "excellent",
+                "trimp" to 130,
+                "duration" to 60,
+            )
+
+        client.patch().uri("/water/$FIRST_ACTIVITY_ID")
+            .header("Authorization", "Bearer $SECOND_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isForbidden
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.notAthletesCoach.type.toString())
+    }
+
+    @Test
+    fun `update water activity - not found`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "date" to DATE,
+                "rpe" to 6,
+                "condition" to "excellent",
+                "trimp" to 130,
+                "duration" to 60,
+            )
+
+        client.patch().uri("/water/0")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isNotFound
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.waterActivityNotFound.type.toString())
+    }
+
+    @Test
+    fun `update water activity - not water activity`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "date" to DATE,
+                "rpe" to 6,
+                "condition" to "excellent",
+                "trimp" to 130,
+                "duration" to 60,
+            )
+
+        client.patch().uri("/water/$NOT_WATER_ACTIVITY_ID")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.notWaterActivity.type.toString())
+    }
+
+    @Test
+    fun `update water activity - invalid date`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "date" to "invalid-date",
+                "rpe" to 6,
+                "condition" to "excellent",
+                "trimp" to 130,
+                "duration" to 60,
+            )
+
+        client.patch().uri("/water/$FIRST_ACTIVITY_ID")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidDate.type.toString())
+    }
+
+    @Test
+    fun `update water activity - invalid rpe`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "date" to DATE,
+                "rpe" to -1,
+                "condition" to "excellent",
+                "trimp" to 130,
+                "duration" to 60,
+            )
+
+        client.patch().uri("/water/$FIRST_ACTIVITY_ID")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidRpe.type.toString())
+    }
+
+    @Test
+    fun `update water activity - invalid trimp`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "date" to DATE,
+                "rpe" to 6,
+                "condition" to "excellent",
+                "trimp" to -1,
+                "duration" to 60,
+            )
+
+        client.patch().uri("/water/$FIRST_ACTIVITY_ID")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidTrimp.type.toString())
+    }
+
+    @Test
+    fun `update water activity - invalid duration`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "date" to DATE,
+                "rpe" to 6,
+                "condition" to "excellent",
+                "trimp" to 130,
+                "duration" to -1,
+            )
+
+        client.patch().uri("/water/$FIRST_ACTIVITY_ID")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidDuration.type.toString())
+    }
+
+    @Test
+    fun `update water activity - invalid wave order`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "date" to DATE,
+                "rpe" to 6,
+                "condition" to "excellent",
+                "trimp" to 130,
+                "duration" to 60,
+                "waves" to
+                        listOf(
+                            mapOf(
+                                "points" to 10.0,
+                                "rightSide" to true,
+                                "order" to -1,
+                                "maneuvers" to
+                                        listOf(
+                                            mapOf(
+                                                "waterManeuverId" to 1,
+                                                "rightSide" to true,
+                                                "success" to true,
+                                            ),
+                                        ),
+                            ),
+                        ),
+            )
+
+        client.patch().uri("/water/$FIRST_ACTIVITY_ID")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidWaveOrder.type.toString())
+    }
+
+    @Test
+    fun `update water activity - invalid water maneuver`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "date" to DATE,
+                "rpe" to 6,
+                "condition" to "excellent",
+                "trimp" to 130,
+                "duration" to 60,
+                "waves" to
+                        listOf(
+                            mapOf(
+                                "points" to 10.0,
+                                "rightSide" to true,
+                                "order" to 3,
+                                "maneuvers" to
+                                        listOf(
+                                            mapOf(
+                                                "waterManeuverId" to 0, // Invalid water maneuver ID
+                                                "rightSide" to true,
+                                                "success" to true,
+                                            ),
+                                        ),
+                            ),
+                        ),
+            )
+
+        client.patch().uri("/water/$FIRST_ACTIVITY_ID")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidWaterManeuver.type.toString())
+    }
+
+    @Test
+    fun `update water activity - invalid maneuvers`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "date" to DATE,
+                "rpe" to 6,
+                "condition" to "excellent",
+                "trimp" to 130,
+                "duration" to 60,
+                "waves" to
+                        listOf(
+                            mapOf(
+                                "points" to 10.0,
+                                "rightSide" to true,
+                                "order" to 3,
+                            ),
+                        ),
+            )
+
+        client.patch().uri("/water/$FIRST_ACTIVITY_ID")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidManeuvers.type.toString())
+    }
+
+    @Test
+    fun `update water activity - invalid right side`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "date" to DATE,
+                "rpe" to 6,
+                "condition" to "excellent",
+                "trimp" to 130,
+                "duration" to 60,
+                "waves" to
+                        listOf(
+                            mapOf(
+                                "points" to 10.0,
+                                "rightSide" to null,
+                                "order" to 4,
+                                "maneuvers" to
+                                        listOf(
+                                            mapOf(
+                                                "waterManeuverId" to 1,
+                                                "rightSide" to true,
+                                                "success" to true,
+                                            ),
+                                        ),
+                            ),
+                        ),
+            )
+
+        client.patch().uri("/water/$FIRST_ACTIVITY_ID")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidRightSide.type.toString())
+    }
+
+    @Test
+    fun `update water activity - invalid success`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "date" to DATE,
+                "rpe" to 6,
+                "condition" to "excellent",
+                "trimp" to 130,
+                "duration" to 60,
+                "waves" to
+                        listOf(
+                            mapOf(
+                                "points" to 10.0,
+                                "rightSide" to true,
+                                "order" to 5,
+                                "maneuvers" to
+                                        listOf(
+                                            mapOf(
+                                                "waterManeuverId" to 1,
+                                                "rightSide" to true,
+                                                "success" to null,
+                                            ),
+                                        ),
+                            ),
+                        ),
+            )
+
+        client.patch().uri("/water/$FIRST_ACTIVITY_ID")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidSuccess.type.toString())
+    }
+
+    @Test
+    fun `update water activity - maneuver not found`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "date" to DATE,
+                "rpe" to 6,
+                "condition" to "excellent",
+                "trimp" to 130,
+                "duration" to 60,
+                "waves" to
+                        listOf(
+                            mapOf(
+                                "id" to 2,
+                                "points" to 10.0,
+                                "rightSide" to true,
+                                "order" to 4,
+                                "maneuvers" to
+                                        listOf(
+                                            mapOf(
+                                                "id" to 0,
+                                                "waterManeuverId" to 1,
+                                                "rightSide" to true,
+                                                "success" to true,
+                                            ),
+                                        ),
+                            ),
+                        ),
+            )
+
+        client.patch().uri("/water/$FIRST_ACTIVITY_ID")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isNotFound
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.maneuverNotFound.type.toString())
+    }
+
+    @Test
+    fun `update water activity - wave not found`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "date" to DATE,
+                "rpe" to 6,
+                "condition" to "excellent",
+                "trimp" to 130,
+                "duration" to 60,
+                "waves" to
+                        listOf(
+                            mapOf(
+                                "id" to 0,
+                                "points" to 10.0,
+                                "rightSide" to true,
+                                "order" to 4,
+                                "maneuvers" to
+                                        listOf(
+                                            mapOf(
+                                                "waterManeuverId" to 1,
+                                                "rightSide" to true,
+                                                "success" to true,
+                                            ),
+                                        ),
+                            ),
+                        ),
+            )
+
+        client.patch().uri("/water/$FIRST_ACTIVITY_ID")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isNotFound
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.waveNotFound.type.toString())
+    }
+
+    /**
      * Remove Water Activity Test
      */
 

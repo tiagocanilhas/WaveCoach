@@ -140,6 +140,22 @@ class JdbiCompetitionRepository(
         )
     }
 
+    override fun updateCompetition(id: Int, date: Long?, location: String?, place: Int?) {
+        handle.createUpdate(
+            """
+            update waveCoach.competition set
+            date = coalesce(:date, date),
+            location = coalesce(:location, location),
+            place = coalesce(:place, place)
+            where id = :id
+            """.trimIndent(),
+        )
+            .bind("id", id)
+            .bind("date", date)
+            .bind("location", location)
+            .bind("place", place)
+            .execute()
+    }
 
     override fun competitionExists(
         id: Int
@@ -185,4 +201,49 @@ class JdbiCompetitionRepository(
                 .mapTo<Int>()
                 .list()
         }
+
+    override fun getHeatsByCompetition(
+        competitionId: Int
+    ): List<Heat> {
+        return handle.createQuery(
+            """
+            select id, competition, water_activity, score
+            from waveCoach.heat
+            where competition = :competitionId
+            """.trimIndent(),
+        )
+            .bind("competitionId", competitionId)
+            .mapTo<Heat>()
+            .list()
+    }
+
+    override fun updateHeats(heats: List<HeatToUpdate>) {
+        handle.prepareBatch(
+            """
+            update waveCoach.heat
+            set score = coalesce(:score, score)
+            where id = :id
+            """.trimIndent(),
+        ).use { batch ->
+            heats.forEach { heat ->
+                batch.bind("id", heat.id)
+                    .bind("score", heat.score)
+                    .add()
+            }
+            batch.execute()
+        }
+    }
+
+    override fun removeHeatsById(heatIds: List<Int>) {
+        handle.prepareBatch(
+            """
+            delete from waveCoach.heat where id = :heatId
+            """.trimIndent(),
+        ).use { batch ->
+            heatIds.forEach { heatId ->
+                batch.bind("heatId", heatId).add()
+            }
+            batch.execute()
+        }
+    }
 }

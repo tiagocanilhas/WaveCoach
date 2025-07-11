@@ -2,15 +2,7 @@ package waveCoach.repository.jdbi
 
 import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.kotlin.mapTo
-import waveCoach.domain.Maneuver
-import waveCoach.domain.ManeuverToInsert
-import waveCoach.domain.MesocycleWater
-import waveCoach.domain.MicrocycleWater
-import waveCoach.domain.Questionnaire
-import waveCoach.domain.WaterActivityWithWaves
-import waveCoach.domain.WaveToInsert
-import waveCoach.domain.WaveWithManeuvers
-import waveCoach.domain.Wave
+import waveCoach.domain.*
 import waveCoach.repository.WaterActivityRepository
 
 class JdbiWaterActivityRepository(
@@ -43,6 +35,25 @@ class JdbiWaterActivityRepository(
             .bind("activityId", activityId)
             .mapTo<Int>()
             .one() > 0
+
+    override fun updateWaterActivity(activityId: Int, rpe: Int?, condition: String?, trimp: Int?, duration: Int?) {
+        handle.createUpdate(
+            """
+            update waveCoach.water set
+            rpe = coalesce(:rpe, rpe),
+            condition = coalesce(:condition, condition),
+            trimp = coalesce(:trimp, trimp),
+            duration = coalesce(:duration, duration)
+            where activity = :activityId
+            """.trimIndent()
+        )
+            .bind("activityId", activityId)
+            .bind("rpe", rpe)
+            .bind("condition", condition)
+            .bind("trimp", trimp)
+            .bind("duration", duration)
+            .execute()
+    }
 
 
     override fun removeWaterActivity(activityId: Int) {
@@ -91,7 +102,8 @@ class JdbiWaterActivityRepository(
             """.trimIndent(),
         ).use { batch ->
             waves.forEach { wave ->
-                batch.bind("activityId", wave.activityId)
+                batch
+                    .bind("activityId", wave.activityId)
                     .bind("points", wave.points)
                     .bind("rightSide", wave.rightSide)
                     .bind("order", wave.order)
@@ -102,11 +114,39 @@ class JdbiWaterActivityRepository(
                 .list()
         }
 
+    override fun updateWaves(waves: List<WaveToUpdate>) {
+        handle.prepareBatch(
+            """
+            update waveCoach.wave 
+            set points = coalesce(:points, points),
+            right_side = coalesce(:rightSide, right_side),
+            wave_order = coalesce(:order, wave_order)
+            where id = :id
+            """.trimIndent(),
+        ).use { batch ->
+            waves.forEach { wave ->
+                batch
+                    .bind("id", wave.id)
+                    .bind("points", wave.points)
+                    .bind("rightSide", wave.rightSide)
+                    .bind("order", wave.order)
+                    .add()
+            }
+            batch.execute()
+        }
+    }
+
     override fun getWaveById(waveId: Int): Wave? =
         handle.createQuery("select * from waveCoach.wave where id = :waveId")
             .bind("waveId", waveId)
             .mapTo<Wave>()
             .singleOrNull()
+
+    override fun getWavesByActivity(activityId: Int): List<Wave> =
+        handle.createQuery("select * from waveCoach.wave where activity = :activityId")
+            .bind("activityId", activityId)
+            .mapTo<Wave>()
+            .list()
 
     override fun removeWavesByActivity(activityId: Int) {
         handle.createUpdate("delete from waveCoach.wave where activity = :activityId")
@@ -129,6 +169,16 @@ class JdbiWaterActivityRepository(
         handle.createUpdate("delete from waveCoach.wave where id = :waveId")
             .bind("waveId", waveId)
             .execute()
+    }
+
+    override fun removeWavesById(waveIds: List<Int>) {
+        handle.prepareBatch("delete from waveCoach.wave where id = :waveId")
+            .use { batch ->
+                waveIds.forEach { waveId ->
+                    batch.bind("waveId", waveId).add()
+                }
+                batch.execute()
+            }
     }
 
     override fun verifyWaveOrder(activityId: Int, order: Int): Boolean =
@@ -197,6 +247,43 @@ class JdbiWaterActivityRepository(
             .mapTo<Maneuver>()
             .singleOrNull()
 
+    override fun getManeuversByWave(waveId: Int): List<Maneuver> =
+        handle.createQuery(
+            """
+            select m.id, m.wave, wm.id as water_maneuver_id, wm.name as water_maneuver_name, 
+                   wm.url, m.success, m.maneuver_order
+            from waveCoach.maneuver m
+            join waveCoach.water_maneuver wm on m.maneuver = wm.id
+            where m.wave = :waveId
+            order by m.maneuver_order
+        """.trimIndent(),
+        )
+            .bind("waveId", waveId)
+            .mapTo<Maneuver>()
+            .list()
+
+    override fun updateManeuvers(maneuvers: List<ManeuverToUpdate>) {
+        handle.prepareBatch(
+            """
+            update waveCoach.maneuver set 
+            maneuver = coalesce(:waterManeuverId, maneuver),
+            success = coalesce(:success, success),
+            maneuver_order = coalesce(:order, maneuver_order)
+            where id = :id
+            """.trimIndent(),
+        ).use { batch ->
+            maneuvers.forEach { maneuver ->
+                batch
+                    .bind("id", maneuver.id)
+                    .bind("waterManeuverId", maneuver.waterManeuverId)
+                    .bind("success", maneuver.success)
+                    .bind("order", maneuver.order)
+                    .add()
+            }
+            batch.execute()
+        }
+    }
+
     override fun removeManeuversByActivity(activityId: Int) {
         handle.createUpdate(
             """
@@ -225,6 +312,16 @@ class JdbiWaterActivityRepository(
         handle.createUpdate("delete from waveCoach.maneuver where id = :maneuverId")
             .bind("maneuverId", maneuverId)
             .execute()
+    }
+
+    override fun removeManeuversById(maneuverIds: List<Int>) {
+        handle.prepareBatch("delete from waveCoach.maneuver where id = :maneuverId")
+            .use { batch ->
+                maneuverIds.forEach { maneuverId ->
+                    batch.bind("maneuverId", maneuverId).add()
+                }
+                batch.execute()
+            }
     }
 
     override fun verifyManeuverOrder(waveId: Int, order: Int): Boolean =
