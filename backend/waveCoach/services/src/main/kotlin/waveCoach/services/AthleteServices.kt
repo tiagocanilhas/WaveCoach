@@ -238,6 +238,13 @@ sealed class GetCompetitionError {
 }
 typealias GetCompetitionResult = Either<GetCompetitionError, CompetitionWithHeats>
 
+sealed class GetCompetitionsError {
+    data object AthleteNotFound : GetCompetitionsError()
+
+    data object NotAthletesCoach : GetCompetitionsError()
+}
+typealias GetCompetitionsResult = Either<GetCompetitionsError, List<CompetitionWithHeats>>
+
 sealed class UpdateCompetitionError {
     data object CompetitionNotFound : UpdateCompetitionError()
 
@@ -873,6 +880,24 @@ class AthleteServices(
             if (competition.uid != athleteId) return@run failure(GetCompetitionError.NotAthletesCompetition)
 
             success(competition)
+        }
+    }
+
+    fun getCompetitions(
+        uid: Int,
+        athleteId: Int,
+    ): GetCompetitionsResult {
+        return transactionManager.run {
+            val athleteRepository = it.athleteRepository
+            val competitionRepository = it.competitionRepository
+
+            val athlete = athleteRepository.getAthlete(athleteId)
+                ?: return@run failure(GetCompetitionsError.AthleteNotFound)
+
+            if (uid != athleteId && athlete.coach != uid) return@run failure(GetCompetitionsError.NotAthletesCoach)
+
+            val competitions = competitionRepository.getCompetitionsByAthlete(athleteId)
+            success(competitions)
         }
     }
 

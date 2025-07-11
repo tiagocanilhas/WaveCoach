@@ -2626,6 +2626,76 @@ class AthleteControllerTest {
     }
 
     /**
+     * Get Competitions Tests
+     */
+
+    @Test
+    fun `get competitions - success`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.get().uri("/athletes/$FIRST_ATHLETE_ID/competition")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody()
+            .jsonPath("length()").value<Int> { assertTrue(it > 0) }
+            .jsonPath("competitions[0].location").isEqualTo(COMPETITION_LOCATION)
+            .jsonPath("competitions[0].name").isEqualTo(FIRST_COMPETITION_NAME)
+    }
+
+    @Test
+    fun `get competitions - unauthorized`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.get().uri("/athletes/$FIRST_ATHLETE_ID/competition")
+            .exchange()
+            .expectStatus().isUnauthorized
+    }
+
+    @Test
+    fun `get competitions - invalid athlete id`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val id = "invalid"
+
+        client.get().uri("/athletes/$id/competition")
+            .header("Authorization", "Bearer $FIRST_ATHLETE_TOKEN")
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidAthleteId.type.toString())
+    }
+
+    @Test
+    fun `get competitions - athlete not found`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val id = 0
+
+        client.get().uri("/athletes/$id/competition")
+            .header("Authorization", "Bearer $FIRST_ATHLETE_TOKEN")
+            .exchange()
+            .expectStatus().isNotFound
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.athleteNotFound.type.toString())
+    }
+
+    @Test
+    fun `get competitions - not athlete's coach`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        client.get().uri("/athletes/$SECOND_ATHLETE_ID/competition")
+            .header("Authorization", "Bearer $FIRST_ATHLETE_TOKEN")
+            .exchange()
+            .expectStatus().isForbidden
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.notAthletesCoach.type.toString())
+    }
+
+    /**
      * Update Competition Tests
      */
 
@@ -3949,6 +4019,7 @@ class AthleteControllerTest {
         private const val FIRST_COMPETITION_ID = 1
         private const val FIRST_COMPETITION_DATE = 1746140400000 // "02-05-2025"
         private const val FIRST_COMPETITION_DATE_STRING = "02-05-2025"
+        private const val FIRST_COMPETITION_NAME = "Spring Surf Contest"
         private const val SECOND_COMPETITION_ID = 2
         private const val SECOND_COMPETITION_DATE = 1746144000000
         private const val COMPETITION_LOCATION = "Ocean Beach"

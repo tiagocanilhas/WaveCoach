@@ -10,6 +10,8 @@ interface CompetitionRepository {
 
     fun getCompetition(id: Int): CompetitionWithHeats?
 
+    fun getCompetitionsByAthlete(athleteId: Int): List<CompetitionWithHeats>
+
     fun updateCompetition(id: Int, date: Long?, location: String?, place: Int?, name: String?)
 
     fun competitionExists(id: Int): Boolean

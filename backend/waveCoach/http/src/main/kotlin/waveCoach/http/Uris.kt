@@ -108,6 +108,7 @@ object Uris {
 
         const val CREATE_COMPETITION = "$ATHLETES/{aid}/competition"
         const val GET_COMPETITION_BY_ID = "$ATHLETES/{aid}/competition/{id}"
+        const val GET_COMPETITIONS = "$ATHLETES/{aid}/competition"
         const val UPDATE_COMPETITION = "$ATHLETES/{aid}/competition/{id}"
         const val REMOVE_COMPETITION = "$ATHLETES/{aid}/competition/{id}"
 

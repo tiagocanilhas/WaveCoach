@@ -737,7 +737,72 @@ class AthleteController(
         }
     }
 
+    @GetMapping(Uris.Athletes.GET_COMPETITIONS)
+    fun getCompetitions(
+        user: AuthenticatedUser,
+        @PathVariable aid: String,
+    ): ResponseEntity<*> {
+        val uid = aid.toIntOrNull() ?: return Problem.response(400, Problem.invalidAthleteId)
+        val result = athleteServices.getCompetitions(user.info.id, uid)
 
+        return when (result) {
+            is Success ->
+                ResponseEntity
+                    .status(200)
+                    .body(
+                        CompetitionListOutputModel(
+                            result.value.map { competition ->
+                                CompetitionOutputModel(
+                                    competition.id,
+                                    competition.uid,
+                                    competition.date,
+                                    competition.location,
+                                    competition.place,
+                                    competition.name,
+                                    competition.heats.map { heat ->
+                                        HeatOutputModel(
+                                            heat.id,
+                                            heat.score,
+                                            WaterActivityOutputModel(
+                                                heat.waterActivity.id,
+                                                heat.waterActivity.athleteId,
+                                                heat.waterActivity.microcycleId,
+                                                heat.waterActivity.date,
+                                                heat.waterActivity.rpe,
+                                                heat.waterActivity.condition,
+                                                heat.waterActivity.trimp,
+                                                heat.waterActivity.duration,
+                                                heat.waterActivity.waves.map { wave ->
+                                                    WaveOutputModel(
+                                                        wave.id,
+                                                        wave.points,
+                                                        wave.rightSide,
+                                                        wave.maneuvers.map { maneuver ->
+                                                            ManeuverOutputModel(
+                                                                maneuver.id,
+                                                                maneuver.waterManeuverId,
+                                                                maneuver.waterManeuverName,
+                                                                maneuver.url,
+                                                                maneuver.success,
+                                                            )
+                                                        },
+                                                    )
+                                                },
+                                            ),
+                                        )
+                                    },
+                                )
+                            },
+                        ),
+                    )
+
+            is Failure ->
+                when (result.value) {
+                    GetCompetitionsError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
+                    GetCompetitionsError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
+                }
+        }
+    }
 
     @PatchMapping(Uris.Athletes.UPDATE_COMPETITION)
     fun updateCompetition(

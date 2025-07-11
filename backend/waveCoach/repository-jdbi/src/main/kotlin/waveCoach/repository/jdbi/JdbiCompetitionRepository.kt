@@ -144,6 +144,93 @@ class JdbiCompetitionRepository(
         )
     }
 
+    override fun getCompetitionsByAthlete(
+        athleteId: Int
+    ): List<CompetitionWithHeats> {
+        val query =
+            """
+            select c.id, c.uid, c.date as competition_date, c.location, c.place, c.name, h.id as heat_id, h.score, 
+            wa.activity as water_activity_id, a.uid as athlete_id, a.microcycle, wa.rpe, wa.condition, wa.trimp, 
+            wa.duration, w.id as wave_id, w.points, w.right_side, w.wave_order, m.id as maneuver_id, 
+            wm.id as water_maneuver_id, wm.name as water_maneuver_name, wm.url, m.success, m.maneuver_order
+            from waveCoach.competition c
+            left join waveCoach.heat h on c.id = h.competition
+            left join waveCoach.water wa on h.water_activity = wa.activity
+            left join waveCoach.activity a on wa.activity = a.id
+            left join waveCoach.wave w on wa.activity = w.activity
+            left join waveCoach.maneuver m on w.id = m.wave
+            left join waveCoach.water_maneuver wm on m.maneuver = wm.id
+            where c.uid = :athleteId
+            order by c.date asc
+            """.trimIndent()
+
+        val rows = handle.createQuery(query)
+            .bind("athleteId", athleteId)
+            .mapTo<Row>()
+            .list()
+
+        return rows.groupBy { it.id }.map { (_, competitionRows) ->
+            val competitionInfo = competitionRows.first()
+            CompetitionWithHeats(
+                id = competitionInfo.id,
+                uid = competitionInfo.uid,
+                date = competitionInfo.competitionDate,
+                location = competitionInfo.location,
+                place = competitionInfo.place,
+                name = competitionInfo.name,
+                heats =
+                    competitionRows.groupBy { it.heatId }.filterKeys { it != null }.map { (_, heatRows) ->
+                        val heatInfo = heatRows.first()
+                        HeatWithWaterActivity(
+                            id = heatInfo.heatId!!,
+                            score = heatInfo.score ?: 0f,
+                            waterActivity =
+                                WaterActivityWithWaves(
+                                    id = heatInfo.waterActivityId!!,
+                                    athleteId = heatInfo.athleteId ?: 0,
+                                    date = heatInfo.date ?: 0L,
+                                    microcycleId = heatInfo.microcycle ?: 0,
+                                    rpe = heatInfo.rpe ?: 0,
+                                    condition = heatInfo.condition ?: "",
+                                    trimp = heatInfo.trimp ?: 0,
+                                    duration = heatInfo.duration ?: 0,
+                                    waves =
+                                        heatRows.groupBy { it.waveId }.filterKeys { it != null }.map { (_, waveRows) ->
+                                            val waveInfo = waveRows.first()
+                                            WaveWithManeuvers(
+                                                id = waveInfo.waveId!!,
+                                                points = waveInfo.points ?: 0f,
+                                                rightSide = waveInfo.rightSide ?: false,
+                                                order = waveInfo.waveOrder ?: 0,
+                                                maneuvers =
+                                                    waveRows.mapNotNull { maneuverRow ->
+                                                        if (maneuverRow.maneuverId != null) {
+                                                            Maneuver(
+                                                                id = maneuverRow.maneuverId!!,
+                                                                wave = waveInfo.waveId!!,
+                                                                waterManeuverId =
+                                                                    maneuverRow.waterManeuverId ?: 0,
+                                                                waterManeuverName =
+                                                                    maneuverRow.waterManeuverName ?: "",
+                                                                url = maneuverRow.url ?: "",
+                                                                success = maneuverRow.success ?: false,
+                                                                maneuverOrder =
+                                                                    maneuverRow.maneuverOrder ?: 0
+                                                            )
+                                                        } else {
+                                                            null
+                                                        }
+                                                    }.ifEmpty { emptyList() },
+                                            )
+                                        }.ifEmpty { emptyList() },
+                                )
+                        )
+                    }.ifEmpty { emptyList() },
+            )
+        }.ifEmpty { emptyList() }
+    }
+
+
     override fun updateCompetition(id: Int, date: Long?, location: String?, place: Int?, name: String?) {
         handle.createUpdate(
             """

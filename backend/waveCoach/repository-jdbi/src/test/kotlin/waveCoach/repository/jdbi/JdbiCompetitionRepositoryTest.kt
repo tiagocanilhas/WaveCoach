@@ -52,6 +52,33 @@ class JdbiCompetitionRepositoryTest {
         }
 
     @Test
+    fun `get competitions by athlete`() =
+        testWithHandleAndRollback { handle ->
+            val competitionRepository = JdbiCompetitionRepository(handle)
+
+            val competitionId1 = competitionRepository.storeCompetition(
+                uid = UID,
+                date = DATE,
+                location = randomString(),
+                place = 1,
+                name = randomString()
+            )
+            val competitionId2 = competitionRepository.storeCompetition(
+                uid = UID,
+                date = DATE + 1000,
+                location = randomString(),
+                place = 2,
+                name = randomString()
+            )
+
+            val competitions = competitionRepository.getCompetitionsByAthlete(UID)
+
+            assertTrue(competitions.isNotEmpty())
+            assertTrue(competitions.any { it.id == competitionId1 && it.date == DATE })
+            assertTrue(competitions.any { it.id == competitionId2 && it.date == DATE + 1000 })
+        }
+
+    @Test
     fun `update competition`() =
         testWithHandleAndRollback { handle ->
             val competitionRepository = JdbiCompetitionRepository(handle)
