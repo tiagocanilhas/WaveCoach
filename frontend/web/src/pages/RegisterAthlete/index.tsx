@@ -19,7 +19,7 @@ export function RegisterAthlete() {
   useEffect(() => {
     async function getUsername() {
       try {
-        const res = await getAthleteByCode(code)
+        const { status, res } = await getAthleteByCode(code)
         setUsername(res.username)
       } catch (e) {
         navigate('/register/athlete-code')

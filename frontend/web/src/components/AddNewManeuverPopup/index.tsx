@@ -92,7 +92,7 @@ export function AddNewManeuver({ onClose, onSuccess }: AddNewManeuverProps) {
       await createWaterManeuver(name, file)
       onSuccess()
     } catch (error) {
-      dispatch({ type: 'error', error: handleError(error) })
+      dispatch({ type: 'error', error: handleError(error.res) })
     }
   }
 

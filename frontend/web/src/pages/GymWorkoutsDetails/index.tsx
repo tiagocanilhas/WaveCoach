@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useEffect, useState } from 'react'
+import { useEffect, useReducer, useState } from 'react'
 import { Navigate, useParams } from 'react-router-dom'
 
 import { CircularProgress } from '@mui/material'
@@ -17,7 +17,7 @@ import styles from './styles.module.css'
 
 type State = { tag: 'loading' } | { tag: 'loaded'; workout: GymWorkout; isEditing: boolean } | { tag: 'error' }
 
-type Action = { type: 'setWorkout'; workout: GymWorkout } | { type: 'toggleEditing' } | { type: 'setError' }
+type Action = { type: 'setWorkout'; workout: GymWorkout } | { type: 'toggleEditing' } | { type: 'setError'; status: number }
 
 function reducer(state: State, action: Action): State {
   switch (state.tag) {
@@ -45,15 +45,15 @@ function reducer(state: State, action: Action): State {
 }
 
 export function GymWorkoutsDetails() {
-  const [state, dispatch] = React.useReducer(reducer, { tag: 'loading' })
+  const [state, dispatch] = useReducer(reducer, { tag: 'loading' })
   const gid = useParams().gid
 
   async function fetchData() {
     try {
-      const res = await getGymActivity(gid)
+      const { status, res } = await getGymActivity(gid)
       dispatch({ type: 'setWorkout', workout: res })
     } catch (error) {
-      dispatch({ type: 'setError' })
+      dispatch({ type: 'setError', status: error.status || 500 })
     }
   }
 

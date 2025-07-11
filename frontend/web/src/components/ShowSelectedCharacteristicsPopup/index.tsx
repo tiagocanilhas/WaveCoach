@@ -101,7 +101,7 @@ export function ShowSelectedCharacteristicsPopup({ data, onClose, onSuccess }: S
       onSuccess()
       onClose()
     } catch (error) {
-      dispatch({ type: 'error', error: handleError(error) })
+      dispatch({ type: 'error', error: handleError(error.res) })
     }
   }
 

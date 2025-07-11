@@ -1,5 +1,4 @@
-const MOBILE_URL = 'https://a20c-89-114-64-51.ngrok-free.app'
-
+const MOBILE_URL = ''
 const BASE_URL =
   false
     ? `${MOBILE_URL}/api`
@@ -10,7 +9,8 @@ const USERS = {
   login: `${BASE_URL}/login`,
   logout: `${BASE_URL}/logout`,
   checkAuth: `${BASE_URL}/me`,
-  update: `${BASE_URL}/me`,
+  updateUsername: `${BASE_URL}/me/username`,
+  updatePassword: `${BASE_URL}/me/password`,
 }
 
 const COACHES_URL = `${BASE_URL}/coaches`
@@ -41,6 +41,7 @@ const ATHLETES = {
   getActivities: (id: string) => `${ATHLETES_URL}/${id}/activities`,
 
   getWaterActivities: (id: string) => `${ATHLETES_URL}/${id}/water`,
+  getLastWaterActivity: (id: string) => `${ATHLETES_URL}/${id}/water/last`,
 }
 
 const GYM_URL = `${BASE_URL}/gym`

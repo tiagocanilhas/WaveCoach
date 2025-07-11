@@ -1,7 +1,7 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
-    container: {
+  container: {
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
@@ -10,17 +10,17 @@ export const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
     borderBottomColor: '#E0E0E0',
-    },
+  },
   backButton: {
     padding: 2,
   },
-backButtonColor: "rgb(177, 134, 42)" as any,
+  backButtonColor: 'rgb(177, 134, 42)' as any,
   titleContainer: {
     flex: 1,
   },
   title: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: "rgb(177, 134, 42)",
+    color: 'rgb(177, 134, 42)',
   },
 })

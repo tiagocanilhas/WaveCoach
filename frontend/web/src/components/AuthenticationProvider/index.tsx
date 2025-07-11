@@ -24,7 +24,7 @@ export function AuthenticationProvider({ children }) {
   useEffect(() => {
     async function fetchUser() {
       try {
-        const res = await checkAuth()
+        const { status, res } = await checkAuth()
         setUser(res)
       } catch (err) {
         setUser(undefined)

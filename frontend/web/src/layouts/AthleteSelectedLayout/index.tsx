@@ -15,7 +15,7 @@ export function AthleteSelectedLayout() {
   useEffect(() => {
     async function fetchAthleteName() {
       try {
-        const res = await getAthlete(id)
+        const { status, res } = await getAthlete(id)
         setAthleteName(res.name)
       } catch (error) {
         // Handle error if needed

@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
   container: {
-    alignItems: 'flex-start',
+    alignItems: 'center',
     justifyContent: 'flex-start',
   },
   inputContainer: {
@@ -10,9 +10,15 @@ export const styles = StyleSheet.create({
     width: '100%',
     gap: 10,
   },
-  listContainer: {
-    flex: 1,
+  waveContainer: {
+    flexDirection: 'row',
     width: '100%',
+    paddingLeft: 20,
+    gap: 10,
+  },
+  maneuverContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   footerContainer: {
     padding: 2,

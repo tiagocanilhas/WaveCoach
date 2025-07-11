@@ -4,7 +4,12 @@ function isMediaTypeProblem(res: Response): boolean {
 
 type method = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'OPTIONS' | 'HEAD'
 
-export async function customFetch(url: string, method: method, body?: object, token?: string): Promise<any> {
+export async function customFetch(
+  url: string,
+  method: method,
+  body?: object,
+  token?: string
+): Promise<any> {
   const options: RequestInit = { method: method }
 
   if (token) {
@@ -31,7 +36,7 @@ export async function customFetch(url: string, method: method, body?: object, to
   if (text === '') return null
 
   const json = JSON.parse(text)
-  if (isMediaTypeProblem(res)) throw json
+  if (isMediaTypeProblem(res)) throw { status: res.status,  res: json}
 
-  return json
+  return { status: res.status,  res: json}
 }

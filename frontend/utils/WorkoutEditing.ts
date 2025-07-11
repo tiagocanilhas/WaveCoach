@@ -66,4 +66,12 @@ export class WorkoutEditing {
             return newValue
     }
   }
+
+  static separateList<T extends { id: any }>(list: T[]): { editable: T[]; removed: T[] } {
+    return list.reduce((acc, item) => {
+        if (this.checkDeleteObject(item)) acc.removed.push(item)
+        else acc.editable.push(item)
+        return acc
+      }, { editable: [] as T[], removed: [] as T[] })
+    }
 }

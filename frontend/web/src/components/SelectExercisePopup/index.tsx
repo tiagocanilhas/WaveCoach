@@ -80,7 +80,7 @@ export function SelectExercisePopup({ onAdd, onClose }: SelectExercisePopupProps
   useEffect(() => {
     async function fetchData() {
       try {
-        const res = await getGymExercises()
+        const { status, res } = await getGymExercises()
         dispatch({ type: 'SetDataToAdd', exercises: res.gymExercises })
       } catch (error) {}
     }

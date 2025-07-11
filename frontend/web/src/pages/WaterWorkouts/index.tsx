@@ -63,7 +63,7 @@ export function WaterWorkouts() {
 
   async function fetchCalendar() {
     try {
-      const calendar = await getWaterActivities(id)
+      const { res: calendar } = await getWaterActivities(id)
       dispatch({ type: 'setCalendar', payload: calendar })
 
       const activities = calendar.mesocycles
@@ -76,10 +76,10 @@ export function WaterWorkouts() {
       }
 
       const wid = activities[activities.length - 1].id
-      const workout = await getWaterActivity(wid)
+      const { res: workout } = await getWaterActivity(wid)
       dispatch({ type: 'setLastWorkout', payload: workout })
     } catch (error) {
-      dispatch({ type: 'error', error: handleError(error) })
+      dispatch({ type: 'error', error: handleError(error.res) })
     }
   }
 

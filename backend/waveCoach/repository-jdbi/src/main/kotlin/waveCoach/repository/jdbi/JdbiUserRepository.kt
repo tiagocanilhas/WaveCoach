@@ -12,6 +12,7 @@ import waveCoach.repository.UserRepository
 class JdbiUserRepository(
     private val handle: Handle,
 ) : UserRepository {
+    // User methods
     override fun storeUser(
         username: String,
         passwordValidationInfo: PasswordValidationInfo,
@@ -22,6 +23,24 @@ class JdbiUserRepository(
             .executeAndReturnGeneratedKeys()
             .mapTo<Int>()
             .one()
+
+    override fun getUserById(uid: Int): User? =
+        handle.createQuery("select * from waveCoach.user where id = :id")
+            .bind("id", uid)
+            .mapTo<User>()
+            .singleOrNull()
+
+    override fun getUserByUsername(username: String): User? =
+        handle.createQuery("select * from waveCoach.user where username = :username")
+            .bind("username", username)
+            .mapTo<User>()
+            .singleOrNull()
+
+    override fun checkUsername(username: String): Boolean =
+        handle.createQuery("select count(*) from waveCoach.user where username = :username")
+            .bind("username", username)
+            .mapTo<Int>()
+            .single() == 1
 
     override fun updateUser(
         uid: Int,
@@ -41,24 +60,33 @@ class JdbiUserRepository(
             .execute()
     }
 
+    override fun updateUsername(
+        uid: Int,
+        username: String,
+    ) {
+        handle.createUpdate("update waveCoach.user set username = :username where id = :id")
+            .bind("username", username)
+            .bind("id", uid)
+            .execute()
+    }
+
+    override fun updatePassword(
+        uid: Int,
+        passwordValidationInfo: PasswordValidationInfo,
+    ) {
+        handle.createUpdate("update waveCoach.user set password = :password where id = :id")
+            .bind("password", passwordValidationInfo.value)
+            .bind("id", uid)
+            .execute()
+    }
+
     override fun removeUser(uid: Int) {
         handle.createUpdate("delete from waveCoach.user where id = :id")
             .bind("id", uid)
             .execute()
     }
 
-    override fun getUserByUsername(username: String): User? =
-        handle.createQuery("select * from waveCoach.user where username = :username")
-            .bind("username", username)
-            .mapTo<User>()
-            .singleOrNull()
-
-    override fun checkUsername(username: String): Boolean =
-        handle.createQuery("select count(*) from waveCoach.user where username = :username")
-            .bind("username", username)
-            .mapTo<Int>()
-            .single() == 1
-
+    // Token methods
     override fun storeToken(
         token: Token,
         maxTokens: Int,

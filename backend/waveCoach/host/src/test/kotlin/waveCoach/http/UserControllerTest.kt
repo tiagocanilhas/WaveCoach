@@ -233,20 +233,19 @@ class UserControllerTest {
     }
 
     /**
-     * Update User Tests
+     * Update Username Tests
      */
 
     @Test
-    fun `update user - success`() {
+    fun `update username - success`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
         val body =
             mapOf(
-                "username" to randomString(),
-                "password" to randomString(),
+                "newUsername" to randomString(),
             )
 
-        client.put().uri("/me")
+        client.patch().uri("/me/username")
             .header("Authorization", "Bearer $TOKEN_OF_SECOND_COACH")
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(body)
@@ -256,7 +255,35 @@ class UserControllerTest {
     }
 
     @Test
-    fun `update user - invalid username`() {
+    fun `update username - unauthorized`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "newUsername" to randomString(),
+            )
+
+        val token = randomString()
+
+        // Authorization header
+        client.patch().uri("/me/username")
+            .header("Authorization", "Bearer $token")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isUnauthorized
+
+        // Cookie
+        client.patch().uri("/me/username")
+            .cookie("token", randomString())
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isUnauthorized
+    }
+
+    @Test
+    fun `update username - invalid username`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
         val invalidUsernames =
@@ -267,13 +294,9 @@ class UserControllerTest {
             )
 
         invalidUsernames.forEach { username ->
-            val body =
-                mapOf(
-                    "username" to username,
-                    "password" to randomString(),
-                )
+            val body = mapOf("newUsername" to username,)
 
-            client.put().uri("/me")
+            client.patch().uri("/me/username")
                 .header("Authorization", "Bearer $TOKEN_OF_SECOND_COACH")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(body)
@@ -286,7 +309,79 @@ class UserControllerTest {
     }
 
     @Test
-    fun `update user - insecure password`() {
+    fun `update user - username already exists`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "newUsername" to USERNAME,
+            )
+
+        client.patch().uri("/me/username")
+            .header("Authorization", "Bearer $TOKEN_OF_SECOND_COACH")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.usernameAlreadyExists.type.toString())
+    }
+
+    /**
+     * Update Password Tests
+     */
+
+    @Test
+    fun `update password - success`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "oldPassword" to PASSWORD,
+                "newPassword" to randomString(),
+            )
+
+        client.patch().uri("/me/password")
+            .header("Authorization", "Bearer $TOKEN_OF_SECOND_COACH")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isNoContent
+            .expectBody()
+    }
+
+    @Test
+    fun `update password - unauthorized`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "oldPassword" to PASSWORD,
+                "newPassword" to randomString(),
+            )
+
+        val token = randomString()
+
+        // Authorization header
+        client.patch().uri("/me/password")
+            .header("Authorization", "Bearer $token")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isUnauthorized
+
+        // Cookie
+        client.patch().uri("/me/password")
+            .cookie("token", token)
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isUnauthorized
+    }
+
+    @Test
+    fun `update password - insecure password`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
         val insecurePasswords =
@@ -302,11 +397,11 @@ class UserControllerTest {
         insecurePasswords.forEach { password ->
             val body =
                 mapOf(
-                    "username" to randomString(),
-                    "password" to password,
+                    "oldPassword" to PASSWORD,
+                    "newPassword" to password,
                 )
 
-            client.put().uri("/me")
+            client.patch().uri("/me/password")
                 .header("Authorization", "Bearer $TOKEN_OF_SECOND_COACH")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(body)
@@ -319,16 +414,16 @@ class UserControllerTest {
     }
 
     @Test
-    fun `update user - username already exists`() {
+    fun `update password - passwords are equal`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
         val body =
             mapOf(
-                "username" to USERNAME,
-                "password" to randomString(),
+                "oldPassword" to PASSWORD,
+                "newPassword" to PASSWORD,
             )
 
-        client.put().uri("/me")
+        client.patch().uri("/me/password")
             .header("Authorization", "Bearer $TOKEN_OF_SECOND_COACH")
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(body)
@@ -336,7 +431,28 @@ class UserControllerTest {
             .expectStatus().isBadRequest
             .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
             .expectBody()
-            .jsonPath("type").isEqualTo(Problem.usernameAlreadyExists.type.toString())
+            .jsonPath("type").isEqualTo(Problem.passwordsAreEqual.type.toString())
+    }
+
+    @Test
+    fun `update password - invalid old password`() {
+        val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
+
+        val body =
+            mapOf(
+                "oldPassword" to randomString(),
+                "newPassword" to randomString(),
+            )
+
+        client.patch().uri("/me/password")
+            .header("Authorization", "Bearer $TOKEN_OF_SECOND_COACH")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .expectBody()
+            .jsonPath("type").isEqualTo(Problem.invalidOldPassword.type.toString())
     }
 
     companion object {

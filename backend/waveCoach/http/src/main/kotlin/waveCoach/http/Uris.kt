@@ -15,7 +15,8 @@ object Uris {
         const val LOGOUT = "$PREFIX/logout"
 
         const val AUTH_CHECK = "$PREFIX/me"
-        const val UPDATE = "$PREFIX/me"
+        const val UPDATE_USERNAME = "$PREFIX/me/username"
+        const val UPDATE_PASSWORD = "$PREFIX/me/password"
 
         const val GET_BY_ID = "$USERS/{uid}"
 
@@ -40,18 +41,6 @@ object Uris {
         const val REMOVE = "$GYM_ACTIVITY/{activityId}"
 
         fun byId(id: Int): URI = UriTemplate(GET_BY_ID).expand(id)
-
-        const val ADD_EXERCISE = "$GYM_ACTIVITY/{activityId}/exercise"
-        const val REMOVE_EXERCISE = "$GYM_ACTIVITY/{activityId}/exercise/{exerciseId}"
-
-        fun exerciseById(activityId: Int, exerciseId: Int): URI =
-            UriTemplate(REMOVE_EXERCISE).expand(activityId, exerciseId)
-
-        const val ADD_SET = "$GYM_ACTIVITY/{activityId}/exercise/{exerciseId}/set"
-        const val REMOVE_SET = "$GYM_ACTIVITY/{activityId}/exercise/{exerciseId}/set/{setId}"
-
-        fun setById(activityId: Int, exerciseId: Int, setId: Int): URI =
-            UriTemplate(REMOVE_SET).expand(activityId, exerciseId, setId)
     }
 
     object GymExercise {
@@ -76,18 +65,6 @@ object Uris {
 
         const val CREATE_QUESTIONNAIRE = "$WATER_ACTIVITY/{activityId}/questionnaire"
         const val GET_QUESTIONNAIRE = "$WATER_ACTIVITY/{activityId}/questionnaire"
-
-        const val ADD_WAVE = "$WATER_ACTIVITY/{activityId}/wave"
-        const val REMOVE_WAVE = "$WATER_ACTIVITY/{activityId}/wave/{waveId}"
-
-        fun waveById(activityId: Int, waveId: Int): URI =
-            UriTemplate(REMOVE_WAVE).expand(activityId, waveId)
-
-        const val ADD_MANEUVER = "$WATER_ACTIVITY/{activityId}/wave/{waveId}/maneuver"
-        const val REMOVE_MANEUVER = "$WATER_ACTIVITY/{activityId}/wave/{waveId}/maneuver/{maneuverId}"
-
-        fun maneuverById(activityId: Int, waveId: Int, maneuverId: Int): URI =
-            UriTemplate(REMOVE_MANEUVER).expand(activityId, waveId, maneuverId)
 
         fun byId(id: Int): URI = UriTemplate(GET_BY_ID).expand(id)
     }
@@ -127,6 +104,7 @@ object Uris {
         const val GET_CALENDAR = "$ATHLETES/{aid}/calendar"
 
         const val GET_WATER_ACTIVITIES = "$ATHLETES/{aid}/water"
+        const val GET_LAST_WATER_ACTIVITY = "$ATHLETES/{aid}/water/last"
 
         const val CREATE_COMPETITION = "$ATHLETES/{aid}/competition"
         const val GET_COMPETITION_BY_ID = "$ATHLETES/{aid}/competition/{id}"

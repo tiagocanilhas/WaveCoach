@@ -22,33 +22,37 @@ class AuthenticationInterceptor(
             handler is HandlerMethod &&
             handler.methodParameters.any {
                 it.parameterType == AuthenticatedUser::class.java ||
-                    it.parameterType == AuthenticatedCoach::class.java
+                        it.parameterType == AuthenticatedCoach::class.java
             }
         ) {
-            val userAuthHeader =
-                tokenProcessor
-                    .processAuthorizationHeaderValue(request.getHeader(AUTHORIZATION_HEADER))
-
-            val userCookie =
-                tokenProcessor
-                    .processAuthorizationCookieValue(request.getHeader(COOKIE_HEADER))
-
-            val authenticatedUser = userAuthHeader ?: userCookie
+            val authenticatedUser = processAuthorization(request)
 
             return when {
-                userAuthHeader == null && userCookie == null -> {
+                authenticatedUser == null -> {
                     response.status = 401
                     response.addHeader(WWW_AUTHENTICATE_HEADER, RequestTokenProcessor.SCHEME)
                     false
                 }
                 else -> {
-                    addUserTo(authenticatedUser!!, request)
+                    addUserTo(authenticatedUser, request)
                     true
                 }
             }
         }
 
         return true
+    }
+
+    private fun processAuthorization(
+        request: HttpServletRequest,
+    ): AuthenticatedUser? {
+        val headerValue = request.getHeader(AUTHORIZATION_HEADER)
+        val cookieValue = request.getHeader(COOKIE_HEADER)
+
+        val header = headerValue?.let { tokenProcessor.processAuthorizationHeaderValue(it) }
+        val cookie = cookieValue?.let { tokenProcessor.processAuthorizationCookieValue(it) }
+
+        return header ?: cookie
     }
 
     companion object {

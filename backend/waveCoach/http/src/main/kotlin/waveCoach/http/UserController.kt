@@ -4,19 +4,21 @@ import kotlinx.datetime.Clock
 import org.springframework.http.ResponseCookie
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import waveCoach.domain.AuthenticatedUser
 import waveCoach.http.model.input.LoginInputModel
-import waveCoach.http.model.input.UserUpdateInputModel
+import waveCoach.http.model.input.UserUpdatePasswordInputModel
+import waveCoach.http.model.input.UserUpdateUsernameInputModel
 import waveCoach.http.model.output.AuthCheckOutputModel
 import waveCoach.http.model.output.LoginOutputModel
 import waveCoach.http.model.output.Problem
 import waveCoach.services.CheckCredentialsError
 import waveCoach.services.UserServices
-import waveCoach.services.UserUpdateError
+import waveCoach.services.UserUpdatePasswordError
+import waveCoach.services.UserUpdateUsernameError
 import waveCoach.utils.Failure
 import waveCoach.utils.Success
 
@@ -75,12 +77,12 @@ class UserController(
             .body(AuthCheckOutputModel(user.info.id, user.info.username, user.info.isCoach))
     }
 
-    @PutMapping(Uris.Users.UPDATE)
-    fun update(
+    @PatchMapping(Uris.Users.UPDATE_USERNAME)
+    fun updateUsername(
         user: AuthenticatedUser,
-        @RequestBody input: UserUpdateInputModel,
+        @RequestBody input: UserUpdateUsernameInputModel,
     ): ResponseEntity<*> {
-        val result = userServices.updateCredentials(user.info.id, input.username, input.password)
+        val result = userServices.updateUsername(user.info.id, input.newUsername)
 
         return when (result) {
             is Success ->
@@ -88,10 +90,34 @@ class UserController(
 
             is Failure ->
                 when (result.value) {
-                    UserUpdateError.InvalidUsername -> Problem.response(400, Problem.invalidUsername)
-                    UserUpdateError.InsecurePassword -> Problem.response(400, Problem.insecurePassword)
-                    UserUpdateError.UsernameAlreadyExists -> Problem.response(400, Problem.usernameAlreadyExists)
+                    UserUpdateUsernameError.InvalidUsername -> Problem.response(400, Problem.invalidUsername)
+                    UserUpdateUsernameError.UsernameAlreadyExists -> Problem.response(400, Problem.usernameAlreadyExists)
                 }
         }
     }
+
+    @PatchMapping(Uris.Users.UPDATE_PASSWORD)
+    fun updatePassword(
+        user: AuthenticatedUser,
+        @RequestBody input: UserUpdatePasswordInputModel
+    ): ResponseEntity<*> {
+        val result = userServices.updatePassword(user.info.id, input.oldPassword, input.newPassword)
+
+        return when (result) {
+            is Success ->
+                ResponseEntity.status(204).build<Unit>()
+
+            is Failure ->
+                when (result.value) {
+                    UserUpdatePasswordError.InvalidOldPassword -> Problem.response(400, Problem.invalidOldPassword)
+                    UserUpdatePasswordError.InvalidNewPassword -> Problem.response(400, Problem.insecurePassword)
+                    UserUpdatePasswordError.PasswordsAreEqual -> Problem.response(400, Problem.passwordsAreEqual)
+
+                    UserUpdatePasswordError.UserNotFound -> {
+                        throw IllegalStateException("User not found when updating password")
+                    }
+                }
+        }
+    }
+
 }

@@ -55,7 +55,7 @@ export function Home() {
 
   async function fetchAthletes() {
     try {
-      const res = await getAthletes()
+      const { status, res } = await getAthletes()
       dispatch({ type: 'setAthletes', athletes: res.athletes })
     } catch {
       dispatch({ type: 'setAthletes', athletes: [] })
@@ -72,7 +72,7 @@ export function Home() {
 
   async function handleGetCode(id: number) {
     try {
-      const res = await generateCode(id.toString())
+      const { status, res } = await generateCode(id.toString())
       await navigator.clipboard.writeText(res.code)
       alert('Code was copied to clipboard!')
     } catch (error) {

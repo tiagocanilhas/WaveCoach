@@ -42,14 +42,23 @@ sealed class RevokeTokenError {
 }
 typealias RevokeTokenResult = Either<RevokeTokenError, Boolean>
 
-sealed class UserUpdateError {
-    data object InvalidUsername : UserUpdateError()
+sealed class UserUpdateUsernameError {
+    data object InvalidUsername : UserUpdateUsernameError()
 
-    data object InsecurePassword : UserUpdateError()
-
-    data object UsernameAlreadyExists : UserUpdateError()
+    data object UsernameAlreadyExists : UserUpdateUsernameError()
 }
-typealias UserUpdateResult = Either<UserUpdateError, Boolean>
+typealias UserUpdateUsernameResult = Either<UserUpdateUsernameError, Boolean>
+
+sealed class UserUpdatePasswordError {
+    data object InvalidOldPassword : UserUpdatePasswordError()
+
+    data object InvalidNewPassword : UserUpdatePasswordError()
+
+    data object PasswordsAreEqual : UserUpdatePasswordError()
+
+    data object UserNotFound : UserUpdatePasswordError()
+}
+typealias UserUpdatePasswordResult = Either<UserUpdatePasswordError, Boolean>
 
 @Component
 class UserServices(
@@ -115,21 +124,42 @@ class UserServices(
         }
     }
 
-    fun updateCredentials(
+    fun updateUsername(
         userId: Int,
         newUsername: String,
-        newPassword: String,
-    ): UserUpdateResult {
-        if (!userDomain.isUsernameValid(newUsername)) return failure(UserUpdateError.InvalidUsername)
-        if (!userDomain.isSafePassword(newPassword)) return failure(UserUpdateError.InsecurePassword)
+    ): UserUpdateUsernameResult {
+        if (!userDomain.isUsernameValid(newUsername)) return failure(UserUpdateUsernameError.InvalidUsername)
 
         return transactionManager.run {
             val userRepository = it.userRepository
 
-            if (userRepository.checkUsername(newUsername)) return@run failure(UserUpdateError.UsernameAlreadyExists)
+            if (userRepository.checkUsername(newUsername)) return@run failure(UserUpdateUsernameError.UsernameAlreadyExists)
 
-            val passwordValidationInfo = userDomain.createPasswordValidationInformation(newPassword)
-            userRepository.updateUser(userId, newUsername, passwordValidationInfo)
+            userRepository.updateUsername(userId, newUsername)
+            success(true)
+        }
+    }
+
+    fun updatePassword(
+        userId: Int,
+        oldPassword: String,
+        newPassword: String,
+    ): UserUpdatePasswordResult {
+        if (oldPassword == newPassword) return failure(UserUpdatePasswordError.PasswordsAreEqual)
+        if (!userDomain.isSafePassword(newPassword)) return failure(UserUpdatePasswordError.InvalidNewPassword)
+
+        val passwordValidationInfo = userDomain.createPasswordValidationInformation(newPassword)
+
+        return transactionManager.run {
+            val userRepository = it.userRepository
+
+            val user = userRepository.getUserById(userId) ?: return@run failure(UserUpdatePasswordError.UserNotFound)
+            if (!userDomain.validatePassword(oldPassword, user.password)) {
+                return@run failure(UserUpdatePasswordError.InvalidOldPassword)
+            }
+
+            userRepository.updatePassword(userId, passwordValidationInfo)
+//            userRepository.removeTokensByUserId(userId)
             success(true)
         }
     }

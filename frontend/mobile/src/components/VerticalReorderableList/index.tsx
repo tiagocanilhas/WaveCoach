@@ -23,6 +23,7 @@ export function VerticalReorderableList<T>({
   return (
     <View style={styles.container}>
       <DraggableFlatList<T>
+        ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
         data={data}
         onDragEnd={({ data }) => onDragEnd(data)}
         keyExtractor={keyExtractor}

@@ -93,7 +93,7 @@ export function AddNewExercise({ category, onClose }: AddNewExerciseProps) {
       await createGymExercise(name, category, file)
       onClose()
     } catch (error) {
-      dispatch({ type: 'error', error: handleError(error) })
+      dispatch({ type: 'error', error: handleError(error.res) })
     }
   }
 

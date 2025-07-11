@@ -14,17 +14,12 @@ import { WorkoutEditing } from '../../../../utils/WorkoutEditing'
 
 type EditExercisePopupProps = {
   exercise: GymWorkoutExercise
-  onSave:(exercise: GymWorkoutExercise) => void
+  onSave: (exercise: GymWorkoutExercise) => void
   onClose: () => void
 }
 
 export function EditExercisePopup({ exercise, onSave, onClose }: EditExercisePopupProps) {
-  const { editable, removed } = exercise.sets.reduce((acc, set) => {
-      if (WorkoutEditing.checkDeleteObject(set)) acc.removed.push(set)
-      else acc.editable.push(set)
-      return acc
-    }, { editable: [] as GymWorkoutSet[], removed: [] as GymWorkoutSet[] }
-  )
+  const { editable, removed } = WorkoutEditing.separateList(exercise.sets)
   const [sets, setSets] = useState<GymWorkoutSet[]>(editable)
   const [removedSets, setRemovedSets] = useState<GymWorkoutSet[]>(removed)
 
@@ -37,15 +32,18 @@ export function EditExercisePopup({ exercise, onSave, onClose }: EditExercisePop
   }
 
   function handleAddSet() {
-    setSets(prev => [...prev, {
-      ...prev[prev.length - 1],
-      id: null,
-      order: prev.length
-    }])
+    setSets(prev => [
+      ...prev,
+      {
+        ...prev[prev.length - 1],
+        id: null,
+        order: prev.length,
+      },
+    ])
   }
 
-  function handleOnSave(){
-    onSave({...exercise, sets: [...sets, ...removedSets] })
+  function handleOnSave() {
+    onSave({ ...exercise, sets: [...sets, ...removedSets] })
     onClose
   }
 

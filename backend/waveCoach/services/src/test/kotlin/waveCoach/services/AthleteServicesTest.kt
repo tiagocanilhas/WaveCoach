@@ -1229,7 +1229,7 @@ class AthleteServicesTest {
                     2,
                     listOf(
                         HeatInputInfo(
-                            score = 2f,
+                            score = 2,
                             waterActivity = WaterActivityInputInfo(
                                 athleteId = FIRST_ATHLETE_ID,
                                 rpe = 4,
@@ -1273,7 +1273,7 @@ class AthleteServicesTest {
                     2,
                     listOf(
                         HeatInputInfo(
-                            score = 2f,
+                            score = 2,
                             waterActivity = WaterActivityInputInfo(
                                 athleteId = FIRST_ATHLETE_ID,
                                 rpe = 4,
@@ -1317,7 +1317,7 @@ class AthleteServicesTest {
                     2,
                     listOf(
                         HeatInputInfo(
-                            score = 2f,
+                            score = 2,
                             waterActivity = WaterActivityInputInfo(
                                 athleteId = FIRST_ATHLETE_ID,
                                 rpe = -1, // Invalid RPE
@@ -1361,7 +1361,7 @@ class AthleteServicesTest {
                     2,
                     listOf(
                         HeatInputInfo(
-                            score = 2f,
+                            score = 2,
                             waterActivity = WaterActivityInputInfo(
                                 athleteId = FIRST_ATHLETE_ID,
                                 rpe = 4,
@@ -1405,7 +1405,7 @@ class AthleteServicesTest {
                     2,
                     listOf(
                         HeatInputInfo(
-                            score = -1f, // Invalid score
+                            score = -1, // Invalid score
                             waterActivity = WaterActivityInputInfo(
                                 athleteId = FIRST_ATHLETE_ID,
                                 rpe = 4,
@@ -1449,7 +1449,7 @@ class AthleteServicesTest {
                     2,
                     listOf(
                         HeatInputInfo(
-                            score = 2f,
+                            score = 2,
                             waterActivity = WaterActivityInputInfo(
                                 athleteId = FIRST_ATHLETE_ID,
                                 rpe = 4,

@@ -1,4 +1,4 @@
-import { Maneuver } from './Maneuver'
+import { WaterWorkoutWave } from './WaterWorkoutWave'
 
 export type WaterWorkout = {
   id: number
@@ -8,11 +8,5 @@ export type WaterWorkout = {
   condition: string
   trimp: number
   duration: number
-  waves: {
-    id: number
-    points?: number
-    order: number
-    rightSide: boolean
-    maneuvers: Maneuver[]
-  }[]
+  waves: WaterWorkoutWave[]
 }

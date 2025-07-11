@@ -1,26 +1,50 @@
 package waveCoach.repository
 
-import waveCoach.domain.*
+import waveCoach.domain.ManeuverToInsert
+import waveCoach.domain.MesocycleWater
+import waveCoach.domain.Questionnaire
+import waveCoach.domain.WaterActivityWithWaves
+import waveCoach.domain.WaveToInsert
+import waveCoach.domain.Wave
+import waveCoach.domain.Maneuver
+import waveCoach.domain.ManeuverToUpdate
+import waveCoach.domain.WaveToUpdate
 
 
 interface WaterActivityRepository {
+    // Activity methods
     fun storeWaterActivity(activityId: Int, rpe: Int, condition: String, trimp: Int, duration: Int): Int
 
     fun isWaterActivityValid(activityId: Int): Boolean
 
-    fun updateWaterActivity(activityId: Int, rpe: Int?, condition: String?, trimp: Int?, duration: Int?)
+    fun getWaterActivities(uid: Int): List<MesocycleWater>
+
+    fun getWaterActivity(activityId: Int): WaterActivityWithWaves?
+
+    fun getLastWaterActivity(athleteId: Int): WaterActivityWithWaves?
+
+    fun updateWaterActivity(
+        activityId: Int,
+        rpe: Int?,
+        condition: String?,
+        trimp: Int?,
+        duration: Int?,
+    )
 
     fun removeWaterActivity(activityId: Int)
 
     fun removeWaterActivities(athleteId: Int)
 
+    // Wave methods
+    fun storeWaves(waves: List<WaveToInsert>): List<Int>
+
     fun storeWave(activityId: Int, points: Float?, rightSide: Boolean, order: Int): Int
+
+    fun getWaves(activityId: Int): List<Wave>
 
     fun getWaveById(waveId: Int): Wave?
 
     fun getWavesByActivity(activityId: Int): List<Wave>
-
-    fun storeWaves(waves: List<WaveToInsert>): List<Int>
 
     fun updateWaves(waves: List<WaveToUpdate>)
 
@@ -28,19 +52,20 @@ interface WaterActivityRepository {
 
     fun removeWavesByAthlete(athleteId: Int)
 
-    fun removeWaveById(waveId: Int)
-
     fun removeWavesById(waveIds: List<Int>)
+
+    fun removeWaveById(waveId: Int)
 
     fun verifyWaveOrder(activityId: Int, order: Int): Boolean
 
+    // Maneuver methods
     fun storeManeuver(waveId: Int, waterManeuverId: Int, success: Boolean, order: Int): Int
 
     fun storeManeuvers(maneuvers: List<ManeuverToInsert>): List<Int>
 
-    fun getManeuverById(maneuverId: Int): Maneuver?
-
     fun getManeuversByWave(waveId: Int): List<Maneuver>
+
+    fun getManeuverById(maneuverId: Int): Maneuver?
 
     fun updateManeuvers(maneuvers: List<ManeuverToUpdate>)
 
@@ -48,16 +73,13 @@ interface WaterActivityRepository {
 
     fun removeManeuversByAthlete(athleteId: Int)
 
-    fun removeManeuverById(maneuverId: Int)
-
     fun removeManeuversById(maneuverIds: List<Int>)
+
+    fun removeManeuverById(maneuverId: Int)
 
     fun verifyManeuverOrder(waveId: Int, order: Int): Boolean
 
-    fun getWaterActivity(activityId: Int): WaterActivityWithWaves?
-
-    fun getWaterActivities(uid: Int): List<MesocycleWater>
-
+    // Questionnaire methods
     fun storeQuestionnaire(activityId: Int, sleep: Int, fatigue: Int, stress: Int, musclePain: Int)
 
     fun getQuestionnaire(activityId: Int): Questionnaire?

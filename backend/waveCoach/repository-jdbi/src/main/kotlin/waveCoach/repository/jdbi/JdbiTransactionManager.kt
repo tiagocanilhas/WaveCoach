@@ -15,9 +15,6 @@ class JdbiTransactionManager(
     override fun <R> run(block: (Transaction) -> R): R =
         jdbi.inTransaction<R, Exception> { handle ->
             val transaction = JdbiTransaction(handle)
-            when (val res = block(transaction)) {
-                is Failure<*> -> { transaction.rollback(); res }
-                else -> res
-            }
+            block(transaction).also { if (it is Failure<*>) transaction.rollback() }
         }
 }

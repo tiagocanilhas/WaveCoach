@@ -7,16 +7,16 @@ import { Popup } from '../Popup'
 import { Button } from '../Button'
 import { AddWavePopup } from '../AddWavePopup'
 import { CustomTimePicker } from '../CustomTimePicker'
+import { VerticalReorderableList } from '../VerticalReorderableList'
 
 import { WaveToAdd } from '../../types/WaveToAdd'
+import { ManeuverToAdd } from '../../types/ManeuverToAdd'
 
 import { createWaterActivity } from '../../../../services/waterServices'
 
 import { handleError } from '../../../../utils/handleError'
 
 import styles from './styles.module.css'
-import { ManeuverToAdd } from '../../types/ManeuverToAdd'
-import { VerticalReorderableList } from '../VerticalReorderableList'
 
 type State = {
   isAdding: boolean
@@ -33,11 +33,6 @@ type State = {
 type Action =
   | { type: 'toggleIsAdding' }
   | { type: 'setValue'; name: string; value: string | number }
-  // | { type: 'setDate'; date: string }
-  // | { type: 'setCondition'; condition: string }
-  // | { type: 'setRpe'; rpe: number }
-  // | { type: 'setTime'; time: number }
-  // | { type: 'setTrimp'; trimp: number }
   | { type: 'addWave'; wave: WaveToAdd }
   | { type: 'setWaveToEdit'; wave: WaveToAdd | null }
   | { type: 'updateWave'; wave: WaveToAdd }
@@ -49,16 +44,6 @@ function reducer(state: State, action: Action): State {
   switch (action.type) {
     case 'toggleIsAdding':
       return { ...state, isAdding: !state.isAdding }
-    // case 'setDate':
-    //   return { ...state, date: action.date }
-    // case 'setCondition':
-    //   return { ...state, condition: action.condition }
-    // case 'setRpe':
-    //   return { ...state, rpe: action.rpe }
-    // case 'setTime':
-    //   return { ...state, time: action.time }
-    // case 'setTrimp':
-    //   return { ...state, trimp: action.trimp }
     case 'setValue':
       return { ...state, [action.name]: action.value }
     case 'addWave':
@@ -130,39 +115,6 @@ export function AddWaterWorkoutPopup({ onClose, onSuccess }: AddWaterWorkoutPopu
     dispatch({ type: 'setWaves', waves })
   }
 
-  // function handleOnChange(event: React.ChangeEvent<HTMLInputElement>) {
-  //   const { name, value } = event.target
-  //   switch (name) {
-  //     case 'date':
-  //       dispatch({ type: 'setDate', date: value })
-  //       break
-  //     case 'condition':
-  //       dispatch({ type: 'setCondition', condition: value })
-  //       break
-  //     default:
-  //       break
-  //   }
-  // }
-
-  // function handleOnChangeSlider(event: Event, newValue: number) {
-  //   const target = event.target as HTMLInputElement
-  //   const name = target.name
-  //   switch (name) {
-  //     case 'rpe':
-  //       dispatch({ type: 'setRpe', rpe: newValue })
-  //       break
-  //     case 'trimp':
-  //       dispatch({ type: 'setTrimp', trimp: newValue })
-  //       break
-  //     default:
-  //       break
-  //   }
-  // }
-
-  // function handleOnChangeTime(value: number) {
-  //   dispatch({ type: 'setTime', time: value })
-  // }
-
   function handleOnChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target
     dispatch({ type: 'setValue', name, value })
@@ -188,7 +140,7 @@ export function AddWaterWorkoutPopup({ onClose, onSuccess }: AddWaterWorkoutPopu
       await createWaterActivity(id, date, rpe, condition, trimp, time, waves)
       onSuccess()
     } catch (error) {
-      dispatch({ type: 'error', error: handleError(error) })
+      dispatch({ type: 'error', error: handleError(error.res) })
     }
   }
 

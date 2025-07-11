@@ -12,24 +12,30 @@ import { createQuestionnaire } from '../../../../services/waterServices'
 
 import styles from './styles.module.css'
 
-type State = {
-  sleep: number
-  fatigue: number
-  stress: number
-  musclePain: number
-  error?: string
-}
-
-type Action = { type: 'setSlider'; name: string; value: number } | { type: 'error'; error: string }
+type State =
+  | { tag: 'editing'; sleep: number; fatigue: number; stress: number; musclePain: number; error?: string }
+  | { tag: 'submitting'; sleep: number; fatigue: number; stress: number; musclePain: number; error?: string }
+  | { tag: 'submitted' }
+type Action = { type: 'setSlider'; name: string; value: number } | { type: 'error'; error: string } | { type: 'submit' }
 
 function reducer(state: State, action: Action): State {
-  switch (action.type) {
-    case 'setSlider':
-      return { ...state, [action.name]: action.value, error: undefined }
-    case 'error':
-      return { ...state, error: action.error }
-    default:
-      return state
+  switch (state.tag) {
+    case 'editing':
+      switch (action.type) {
+        case 'setSlider':
+          return { ...state, [action.name]: action.value, error: undefined }
+        case 'submit':
+          return { ...state, tag: 'submitting' }
+        default:
+          return state
+      }
+    case 'submitting':
+      switch (action.type) {
+        case 'error':
+          return { ...state, tag: 'editing', error: action.error }
+        default:
+          return state
+      }
   }
 }
 
@@ -39,7 +45,7 @@ type AddQuestionnairePopupProps = {
 }
 
 export function AddQuestionnairePopup({ onClose, onSuccess }: AddQuestionnairePopupProps) {
-  const initialState: State = { sleep: 0, fatigue: 0, stress: 0, musclePain: 0 }
+  const initialState: State = { tag: 'editing', sleep: 0, fatigue: 0, stress: 0, musclePain: 0, error: undefined }
   const [state, dispatch] = useReducer(reducer, initialState)
   const wid = useParams().wid
 
@@ -50,20 +56,26 @@ export function AddQuestionnairePopup({ onClose, onSuccess }: AddQuestionnairePo
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
+
+    if (state.tag !== 'editing') return
+
     const { sleep, fatigue, stress, musclePain } = state
+
+    dispatch({ type: 'submit' })
+
     try {
       await createQuestionnaire(wid, sleep, fatigue, stress, musclePain)
       onSuccess()
-      onClose()
     } catch (error) {
-      dispatch({ type: 'error', error: handleError(error) })
+      dispatch({ type: 'error', error: handleError(error.res) })
     }
   }
 
-  const sleep = state.sleep
-  const fatigue = state.fatigue
-  const stress = state.stress
-  const musclePain = state.musclePain
+  const sleep = state.tag !== 'submitted' ? state.sleep : 0
+  const fatigue = state.tag !== 'submitted' ? state.fatigue : 0
+  const stress = state.tag !== 'submitted' ? state.stress : 0
+  const musclePain = state.tag !== 'submitted' ? state.musclePain : 0
+  const disabled = state.tag === 'submitting'
 
   return (
     <Popup
@@ -90,8 +102,8 @@ export function AddQuestionnairePopup({ onClose, onSuccess }: AddQuestionnairePo
               />
             </div>
           ))}
-          <Button text="Add" type="submit" width="100%" height="30px" />
-          {state.error && <p className={styles.errorMessage}>{state.error}</p>}
+          <Button text="Add" type="submit" width="100%" height="30px" disabled={disabled} />
+          {state.tag === 'editing' && <p className={styles.errorMessage}>{state.error}</p>}
         </form>
       }
       onClose={onClose}

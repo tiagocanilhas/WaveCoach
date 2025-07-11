@@ -75,14 +75,14 @@ export function Login() {
     const password = state.inputs.password.trim()
 
     try {
-      const res = await login(name, password)
+      const { status, res } = await login(name, password)
 
       setUser({ id: res.id, username: res.username, isCoach: res.isCoach })
       await Storage.saveToken(res.token)
 
       dispatch({ type: 'success' })
     } catch (error) {
-      dispatch({ type: 'error', error: handleError(error) })
+      dispatch({ type: 'error', error: handleError(error.res) })
     }
   }
 

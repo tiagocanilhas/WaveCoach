@@ -57,7 +57,7 @@ export function GymWorkouts() {
 
   async function fetchCalendar() {
     try {
-      const calendar = await getCalendar(id, 'gym')
+      const { res: calendar } = await getCalendar(id, 'gym')
       dispatch({ type: 'setActivities', payload: calendar })
 
       const activities = calendar.mesocycles
@@ -70,10 +70,10 @@ export function GymWorkouts() {
       }
 
       const gid = activities[activities.length - 1].id
-      const workout = await getGymActivity(gid)
+      const { res: workout } = await getGymActivity(gid)
       dispatch({ type: 'setLastWorkout', payload: workout })
     } catch (error) {
-      dispatch({ type: 'error', error: handleError(error) })
+      dispatch({ type: 'error', error: handleError(error.res) })
     }
   }
 

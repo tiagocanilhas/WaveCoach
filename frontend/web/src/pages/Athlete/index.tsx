@@ -78,7 +78,7 @@ export function Athlete() {
 
   async function fetchCalendar() {
     try {
-      const res = await getCalendar(id)
+      const { status, res } = await getCalendar(id)
       dispatch({ type: 'setCalendar', calendar: res })
     } catch (error) {
       console.error('Error fetching Activities:', error)
@@ -88,7 +88,7 @@ export function Athlete() {
   useEffect(() => {
     async function fetchAthlete() {
       try {
-        const res = await getAthlete(id)
+        const { status, res } = await getAthlete(id)
         dispatch({ type: 'setAthlete', athlete: res })
       } catch (error) {
         console.error('Error fetching athlete:', error)
@@ -101,7 +101,7 @@ export function Athlete() {
 
   async function handleGetCode() {
     try {
-      const res = await generateCode(id)
+      const { status, res } = await generateCode(id)
       await navigator.clipboard.writeText(res.code)
       alert('Code was copied to clipboard!')
     } catch (error) {

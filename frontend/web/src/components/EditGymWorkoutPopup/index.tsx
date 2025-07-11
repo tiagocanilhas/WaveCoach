@@ -13,7 +13,6 @@ import { Exercise } from '../../types/Exercise'
 import { SetDataToAdd } from '../../types/SetDataToAdd'
 import { GymWorkout } from '../../types/GymWorkout'
 import { GymWorkoutExercise } from '../../types/GymWorkoutExercise'
-import { GymWorkoutSet } from '../../types/GymWorkoutSet'
 
 import { updateGymActivity } from '../../../../services/gymServices'
 
@@ -36,7 +35,7 @@ type State = {
 type Action =
   | { type: 'toggleAdding' }
   | { type: 'setValue'; name: string; value: string }
-  | { type: 'removeExercise'; id: number }
+  | { type: 'removeExercise'; id: number; tempId: number }
   | { type: 'addExercise'; exercise: GymWorkoutExercise }
   | { type: 'setExerciseToEdit'; exercise: GymWorkoutExercise }
   | { type: 'editExercise'; exercise: GymWorkoutExercise }
@@ -50,10 +49,14 @@ function reducer(state: State, action: Action): State {
     case 'setValue':
       return { ...state, [action.name]: action.value }
     case 'removeExercise':
-      const removedExercise = state.exercises.find(exercise => exercise.id === action.id)
+      const removedExercise = state.exercises.find(exercise =>
+        exercise.id === null ? exercise.tempId === action.tempId : exercise.id === action.id
+      )
       return {
         ...state,
-        exercises: state.exercises.filter(exercise => exercise.id !== action.id),
+        exercises: state.exercises.filter(exercise =>
+          exercise.id === null ? exercise.tempId !== action.tempId : exercise.id !== action.id
+        ),
         removedExercises: [...state.removedExercises, WorkoutEditing.nullifyFieldsExceptId(removedExercise)],
       }
     case 'addExercise':
@@ -72,7 +75,11 @@ function reducer(state: State, action: Action): State {
     case 'editExercise':
       return {
         ...state,
-        exercises: state.exercises.map(exercise => exercise.id === action.exercise.id ? action.exercise : exercise),
+        exercises: state.exercises.map(exercise => {
+          const matchById = exercise.id !== null && exercise.id === action.exercise.id
+          const matchByTempId = exercise.id === null && exercise.tempId === action.exercise.tempId
+          return matchById || matchByTempId ? action.exercise : exercise
+        }),
         exerciseToEdit: null,
       }
     case 'setExercises':
@@ -99,7 +106,6 @@ export function EditGymWorkoutPopup({ workout, onClose, onSuccess }: EditGymWork
     exerciseToEdit: null,
     error: undefined,
   }
-
   const [state, dispatch] = useReducer(reducer, initialState)
   const gid = useParams().gid
 
@@ -108,18 +114,23 @@ export function EditGymWorkoutPopup({ workout, onClose, onSuccess }: EditGymWork
   }
 
   async function onAddExercise(exercise: Exercise, sets: SetDataToAdd[]) {
-   dispatch({ type: 'addExercise', exercise: {
-      id: null,
-      gymExerciseId: exercise.id,
-      name: exercise.name,
-      url: exercise.url,
-      sets: sets.map(set => ({
+    dispatch({
+      type: 'addExercise',
+      exercise: {
         id: null,
-        reps: set.reps,
-        weight: set.weight,
-        restTime: set.restTime,
-      })),
-    } })
+        tempId: new Date().getTime(),
+        gymExerciseId: exercise.id,
+        name: exercise.name,
+        url: exercise.url,
+        sets: sets.map(set => ({
+          id: null,
+          tempId: new Date().getTime(),
+          reps: set.reps,
+          weight: set.weight,
+          restTime: set.restTime,
+        })),
+      },
+    })
   }
 
   function handleSetExerciseToEdit(exercise: GymWorkoutExercise) {
@@ -130,9 +141,8 @@ export function EditGymWorkoutPopup({ workout, onClose, onSuccess }: EditGymWork
     dispatch({ type: 'editExercise', exercise })
   }
 
-  function handleOnDelete(id: number) {
-    if (confirm('Are you sure you want to delete this exercise?')) 
-      dispatch({ type: 'removeExercise', id })
+  function handleOnDelete(id: number, tempId: number) {
+    if (confirm('Are you sure you want to delete this exercise?')) dispatch({ type: 'removeExercise', id, tempId })
   }
 
   function handleReorder(exercises: GymWorkoutExercise[]) {
@@ -171,15 +181,15 @@ export function EditGymWorkoutPopup({ workout, onClose, onSuccess }: EditGymWork
           return WorkoutEditing.noEditingMade(newSet) ? null : newSet
         }),
       }
-      
+
       return WorkoutEditing.noEditingMade(newExercise) ? null : newExercise
     })
-    
+
     try {
       await updateGymActivity(gid, date, [...exercises, ...state.removedExercises])
       onSuccess()
     } catch (error) {
-      dispatch({ type: 'error', error: handleError(error) })
+      dispatch({ type: 'error', error: handleError(error.res) })
     }
   }
 
@@ -187,9 +197,11 @@ export function EditGymWorkoutPopup({ workout, onClose, onSuccess }: EditGymWork
   const date = state.date
   const exercises = state.exercises
   const error = state.error
-  const disabled = state.exercises.length === 0 || date.length === 0 || 
-    (date === epochConverter(workout.date, 'yyyy-mm-dd') && 
-     JSON.stringify(state.exercises) === JSON.stringify(initialState.exercises))
+  const disabled =
+    state.exercises.length === 0 ||
+    date.length === 0 ||
+    (date === epochConverter(workout.date, 'yyyy-mm-dd') &&
+      JSON.stringify(state.exercises) === JSON.stringify(initialState.exercises))
 
   return (
     <>
@@ -212,15 +224,17 @@ export function EditGymWorkoutPopup({ workout, onClose, onSuccess }: EditGymWork
                       <ul>
                         {item.sets.map((set, idx) => {
                           if (WorkoutEditing.checkDeleteObject(set)) return
-                          return <li key={idx}>
-                            Set {idx + 1}: {set.reps} x {set.weight} kg - {set.restTime}'
-                          </li>
+                          return (
+                            <li key={set.id || set.tempId}>
+                              Set {idx + 1}: {set.reps} x {set.weight} kg - {set.restTime}'
+                            </li>
+                          )
                         })}
                       </ul>
                     </div>
                   )}
                   onClick={item => handleSetExerciseToEdit(item)}
-                  onDelete={item => handleOnDelete(item.id)}
+                  onDelete={item => handleOnDelete(item.id, item.tempId)}
                   onAdd={handleToggleAdding}
                 />
               </div>
@@ -235,11 +249,7 @@ export function EditGymWorkoutPopup({ workout, onClose, onSuccess }: EditGymWork
       {isAdding && <SelectExercisePopup onAdd={onAddExercise} onClose={handleToggleAdding} />}
 
       {state.exerciseToEdit && (
-        <EditExercisePopup
-          exercise={state.exerciseToEdit}
-          onSave={handleOnSave}
-          onClose={() => handleSetExerciseToEdit(null)}
-        />
+        <EditExercisePopup exercise={state.exerciseToEdit} onSave={handleOnSave} onClose={() => handleSetExerciseToEdit(null)} />
       )}
     </>
   )

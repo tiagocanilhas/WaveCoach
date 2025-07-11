@@ -23,6 +23,7 @@ import waveCoach.utils.Success
 @RestController
 class AthleteController(
     private val athleteServices: AthleteServices,
+    private val waterActivityServices: WaterActivityServices
 ) {
     @PostMapping(Uris.Athletes.CREATE, consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun create(
@@ -546,6 +547,57 @@ class AthleteController(
                 when (result.value) {
                     GetWaterActivitiesError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
                     GetWaterActivitiesError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
+                }
+        }
+    }
+
+    @GetMapping(Uris.Athletes.GET_LAST_WATER_ACTIVITY)
+    fun getLastWaterActivity(
+        user: AuthenticatedUser,
+        @PathVariable aid: String,
+    ): ResponseEntity<*> {
+        val uid = aid.toIntOrNull() ?: return Problem.response(400, Problem.invalidAthleteId)
+
+        val result = waterActivityServices.getLastWaterActivity(user.info.id, uid)
+
+        return when (result) {
+            is Success ->
+                ResponseEntity
+                    .status(200)
+                    .body(
+                        WaterActivityOutputModel(
+                            result.value.id,
+                            result.value.athleteId,
+                            result.value.microcycleId,
+                            result.value.date,
+                            result.value.rpe,
+                            result.value.condition,
+                            result.value.trimp,
+                            result.value.duration,
+                            result.value.waves.map { wave ->
+                                WaveOutputModel(
+                                    wave.id,
+                                    wave.points,
+                                    wave.rightSide,
+                                    wave.maneuvers.map { maneuver ->
+                                        ManeuverOutputModel(
+                                            maneuver.id,
+                                            maneuver.waterManeuverId,
+                                            maneuver.waterManeuverName,
+                                            maneuver.url,
+                                            maneuver.success,
+                                        )
+                                    },
+                                )
+                            },
+                        ),
+                    )
+
+            is Failure ->
+                when (result.value) {
+                    GetLastWaterActivityError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
+                    GetLastWaterActivityError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
+                    GetLastWaterActivityError.ActivityNotFound -> Problem.response(404, Problem.waterActivityNotFound)
                 }
         }
     }

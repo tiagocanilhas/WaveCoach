@@ -8,6 +8,8 @@ interface WaterManeuverRepository {
         url: String?,
     ): Int
 
+    fun isWaterManeuverValid(id: Int): Boolean
+
     fun getWaterManeuverByName(name: String): WaterManeuver?
 
     fun getWaterManeuverById(id: Int): WaterManeuver?

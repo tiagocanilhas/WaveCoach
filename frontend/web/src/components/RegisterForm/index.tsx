@@ -78,7 +78,7 @@ export function RegisterForm({ title, initialUsername, buttonText, onSubmit }: R
       await onSubmit(username, password)
       dispatch({ type: 'success' })
     } catch (error) {
-      dispatch({ type: 'error', error: handleError(error) })
+      dispatch({ type: 'error', error: handleError(error.res) })
     }
   }
 

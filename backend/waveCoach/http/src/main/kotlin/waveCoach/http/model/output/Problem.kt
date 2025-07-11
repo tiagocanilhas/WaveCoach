@@ -94,6 +94,18 @@ class Problem(
                 URI("$BASE_URI/invalid-login"),
             )
 
+        val invalidManeuverSuccess =
+            Problem(
+                "Invalid maneuver success",
+                URI("$BASE_URI/invalid-maneuver-success"),
+            )
+
+        val invalidManeuverOrder =
+            Problem(
+                "Invalid maneuver order",
+                URI("$BASE_URI/invalid-maneuver-order"),
+            )
+
         val invalidName =
             Problem(
                 "Invalid name",
@@ -116,6 +128,12 @@ class Problem(
             Problem(
                 "Invalid username",
                 URI("$BASE_URI/invalid-username"),
+            )
+
+        val invalidWaveSide =
+            Problem(
+                "Invalid wave side",
+                URI("$BASE_URI/invalid-wave-side"),
             )
 
         val notAthletesCoach =
@@ -234,8 +252,8 @@ class Problem(
 
         val invalidWaterManeuver =
             Problem(
-                "Invalid maneuver",
-                URI("$BASE_URI/invalid-maneuver"),
+                "Invalid Water maneuver",
+                URI("$BASE_URI/invalid-water-maneuver"),
             )
 
         val invalidWaterActivityId =
@@ -266,6 +284,12 @@ class Problem(
             Problem(
                 "Invalid muscle pain value",
                 URI("$BASE_URI/invalid-muscle-pain"),
+            )
+
+        val invalidOldPassword =
+            Problem(
+                "Invalid old password",
+                URI("$BASE_URI/invalid-old-password"),
             )
 
         val waterActivityNotFound =
@@ -394,12 +418,6 @@ class Problem(
                 URI("$BASE_URI/invalid-wave-order"),
             )
 
-        val invalidManeuverOrder =
-            Problem(
-                "Invalid maneuver order",
-                URI("$BASE_URI/invalid-maneuver-order"),
-            )
-
         val invalidManeuvers =
             Problem(
                 "Invalid maneuvers",
@@ -458,6 +476,12 @@ class Problem(
             Problem(
                 "Invalid waves",
                 URI("$BASE_URI/invalid-waves"),
+            )
+
+        val passwordsAreEqual =
+            Problem(
+                "Passwords are equal",
+                URI("$BASE_URI/passwords-are-equal"),
             )
     }
 }

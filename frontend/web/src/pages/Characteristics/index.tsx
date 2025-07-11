@@ -62,7 +62,7 @@ export function Characteristics() {
 
   async function fetchCharacteristics() {
     try {
-      const res = await getCharacteristics(id)
+      const { status, res } = await getCharacteristics(id)
       dispatch({ type: 'setCharacteristics', characteristics: res.characteristics })
     } catch (error) {
       dispatch({ type: 'setCharacteristics', characteristics: null })

@@ -58,7 +58,7 @@ export function SelectManeuverPopup({ onAdd, onClose }: SelectManeuverPopupProps
 
   async function fetchData() {
     try {
-      const res = await getWaterManeuvers()
+      const { status, res } = await getWaterManeuvers()
       dispatch({ type: 'setData', maneuvers: res.maneuvers })
     } catch (error) {
       console.error('Error fetching maneuvers:', error)

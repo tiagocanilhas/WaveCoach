@@ -86,7 +86,7 @@ export async function updateCharacteristics(
   abdomenFat: number,
   thighFat: number
 ) {
-  return await customFetch(URIS.ATHLETES.updateCharacteristics(id, date), 'PUT', {
+  return await customFetch(URIS.ATHLETES.updateCharacteristics(id, toDisplayFormat(date)), 'PUT', {
     date: toDisplayFormat(date),
     height,
     weight,
@@ -115,4 +115,8 @@ export async function getCalendar(id: string, type?: string) {
 
 export async function getWaterActivities(id: string) {
   return await customFetch(URIS.ATHLETES.getWaterActivities(id), 'GET')
+}
+
+export async function getLastWaterActivity(id: string) {
+  return await customFetch(URIS.ATHLETES.getLastWaterActivity(id), 'GET')
 }

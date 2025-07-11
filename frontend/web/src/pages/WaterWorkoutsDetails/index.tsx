@@ -1,85 +1,134 @@
 import * as React from 'react'
 import { useEffect, useReducer } from 'react'
-import { useParams } from 'react-router-dom'
+import { Navigate, useParams } from 'react-router-dom'
 
 import { CircularProgress } from '@mui/material'
 import { Divisor } from '../../components/Divisor'
 import { Card } from '../../components/Card'
 import { ManeuversCarrousel } from '../../components/ManeuversCarrousel'
+import { AddQuestionnairePopup } from '../../components/AddQuestionnairePopup'
+import { Button } from '../../components/Button'
+import { EditWaterWorkoutPopup } from '../../components/EditWaterWorkoutPopup'
 
 import { WaterWorkout } from '../../types/WaterWorkout'
+import { Questionnaire } from '../../types/Questionnaire'
 
 import { getWaterActivity, getQuestionnaire } from '../../../../services/waterServices'
 
 import { epochConverter } from '../../../../utils/epochConverter'
 
 import styles from './styles.module.css'
-import { Questionnaire } from '../../types/Questionnaire'
-import { AddQuestionnairePopup } from '../../components/AddQuestionnairePopup'
 
-type State = {
-  workout: WaterWorkout
-  questionnaire: Questionnaire
-  isQuestionnairePopupOpen?: boolean
-}
+type State =
+  | { tag: 'loading'; workout?: WaterWorkout; questionnaire?: Questionnaire }
+  | { tag: 'loaded'; workout: WaterWorkout; questionnaire: Questionnaire; isEditing: Boolean; isQuestionnairePopupOpen?: boolean }
+  | { tag: 'error' }
 
 type Action =
   | { type: 'setWorkout'; workout: WaterWorkout }
-  | { type: 'setQuestionnaire'; payload: Questionnaire }
+  | { type: 'toggleEditing' }
+  | { type: 'setError' }
+  | { type: 'setQuestionnaire'; questionnaire: Questionnaire }
   | { type: 'toggleQuestionnairePopup' }
 
 function reducer(state: State, action: Action): State {
-  switch (action.type) {
-    case 'setWorkout':
-      return { ...state, workout: action.workout }
-    case 'setQuestionnaire':
-      return { ...state, questionnaire: action.payload }
-    case 'toggleQuestionnairePopup':
-      return { ...state, isQuestionnairePopupOpen: !state.isQuestionnairePopupOpen }
-    default:
+  switch (state.tag) {
+    case 'loading':
+      switch (action.type) {
+        case 'setWorkout':
+          if (state.questionnaire !== undefined) {
+            return { tag: 'loaded', workout: action.workout, questionnaire: state.questionnaire, isEditing: false }
+          }
+          return { tag: 'loading', workout: action.workout, questionnaire: state.questionnaire }
+        case 'setQuestionnaire':
+          if (state.workout !== undefined) {
+            return { tag: 'loaded', workout: state.workout, questionnaire: action.questionnaire, isEditing: false }
+          }
+          return { tag: 'loading', workout: state.workout, questionnaire: action.questionnaire }
+        case 'setError':
+          return { tag: 'error' }
+        default:
+          return state
+      }
+    case 'loaded':
+      switch (action.type) {
+        case 'toggleEditing':
+          return { ...state, isEditing: !state.isEditing }
+        case 'setWorkout':
+          return { ...state, workout: action.workout }
+        case 'setQuestionnaire':
+          return { ...state, questionnaire: action.questionnaire }
+        case 'toggleQuestionnairePopup':
+          return { ...state, isQuestionnairePopupOpen: !state.isQuestionnairePopupOpen }
+        default:
+          return state
+      }
+    case 'error':
       return state
   }
 }
 
 export function WaterWorkoutsDetails() {
-  const initialState: State = { workout: undefined, questionnaire: undefined }
+  const initialState: State = { tag: 'loading' }
   const [state, dispatch] = useReducer(reducer, initialState)
   const wid = useParams().wid
 
+  async function fetchActivityData() {
+    try {
+      const { status, res } = await getWaterActivity(wid)
+      dispatch({ type: 'setWorkout', workout: res })
+    } catch (error) {
+      dispatch({ type: 'setError' })
+    }
+  }
+
+  async function fetchQuestionnaireData() {
+    try {
+      const { status, res } = await getQuestionnaire(wid)
+      dispatch({ type: 'setQuestionnaire', questionnaire: res })
+    } catch (error) {
+      dispatch({ type: 'setQuestionnaire', questionnaire: null })
+    }
+  }
+
   useEffect(() => {
-    async function fetchActivityData() {
-      try {
-        const res = await getWaterActivity(wid)
-        dispatch({ type: 'setWorkout', workout: res })
-      } catch (error) {
-        console.error('Error fetching workout details:', error)
-      }
-    }
-    async function fetchQuestionnaireData() {
-      try {
-        const res = await getQuestionnaire(wid)
-        dispatch({ type: 'setQuestionnaire', payload: res })
-      } catch (error) {
-        dispatch({ type: 'setQuestionnaire', payload: null })
-      }
-    }
     fetchActivityData()
     fetchQuestionnaireData()
   }, [])
+
+  function handleEditWorkout() {
+    dispatch({ type: 'toggleEditing' })
+  }
+
+  function handleOnCloseEditing() {
+    dispatch({ type: 'toggleEditing' })
+  }
+
+  async function handleOnSuccess() {
+    await fetchActivityData()
+    dispatch({ type: 'toggleEditing' })
+  }
 
   function handleAddQuestionnaire() {
     dispatch({ type: 'toggleQuestionnairePopup' })
   }
 
-  const workout = state.workout
+  async function handleQuestionnaireSuccess() {
+    await fetchQuestionnaireData()
+    dispatch({ type: 'toggleQuestionnairePopup' })
+  }
 
-  if (workout === undefined) return <CircularProgress />
+  const workout = state.tag === 'loaded' ? state.workout : null
+
+  if (state.tag === 'loading') return <CircularProgress />
+
+  if (state.tag === 'error') return <Navigate to="/error" replace />
 
   const durationInMinutes = Math.floor(workout.duration / 60)
   const numberOfWaves = workout.waves.length
   const maneuversAttempts = workout.waves.reduce((acc, wave) => acc + wave.maneuvers.length, 0)
   const numberOfWavesPerMinute = (numberOfWaves / durationInMinutes).toFixed(2)
-  const questionnaire = state.questionnaire
+  const questionnaire = state.tag === 'loaded' ? state.questionnaire : null
 
   const leftSideManeuvers = workout.waves.filter(wave => wave.rightSide).flatMap(wave => wave.maneuvers)
   const rightSideManeuvers = workout.waves.filter(wave => !wave.rightSide).flatMap(wave => wave.maneuvers)
@@ -165,6 +214,7 @@ export function WaterWorkoutsDetails() {
                 </>
               }
             />
+            <Button text="Edit Workout" onClick={handleEditWorkout} height="50px" />
           </>
         }
         right={
@@ -222,7 +272,13 @@ export function WaterWorkoutsDetails() {
         }
       />
 
-      {state.isQuestionnairePopupOpen && <AddQuestionnairePopup onClose={handleAddQuestionnaire} onSuccess={() => {}} />}
+      {state.isEditing && (
+        <EditWaterWorkoutPopup workout={state.workout} onClose={handleOnCloseEditing} onSuccess={handleOnSuccess} />
+      )}
+
+      {state.isQuestionnairePopupOpen && (
+        <AddQuestionnairePopup onClose={handleAddQuestionnaire} onSuccess={handleQuestionnaireSuccess} />
+      )}
     </>
   )
 }

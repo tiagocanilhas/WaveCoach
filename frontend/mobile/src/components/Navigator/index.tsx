@@ -7,14 +7,19 @@ import Ionicons from '@expo/vector-icons/Ionicons'
 
 import { Login } from '@screens/Login'
 import { Home } from '@screens/Home'
-import { AddingWaterWorkout } from '@screens/AddingWaterWorkout'
+import { WaterWorkout } from '@screens/WaterWorkout'
 import { Settings } from '@screens/Settings'
+import { Wave } from '@screens/Wave'
+import { Maneuvers } from '@screens/Maneuvers'
 
 import { Loading } from '@components/Loading'
 
 import { useAuthentication } from '@hooks/useAuthentication'
 
 import { Athlete } from '@types/Athlete'
+import { WaterWorkout as WaterWorkoutType } from '@types/WaterWorkout'
+import { Wave as WaveType } from '@types/Wave'
+import { Maneuver as ManeuverType } from '@types/Maneuver'
 
 import { styles } from './styles'
 
@@ -23,7 +28,9 @@ export type RootStackParamList = {
   Home: undefined
   TabNavigator: undefined
   Settings: undefined
-  AddingWaterWorkout: { athlete: Athlete }
+  WaterWorkout: { athlete: Athlete; workout: WaterWorkoutType | null }
+  Wave: { wave: WaveType | null; onSave: (wave: WaveType) => void }
+  Maneuvers: { onSave: (maneuver: ManeuverType) => void }
 }
 
 const Tab = createBottomTabNavigator()
@@ -64,16 +71,18 @@ function TabNavigator() {
   )
 }
 
-function AuthenticatedStack() {
+function AuthenticatedStackNavigator() {
   return (
     <Stack.Navigator initialRouteName="Home">
       <Stack.Screen name="Home" component={TabNavigator} options={{ headerShown: false }} />
-      <Stack.Screen name="AddingWaterWorkout" component={AddingWaterWorkout} options={{ headerShown: false }} />
+      <Stack.Screen name="WaterWorkout" component={WaterWorkout} options={{ headerShown: false, gestureEnabled: false }} />
+      <Stack.Screen name="Wave" component={Wave} options={{ headerShown: false }} />
+      <Stack.Screen name="Maneuvers" component={Maneuvers} options={{ headerShown: false }} />
     </Stack.Navigator>
   )
 }
 
-function UnauthenticatedStack() {
+function UnauthenticatedStackNavigator() {
   return (
     <Stack.Navigator initialRouteName="Login">
       <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
@@ -89,7 +98,7 @@ export function Navigator() {
   return (
     <NavigationContainer>
       <StatusBar />
-      {user ? <AuthenticatedStack /> : <UnauthenticatedStack />}
+      {user ? <AuthenticatedStackNavigator /> : <UnauthenticatedStackNavigator />}
     </NavigationContainer>
   )
 }

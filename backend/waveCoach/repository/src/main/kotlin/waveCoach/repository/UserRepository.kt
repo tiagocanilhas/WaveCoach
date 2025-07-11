@@ -7,18 +7,13 @@ import waveCoach.domain.TokenValidationInfo
 import waveCoach.domain.User
 
 interface UserRepository {
+    // User methods
     fun storeUser(
         username: String,
         passwordValidationInfo: PasswordValidationInfo,
     ): Int
 
-    fun updateUser(
-        uid: Int,
-        username: String,
-        passwordValidationInfo: PasswordValidationInfo,
-    )
-
-    fun removeUser(uid: Int)
+    fun getUserById(uid: Int): User?
 
     fun getUserByUsername(username: String): User?
 
@@ -29,6 +24,25 @@ interface UserRepository {
         maxTokens: Int,
     )
 
+    fun updateUser(
+        uid: Int,
+        username: String,
+        passwordValidationInfo: PasswordValidationInfo,
+    )
+
+    fun updateUsername(
+        uid: Int,
+        username: String,
+    )
+
+    fun updatePassword(
+        uid: Int,
+        passwordValidationInfo: PasswordValidationInfo,
+    )
+
+    fun removeUser(uid: Int)
+
+    // Token methods
     fun getToken(tokenValidationInfo: TokenValidationInfo): Pair<User, Token>?
 
     fun updateTokenLastUsed(

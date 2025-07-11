@@ -32,7 +32,7 @@ export function AuthenticationProvider({ children }: AuthenticationProviderProps
       try {
         const token = await Storage.getToken()
         if (!token) throw new Error('No token found')
-        const res = await checkAuth(token)
+        const { status, res } = await checkAuth(token)
         setUser(res)
       } catch (err) {
         setUser(undefined)

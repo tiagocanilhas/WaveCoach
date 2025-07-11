@@ -11,8 +11,7 @@ type State = {
   seconds: number
 }
 
-type Action =
-| { type: 'setValue'; name: string; value: number }
+type Action = { type: 'setValue'; name: string; value: number }
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
@@ -98,4 +97,3 @@ export function DurationPicker({ value, onChange }: DurationPickerProps) {
     </View>
   )
 }
-

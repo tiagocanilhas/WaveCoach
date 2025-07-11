@@ -70,11 +70,11 @@ export function Login() {
     const { username, password } = state.inputs
 
     try {
-      const res = await login(username, password)
+      const { status, res } = await login(username, password)
       setUser({ id: res.id, username: res.username, isCoach: res.isCoach })
       dispatch({ type: 'success' })
     } catch (error) {
-      dispatch({ type: 'error', error: handleError(error) })
+      dispatch({ type: 'error', error: handleError(error.res) })
       return
     }
   }

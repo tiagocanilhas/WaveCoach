@@ -1,15 +1,15 @@
 import * as React from 'react'
 import { useEffect, useReducer, useCallback } from 'react'
 import { NavigationProp, useNavigation } from '@react-navigation/native'
-import { Text, ScrollView, View, Alert, BackHandler, TouchableOpacity } from 'react-native'
+import { Text, Alert, BackHandler } from 'react-native'
 import { useFocusEffect } from '@react-navigation/native'
-import { MaterialIcons } from '@expo/vector-icons'
 
 import { RootStackParamList } from '@components/Navigator'
 import { MainView } from '@components/MainView'
 import { Athlete } from '@components/Athlete'
-import { Input } from '@components/Input'
 import { Loading } from '@components/Loading'
+import { AthleteExtended } from '@components/AthleteExtended'
+import { ItemsWithSearchBox } from '@components/ItemsWithSearchBox'
 
 import { useAuthentication } from '@hooks/useAuthentication'
 
@@ -18,17 +18,15 @@ import { logout } from '@services/userServices'
 
 import { Athlete as AthleteType } from '@types/Athlete'
 
+import { getLastWaterActivity } from '@services/athleteServices'
+
+import { handleError } from '@utils/handleError'
+
 import { Storage } from '@storage/Storage'
 
 import { styles } from './styles'
-import { AthleteExtended } from '@components/AthleteExtended'
 
-type State = {
-  athletes: AthleteType[] | null | undefined
-  isExtended: boolean
-  name: string
-  error?: string
-}
+type State = { athletes: AthleteType[] | null | undefined; isExtended: boolean; name: string; error?: string }
 
 type Action =
   | { type: 'toggleExtended' }
@@ -61,7 +59,7 @@ export function Home() {
     async function fetchAthletes() {
       try {
         const token = await Storage.getToken()
-        const res = await getAthletes(token ?? '')
+        const { status, res } = await getAthletes(token ?? '')
         dispatch({ type: 'success', athletes: res.athletes })
       } catch (error) {
         dispatch({ type: 'error', error: 'Failed to fetch athletes' })
@@ -72,7 +70,7 @@ export function Home() {
 
   useFocusEffect(
     useCallback(() => {
-      const onBackPress = () => {
+      function onBackPress() {
         Alert.alert(
           'Leaving Application',
           'Do you want to logout or exit the application?',
@@ -120,7 +118,7 @@ export function Home() {
       [
         {
           text: 'Edit last',
-          onPress: () => createWaterWorkout(athlete),
+          onPress: () => editWaterWorkout(athlete),
         },
         {
           text: 'Create new',
@@ -137,9 +135,38 @@ export function Home() {
   }
 
   async function createWaterWorkout(athlete: AthleteType) {
-    navigation.navigate('AddingWaterWorkout', { athlete })
+    navigation.navigate('WaterWorkout', { athlete, workout: null })
     await new Promise(resolve => setTimeout(resolve, 600))
     dispatch({ type: 'edit', name: '' })
+  }
+
+  async function editWaterWorkout(athlete: AthleteType) {
+    try {
+      const { status, res } = await getLastWaterActivity(athlete.uid.toString())
+      const workout = {
+        id: res.id,
+        rpe: res.rpe,
+        trimp: res.trimp,
+        condition: res.condition,
+        time: res.duration,
+        waves: res.waves.map(wave => ({
+          id: wave.id,
+          rightSide: wave.rightSide,
+          maneuvers: wave.maneuvers.map(maneuver => ({
+            id: maneuver.id,
+            waterManeuverId: maneuver.waterManeuverId,
+            name: maneuver.name,
+            url: maneuver.url,
+            success: maneuver.success,
+          })),
+        })),
+      }
+      navigation.navigate('WaterWorkout', { athlete, workout })
+      await new Promise(resolve => setTimeout(resolve, 600))
+      dispatch({ type: 'edit', name: '' })
+    } catch (error) {
+      Alert.alert('Error', `Failed to fetch last workout: ${handleError(error)}`)
+    }
   }
 
   const searchName = state.name
@@ -168,24 +195,18 @@ export function Home() {
       </MainView>
     )
 
-  const filteredAthletes = athletes.filter(a => a.name.toLowerCase().includes(searchName.toLowerCase()))
-
   return (
-    <MainView style={styles.container}>
-      <View style={styles.header}>
-        <Input style={styles.input} value={searchName} placeholder="Search" onChange={handleInputChange} />
-        <TouchableOpacity style={styles.button} onPress={toggleExtended}>
-          <MaterialIcons name={isExtended ? 'view-agenda' : 'view-module'} size={24} color="black" />
-        </TouchableOpacity>
-      </View>
-      <ScrollView style={styles.scrollContainer}>
-        <View style={[styles.athletesContainer, isExtended ? styles.extended : styles.notExtended]}>
-          {filteredAthletes.map(athlete => {
-            const AthleteComponent = isExtended ? AthleteExtended : Athlete
-            return <AthleteComponent athlete={athlete} key={athlete.uid} onPress={select} />
-          })}
-        </View>
-      </ScrollView>
-    </MainView>
+    <ItemsWithSearchBox<AthleteType>
+      nameProperty="name"
+      value={searchName}
+      onChange={handleInputChange}
+      items={athletes}
+      isExtended={isExtended}
+      toggleExtended={toggleExtended}
+      renderItem={(athlete: AthleteType) => {
+        const AthleteComponent = isExtended ? AthleteExtended : Athlete
+        return <AthleteComponent athlete={athlete} key={athlete.uid} onPress={select} />
+      }}
+    />
   )
 }

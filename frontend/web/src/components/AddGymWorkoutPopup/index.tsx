@@ -132,7 +132,7 @@ export function AddGymWorkoutPopup({ onClose, onSuccess }: AddGymWorkoutPopupPro
       await createGymActivity(id, date, exercises)
       onSuccess()
     } catch (error) {
-      dispatch({ type: 'error', error: handleError(error) })
+      dispatch({ type: 'error', error: handleError(error.res) })
     }
   }
 

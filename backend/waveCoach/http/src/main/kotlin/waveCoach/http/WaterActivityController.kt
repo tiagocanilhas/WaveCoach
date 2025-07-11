@@ -8,7 +8,10 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import waveCoach.domain.AuthenticatedCoach
 import waveCoach.domain.AuthenticatedUser
-import waveCoach.http.model.input.*
+import waveCoach.http.model.input.AddManeuverInputModel
+import waveCoach.http.model.input.AddWaveInputModel
+import waveCoach.http.model.input.CreateWaterActivityInputModel
+import waveCoach.http.model.input.QuestionnaireCreateInputModel
 import waveCoach.http.model.input.UpdateWaterActivityInputModel
 import waveCoach.http.model.output.ManeuverOutputModel
 import waveCoach.http.model.output.Problem
@@ -193,8 +196,7 @@ class WaterActivityController(
                     UpdateWaterActivityError.InvalidDuration -> Problem.response(400, Problem.invalidDuration)
                     UpdateWaterActivityError.InvalidWaveOrder -> Problem.response(400, Problem.invalidWaveOrder)
                     UpdateWaterActivityError.InvalidManeuverOrder -> Problem.response(400, Problem.invalidManeuverOrder)
-                    UpdateWaterActivityError.InvalidWaterManeuver ->
-                        Problem.response(400, Problem.invalidWaterManeuver)
+                    UpdateWaterActivityError.InvalidWaterManeuver -> Problem.response(400, Problem.invalidWaterManeuver)
                     UpdateWaterActivityError.InvalidManeuvers -> Problem.response(400, Problem.invalidManeuvers)
                     UpdateWaterActivityError.InvalidRightSide -> Problem.response(400, Problem.invalidRightSide)
                     UpdateWaterActivityError.InvalidSuccess -> Problem.response(400, Problem.invalidSuccess)
@@ -264,138 +266,6 @@ class WaterActivityController(
                     GetQuestionnaireError.ActivityNotFound -> Problem.response(404, Problem.waterActivityNotFound)
                     GetQuestionnaireError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
                     GetQuestionnaireError.QuestionnaireNotFound -> Problem.response(404, Problem.questionnaireNotFound)
-                }
-        }
-    }
-
-    @PostMapping(Uris.WaterActivity.ADD_WAVE)
-    fun addWave(
-        coach: AuthenticatedCoach,
-        @PathVariable activityId: String,
-        @RequestBody waveInputModel: AddWaveInputModel,
-    ): ResponseEntity<*> {
-        val id = activityId.toIntOrNull() ?: return Problem.response(400, Problem.invalidWaterActivityId)
-
-        val result = waterActivityService.addWave(
-            coach.info.id,
-            id,
-            waveInputModel.points,
-            waveInputModel.rightSide,
-            waveInputModel.maneuvers.map { maneuverInputModel ->
-                ManeuverInputInfo(
-                    maneuverInputModel.waterManeuverId,
-                    maneuverInputModel.success,
-                )
-            },
-            waveInputModel.order,
-        )
-
-        return when (result) {
-            is Success -> ResponseEntity
-                .status(201)
-                .header("Location", Uris.WaterActivity.waveById(id, result.value).toASCIIString())
-                .build<Unit>()
-
-            is Failure ->
-                when (result.value) {
-                    AddWaveError.ActivityNotFound -> Problem.response(404, Problem.waterActivityNotFound)
-                    AddWaveError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
-                    AddWaveError.InvalidOrder -> Problem.response(400, Problem.invalidOrder)
-                    AddWaveError.InvalidWaterManeuver -> Problem.response(400, Problem.invalidWaterManeuver)
-                    AddWaveError.NotWaterActivity -> Problem.response(400, Problem.notWaterActivity)
-                }
-        }
-    }
-
-    @DeleteMapping(Uris.WaterActivity.REMOVE_WAVE)
-    fun removeWave(
-        coach: AuthenticatedCoach,
-        @PathVariable activityId: String,
-        @PathVariable waveId: String,
-    ): ResponseEntity<*> {
-        val activityIdInt = activityId.toIntOrNull() ?: return Problem.response(400, Problem.invalidWaterActivityId)
-        val waveIdInt = waveId.toIntOrNull() ?: return Problem.response(400, Problem.invalidWaveId)
-
-        val result = waterActivityService.removeWave(coach.info.id, activityIdInt, waveIdInt)
-
-        return when (result) {
-            is Success -> ResponseEntity.status(204).build<Unit>()
-            is Failure ->
-                when (result.value) {
-                    RemoveWaveError.ActivityNotFound -> Problem.response(404, Problem.waterActivityNotFound)
-                    RemoveWaveError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
-                    RemoveWaveError.WaveNotFound -> Problem.response(404, Problem.waveNotFound)
-                    RemoveWaveError.NotWaterActivity -> Problem.response(400, Problem.notWaterActivity)
-                    RemoveWaveError.NotActivityWave -> Problem.response(400, Problem.notActivityWave)
-                }
-        }
-    }
-
-    @PostMapping(Uris.WaterActivity.ADD_MANEUVER)
-    fun addManeuver(
-        coach: AuthenticatedCoach,
-        @PathVariable activityId: String,
-        @PathVariable waveId: String,
-        @RequestBody maneuverInputModel: AddManeuverInputModel,
-    ): ResponseEntity<*> {
-        val activityIdInt = activityId.toIntOrNull() ?: return Problem.response(400, Problem.invalidWaterActivityId)
-        val waveIdInt = waveId.toIntOrNull() ?: return Problem.response(400, Problem.invalidWaveId)
-
-        val result = waterActivityService.addManeuver(
-            coach.info.id,
-            activityIdInt,
-            waveIdInt,
-            maneuverInputModel.waterManeuverId,
-            maneuverInputModel.success,
-            maneuverInputModel.order,
-        )
-
-        return when (result) {
-            is Success -> ResponseEntity
-                .status(201)
-                .header(
-                    "Location",
-                    Uris.WaterActivity.maneuverById(activityIdInt, waveIdInt, result.value).toASCIIString()
-                )
-                .build<Unit>()
-
-            is Failure ->
-                when (result.value) {
-                    AddManeuverError.ActivityNotFound -> Problem.response(404, Problem.waterActivityNotFound)
-                    AddManeuverError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
-                    AddManeuverError.WaveNotFound -> Problem.response(404, Problem.waveNotFound)
-                    AddManeuverError.InvalidOrder -> Problem.response(400, Problem.invalidOrder)
-                    AddManeuverError.InvalidWaterManeuver -> Problem.response(400, Problem.invalidWaterManeuver)
-                    AddManeuverError.NotWaterActivity -> Problem.response(400, Problem.notWaterActivity)
-                    AddManeuverError.NotActivityWave -> Problem.response(400, Problem.notActivityWave)
-                }
-        }
-    }
-
-    @DeleteMapping(Uris.WaterActivity.REMOVE_MANEUVER)
-    fun removeManeuver(
-        coach: AuthenticatedCoach,
-        @PathVariable activityId: String,
-        @PathVariable waveId: String,
-        @PathVariable maneuverId: String,
-    ): ResponseEntity<*> {
-        val activityIdInt = activityId.toIntOrNull() ?: return Problem.response(400, Problem.invalidWaterActivityId)
-        val waveIdInt = waveId.toIntOrNull() ?: return Problem.response(400, Problem.invalidWaveId)
-        val maneuverIdInt = maneuverId.toIntOrNull() ?: return Problem.response(400, Problem.invalidManeuverId)
-
-        val result = waterActivityService.removeManeuver(coach.info.id, activityIdInt, waveIdInt, maneuverIdInt)
-
-        return when (result) {
-            is Success -> ResponseEntity.status(204).build<Unit>()
-            is Failure ->
-                when (result.value) {
-                    RemoveManeuverError.ActivityNotFound -> Problem.response(404, Problem.waterActivityNotFound)
-                    RemoveManeuverError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
-                    RemoveManeuverError.WaveNotFound -> Problem.response(404, Problem.waveNotFound)
-                    RemoveManeuverError.ManeuverNotFound -> Problem.response(404, Problem.maneuverNotFound)
-                    RemoveManeuverError.NotWaterActivity -> Problem.response(400, Problem.notWaterActivity)
-                    RemoveManeuverError.NotActivityWave -> Problem.response(400, Problem.notActivityWave)
-                    RemoveManeuverError.NotWaveManeuver -> Problem.response(400, Problem.notWaveManeuver)
                 }
         }
     }

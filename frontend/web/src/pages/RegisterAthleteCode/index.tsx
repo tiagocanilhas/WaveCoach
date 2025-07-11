@@ -59,20 +59,14 @@ export function RegisterAthleteCode() {
     navigate('/register')
   }
 
-  async function handleOnSubmit(ev: React.FormEvent<HTMLFormElement>) {
+  function handleOnSubmit(ev: React.FormEvent<HTMLFormElement>) {
     ev.preventDefault()
 
     if (state.tag !== 'editing') return
 
     dispatch({ type: 'submit' })
 
-    try {
-      const res = await (() => Promise.resolve())()
-      dispatch({ type: 'success' })
-    } catch (error) {
-      dispatch({ type: 'error', error: 'Invalid code' })
-      return
-    }
+    dispatch({ type: 'success' })
   }
 
   function handleOnChange(ev: React.ChangeEvent<HTMLInputElement>) {
