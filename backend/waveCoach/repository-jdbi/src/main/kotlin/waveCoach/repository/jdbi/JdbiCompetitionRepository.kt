@@ -12,18 +12,20 @@ class JdbiCompetitionRepository(
         uid: Int,
         date: Long,
         location: String,
-        place: Int
+        place: Int,
+        name: String
     ): Int {
         return handle.createUpdate(
             """
-            insert into waveCoach.competition (uid, date, location, place)
-            values (:uid, :date, :location, :place)
+            insert into waveCoach.competition (uid, date, location, place, name)
+            values (:uid, :date, :location, :place, :name)
             """.trimIndent(),
         )
             .bind("uid", uid)
             .bind("date", date)
             .bind("location", location)
             .bind("place", place)
+            .bind("name", name)
             .executeAndReturnGeneratedKeys()
             .mapTo<Int>()
             .one()
@@ -35,6 +37,7 @@ class JdbiCompetitionRepository(
         val competitionDate: Long,
         val location: String,
         val place: Int,
+        val name: String,
         val heatId: Int?,
         val score: Float?,
         val waterActivityId: Int?,
@@ -62,7 +65,7 @@ class JdbiCompetitionRepository(
     ): CompetitionWithHeats? {
         val query =
             """
-            select c.id, c.uid, c.date as competition_date, c.location, c.place, h.id as heat_id, h.score, 
+            select c.id, c.uid, c.date as competition_date, c.location, c.place, c.name, h.id as heat_id, h.score, 
             wa.activity as water_activity_id, a.uid as athlete_id, a.microcycle, wa.rpe, wa.condition, wa.trimp, 
             wa.duration, w.id as wave_id, w.points, w.right_side, w.wave_order, m.id as maneuver_id, 
             wm.id as water_maneuver_id, wm.name as water_maneuver_name, wm.url, m.success, m.maneuver_order
@@ -89,6 +92,7 @@ class JdbiCompetitionRepository(
             date = competition.competitionDate,
             location = competition.location,
             place = competition.place,
+            name = competition.name,
             heats =
                 rows.groupBy { it.heatId }.filterKeys { it != null }.map { (_, heatRows) ->
                     val heatInfo = heatRows.first()
@@ -140,13 +144,14 @@ class JdbiCompetitionRepository(
         )
     }
 
-    override fun updateCompetition(id: Int, date: Long?, location: String?, place: Int?) {
+    override fun updateCompetition(id: Int, date: Long?, location: String?, place: Int?, name: String?) {
         handle.createUpdate(
             """
             update waveCoach.competition set
             date = coalesce(:date, date),
             location = coalesce(:location, location),
-            place = coalesce(:place, place)
+            place = coalesce(:place, place),
+            name = coalesce(:name, name)
             where id = :id
             """.trimIndent(),
         )
@@ -154,6 +159,7 @@ class JdbiCompetitionRepository(
             .bind("date", date)
             .bind("location", location)
             .bind("place", place)
+            .bind("name", name)
             .execute()
     }
 

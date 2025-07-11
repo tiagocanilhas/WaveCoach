@@ -615,6 +615,7 @@ class AthleteController(
             input.date,
             input.location,
             input.place,
+            input.name,
             input.heats.map { heatInputModel ->
                 HeatInputInfo(
                     heatInputModel.score,
@@ -664,6 +665,7 @@ class AthleteController(
                     CreateCompetitionError.InvalidTrimp -> Problem.response(400, Problem.invalidTrimp)
                     CreateCompetitionError.InvalidWaterManeuver -> Problem.response(400, Problem.invalidWaterManeuver)
                     CreateCompetitionError.InvalidPlace -> Problem.response(400, Problem.invalidPlace)
+                    CreateCompetitionError.InvalidName -> Problem.response(400, Problem.invalidName)
                 }
         }
     }
@@ -689,6 +691,7 @@ class AthleteController(
                             result.value.date,
                             result.value.location,
                             result.value.place,
+                            result.value.name,
                             result.value.heats.map { heat ->
                                 HeatOutputModel(
                                     heat.id,
@@ -734,6 +737,8 @@ class AthleteController(
         }
     }
 
+
+
     @PatchMapping(Uris.Athletes.UPDATE_COMPETITION)
     fun updateCompetition(
         coach: AuthenticatedCoach,
@@ -750,6 +755,7 @@ class AthleteController(
             input.date,
             input.location,
             input.place,
+            input.name,
             input.heats?.map { heatInputModel ->
                 UpdateHeatInputInfo(
                     heatInputModel.id,
@@ -821,6 +827,7 @@ class AthleteController(
                     )
 
                     UpdateCompetitionError.WaveNotFound -> Problem.response(404, Problem.waveNotFound)
+                    UpdateCompetitionError.InvalidName -> Problem.response(400, Problem.invalidName)
                 }
         }
     }

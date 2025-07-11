@@ -483,5 +483,11 @@ class Problem(
                 "Passwords are equal",
                 URI("$BASE_URI/passwords-are-equal"),
             )
+
+        val invalidExerciseOrder =
+            Problem(
+                "Invalid exercise order",
+                URI("$BASE_URI/invalid-exercise-order"),
+            )
     }
 }

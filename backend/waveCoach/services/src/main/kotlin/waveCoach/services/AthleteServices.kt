@@ -222,6 +222,8 @@ sealed class CreateCompetitionError {
     data object InvalidScore : CreateCompetitionError()
 
     data object InvalidPlace : CreateCompetitionError()
+
+    data object InvalidName : CreateCompetitionError()
 }
 typealias CreateCompetitionResult = Either<CreateCompetitionError, Int>
 
@@ -282,6 +284,8 @@ sealed class UpdateCompetitionError {
     data object InvalidCondition : UpdateCompetitionError()
 
     data object ActivityWithoutMicrocycle : UpdateCompetitionError()
+
+    data object InvalidName : UpdateCompetitionError()
 }
 typealias UpdateCompetitionResult = Either<UpdateCompetitionError, Int>
 
@@ -757,6 +761,7 @@ class AthleteServices(
         date: String,
         location: String,
         place: Int,
+        name: String,
         heats: List<HeatInputInfo>,
     ): CreateCompetitionResult {
         val dateLong = dateToLong(date) ?: return failure(CreateCompetitionError.InvalidDate)
@@ -775,7 +780,9 @@ class AthleteServices(
 
             if (place <= 0) return@run failure(CreateCompetitionError.InvalidPlace)
 
-            val competitionId = competitionRepository.storeCompetition(athleteId, dateLong, location, place)
+            if(name.isBlank()) return@run failure(CreateCompetitionError.InvalidName)
+
+            val competitionId = competitionRepository.storeCompetition(athleteId, dateLong, location, place, name)
 
             val heatsToInsert = heats.map { heat ->
                 if (heat.score < 0)
@@ -876,6 +883,7 @@ class AthleteServices(
         date: String?,
         location: String?,
         place: Int?,
+        name: String?,
         heats: List<UpdateHeatInputInfo>?,
     ): UpdateCompetitionResult {
         val dateLong = date?.let { dateToLong(it) ?: return failure(UpdateCompetitionError.InvalidDate) }
@@ -900,7 +908,9 @@ class AthleteServices(
             if (date != null || location != null || place != null) {
                 if (place != null && place <= 0) return@run failure(UpdateCompetitionError.InvalidPlace)
 
-                competitionRepository.updateCompetition(competitionId, dateLong, location, place)
+                if (name != null && name.isBlank()) return@run failure(UpdateCompetitionError.InvalidName)
+
+                competitionRepository.updateCompetition(competitionId, dateLong, location, place, name)
             }
 
             if (heats != null) {

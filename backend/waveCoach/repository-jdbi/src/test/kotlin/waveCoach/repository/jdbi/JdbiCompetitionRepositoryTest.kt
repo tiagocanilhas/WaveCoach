@@ -17,7 +17,8 @@ class JdbiCompetitionRepositoryTest {
                 uid = UID,
                 date = DATE,
                 location = randomString(),
-                place = 1
+                place = 1,
+                name = randomString()
             )
 
             val competition = competitionRepository.competitionExists(competitionId)
@@ -36,7 +37,8 @@ class JdbiCompetitionRepositoryTest {
                 uid = UID,
                 date = DATE,
                 location = randomString(),
-                place = 1
+                place = 1,
+                name = randomString()
             )
 
             val competition = competitionRepository.getCompetition(competitionId)
@@ -58,7 +60,8 @@ class JdbiCompetitionRepositoryTest {
                 uid = UID,
                 date = DATE,
                 location = randomString(),
-                place = 1
+                place = 1,
+                name = randomString()
             )
 
             val newLocation = randomString()
@@ -68,7 +71,8 @@ class JdbiCompetitionRepositoryTest {
                 id = competitionId,
                 date = null,
                 location = newLocation,
-                place = newPlace
+                place = newPlace,
+                name = null
             )
 
             val updatedCompetition = competitionRepository.getCompetition(competitionId)
@@ -90,7 +94,8 @@ class JdbiCompetitionRepositoryTest {
                 uid = UID,
                 date = DATE,
                 location = randomString(),
-                place = 1
+                place = 1,
+                name = randomString()
             )
 
             competitionRepository.removeCompetition(competitionId)
@@ -111,7 +116,8 @@ class JdbiCompetitionRepositoryTest {
                 uid = UID,
                 date = DATE,
                 location = randomString(),
-                place = 1
+                place = 1,
+                name = randomString()
             )
             val activityId = activityRepository.storeActivity(UID, ANOTHER_DATE, MICRO_ID)
 
@@ -146,7 +152,8 @@ class JdbiCompetitionRepositoryTest {
                 uid = UID,
                 date = DATE,
                 location = randomString(),
-                place = 1
+                place = 1,
+                name = randomString()
             )
             val activityId = activityRepository.storeActivity(UID, ANOTHER_DATE, MICRO_ID)
 
@@ -183,7 +190,8 @@ class JdbiCompetitionRepositoryTest {
                 uid = UID,
                 date = DATE,
                 location = randomString(),
-                place = 1
+                place = 1,
+                name = randomString()
             )
             val activityId = activityRepository.storeActivity(UID, ANOTHER_DATE, MICRO_ID)
 

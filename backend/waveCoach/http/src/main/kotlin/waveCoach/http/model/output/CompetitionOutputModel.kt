@@ -6,5 +6,6 @@ data class CompetitionOutputModel(
     val date: Long,
     val location: String,
     val place: Int,
+    val name: String,
     val heats: List<HeatOutputModel>,
 )

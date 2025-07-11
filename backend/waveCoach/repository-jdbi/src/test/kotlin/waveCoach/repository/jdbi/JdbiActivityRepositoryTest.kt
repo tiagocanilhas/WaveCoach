@@ -55,7 +55,7 @@ class JdbiActivityRepositoryTest {
             val waterActivityRepository = JdbiWaterActivityRepository(handle)
             val competitionRepository = JdbiCompetitionRepository(handle)
 
-            val competition = competitionRepository.storeCompetition(FIRST_ATHLETE_ID, DATE, "Test Location", 1)
+            val competition = competitionRepository.storeCompetition(FIRST_ATHLETE_ID, DATE, "Test Location", 1, "Test Competition")
 
             val activity = activityRepository.storeActivity(FIRST_ATHLETE_ID, DATE, MICRO_ID)
             waterActivityRepository.storeWaterActivity(activity, 1, "good", 5, 10,)

@@ -252,13 +252,13 @@ insert into waveCoach.token (token, uid) values ('9w_gSKESfKRl84Y1h17omPFOEkdkGR
 -- token: jxuHflgoufWumSnj3IWryNxPEZHusJwgBPbeFhU8784=
 
 -- First Competition
-insert into waveCoach.competition (uid, date, location, place) values (3, 1746057600000, 'Ocean Beach', 1);
+insert into waveCoach.competition (uid, date, location, place, name) values (3, 1746057600000, 'Ocean Beach', 1, 'Spring Surf Contest');
 insert into waveCoach.activity (uid, microcycle, date) values (3, 1, 1746057600000); -- 2025-05-01
 insert into waveCoach.water (activity, rpe, condition, trimp, duration) values (29, 5, 'Good', 120, 60);
 insert into waveCoach.wave (activity, points, right_side, wave_order) values (29, 5, true, 1);
-insert into waveCoach.maneuver (wave, maneuver, success, maneuver_order) values (7, 1, true, 1);
+insert into waveCoach.maneuver (wave, maneuver, success, maneuver_order) values (9, 1, true, 1);
 insert into waveCoach.heat (competition, water_activity, score) values (1, 29, 85);
 
 -- Second Competition
-insert into waveCoach.competition (uid, date, location, place) values (3, 1746144000000, 'Ocean Beach', 2);
+insert into waveCoach.competition (uid, date, location, place, name) values (3, 1746144000000, 'Ocean Beach', 2, 'Summer Surf Contest');
 --insert into waveCoach.heat (competition, water_activity, score) values (2, 2, 90);

@@ -139,7 +139,7 @@ class GymActivityController(
                     UpdateGymActivityError.InvalidDate -> Problem.response(400, Problem.invalidDate)
                     UpdateGymActivityError.InvalidGymExercise -> Problem.response(400, Problem.invalidGymExercise)
                     UpdateGymActivityError.ExerciseNotFound -> Problem.response(404, Problem.exerciseNotFound)
-                    UpdateGymActivityError.InvalidExerciseOrder -> Problem.response(400, Problem.invalidOrder)
+                    UpdateGymActivityError.InvalidExerciseOrder -> Problem.response(400, Problem.invalidExerciseOrder)
                     UpdateGymActivityError.SetNotFound -> Problem.response(404, Problem.setNotFound)
                     UpdateGymActivityError.InvalidSet -> Problem.response(400, Problem.invalidSet)
                     UpdateGymActivityError.ActivityNotFound -> Problem.response(404, Problem.gymActivityNotFound)

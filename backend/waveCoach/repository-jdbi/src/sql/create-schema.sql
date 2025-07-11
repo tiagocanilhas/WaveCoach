@@ -186,6 +186,7 @@ CREATE TABLE waveCoach.competition(
     date BIGINT DEFAULT EXTRACT(EPOCH FROM CURRENT_TIMESTAMP) NOT NULL,
     location VARCHAR(64),
     place INTEGER,
+    name VARCHAR(64) NOT NULL,
     FOREIGN KEY (uid) REFERENCES waveCoach.athlete(uid) ON DELETE CASCADE
 );
 

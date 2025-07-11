@@ -563,18 +563,17 @@ class GymActivityControllerTest {
                                 "reps" to 10,
                                 "weight" to 100.0,
                                 "restTime" to 60.0,
-                                "order" to 1,
+                                "order" to 3,
                             ),
                             mapOf(
                                 "id" to 17,
                                 "reps" to 20,
-                                "order" to 2,
                             ),
                             mapOf(
                                 "id" to 18
                             ),
                         ),
-                        "order" to 2,
+                        "order" to 3,
                     ),
                     mapOf(
                         "id" to 8,
@@ -801,7 +800,6 @@ class GymActivityControllerTest {
                                 "restTime" to 60.0,
                             ),
                         ),
-                        "order" to 1,
                     ),
                 ),
             )
@@ -878,7 +876,7 @@ class GymActivityControllerTest {
             .expectStatus().isBadRequest
             .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
             .expectBody()
-            .jsonPath("type").isEqualTo(Problem.invalidOrder.type.toString())
+            .jsonPath("type").isEqualTo(Problem.invalidExerciseOrder.type.toString())
     }
 
     @Test
@@ -901,7 +899,6 @@ class GymActivityControllerTest {
                                 "restTime" to 60.0,
                             ),
                         ),
-                        "order" to 1,
                     ),
                 ),
             )
@@ -965,7 +962,6 @@ class GymActivityControllerTest {
                                 "restTime" to 60.0,
                             ),
                         ),
-                        "order" to 1,
                     ),
                 ),
             )
