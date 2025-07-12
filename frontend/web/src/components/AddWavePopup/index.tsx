@@ -11,7 +11,7 @@ import { ManeuverToAdd } from '../../types/ManeuverToAdd'
 import { WaveToAdd } from '../../types/WaveToAdd'
 
 import styles from './styles.module.css'
-import { VerticalReorderableList } from '../VerticalReorderableList'
+import { ReorderableList } from '../ReorderableList'
 import { LabeledSwitch } from '../LabeledSwitch'
 import { AddManeuverPopup } from '../AddManeuverPopup'
 
@@ -123,7 +123,7 @@ export function AddWavePopup({ data, onClose, onAdd }: AddWavePopupProps) {
                 onChange={handleToggleRightSide}
                 checked={state.rightSide}
               />
-              <VerticalReorderableList<ManeuverToAdd>
+              <ReorderableList<ManeuverToAdd>
                 list={maneuvers}
                 renderItem={info => (
                   <p>

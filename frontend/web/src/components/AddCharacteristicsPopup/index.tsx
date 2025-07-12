@@ -151,7 +151,7 @@ const initialState: State = {
 
 export function AddCharacteristicsPopup({ onClose, onSuccess }: AddCharacteristicsPopupProps) {
   const [state, dispatch] = useReducer(reducer, initialState)
-  const id = useParams().aid as string
+  const id = Number(useParams().aid)
 
   function handleChange(ev: React.ChangeEvent<HTMLInputElement>) {
     dispatch({ type: 'edit', name: ev.target.name, value: ev.target.value })

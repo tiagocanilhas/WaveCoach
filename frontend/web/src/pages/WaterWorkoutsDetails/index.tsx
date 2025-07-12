@@ -37,7 +37,12 @@ function reducer(state: State, action: Action): State {
       switch (action.type) {
         case 'setWorkout':
           if (state.questionnaire !== undefined) {
-            return { tag: 'loaded', workout: action.workout, questionnaire: state.questionnaire, isEditing: false }
+            return { 
+              tag: 'loaded',
+              workout: action.workout,
+              questionnaire: state.questionnaire, 
+              isEditing: false 
+            }
           }
           return { tag: 'loading', workout: action.workout, questionnaire: state.questionnaire }
         case 'setQuestionnaire':
@@ -71,7 +76,7 @@ function reducer(state: State, action: Action): State {
 export function WaterWorkoutsDetails() {
   const initialState: State = { tag: 'loading' }
   const [state, dispatch] = useReducer(reducer, initialState)
-  const wid = useParams().wid
+  const wid = Number(useParams().wid)
 
   async function fetchActivityData() {
     try {

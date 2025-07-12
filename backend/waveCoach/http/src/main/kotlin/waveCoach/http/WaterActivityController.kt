@@ -100,18 +100,20 @@ class WaterActivityController(
                             result.value.condition,
                             result.value.trimp,
                             result.value.duration,
-                            result.value.waves.map { wave ->
+                            result.value.waves.mapIndexed { index, wave ->
                                 WaveOutputModel(
                                     wave.id,
                                     wave.points,
                                     wave.rightSide,
-                                    wave.maneuvers.map { maneuver ->
+                                    index + 1,
+                                    wave.maneuvers.mapIndexed { mIndex, maneuver ->
                                         ManeuverOutputModel(
                                             maneuver.id,
                                             maneuver.waterManeuverId,
                                             maneuver.waterManeuverName,
                                             maneuver.url,
                                             maneuver.success,
+                                            mIndex + 1,
                                         )
                                     },
                                 )

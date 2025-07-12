@@ -46,7 +46,7 @@ function reducer(state: State, action: Action): State {
 
 export function GymWorkoutsDetails() {
   const [state, dispatch] = useReducer(reducer, { tag: 'loading' })
-  const gid = useParams().gid
+  const gid = Number(useParams().gid)
 
   async function fetchData() {
     try {

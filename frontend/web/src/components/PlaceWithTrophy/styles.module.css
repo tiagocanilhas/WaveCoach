@@ -1,0 +1,8 @@
+.trophy {
+  display: flex;
+  align-items: center;
+}
+
+.trophy span {
+  font-size: 35px;
+}

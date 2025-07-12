@@ -8,9 +8,10 @@ import styles from './styles.module.css'
 type ScrollableTextProps = {
   text: string
   className?: string
+  onClick?: () => void
 }
 
-export function ScrollableText({ text, className }: ScrollableTextProps) {
+export function ScrollableText({ text, className, onClick }: ScrollableTextProps) {
   const [isHovered, setIsHovered] = useState(false)
   const textRef = useRef<HTMLSpanElement>(null)
 
@@ -28,6 +29,7 @@ export function ScrollableText({ text, className }: ScrollableTextProps) {
       onMouseLeave={() => setIsHovered(false)}
       className={styles.container}
       data-testid="scrollable-text"
+      onClick={onClick}
     >
       {isHovered ? (
         <Marquee speed={40} gradient={false}>

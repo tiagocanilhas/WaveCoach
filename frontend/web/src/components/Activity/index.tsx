@@ -21,17 +21,17 @@ type ActivityProps = {
 
 export function Activity({ activity, onDeleteSuccess }: ActivityProps) {
   const navigate = useNavigate()
-  const id = useParams().aid
+  const id = Number(useParams().aid)
 
   async function handleDeleteActivity() {
     if (confirm('Are you sure you want to delete this activity?')) {
       try {
         switch (activity.type) {
           case 'gym':
-            await deleteGymActivity(activity.id.toString())
+            await deleteGymActivity(activity.id)
             break
           case 'water':
-            await deleteWaterActivity(activity.id.toString())
+            await deleteWaterActivity(activity.id)
             break
           default:
             throw new Error('Unknown activity type')

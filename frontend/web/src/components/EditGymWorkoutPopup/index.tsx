@@ -6,7 +6,7 @@ import { TextField } from '@mui/material'
 import { SelectExercisePopup } from '../SelectExercisePopup'
 import { Popup } from '../Popup'
 import { Button } from '../Button'
-import { VerticalReorderableList } from '../VerticalReorderableList'
+import { ReorderableList } from '../ReorderableList'
 import { EditExercisePopup } from '../EditExercisePopup'
 
 import { Exercise } from '../../types/Exercise'
@@ -107,7 +107,7 @@ export function EditGymWorkoutPopup({ workout, onClose, onSuccess }: EditGymWork
     error: undefined,
   }
   const [state, dispatch] = useReducer(reducer, initialState)
-  const gid = useParams().gid
+  const gid = Number(useParams().gid)
 
   function handleToggleAdding() {
     dispatch({ type: 'toggleAdding' })
@@ -212,7 +212,7 @@ export function EditGymWorkoutPopup({ workout, onClose, onSuccess }: EditGymWork
             <form className={styles.addWorkout} onSubmit={handleOnSubmit}>
               <TextField type="date" name="date" value={date} onChange={handleOnChange} />
               <div className={styles.exercisesContainer}>
-                <VerticalReorderableList<GymWorkoutExercise>
+                <ReorderableList<GymWorkoutExercise>
                   list={exercises}
                   onReorder={handleReorder}
                   renderItem={item => (

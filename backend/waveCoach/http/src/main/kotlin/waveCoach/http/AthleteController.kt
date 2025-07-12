@@ -518,18 +518,20 @@ class AthleteController(
                                                     waterActivity.condition,
                                                     waterActivity.trimp,
                                                     waterActivity.duration,
-                                                    waterActivity.waves.map { wave ->
+                                                    waterActivity.waves.mapIndexed { index, wave ->
                                                         WaveOutputModel(
                                                             wave.id,
                                                             wave.points,
                                                             wave.rightSide,
-                                                            wave.maneuvers.map { maneuver ->
+                                                            index + 1,
+                                                            wave.maneuvers.mapIndexed { mIndex, maneuver ->
                                                                 ManeuverOutputModel(
                                                                     maneuver.id,
                                                                     maneuver.waterManeuverId,
                                                                     maneuver.waterManeuverName,
                                                                     maneuver.url,
                                                                     maneuver.success,
+                                                                    mIndex + 1,
                                                                 )
                                                             },
                                                         )
@@ -574,18 +576,20 @@ class AthleteController(
                             result.value.condition,
                             result.value.trimp,
                             result.value.duration,
-                            result.value.waves.map { wave ->
+                            result.value.waves.mapIndexed { index, wave ->
                                 WaveOutputModel(
                                     wave.id,
                                     wave.points,
                                     wave.rightSide,
-                                    wave.maneuvers.map { maneuver ->
+                                    index + 1,
+                                    wave.maneuvers.mapIndexed { mIndex, maneuver ->
                                         ManeuverOutputModel(
                                             maneuver.id,
                                             maneuver.waterManeuverId,
                                             maneuver.waterManeuverName,
                                             maneuver.url,
                                             maneuver.success,
+                                            mIndex + 1,
                                         )
                                     },
                                 )
@@ -705,18 +709,20 @@ class AthleteController(
                                         heat.waterActivity.condition,
                                         heat.waterActivity.trimp,
                                         heat.waterActivity.duration,
-                                        heat.waterActivity.waves.map { wave ->
+                                        heat.waterActivity.waves.mapIndexed { index, wave ->
                                             WaveOutputModel(
                                                 wave.id,
                                                 wave.points,
                                                 wave.rightSide,
-                                                wave.maneuvers.map { maneuver ->
+                                                index + 1,
+                                                wave.maneuvers.mapIndexed { mIndex, maneuver ->
                                                     ManeuverOutputModel(
                                                         maneuver.id,
                                                         maneuver.waterManeuverId,
                                                         maneuver.waterManeuverName,
                                                         maneuver.url,
                                                         maneuver.success,
+                                                        mIndex + 1,
                                                     )
                                                 },
                                             )
@@ -772,18 +778,20 @@ class AthleteController(
                                                 heat.waterActivity.condition,
                                                 heat.waterActivity.trimp,
                                                 heat.waterActivity.duration,
-                                                heat.waterActivity.waves.map { wave ->
+                                                heat.waterActivity.waves.mapIndexed { index, wave ->
                                                     WaveOutputModel(
                                                         wave.id,
                                                         wave.points,
                                                         wave.rightSide,
-                                                        wave.maneuvers.map { maneuver ->
+                                                        index + 1,
+                                                        wave.maneuvers.mapIndexed { mIndex, maneuver ->
                                                             ManeuverOutputModel(
                                                                 maneuver.id,
                                                                 maneuver.waterManeuverId,
                                                                 maneuver.waterManeuverName,
                                                                 maneuver.url,
                                                                 maneuver.success,
+                                                                mIndex + 1,
                                                             )
                                                         },
                                                     )

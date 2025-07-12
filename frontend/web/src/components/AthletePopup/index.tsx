@@ -92,7 +92,7 @@ export function AthletePopup({ onClose, onSuccess, data }: AthletePopupProps) {
     const image = state.image
 
     try {
-      if (isEditing) await updateAthlete(data.uid.toString(), name, birthdate)
+      if (isEditing) await updateAthlete(data.uid, name, birthdate)
       else await createAthlete(name, birthdate, image)
 
       dispatch({ type: 'success' })

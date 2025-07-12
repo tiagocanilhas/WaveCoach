@@ -47,7 +47,7 @@ type AddQuestionnairePopupProps = {
 export function AddQuestionnairePopup({ onClose, onSuccess }: AddQuestionnairePopupProps) {
   const initialState: State = { tag: 'editing', sleep: 0, fatigue: 0, stress: 0, musclePain: 0, error: undefined }
   const [state, dispatch] = useReducer(reducer, initialState)
-  const wid = useParams().wid
+  const wid = Number(useParams().wid)
 
   function handleSliderChange(event: Event, newValue: number) {
     const target = event.target as HTMLInputElement

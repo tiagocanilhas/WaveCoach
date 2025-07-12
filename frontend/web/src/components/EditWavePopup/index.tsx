@@ -4,7 +4,7 @@ import { useReducer } from 'react'
 import { Popup } from '../Popup'
 import { Button } from '../Button'
 import { SelectManeuverPopup } from '../SelectManeuverPopup'
-import { VerticalReorderableList } from '../VerticalReorderableList'
+import { ReorderableList } from '../ReorderableList'
 import { LabeledSwitch } from '../LabeledSwitch'
 import { WaterWorkoutWave } from '../../types/WaterWorkoutWave'
 import { EditManeuverPopup } from '../EditManeuverPopup'
@@ -49,7 +49,11 @@ function reducer(state: State, action: Action): State {
     case 'updateManeuver':
       return {
         ...state,
-        maneuvers: state.maneuvers.map(m => (m.id === action.maneuver.id ? action.maneuver : m)),
+        maneuvers: state.maneuvers.map(m => {
+          const matchById = m.id !== null && m.id === action.maneuver.id
+          const matchByTempId = m.id === null && m.tempId === action.maneuver.tempId
+          return matchById || matchByTempId ? action.maneuver : m
+        }),
         maneuverToEdit: null,
       }
     case 'deleteManeuver':
@@ -67,17 +71,17 @@ function reducer(state: State, action: Action): State {
 }
 
 type EditWavePopupProps = {
-  wave: WaterWorkoutWave
+  wave?: WaterWorkoutWave
   onSave: (maneuvers: Maneuver[], rightSide: boolean) => void
   onClose: () => void
 }
 
 export function EditWavePopup({ wave, onClose, onSave }: EditWavePopupProps) {
   const initialState: State = {
-    isSelecting: false,
-    rightSide: wave.rightSide,
-    maneuvers: wave.maneuvers,
+    rightSide: wave ? wave.rightSide : false,
+    maneuvers: wave ? wave.maneuvers : [],
     removedManeuvers: [],
+    isSelecting: false,
     maneuverToEdit: null,
   }
   const [state, dispatch] = useReducer(reducer, initialState)
@@ -93,6 +97,7 @@ export function EditWavePopup({ wave, onClose, onSave }: EditWavePopupProps) {
   function handleOnSave(maneuver: WaterManeuver, success: boolean) {
     const newManeuver: Maneuver = {
       id: null,
+      tempId: Date.now(), // Temporary ID for new maneuvers
       waterManeuverId: maneuver.id,
       name: maneuver.name,
       url: maneuver.url,
@@ -138,7 +143,7 @@ export function EditWavePopup({ wave, onClose, onSave }: EditWavePopupProps) {
                 onChange={handleToggleRightSide}
                 checked={state.rightSide}
               />
-              <VerticalReorderableList<Maneuver>
+              <ReorderableList<Maneuver>
                 list={maneuvers}
                 renderItem={info => (
                   <p>

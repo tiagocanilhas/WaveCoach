@@ -58,7 +58,7 @@ function convertCyclesToEvents(cycles: Mesocycle[]): any[] {
 export function CyclesPopup({ onClose, onSuccess, cycles }: CyclesPopupProps) {
   const [events, setEvents] = useState<any[]>(convertCyclesToEvents(cycles))
   const dragContainerRef = useRef<HTMLDivElement>(null)
-  const id = useParams().aid
+  const id = Number(useParams().aid)
   const [user] = useAuthentication()
 
   function isValid(event: any, events: any[], currentEventId: string | null): boolean {
@@ -103,7 +103,7 @@ export function CyclesPopup({ onClose, onSuccess, cycles }: CyclesPopupProps) {
 
   function eventDraggableToEventOnCalendar(event: any) {
     return {
-      id: event.id || Date.now().toString(),
+      id: event.id || Date.now(),
       title: event.title,
       start: event.startStr,
       end: event.endStr,

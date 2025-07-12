@@ -3,7 +3,7 @@ import { customFetch } from '../utils/customFetch'
 import { toDisplayFormat } from '../utils/toDisplayFormat'
 
 export async function createWaterActivity(
-  athleteId: string,
+  athleteId: number,
   date: string,
   rpe: number,
   condition: string,
@@ -22,11 +22,11 @@ export async function createWaterActivity(
   })
 }
 
-export async function getWaterActivity(wid: string) {
+export async function getWaterActivity(wid: number) {
   return customFetch(URIS.WATER.getById(wid), 'GET')
 }
 
-export async function updateWaterActivity(wid: string, date?: string, condition?: string, rpe?: number, duration?: number, trimp?: number, waves?: any[]){
+export async function updateWaterActivity(wid: number, date?: string, condition?: string, rpe?: number, duration?: number, trimp?: number, waves?: any[]){
   return customFetch(URIS.WATER.update(wid), 'PATCH', {
     date: date == null ? null : toDisplayFormat(date),
     condition,
@@ -37,14 +37,14 @@ export async function updateWaterActivity(wid: string, date?: string, condition?
   })
 }
 
-export async function deleteWaterActivity(wid: string) {
+export async function deleteWaterActivity(wid: number) {
   return customFetch(URIS.WATER.delete(wid), 'DELETE')
 }
 
-export async function createQuestionnaire(wid: string, sleep: number, fatigue: number, stress: number, musclePain: number) {
+export async function createQuestionnaire(wid: number, sleep: number, fatigue: number, stress: number, musclePain: number) {
   return customFetch(URIS.WATER.createQuestionnaire(wid), 'POST', { sleep, fatigue, stress, musclePain })
 }
 
-export async function getQuestionnaire(wid: string) {
+export async function getQuestionnaire(wid: number) {
   return customFetch(URIS.WATER.getQuestionnaire(wid), 'GET')
 }

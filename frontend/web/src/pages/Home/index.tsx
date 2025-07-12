@@ -72,7 +72,7 @@ export function Home() {
 
   async function handleGetCode(id: number) {
     try {
-      const { status, res } = await generateCode(id.toString())
+      const { status, res } = await generateCode(id)
       await navigator.clipboard.writeText(res.code)
       alert('Code was copied to clipboard!')
     } catch (error) {
@@ -83,7 +83,7 @@ export function Home() {
   async function handleDelete(id: number) {
     if (confirm('Are you sure you want to delete this athlete?')) {
       try {
-        await deleteAthlete(id.toString())
+        await deleteAthlete(id)
         alert('Athlete deleted successfully')
         fetchAthletes()
       } catch (error) {

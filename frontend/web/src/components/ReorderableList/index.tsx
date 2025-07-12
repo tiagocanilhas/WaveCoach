@@ -5,25 +5,35 @@ import { Card } from '../Card'
 
 import styles from './styles.module.css'
 
-type VerticalReorderableListProps<T> = {
+type ReorderableListProps<T> = {
   list: T[]
   renderItem: (item: T) => React.ReactNode
   onReorder: (newList: T[]) => void
   onClick?: (item: T) => void
   onDelete?: (item: T) => void
   onAdd?: () => void
+  cardSize?: string
+  order?: 'x' | 'y'
 }
 
-export function VerticalReorderableList<T>({
+export function ReorderableList<T>({
   list,
   renderItem,
   onReorder,
   onClick,
   onDelete,
   onAdd,
-}: VerticalReorderableListProps<T>) {
+  cardSize = '600px',
+  order = 'y',
+}: ReorderableListProps<T>) {
   return (
-    <Reorder.Group axis="y" values={list} onReorder={onReorder} className={styles.list}>
+    <Reorder.Group
+      axis={order}
+      values={list}
+      onReorder={onReorder}
+      className={styles.list}
+      style={{ flexDirection: order === 'y' ? 'column' : 'row' }}
+    >
       {list.map(item => (
         <Reorder.Item
           className={styles.item}
@@ -44,7 +54,7 @@ export function VerticalReorderableList<T>({
               +
             </div>
           }
-          width="600px"
+          width={cardSize}
         />
       )}
     </Reorder.Group>

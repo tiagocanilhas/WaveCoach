@@ -11,12 +11,12 @@ type ObjectListProps<T> = {
   renderItem: (item: T) => ReactNode
   onAdd?: () => void
   onItemClick?: (item: T) => void
+  cardSize?: string
 }
 
-export function ObjectList<T>({ items, renderItem, onAdd, getKey, onItemClick }: ObjectListProps<T>) {
-  const size = '200px'
+export function ObjectList<T>({ items, renderItem, onAdd, getKey, onItemClick, cardSize = '200px' }: ObjectListProps<T>) {
   return (
-    <div className={styles.container}>
+    <div className={styles.container} style={{ gridTemplateColumns: `repeat(auto-fill, minmax(${cardSize}, 1fr))` }}>
       {onAdd && (
         <Card
           content={
@@ -24,8 +24,8 @@ export function ObjectList<T>({ items, renderItem, onAdd, getKey, onItemClick }:
               +
             </div>
           }
-          width={size}
-          height={size}
+          width={cardSize}
+          height={cardSize}
         />
       )}
 
@@ -33,8 +33,8 @@ export function ObjectList<T>({ items, renderItem, onAdd, getKey, onItemClick }:
         <Card
           key={getKey(item)}
           content={renderItem(item)}
-          width={size}
-          height={size}
+          width={cardSize}
+          height={cardSize}
           onClick={() => onItemClick && onItemClick(item)}
         />
       ))}

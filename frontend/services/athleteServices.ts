@@ -2,7 +2,7 @@ import { customFetch } from '../utils/customFetch'
 import { URIS } from './uris'
 import { toDisplayFormat } from '../utils/toDisplayFormat'
 
-export async function getAthlete(id: string) {
+export async function getAthlete(id: number) {
   return await customFetch(URIS.ATHLETES.getById(id), 'GET')
 }
 
@@ -19,15 +19,15 @@ export async function createAthlete(name: string, birthdate: string, image?: Fil
   return await customFetch(URIS.ATHLETES.create, 'POST', data)
 }
 
-export async function updateAthlete(id: string, name: string, birthdate: string) {
+export async function updateAthlete(id: number, name: string, birthdate: string) {
   return await customFetch(URIS.ATHLETES.update(id), 'PUT', { name, birthdate: toDisplayFormat(birthdate) })
 }
 
-export async function deleteAthlete(id: string) {
+export async function deleteAthlete(id: number) {
   return await customFetch(URIS.ATHLETES.delete(id), 'DELETE')
 }
 
-export async function generateCode(id: string) {
+export async function generateCode(id: number) {
   return await customFetch(URIS.ATHLETES.generateCode(id), 'POST')
 }
 
@@ -39,12 +39,12 @@ export async function changeAthleteCredentials(code: string, username: string, p
   return await customFetch(URIS.ATHLETES.changeCredentials, 'POST', { code, username, password })
 }
 
-export async function getCharacteristics(id: string) {
+export async function getCharacteristics(id: number) {
   return await customFetch(URIS.ATHLETES.getCharacteristicsList(id), 'GET')
 }
 
 export async function createCharacteristics(
-  id: string,
+  id: number,
   date: string,
   height: number,
   weight: number,
@@ -73,7 +73,7 @@ export async function createCharacteristics(
 }
 
 export async function updateCharacteristics(
-  id: string,
+  id: number,
   date: string,
   height: number,
   weight: number,
@@ -101,22 +101,54 @@ export async function updateCharacteristics(
   })
 }
 
-export async function deleteCharacteristics(id: string, date: string) {
+export async function deleteCharacteristics(id: number, date: string) {
   return await customFetch(URIS.ATHLETES.deleteCharacteristics(id, date), 'DELETE')
 }
 
-export async function createCalendar(id: string, events: { mesocycles: any[] }) {
+export async function createCalendar(id: number, events: { mesocycles: any[] }) {
   return await customFetch(URIS.ATHLETES.createCalendar(id), 'POST', events)
 }
 
-export async function getCalendar(id: string, type?: string) {
+export async function getCalendar(id: number, type?: string) {
   return await customFetch(URIS.ATHLETES.getCalendar(id, type), 'GET')
 }
 
-export async function getWaterActivities(id: string) {
+export async function getWaterActivities(id: number) {
   return await customFetch(URIS.ATHLETES.getWaterActivities(id), 'GET')
 }
 
-export async function getLastWaterActivity(id: string) {
+export async function getLastWaterActivity(id: number) {
   return await customFetch(URIS.ATHLETES.getLastWaterActivity(id), 'GET')
+}
+
+export async function createCompetition(id: number, date: string, location: string, place: number, name: string, heats: any[]) {
+  return await customFetch(URIS.ATHLETES.createCompetition(id), 'POST', { 
+    date: toDisplayFormat(date),
+    location,
+    place,
+    name,
+    heats,
+  })
+}
+
+export async function getCompetition(aid: number, id: number){
+  return await customFetch(URIS.ATHLETES.getCompetition(aid, id), 'GET')
+}
+
+export async function getCompetitions(aid: number){
+  return await customFetch(URIS.ATHLETES.getCompetitions(aid), 'GET')
+}
+
+export async function updateCompetition(id: number, cid: number, location: string, date: string, place: number, name: string, heats: any[]) {
+  return await customFetch(URIS.ATHLETES.updateCompetition(id, cid), 'PATCH', {
+    date: date ? toDisplayFormat(date) : null,
+    location,
+    place,
+    name,
+    heats,
+  })
+}
+
+export async function deleteCompetition(id: number, cid: number) {
+  return await customFetch(URIS.ATHLETES.deleteCompetition(id, cid), 'DELETE')
 }

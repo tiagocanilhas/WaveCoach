@@ -1,0 +1,32 @@
+.competitionCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  height: 100%;
+}
+
+.name {
+  margin: 0;
+  font-size: 50px;
+  font-weight: bold;
+  color: #222;
+}
+
+.bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: auto;
+}
+
+.location {
+  font-style: italic;
+  font-size: 30px;
+}
+
+.date {
+  font-weight: bold;
+  font-size: 30px;
+}

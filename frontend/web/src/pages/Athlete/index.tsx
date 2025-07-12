@@ -72,7 +72,7 @@ const initialState: State = {
 
 export function Athlete() {
   const [state, dispatch] = useReducer(reducer, initialState)
-  const id = useParams().aid
+  const id = Number(useParams().aid)
   const [user, _] = useAuthentication()
   const navigate = useNavigate()
 

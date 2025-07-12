@@ -58,7 +58,7 @@ function reducer(state: State, action: Action) {
 export function WaterWorkouts() {
   const initialState: State = { calendar: undefined, isOpen: false, workout: undefined }
   const [state, dispatch] = useReducer(reducer, initialState)
-  const id = useParams().aid
+  const id = Number(useParams().aid)
   const [user] = useAuthentication()
 
   async function fetchCalendar() {

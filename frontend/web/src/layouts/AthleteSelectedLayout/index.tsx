@@ -10,7 +10,7 @@ import styles from './styles.module.css'
 
 export function AthleteSelectedLayout() {
   const [athleteName, setAthleteName] = useState('Wave Coach')
-  const id = useParams().aid
+  const id = Number(useParams().aid)
 
   useEffect(() => {
     async function fetchAthleteName() {
@@ -29,7 +29,7 @@ export function AthleteSelectedLayout() {
     { title: 'Characteristics', path: `athletes/${id}/characteristics` },
     { title: 'Gym Workouts', path: `athletes/${id}/gym` },
     { title: 'Surf Workouts', path: `athletes/${id}/water` },
-    { title: 'Tournaments', path: `athletes/${id}/tournaments` },
+    { title: 'Competitions', path: `athletes/${id}/competitions` },
   ]
 
   return (

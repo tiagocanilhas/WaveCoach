@@ -1,7 +1,6 @@
 .container {
   display: grid;
   justify-items: start;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   height: auto;
   max-height: 80vh;
   gap: 20px;

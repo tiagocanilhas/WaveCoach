@@ -8,7 +8,7 @@ import { Button } from '../Button'
 import { AddWavePopup } from '../AddWavePopup'
 import { EditWavePopup } from '../EditWavePopup'
 import { CustomTimePicker } from '../CustomTimePicker'
-import { VerticalReorderableList } from '../VerticalReorderableList'
+import { ReorderableList } from '../ReorderableList'
 
 import { WaterWorkout } from '../../types/WaterWorkout'
 import { WaterWorkoutWave } from '../../types/WaterWorkoutWave'
@@ -101,7 +101,7 @@ export function EditWaterWorkoutPopup({ workout, onClose, onSuccess }: EditWater
     waveToEdit: null,
   }
   const [state, dispatch] = useReducer(reducer, initialState)
-  const wid = useParams().wid
+  const wid = Number(useParams().wid)
 
   function handleToggleIsAdding() {
     dispatch({ type: 'toggleIsAdding' })
@@ -232,7 +232,7 @@ export function EditWaterWorkoutPopup({ workout, onClose, onSuccess }: EditWater
                 />
               </div>
               <div className={styles.wavesContainer}>
-                <VerticalReorderableList<WaterWorkoutWave>
+                <ReorderableList<WaterWorkoutWave>
                   list={waves}
                   renderItem={info => (
                     <div>

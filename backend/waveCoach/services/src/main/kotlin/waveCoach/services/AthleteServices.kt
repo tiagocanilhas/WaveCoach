@@ -974,156 +974,156 @@ class AthleteServices(
                             if (heat.waterActivity.duration != null && !waterActivityDomain.checkDuration(heat.waterActivity.duration))
                                 return@run failure(UpdateCompetitionError.InvalidDuration)
 
-                            waterActivityRepository.updateWaterActivity(
+                            val a = waterActivityRepository.updateWaterActivity(
                                 waterActivityId,
                                 heat.waterActivity.rpe,
                                 heat.waterActivity.condition,
                                 heat.waterActivity.trimp,
                                 heat.waterActivity.duration
                             )
+                        }
 
-                            if (heat.waterActivity.waves != null) {
-                                val (createWaves, updateWaves, deleteWaves) =
-                                    separateCreateUpdateDelete(heat.waterActivity.waves)
+                        if (heat.waterActivity.waves != null) {
+                            val (createWaves, updateWaves, deleteWaves) =
+                                separateCreateUpdateDelete(heat.waterActivity.waves)
 
-                                val wavesOnDB = waterActivityRepository.getWavesByActivity(waterActivityId)
+                            val wavesOnDB = waterActivityRepository.getWavesByActivity(waterActivityId)
 
-                                // Update existing waves
-                                val wavesToUpdate = updateWaves.map { wave ->
-                                    if (wave.order != null &&
-                                        (wave.order <= 0 ||
-                                                !checkOrderConflict(wavesOnDB, update, "waveOrder", wave.order))
-                                    )
-                                        return@run failure(UpdateCompetitionError.InvalidWaveOrder)
+                            // Update existing waves
+                            val wavesToUpdate = updateWaves.map { wave ->
+                                if (wave.order != null &&
+                                    (wave.order <= 0 ||
+                                            !checkOrderConflict(wavesOnDB, update, "waveOrder", wave.order))
+                                )
+                                    return@run failure(UpdateCompetitionError.InvalidWaveOrder)
 
-                                    if (wavesOnDB.none { it.id == wave.id })
-                                        return@run failure(UpdateCompetitionError.WaveNotFound)
+                                if (wavesOnDB.none { it.id == wave.id })
+                                    return@run failure(UpdateCompetitionError.WaveNotFound)
 
-                                    WaveToUpdate(
-                                        wave.id!!,
-                                        wave.points,
-                                        wave.rightSide,
-                                        wave.order,
-                                    )
-                                }
-                                val maneuversCreate = mutableListOf<ManeuverToInsert>()
-                                val maneuversUpdate = mutableListOf<ManeuverToUpdate>()
-                                val maneuversDelete = mutableListOf<Int>()
+                                WaveToUpdate(
+                                    wave.id!!,
+                                    wave.points,
+                                    wave.rightSide,
+                                    wave.order,
+                                )
+                            }
+                            val maneuversCreate = mutableListOf<ManeuverToInsert>()
+                            val maneuversUpdate = mutableListOf<ManeuverToUpdate>()
+                            val maneuversDelete = mutableListOf<Int>()
 
-                                updateWaves.forEachIndexed { waveIndex, wave ->
-                                    if (wave.maneuvers != null) {
-                                        val (maneuverCreate, maneuverUpdate, maneuverDelete) =
-                                            separateCreateUpdateDelete(wave.maneuvers)
+                            updateWaves.forEachIndexed { waveIndex, wave ->
+                                if (wave.maneuvers != null) {
+                                    val (maneuverCreate, maneuverUpdate, maneuverDelete) =
+                                        separateCreateUpdateDelete(wave.maneuvers)
 
-                                        val maneuversOnDB =
-                                            waterActivityRepository.getManeuversByWave(update[waveIndex].id!!)
+                                    val maneuversOnDB =
+                                        waterActivityRepository.getManeuversByWave(update[waveIndex].id!!)
 
-                                        // Update existing Maneuvers
-                                        maneuverUpdate.forEach {
-                                            if (it.waterManeuverId != null && it.waterManeuverId <= 0 &&
-                                                waterManeuverRepository.getWaterManeuverById(it.waterManeuverId) != null
-                                            )
-                                                return@run failure(UpdateCompetitionError.InvalidWaterManeuver)
+                                    // Update existing Maneuvers
+                                    maneuverUpdate.forEach {
+                                        if (it.waterManeuverId != null && it.waterManeuverId <= 0 &&
+                                            waterManeuverRepository.getWaterManeuverById(it.waterManeuverId) != null
+                                        )
+                                            return@run failure(UpdateCompetitionError.InvalidWaterManeuver)
 
-                                            if (maneuversOnDB.none { maneuver -> maneuver.id == it.id })
-                                                return@run failure(UpdateCompetitionError.ManeuverNotFound)
-
-                                            if (it.order != null && (it.order <= 0 || !checkOrderConflict(
-                                                    maneuversOnDB, maneuverUpdate, "maneuverOrder", it.order
-                                                ))
-                                            )
-                                                return@run failure(UpdateCompetitionError.InvalidManeuverOrder)
-
-                                            maneuversUpdate.add(
-                                                ManeuverToUpdate(
-                                                    it.id!!,
-                                                    it.waterManeuverId,
-                                                    it.success,
-                                                    it.order
-                                                )
-                                            )
-                                        }
-                                        waterActivityRepository.updateManeuvers(maneuversUpdate)
-
-                                        // Add New Maneuvers
-                                        maneuverCreate.forEach { maneuver ->
-                                            if (maneuver.waterManeuverId == null || maneuver.waterManeuverId <= 0 ||
-                                                waterManeuverRepository.getWaterManeuverById(maneuver.waterManeuverId) == null
-                                            )
-                                                return@run failure(UpdateCompetitionError.InvalidWaterManeuver)
-
-                                            if (maneuver.success == null)
-                                                return@run failure(UpdateCompetitionError.InvalidSuccess)
-
-                                            if (maneuver.order == null || maneuver.order <= 0)
-                                                return@run failure(UpdateCompetitionError.InvalidManeuverOrder)
-
-                                            maneuversCreate.add(
-                                                ManeuverToInsert(
-                                                    update[waveIndex].id!!,
-                                                    maneuver.waterManeuverId,
-                                                    maneuver.success,
-                                                    maneuver.order,
-                                                )
-                                            )
-
-                                        }
-
-                                        // Delete Maneuvers
-                                        if (maneuverDelete.any { id -> maneuversOnDB.none { it.id == id } })
+                                        if (maneuversOnDB.none { maneuver -> maneuver.id == it.id })
                                             return@run failure(UpdateCompetitionError.ManeuverNotFound)
 
-                                        maneuversDelete.addAll(maneuverDelete)
+                                        if (it.order != null && (it.order <= 0 || !checkOrderConflict(
+                                                maneuversOnDB, maneuverUpdate, "maneuverOrder", it.order
+                                            ))
+                                        )
+                                            return@run failure(UpdateCompetitionError.InvalidManeuverOrder)
+
+                                        maneuversUpdate.add(
+                                            ManeuverToUpdate(
+                                                it.id!!,
+                                                it.waterManeuverId,
+                                                it.success,
+                                                it.order
+                                            )
+                                        )
                                     }
-                                    waterActivityRepository.updateWaves(wavesToUpdate)
+                                    waterActivityRepository.updateManeuvers(maneuversUpdate)
 
-                                    waterActivityRepository.removeManeuversById(maneuversDelete)
-                                }
-
-                                // Add New waves
-                                val wavesToInsert = createWaves.map { wave ->
-                                    if (wave.order == null || wave.order <= 0 ||
-                                        waterActivityRepository.verifyWaveOrder(waterActivityId, wave.order)
-                                    )
-                                        return@run failure(UpdateCompetitionError.InvalidWaveOrder)
-
-                                    if (wave.rightSide == null) return@run failure(UpdateCompetitionError.InvalidRightSide)
-
-                                    WaveToInsert(
-                                        waterActivityId,
-                                        wave.points,
-                                        wave.rightSide,
-                                        wave.order,
-                                    )
-                                }
-
-                                val wavesCreatedIds = waterActivityRepository.storeWaves(wavesToInsert)
-
-                                val maneuversToInsert = createWaves.flatMapIndexed { wavesIndex, wave ->
-                                    if (wave.maneuvers == null) return@run failure(UpdateCompetitionError.InvalidManeuvers)
-
-                                    wave.maneuvers.mapIndexed { maneuverIndex, maneuver ->
-                                        if (maneuver.waterManeuverId == null || maneuver.waterManeuverId <= 0)
+                                    // Add New Maneuvers
+                                    maneuverCreate.forEach { maneuver ->
+                                        if (maneuver.waterManeuverId == null || maneuver.waterManeuverId <= 0 ||
+                                            waterManeuverRepository.getWaterManeuverById(maneuver.waterManeuverId) == null
+                                        )
                                             return@run failure(UpdateCompetitionError.InvalidWaterManeuver)
 
                                         if (maneuver.success == null)
                                             return@run failure(UpdateCompetitionError.InvalidSuccess)
 
-                                        ManeuverToInsert(
-                                            wavesCreatedIds[wavesIndex],
-                                            maneuver.waterManeuverId,
-                                            maneuver.success,
-                                            maneuverIndex + 1,
-                                        )
-                                    }
-                                }
-                                waterActivityRepository.storeManeuvers(maneuversToInsert + maneuversCreate)
+                                        if (maneuver.order == null || maneuver.order <= 0)
+                                            return@run failure(UpdateCompetitionError.InvalidManeuverOrder)
 
-                                // Delete waves
-                                if (deleteWaves.any { id -> wavesOnDB.none { it.id == id } })
-                                    return@run failure(UpdateCompetitionError.WaveNotFound)
-                                waterActivityRepository.removeWavesById(delete)
+                                        maneuversCreate.add(
+                                            ManeuverToInsert(
+                                                update[waveIndex].id!!,
+                                                maneuver.waterManeuverId,
+                                                maneuver.success,
+                                                maneuver.order,
+                                            )
+                                        )
+
+                                    }
+
+                                    // Delete Maneuvers
+                                    if (maneuverDelete.any { id -> maneuversOnDB.none { it.id == id } })
+                                        return@run failure(UpdateCompetitionError.ManeuverNotFound)
+
+                                    maneuversDelete.addAll(maneuverDelete)
+                                }
+                                waterActivityRepository.updateWaves(wavesToUpdate)
+
+                                waterActivityRepository.removeManeuversById(maneuversDelete)
                             }
+
+                            // Add New waves
+                            val wavesToInsert = createWaves.map { wave ->
+                                if (wave.order == null || wave.order <= 0 ||
+                                    waterActivityRepository.verifyWaveOrder(waterActivityId, wave.order)
+                                )
+                                    return@run failure(UpdateCompetitionError.InvalidWaveOrder)
+
+                                if (wave.rightSide == null) return@run failure(UpdateCompetitionError.InvalidRightSide)
+
+                                WaveToInsert(
+                                    waterActivityId,
+                                    wave.points,
+                                    wave.rightSide,
+                                    wave.order,
+                                )
+                            }
+
+                            val wavesCreatedIds = waterActivityRepository.storeWaves(wavesToInsert)
+
+                            val maneuversToInsert = createWaves.flatMapIndexed { wavesIndex, wave ->
+                                if (wave.maneuvers == null) return@run failure(UpdateCompetitionError.InvalidManeuvers)
+
+                                wave.maneuvers.mapIndexed { maneuverIndex, maneuver ->
+                                    if (maneuver.waterManeuverId == null || maneuver.waterManeuverId <= 0)
+                                        return@run failure(UpdateCompetitionError.InvalidWaterManeuver)
+
+                                    if (maneuver.success == null)
+                                        return@run failure(UpdateCompetitionError.InvalidSuccess)
+
+                                    ManeuverToInsert(
+                                        wavesCreatedIds[wavesIndex],
+                                        maneuver.waterManeuverId,
+                                        maneuver.success,
+                                        maneuverIndex + 1,
+                                    )
+                                }
+                            }
+                            waterActivityRepository.storeManeuvers(maneuversToInsert + maneuversCreate)
+
+                            // Delete waves
+                            if (deleteWaves.any { id -> wavesOnDB.none { it.id == id } })
+                                return@run failure(UpdateCompetitionError.WaveNotFound)
+                            waterActivityRepository.removeWavesById(delete)
                         }
                     }
 

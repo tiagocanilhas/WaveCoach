@@ -184,10 +184,11 @@ class JdbiWaterActivityRepository(
             left join waveCoach.microcycle micro on micro.mesocycle = meso.id
             left join waveCoach.activity a on a.microcycle = micro.id
             left join waveCoach.water w on a.id = w.activity
+			left join waveCoach.heat h on h.water_activity = w.activity 
             left join waveCoach.wave wv on w.activity = wv.activity
             left join waveCoach.maneuver m on wv.id = m.wave
             left join waveCoach.water_maneuver wm on m.maneuver = wm.id
-            where a.type = 'water' and meso.uid = :uid 
+            where a.type = 'water' and meso.uid = :uid and h.id is null
             order by meso.start_time, micro.start_time, a.date, wv.wave_order, m.maneuver_order
         """.trimIndent()
 

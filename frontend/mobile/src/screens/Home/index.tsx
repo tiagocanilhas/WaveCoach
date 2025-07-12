@@ -142,7 +142,7 @@ export function Home() {
 
   async function editWaterWorkout(athlete: AthleteType) {
     try {
-      const { status, res } = await getLastWaterActivity(athlete.uid.toString())
+      const { status, res } = await getLastWaterActivity(athlete.uid)
       const workout = {
         id: res.id,
         rpe: res.rpe,

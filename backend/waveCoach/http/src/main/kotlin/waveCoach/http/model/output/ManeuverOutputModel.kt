@@ -6,4 +6,5 @@ data class ManeuverOutputModel(
     val name: String,
     val url: String?,
     val success: Boolean,
+    val order: Int,
 )

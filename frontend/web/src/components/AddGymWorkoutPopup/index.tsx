@@ -15,7 +15,7 @@ import { createGymActivity } from '../../../../services/gymServices'
 import { useParams } from 'react-router-dom'
 import { handleError } from '../../../../utils/handleError'
 import { ExerciseToAdd } from '../../types/ExerciseToAdd'
-import { VerticalReorderableList } from '../VerticalReorderableList'
+import { ReorderableList } from '../ReorderableList'
 import { AddExercisePopup } from '../AddExercisePopup'
 
 type State = {
@@ -85,7 +85,7 @@ const initialState: State = {
 
 export function AddGymWorkoutPopup({ onClose, onSuccess }: AddGymWorkoutPopupProps) {
   const [state, dispatch] = useReducer(reducer, initialState)
-  const id = useParams().aid
+  const id = Number(useParams().aid)
 
   function handleToggleAdding() {
     dispatch({ type: 'toggleAdding' })
@@ -151,7 +151,7 @@ export function AddGymWorkoutPopup({ onClose, onSuccess }: AddGymWorkoutPopupPro
             <form className={styles.addWorkout} onSubmit={handleOnSubmit}>
               <TextField type="date" name="date" value={date} onChange={handleOnChange} />
               <div className={styles.exercisesContainer}>
-                <VerticalReorderableList<ExerciseToAdd>
+                <ReorderableList<ExerciseToAdd>
                   list={exercises}
                   onReorder={handleReorder}
                   renderItem={item => (

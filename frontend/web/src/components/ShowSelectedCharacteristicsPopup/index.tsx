@@ -72,7 +72,7 @@ type ShowSelectedCharacteristicsPopupProps = {
 export function ShowSelectedCharacteristicsPopup({ data, onClose, onSuccess }: ShowSelectedCharacteristicsPopupProps) {
   const initialState: State = { tag: 'showing', values: data || {} }
   const [state, dispatch] = useReducer(reducer, initialState)
-  const id = useParams().aid
+  const id = Number(useParams().aid)
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()

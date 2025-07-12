@@ -132,7 +132,7 @@ export function WaterWorkout() {
             return WorkoutEditing.noEditingMade(newWave) ? null : newWave
           }) ?? undefined
 
-        await updateWaterActivity(workout.id.toString(), undefined, condition, rpe, time, trimp, waves)
+        await updateWaterActivity(workout.id, undefined, condition, rpe, time, trimp, waves)
       } else {
         const { rpe, condition, trimp, time } = state
 
@@ -145,7 +145,7 @@ export function WaterWorkout() {
         }))
 
         await createWaterActivity(
-          athlete.uid.toString(),
+          athlete.uid,
           new Date().toISOString().split('T')[0],
           rpe,
           condition,

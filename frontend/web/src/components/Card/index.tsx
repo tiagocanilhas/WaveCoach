@@ -12,7 +12,14 @@ type CardProps = {
 
 export function Card({ content, width = null, height = null, onClick, onDelete }: CardProps) {
   return (
-    <div className={styles.card} style={{ width, height }} onClick={onClick}>
+    <div
+      className={styles.card}
+      style={{ width, height }}
+      onClick={e => {
+        e.stopPropagation()
+        onClick && onClick()
+      }}
+    >
       {onDelete && (
         <div
           className={styles.delete}

@@ -15,17 +15,17 @@ export async function getGymExercises() {
   return await customFetch(URIS.GYM_EXERCISES.getAll, 'GET')
 }
 
-export async function getGymExerciseById(id: string) {
+export async function getGymExerciseById(id: number) {
   return await customFetch(URIS.GYM_EXERCISES.getById(id), 'GET')
 }
 
-export async function updateGymExercise(id: string, name: string, category: string) {
+export async function updateGymExercise(id: number, name: string, category: string) {
   return await customFetch(URIS.GYM_EXERCISES.update(id), 'PUT', {
     name: name,
     category: category,
   })
 }
 
-export async function deleteGymExercise(id: string) {
+export async function deleteGymExercise(id: number) {
   return await customFetch(URIS.GYM_EXERCISES.delete(id), 'DELETE')
 }

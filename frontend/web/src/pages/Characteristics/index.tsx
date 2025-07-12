@@ -57,8 +57,8 @@ const initialState: State = {
 
 export function Characteristics() {
   const [state, dispatch] = useReducer(reducer, initialState)
-  const id = useParams().aid
   const [user] = useAuthentication()
+  const id = Number(useParams().aid)
 
   async function fetchCharacteristics() {
     try {

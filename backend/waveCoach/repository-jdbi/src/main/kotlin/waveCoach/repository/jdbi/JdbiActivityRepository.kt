@@ -157,7 +157,8 @@ class JdbiActivityRepository(
             from waveCoach.mesocycle m
             left join waveCoach.microcycle mi on mi.mesocycle = m.id
             left join waveCoach.activity a on a.microcycle = mi.id
-            where m.uid = :uid and (:type is null or a.type = :type)
+            left join waveCoach.heat h on h.water_activity = a.id
+            where m.uid = :uid and (:type is null or a.type = :type) and h.id IS NULL
             order by m.start_time, mi.start_time, a.date
             """.trimIndent()
 

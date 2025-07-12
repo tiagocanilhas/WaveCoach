@@ -21,63 +21,69 @@ const COACHES = {
 const ATHLETES_URL = `${BASE_URL}/athletes`
 const ATHLETES = {
   create: ATHLETES_URL,
-  getById: (id: string) => `${ATHLETES_URL}/${id}`,
+  getById: (id: number) => `${ATHLETES_URL}/${id}`,
   getByCoach: ATHLETES_URL,
-  update: (id: string) => `${ATHLETES_URL}/${id}`,
-  delete: (id: string) => `${ATHLETES_URL}/${id}`,
+  update: (id: number) => `${ATHLETES_URL}/${id}`,
+  delete: (id: number) => `${ATHLETES_URL}/${id}`,
 
-  generateCode: (id: string) => `${ATHLETES_URL}/${id}/code`,
+  generateCode: (id: number) => `${ATHLETES_URL}/${id}/code`,
   getByCode: (code: string) => `${ATHLETES_URL}/code/${code}`,
   changeCredentials: `${ATHLETES_URL}/credentials`,
 
-  createCharacteristics: (id: string) => `${ATHLETES_URL}/${id}/characteristics`,
-  getCharacteristics: (id: string, date: string) => `${ATHLETES_URL}/${id}/characteristics/${date}`,
-  getCharacteristicsList: (id: string) => `${ATHLETES_URL}/${id}/characteristics`,
-  updateCharacteristics: (id: string, date: string) => `${ATHLETES_URL}/${id}/characteristics/${date}`,
-  deleteCharacteristics: (id: string, date: string) => `${ATHLETES_URL}/${id}/characteristics/${date}`,
+  createCharacteristics: (id: number) => `${ATHLETES_URL}/${id}/characteristics`,
+  getCharacteristics: (id: number, date: string) => `${ATHLETES_URL}/${id}/characteristics/${date}`,
+  getCharacteristicsList: (id: number) => `${ATHLETES_URL}/${id}/characteristics`,
+  updateCharacteristics: (id: number, date: string) => `${ATHLETES_URL}/${id}/characteristics/${date}`,
+  deleteCharacteristics: (id: number, date: string) => `${ATHLETES_URL}/${id}/characteristics/${date}`,
 
-  createCalendar: (id: string) => `${ATHLETES_URL}/${id}/calendar`,
-  getCalendar: (id: string, type?: string) => `${ATHLETES_URL}/${id}/calendar?type=${type}`,
-  getActivities: (id: string) => `${ATHLETES_URL}/${id}/activities`,
+  createCalendar: (id: number) => `${ATHLETES_URL}/${id}/calendar`,
+  getCalendar: (id: number, type?: string) => `${ATHLETES_URL}/${id}/calendar?type=${type}`,
+  getActivities: (id: number) => `${ATHLETES_URL}/${id}/activities`,
 
-  getWaterActivities: (id: string) => `${ATHLETES_URL}/${id}/water`,
-  getLastWaterActivity: (id: string) => `${ATHLETES_URL}/${id}/water/last`,
+  getWaterActivities: (id: number) => `${ATHLETES_URL}/${id}/water`,
+  getLastWaterActivity: (id: number) => `${ATHLETES_URL}/${id}/water/last`,
+
+  createCompetition: (id: number) => `${ATHLETES_URL}/${id}/competition`,
+  getCompetition: (aid: number, id: number) => `${ATHLETES_URL}/${aid}/competition/${id}`,
+  getCompetitions: (aid: number) => `${ATHLETES_URL}/${aid}/competition`,
+  updateCompetition: (id: number, cid: number) => `${ATHLETES_URL}/${id}/competition/${cid}`,
+  deleteCompetition: (id: number, cid: number) => `${ATHLETES_URL}/${id}/competition/${cid}`,
 }
 
 const GYM_URL = `${BASE_URL}/gym`
 const GYM = {
   create: GYM_URL,
-  getById: (id: string) => `${GYM_URL}/${id}`,
-  update: (id: string) => `${GYM_URL}/${id}`,
-  delete: (id: string) => `${GYM_URL}/${id}`,
+  getById: (id: number) => `${GYM_URL}/${id}`,
+  update: (id: number) => `${GYM_URL}/${id}`,
+  delete: (id: number) => `${GYM_URL}/${id}`,
 }
 
 const GYM_EXERCISES_URL = `${BASE_URL}/gym/exercise`
 const GYM_EXERCISES = {
   create: GYM_EXERCISES_URL,
   getAll: GYM_EXERCISES_URL,
-  getById: (id: string) => `${GYM_EXERCISES_URL}/${id}`,
-  update: (id: string) => `${GYM_EXERCISES_URL}/${id}`,
-  delete: (id: string) => `${GYM_EXERCISES_URL}/${id}`,
+  getById: (id: number) => `${GYM_EXERCISES_URL}/${id}`,
+  update: (id: number) => `${GYM_EXERCISES_URL}/${id}`,
+  delete: (id: number) => `${GYM_EXERCISES_URL}/${id}`,
 }
 
 const WATER_URL = `${BASE_URL}/water`
 const WATER = {
   create: WATER_URL,
-  getById: (id: string) => `${WATER_URL}/${id}`,
-  update: (id: string) => `${WATER_URL}/${id}`,
-  delete: (id: string) => `${WATER_URL}/${id}`,
+  getById: (id: number) => `${WATER_URL}/${id}`,
+  update: (id: number) => `${WATER_URL}/${id}`,
+  delete: (id: number) => `${WATER_URL}/${id}`,
   
-  createQuestionnaire: (id: string) => `${WATER_URL}/${id}/questionnaire`,
-  getQuestionnaire: (id: string) => `${WATER_URL}/${id}/questionnaire`,
+  createQuestionnaire: (id: number) => `${WATER_URL}/${id}/questionnaire`,
+  getQuestionnaire: (id: number) => `${WATER_URL}/${id}/questionnaire`,
 }
 
 const WATER_MANEUVERS_URL = `${BASE_URL}/water/maneuver`
 const WATER_MANEUVERS = {
   create: WATER_MANEUVERS_URL,
   getAll: WATER_MANEUVERS_URL,
-  update: (id: string) => `${WATER_MANEUVERS_URL}/${id}`,
-  delete: (id: string) => `${WATER_MANEUVERS_URL}/${id}`,
+  update: (id: number) => `${WATER_MANEUVERS_URL}/${id}`,
+  delete: (id: number) => `${WATER_MANEUVERS_URL}/${id}`,
 }
 
 export const URIS = {

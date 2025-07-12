@@ -2,6 +2,7 @@ import { WaterWorkoutWave } from './WaterWorkoutWave'
 
 export type WaterWorkout = {
   id: number
+  tempId?: number
   athleteId: number
   date: number
   rpe: number
