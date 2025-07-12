@@ -974,7 +974,7 @@ class AthleteServices(
                             if (heat.waterActivity.duration != null && !waterActivityDomain.checkDuration(heat.waterActivity.duration))
                                 return@run failure(UpdateCompetitionError.InvalidDuration)
 
-                            val a = waterActivityRepository.updateWaterActivity(
+                            waterActivityRepository.updateWaterActivity(
                                 waterActivityId,
                                 heat.waterActivity.rpe,
                                 heat.waterActivity.condition,
@@ -1256,7 +1256,7 @@ class AthleteServices(
             val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
             val dateParsed = LocalDate.parse(date, formatter)
 
-            if (dateParsed.isBefore(LocalDate.now())) {
+            if (!dateParsed.isAfter(LocalDate.now())) {
                 dateParsed.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
             } else {
                 null
