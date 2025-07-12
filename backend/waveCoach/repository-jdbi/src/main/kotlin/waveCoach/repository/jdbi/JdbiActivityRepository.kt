@@ -97,8 +97,10 @@ class JdbiActivityRepository(
     ): Microcycle? =
         handle.createQuery(
             """
-            select * from waveCoach.microcycle 
-            where start_time <= :date and end_time >= :date
+            select mc.id as id, mc.mesocycle as mesocycle, mc.start_time as start_time, mc.end_time as end_time
+            from waveCoach.microcycle mc
+            left join waveCoach.mesocycle m on mc.id = mc.mesocycle
+            where mc.start_time <= :date and mc.end_time >= :date and m.uid = :uid
             """.trimIndent(),
         )
             .bind("date", date)

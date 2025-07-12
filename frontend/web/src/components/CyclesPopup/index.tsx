@@ -75,9 +75,9 @@ export function CyclesPopup({ onClose, onSuccess, cycles }: CyclesPopupProps) {
     }
 
     const isOverlapping = events.some(existingEvent => {
-      if (existingEvent.id === currentEventId) return false
+      if (existingEvent.id == currentEventId) return false
       if ((isMesocycle(event) && isMicrocycle(existingEvent)) || (isMicrocycle(event) && isMesocycle(existingEvent))) return false
-
+      
       return event.startStr < existingEvent.end && event.endStr > existingEvent.start
     })
 
@@ -150,11 +150,12 @@ export function CyclesPopup({ onClose, onSuccess, cycles }: CyclesPopupProps) {
   }
 
   async function handleSubmit() {
+    console.log('Saving cycles:', events)
     function associateMicrocyclesToMesocycles(events: any[]) {
       const mesocycles = events
         .filter(e => e.title === 'Mesocycle')
         .map(m => ({
-          id: m.id?.startsWith('meso-') ? Number(m.id.split('-')[1]) : null,
+          id: typeof m.id === 'string' && m.id?.startsWith('meso-') ? Number(m.id.split('-')[1]) : null,
           startTime: typeof m.start === 'number' ? m.start : new Date(m.start).getTime(),
           endTime: typeof m.end === 'number' ? m.end : new Date(m.end).getTime(),
           microcycles: [] as {
@@ -167,10 +168,11 @@ export function CyclesPopup({ onClose, onSuccess, cycles }: CyclesPopupProps) {
       const microcycles = events
         .filter(e => e.title === 'Microcycle')
         .map(mc => ({
-          id: mc.id?.startsWith('micro-') ? Number(mc.id.split('-')[1]) : null,
+          id: typeof mc.id === 'string' &&mc.id?.startsWith('micro-') ? Number(mc.id.split('-')[1]) : null,
           startTime: typeof mc.start === 'number' ? mc.start : new Date(mc.start).getTime(),
           endTime: typeof mc.end === 'number' ? mc.end : new Date(mc.end).getTime(),
         }))
+
 
       for (const micro of microcycles) {
         const parent = mesocycles.find(m => micro.startTime >= m.startTime && micro.endTime <= m.endTime)
