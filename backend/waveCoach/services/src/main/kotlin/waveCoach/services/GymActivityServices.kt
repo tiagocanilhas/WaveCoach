@@ -247,7 +247,7 @@ class GymActivityServices(
                 val exercisesToUpdate = update.map { exercise ->
                     if (exercise.order != null &&
                         (exercise.order <= 0 || !checkOrderConflict(
-                            exercisesOnDB, update, "exerciseOrder", exercise.order
+                            exercisesOnDB, exercises, "exerciseOrder", exercise.order
                         ))
                     )
                         return@run failure(UpdateGymActivityError.InvalidExerciseOrder)

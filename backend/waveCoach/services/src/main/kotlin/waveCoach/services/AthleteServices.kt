@@ -687,7 +687,7 @@ class AthleteServices(
                         activityRepository.getMesocycle(meso.id)
                             ?: return@run failure(SetCalendarError.MesocycleNotFound)
 
-                    if (activityDomain.compareCycles(mesoDb.startTime, mesoDb.endTime, meso.startTime, meso.endTime)) {
+                    if (!activityDomain.compareCycles(mesoDb.startTime, mesoDb.endTime, meso.startTime, meso.endTime)) {
                         activityRepository.updateMesocycle(meso.id, meso.startTime, meso.endTime)
                     }
 
@@ -710,7 +710,7 @@ class AthleteServices(
                             activityRepository.getMicrocycle(micro.id)
                                 ?: return@run failure(SetCalendarError.MicrocycleNotFound)
 
-                        if (activityDomain.compareCycles(
+                        if (!activityDomain.compareCycles(
                                 microDb.startTime,
                                 microDb.endTime,
                                 micro.startTime,

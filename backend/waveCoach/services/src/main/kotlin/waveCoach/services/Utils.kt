@@ -101,16 +101,24 @@ fun <T : Any, U : Any> checkOrderConflict(
     }
 
     if (conflictDBItem != null) {
+        val dbItemId =
+            conflictDBItem::class.memberProperties.find { prop -> prop.name == "id" }?.getter?.call(conflictDBItem)
+
         val updateItem = itemsToUpdate.find { updateItem ->
             val updateItemId =
                 updateItem::class.memberProperties.find { prop -> prop.name == "id" }?.getter?.call(updateItem)
 
-            val dbItemId =
-                conflictDBItem::class.memberProperties.find { prop -> prop.name == "id" }?.getter?.call(conflictDBItem)
-
             updateItemId != null && updateItemId == dbItemId
         }
         if (updateItem == null) return false
+
+
+        val otherValues = updateItem::class.memberProperties
+            .filterNot { it.name == "id" }
+            .map { it.getter.call(updateItem) }
+
+        if (otherValues.all { isCompletelyNull(it) })
+            return true
 
         val updateItemOrder =
             updateItem::class.memberProperties.find { prop -> prop.name == "order" }?.getter?.call(updateItem) as? Int?

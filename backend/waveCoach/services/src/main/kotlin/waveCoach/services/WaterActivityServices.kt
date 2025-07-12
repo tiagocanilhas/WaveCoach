@@ -364,7 +364,7 @@ class WaterActivityServices(
                 // Update existing waves
                 val wavesToUpdate = update.map { wave ->
                     if (wave.order != null &&
-                        (wave.order <= 0 || !checkOrderConflict(wavesOnDB, update, "waveOrder", wave.order))
+                        (wave.order <= 0 || !checkOrderConflict(wavesOnDB, waves, "waveOrder", wave.order))
                     )
                         return@run failure(UpdateWaterActivityError.InvalidWaveOrder)
 
