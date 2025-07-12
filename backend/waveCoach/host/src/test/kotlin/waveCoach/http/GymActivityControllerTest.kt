@@ -27,7 +27,7 @@ class GymActivityControllerTest {
 
         val body =
             mapOf(
-                "athleteId" to THIRD_ATHLETE_ID,
+                "athleteId" to FIRST_ATHLETE_ID,
                 "date" to VALID_DATE,
                 "exercises" to
                         listOf(
@@ -67,7 +67,7 @@ class GymActivityControllerTest {
             )
 
         client.post().uri("/gym")
-            .header("Authorization", "Bearer $SECOND_COACH_TOKEN")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(body)
             .exchange()
@@ -306,7 +306,7 @@ class GymActivityControllerTest {
 
         val body =
             mapOf(
-                "athleteId" to THIRD_ATHLETE_ID,
+                "athleteId" to FIRST_ATHLETE_ID,
                 "date" to VALID_DATE,
                 "exercises" to
                         listOf(
@@ -330,7 +330,7 @@ class GymActivityControllerTest {
             )
 
         client.post().uri("/gym")
-            .header("Authorization", "Bearer $SECOND_COACH_TOKEN")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(body)
             .exchange()
@@ -346,7 +346,7 @@ class GymActivityControllerTest {
 
         val body =
             mapOf(
-                "athleteId" to THIRD_ATHLETE_ID,
+                "athleteId" to FIRST_ATHLETE_ID,
                 "date" to VALID_DATE,
                 "exercises" to
                         listOf(
@@ -365,7 +365,7 @@ class GymActivityControllerTest {
             )
 
         client.post().uri("/gym")
-            .header("Authorization", "Bearer $SECOND_COACH_TOKEN")
+            .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(body)
             .exchange()

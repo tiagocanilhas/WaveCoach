@@ -127,6 +127,7 @@ export function Athlete() {
 
   function onSuccess() {
     fetchCalendar()
+    dispatch({ type: 'toggleCyclesPopup' })
   }
 
   function handleCycleSelect(select: SelectedCycle) {
