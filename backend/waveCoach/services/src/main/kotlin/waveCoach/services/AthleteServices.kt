@@ -787,7 +787,7 @@ class AthleteServices(
 
             if (place <= 0) return@run failure(CreateCompetitionError.InvalidPlace)
 
-            if(name.isBlank()) return@run failure(CreateCompetitionError.InvalidName)
+            if (name.isBlank()) return@run failure(CreateCompetitionError.InvalidName)
 
             val competitionId = competitionRepository.storeCompetition(athleteId, dateLong, location, place, name)
 

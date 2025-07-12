@@ -1135,6 +1135,7 @@ class AthleteServicesTest {
                     DATE,
                     "Location",
                     2,
+                    randomString(),
                     emptyList()
                 )
         ) {
@@ -1163,6 +1164,7 @@ class AthleteServicesTest {
                         date,
                         "Location",
                         1,
+                        randomString(),
                         emptyList()
                     )
             ) {
@@ -1185,6 +1187,7 @@ class AthleteServicesTest {
                     DATE,
                     "Location",
                     1,
+                    randomString(),
                     emptyList()
                 )
         ) {
@@ -1206,6 +1209,7 @@ class AthleteServicesTest {
                     DATE,
                     "Location",
                     2,
+                    randomString(),
                     emptyList()
                 )
         ) {
@@ -1227,6 +1231,7 @@ class AthleteServicesTest {
                     VALID_DATE,
                     randomString(),
                     2,
+                    randomString(),
                     listOf(
                         HeatInputInfo(
                             score = 2,
@@ -1271,6 +1276,7 @@ class AthleteServicesTest {
                     DATE,
                     randomString(),
                     2,
+                    randomString(),
                     listOf(
                         HeatInputInfo(
                             score = 2,
@@ -1315,6 +1321,7 @@ class AthleteServicesTest {
                     DATE,
                     randomString(),
                     2,
+                    randomString(),
                     listOf(
                         HeatInputInfo(
                             score = 2,
@@ -1359,6 +1366,7 @@ class AthleteServicesTest {
                     DATE,
                     randomString(),
                     2,
+                    randomString(),
                     listOf(
                         HeatInputInfo(
                             score = 2,
@@ -1403,6 +1411,7 @@ class AthleteServicesTest {
                     VALID_DATE,
                     randomString(),
                     2,
+                    randomString(),
                     listOf(
                         HeatInputInfo(
                             score = -1, // Invalid score
@@ -1447,6 +1456,7 @@ class AthleteServicesTest {
                     DATE,
                     randomString(),
                     2,
+                    randomString(),
                     listOf(
                         HeatInputInfo(
                             score = 2,
