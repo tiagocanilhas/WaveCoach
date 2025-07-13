@@ -84,17 +84,17 @@ export function Athlete() {
       console.error('Error fetching Activities:', error)
     }
   }
+  
+  async function fetchAthlete() {
+    try {
+      const { status, res } = await getAthlete(id)
+      dispatch({ type: 'setAthlete', athlete: res })
+    } catch (error) {
+      console.error('Error fetching athlete:', error)
+    }
+  }
 
   useEffect(() => {
-    async function fetchAthlete() {
-      try {
-        const { status, res } = await getAthlete(id)
-        dispatch({ type: 'setAthlete', athlete: res })
-      } catch (error) {
-        console.error('Error fetching athlete:', error)
-      }
-    }
-
     fetchAthlete()
     fetchCalendar()
   }, [])
@@ -125,9 +125,18 @@ export function Athlete() {
     }
   }
 
-  function onSuccess() {
+  function handleUpdateAthleteOnSuccess() {
+    fetchAthlete()
+    dispatch({ type: 'toggleEditPopup' })
+  }
+
+  function handleSaveCalendarOnSuccess() {
     fetchCalendar()
     dispatch({ type: 'toggleCyclesPopup' })
+  }
+
+  function handleOnDeleteSuccess() {
+    fetchCalendar()
   }
 
   function handleCycleSelect(select: SelectedCycle) {
@@ -208,15 +217,15 @@ export function Athlete() {
             <ObjectList
               items={activities}
               getKey={activity => activity.id}
-              renderItem={activity => <Activity activity={activity} onDeleteSuccess={onSuccess} />}
+              renderItem={activity => <Activity activity={activity} onDeleteSuccess={handleOnDeleteSuccess} />}
             />
           </div>
         }
       />
 
-      {isEditPopupOpen && <EditAthletePopup onClose={handleEdit} onSuccess={onSuccess} data={athlete} />}
+      {isEditPopupOpen && <EditAthletePopup onClose={handleEdit} onSuccess={handleUpdateAthleteOnSuccess} data={athlete} />}
 
-      {isCyclesPopupOpen && <CyclesPopup onClose={handleManageCycles} onSuccess={onSuccess} cycles={state.calendar.mesocycles} />}
+      {isCyclesPopupOpen && <CyclesPopup onClose={handleManageCycles} onSuccess={handleSaveCalendarOnSuccess} cycles={state.calendar.mesocycles} />}
     </>
   )
 }

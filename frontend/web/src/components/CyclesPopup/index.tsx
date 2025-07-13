@@ -150,7 +150,6 @@ export function CyclesPopup({ onClose, onSuccess, cycles }: CyclesPopupProps) {
   }
 
   async function handleSubmit() {
-    console.log('Saving cycles:', events)
     function associateMicrocyclesToMesocycles(events: any[]) {
       const mesocycles = events
         .filter(e => e.title === 'Mesocycle')

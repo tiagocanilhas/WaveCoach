@@ -143,7 +143,7 @@ class AthleteServicesTest {
 
         val name = randomString()
 
-        when (val result = athleteServices.updateAthlete(SECOND_COACH_ID, THIRD_ATHLETE_ID, name, VALID_DATE)) {
+        when (val result = athleteServices.updateAthlete(SECOND_COACH_ID, THIRD_ATHLETE_ID, name, VALID_DATE, null)) {
             is Failure -> fail("Unexpected $result")
             is Success -> assertTrue(result.value == THIRD_ATHLETE_ID)
         }
@@ -161,7 +161,7 @@ class AthleteServicesTest {
             )
 
         invalidNames.forEach { name ->
-            when (val result = athleteServices.updateAthlete(FIRST_COACH_ID, FIRST_ATHLETE_ID, name, VALID_DATE)) {
+            when (val result = athleteServices.updateAthlete(FIRST_COACH_ID, FIRST_ATHLETE_ID, name, VALID_DATE, null)) {
                 is Failure -> assertTrue(result.value is UpdateAthleteError.InvalidName)
                 is Success -> fail("Unexpected $result")
             }
@@ -182,7 +182,7 @@ class AthleteServicesTest {
             )
 
         invalidBirthDays.forEach { birthdate ->
-            when (val result = athleteServices.updateAthlete(FIRST_COACH_ID, FIRST_ATHLETE_ID, name, birthdate)) {
+            when (val result = athleteServices.updateAthlete(FIRST_COACH_ID, FIRST_ATHLETE_ID, name, birthdate, null)) {
                 is Failure -> assertTrue(result.value is UpdateAthleteError.Invalidbirthdate)
                 is Success -> fail("Unexpected $result")
             }
@@ -197,7 +197,7 @@ class AthleteServicesTest {
         val name = randomString()
         val aid = 0
 
-        when (val result = athleteServices.updateAthlete(FIRST_COACH_ID, aid, name, VALID_DATE)) {
+        when (val result = athleteServices.updateAthlete(FIRST_COACH_ID, aid, name, VALID_DATE, null)) {
             is Failure -> assertTrue(result.value is UpdateAthleteError.AthleteNotFound)
             is Success -> fail("Unexpected $result")
         }
@@ -210,7 +210,7 @@ class AthleteServicesTest {
 
         val name = randomString()
 
-        when (val result = athleteServices.updateAthlete(SECOND_COACH_ID, FIRST_ATHLETE_ID, name, VALID_DATE)) {
+        when (val result = athleteServices.updateAthlete(SECOND_COACH_ID, FIRST_ATHLETE_ID, name, VALID_DATE, null)) {
             is Failure -> assertTrue(result.value is UpdateAthleteError.NotAthletesCoach)
             is Success -> fail("Unexpected $result")
         }

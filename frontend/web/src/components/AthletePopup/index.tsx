@@ -92,12 +92,11 @@ export function AthletePopup({ onClose, onSuccess, data }: AthletePopupProps) {
     const image = state.image
 
     try {
-      if (isEditing) await updateAthlete(data.uid, name, birthdate)
+      if (isEditing) await updateAthlete(data.uid, name, birthdate, image)
       else await createAthlete(name, birthdate, image)
 
       dispatch({ type: 'success' })
       onSuccess()
-      onClose()
     } catch (err) {
       dispatch({ type: 'error', error: handleError(err) })
     }
@@ -114,11 +113,12 @@ export function AthletePopup({ onClose, onSuccess, data }: AthletePopupProps) {
   const name = state.tag === 'editing' ? state.inputs.name : ''
   const birthdate = state.tag === 'editing' ? state.inputs.birthdate : ''
   const url = state.tag === 'editing' ? state.inputs.url : undefined
+  const image = state.tag === 'editing' ? state.image : null
   const disabled =
     state.tag === 'submitting' ||
     name.trim() === '' ||
     birthdate.trim() === '' ||
-    (isEditing && name === initialRef.current?.name && birthdate === epochConverter(initialRef.current?.birthdate, 'yyyy-mm-dd'))
+    (isEditing && name === initialRef.current?.name && birthdate === epochConverter(initialRef.current?.birthdate, 'yyyy-mm-dd') && !image)
 
   return (
     <Popup

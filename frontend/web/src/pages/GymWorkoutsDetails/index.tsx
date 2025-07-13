@@ -13,6 +13,8 @@ import { getGymActivity } from '../../../../services/gymServices'
 
 import { epochConverter } from '../../../../utils/epochConverter'
 
+import { useAuthentication } from '../../hooks/useAuthentication'
+
 import styles from './styles.module.css'
 
 type State = { tag: 'loading' } | { tag: 'loaded'; workout: GymWorkout; isEditing: boolean } | { tag: 'error' }
@@ -46,6 +48,7 @@ function reducer(state: State, action: Action): State {
 
 export function GymWorkoutsDetails() {
   const [state, dispatch] = useReducer(reducer, { tag: 'loading' })
+  const [user] = useAuthentication()
   const gid = Number(useParams().gid)
 
   async function fetchData() {
@@ -82,7 +85,7 @@ export function GymWorkoutsDetails() {
       <div className={styles.container}>
         <div className={styles.header}>
           <h2>{epochConverter(workout.date, 'dd-mm-yyyy')}</h2>
-          <Button text="Edit" onClick={handleEdit} />
+          {user.isCoach && <Button text="Edit" onClick={handleEdit} />}
         </div>
         {workout.exercises.map(exercise => (
           <Card

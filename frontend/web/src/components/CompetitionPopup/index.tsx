@@ -12,6 +12,8 @@ import { epochConverter } from '../../../../utils/epochConverter'
 
 import { Competition } from '../../types/Competition'
 
+import { useAuthentication } from '../../hooks/useAuthentication'
+
 import styles from './styles.module.css'
 
 type CompetitionPopupProps = {
@@ -22,6 +24,7 @@ type CompetitionPopupProps = {
 
 export function CompetitionPopup({ competition, onClose, onUpdateSuccess }: CompetitionPopupProps) {
   const [editing, setEditing] = useState(false)
+  const [user] = useAuthentication()
 
   function handleToggleEdit() {
     setEditing(p => !p)
@@ -35,7 +38,7 @@ export function CompetitionPopup({ competition, onClose, onUpdateSuccess }: Comp
           <Divisor
             left={
               <div className={styles.details}>
-                <Button text="Edit" onClick={handleToggleEdit} />
+                {user.isCoach && <Button text="Edit" onClick={handleToggleEdit} /> }
                 <p className={styles.date}>{epochConverter(competition.date, 'dd/mm/yyyy')}</p>
                 <p className={styles.name}>{competition.name}</p>
                 <PlaceWithTrophy place={competition.place} />

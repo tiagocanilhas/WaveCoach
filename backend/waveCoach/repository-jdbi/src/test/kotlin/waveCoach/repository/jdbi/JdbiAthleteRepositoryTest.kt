@@ -59,7 +59,7 @@ class JdbiAthleteRepositoryTest {
             val athleteRepository = JdbiAthleteRepository(handle)
 
             val updatedName = randomString()
-            athleteRepository.updateAthlete(ATHLETE_ID, updatedName, birthdate)
+            athleteRepository.updateAthlete(ATHLETE_ID, updatedName, birthdate, null)
 
             val athlete = athleteRepository.getAthlete(ATHLETE_ID)
 

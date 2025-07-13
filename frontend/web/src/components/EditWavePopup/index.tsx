@@ -29,7 +29,7 @@ type Action =
   | { type: 'addManeuver'; maneuver: Maneuver }
   | { type: 'setManeuverToEdit'; maneuver: Maneuver | null }
   | { type: 'updateManeuver'; maneuver: Maneuver }
-  | { type: 'deleteManeuver'; id: number }
+  | { type: 'deleteManeuver'; id: number; tempId?: number }
   | { type: 'setManeuvers'; maneuvers: Maneuver[] }
 
 function reducer(state: State, action: Action): State {
@@ -57,10 +57,10 @@ function reducer(state: State, action: Action): State {
         maneuverToEdit: null,
       }
     case 'deleteManeuver':
-      const removedManeuver = state.maneuvers.find(maneuver => maneuver.id === action.id)
+      const removedManeuver = state.maneuvers.find(maneuver => maneuver.id !== null ? maneuver.id === action.id : maneuver.tempId === action.tempId)
       return {
         ...state,
-        maneuvers: state.maneuvers.filter(m => m.id !== action.id),
+        maneuvers: state.maneuvers.filter(m => m.id !== null ? m.id !== action.id : m.tempId !== action.tempId),
         removedManeuvers: [...state.removedManeuvers, WorkoutEditing.nullifyFieldsExceptId(removedManeuver)],
       }
     case 'setManeuvers':
@@ -115,8 +115,8 @@ export function EditWavePopup({ wave, onClose, onSave }: EditWavePopupProps) {
     dispatch({ type: 'updateManeuver', maneuver })
   }
 
-  function handleOnDelete(id: number) {
-    if (confirm('Are you sure you want to delete this maneuver?')) dispatch({ type: 'deleteManeuver', id })
+  function handleOnDelete(id: number, tempId?: number) {
+    if (confirm('Are you sure you want to delete this maneuver?')) dispatch({ type: 'deleteManeuver', id, tempId })
   }
 
   function handleOnReorder(newList: Maneuver[]) {
@@ -152,7 +152,7 @@ export function EditWavePopup({ wave, onClose, onSave }: EditWavePopupProps) {
                 )}
                 onReorder={handleOnReorder}
                 onClick={info => handleOnEdit(info)}
-                onDelete={info => handleOnDelete(info.id)}
+                onDelete={info => handleOnDelete(info.id, info.tempId)}
                 onAdd={handleToggleSelect}
               />
             </div>

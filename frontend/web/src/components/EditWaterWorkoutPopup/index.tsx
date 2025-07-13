@@ -63,7 +63,11 @@ function reducer(state: State, action: Action): State {
     case 'updateWave':
       return {
         ...state,
-        waves: state.waves.map(wave => (wave.id === action.wave.id ? action.wave : wave)),
+        waves: state.waves.map(wave => {
+          const matchById = wave.id !== null && wave.id === action.wave.id
+          const matchByTempId = wave.id === null && wave.tempId === action.wave.tempId
+          return matchById || matchByTempId ? action.wave : wave
+        }),
         waveToEdit: null,
       }
     case 'deleteWave':
@@ -116,6 +120,7 @@ export function EditWaterWorkoutPopup({ workout, onClose, onSuccess }: EditWater
   }
 
   function handleUpdateWave(maneuvers: Maneuver[], rightSide: boolean) {
+    console.log('Updating wave with maneuvers:', maneuvers, 'and rightSide:', rightSide)
     dispatch({ type: 'updateWave', wave: { ...state.waveToEdit, maneuvers, rightSide } })
   }
 

@@ -305,15 +305,20 @@ class AthleteControllerTest {
     fun `update an athlete - success`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val body =
+        val input =
             mapOf(
                 "name" to randomString(),
                 "birthdate" to VALID_DATE,
             )
 
+        val body =
+            MultipartBodyBuilder().apply {
+                part("input", input)
+            }.build()
+
         client.put().uri("/athletes/$FIRST_ATHLETE_ID")
             .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
-            .contentType(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.MULTIPART_FORM_DATA)
             .bodyValue(body)
             .exchange()
             .expectStatus().isNoContent
@@ -323,14 +328,19 @@ class AthleteControllerTest {
     fun `update an athlete - unauthorized`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val body =
+        val input =
             mapOf(
                 "name" to randomString(),
                 "birthdate" to VALID_DATE,
             )
 
+        val body =
+            MultipartBodyBuilder().apply {
+                part("input", input)
+            }.build()
+
         client.put().uri("/athletes/$FIRST_ATHLETE_ID")
-            .contentType(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.MULTIPART_FORM_DATA)
             .bodyValue(body)
             .exchange()
             .expectStatus().isUnauthorized
@@ -340,15 +350,20 @@ class AthleteControllerTest {
     fun `update an athlete - invalid birth date`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val body =
+        val input =
             mapOf(
                 "name" to randomString(),
                 "birthdate" to INVALID_DATE,
             )
 
+        val body =
+            MultipartBodyBuilder().apply {
+                part("input", input)
+            }.build()
+
         client.put().uri("/athletes/$FIRST_ATHLETE_ID")
             .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
-            .contentType(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.MULTIPART_FORM_DATA)
             .bodyValue(body)
             .exchange()
             .expectStatus().isBadRequest
@@ -368,15 +383,20 @@ class AthleteControllerTest {
             )
 
         invalidNames.forEach { name ->
-            val body =
+            val input =
                 mapOf(
                     "name" to name,
                     "birthdate" to VALID_DATE,
                 )
 
+            val body =
+                MultipartBodyBuilder().apply {
+                    part("input", input)
+                }.build()
+
             client.put().uri("/athletes/$FIRST_ATHLETE_ID")
                 .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
-                .contentType(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.MULTIPART_FORM_DATA)
                 .bodyValue(body)
                 .exchange()
                 .expectStatus().isBadRequest
@@ -392,15 +412,20 @@ class AthleteControllerTest {
 
         val id = "invalid"
 
-        val body =
+        val input =
             mapOf(
                 "name" to randomString(),
                 "birthdate" to VALID_DATE,
             )
 
+        val body =
+            MultipartBodyBuilder().apply {
+                part("input", input)
+            }.build()
+
         client.put().uri("/athletes/$id")
             .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
-            .contentType(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.MULTIPART_FORM_DATA)
             .bodyValue(body)
             .exchange()
             .expectStatus().isBadRequest
@@ -415,15 +440,20 @@ class AthleteControllerTest {
 
         val id = 0
 
-        val body =
+        val input =
             mapOf(
                 "name" to randomString(),
                 "birthdate" to VALID_DATE,
             )
 
+        val body =
+            MultipartBodyBuilder().apply {
+                part("input", input)
+            }.build()
+
         client.put().uri("/athletes/$id")
             .header("Authorization", "Bearer $FIRST_COACH_TOKEN")
-            .contentType(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.MULTIPART_FORM_DATA)
             .bodyValue(body)
             .exchange()
             .expectStatus().isNotFound
@@ -436,15 +466,20 @@ class AthleteControllerTest {
     fun `update an athlete - not athlete's coach`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val body =
+        val input =
             mapOf(
                 "name" to randomString(),
                 "birthdate" to VALID_DATE,
             )
 
+        val body =
+            MultipartBodyBuilder().apply {
+                part("input", input)
+            }.build()
+
         client.put().uri("/athletes/$FIRST_ATHLETE_ID")
             .header("Authorization", "Bearer $SECOND_COACH_TOKEN")
-            .contentType(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.MULTIPART_FORM_DATA)
             .bodyValue(body)
             .exchange()
             .expectStatus().isForbidden
@@ -457,15 +492,20 @@ class AthleteControllerTest {
     fun `update an athlete - user is not a coach`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
-        val body =
+        val input =
             mapOf(
                 "name" to randomString(),
                 "birthdate" to VALID_DATE,
             )
 
+        val body =
+            MultipartBodyBuilder().apply {
+                part("input", input)
+            }.build()
+
         client.put().uri("/athletes/$FIRST_ATHLETE_ID")
             .header("Authorization", "Bearer $FIRST_ATHLETE_TOKEN")
-            .contentType(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.MULTIPART_FORM_DATA)
             .bodyValue(body)
             .exchange()
             .expectStatus().isForbidden

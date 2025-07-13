@@ -19,8 +19,13 @@ export async function createAthlete(name: string, birthdate: string, image?: Fil
   return await customFetch(URIS.ATHLETES.create, 'POST', data)
 }
 
-export async function updateAthlete(id: number, name: string, birthdate: string) {
-  return await customFetch(URIS.ATHLETES.update(id), 'PUT', { name, birthdate: toDisplayFormat(birthdate) })
+export async function updateAthlete(id: number, name: string, birthdate: string, image?: File) {
+  const input = new Blob([JSON.stringify({ name, birthdate: toDisplayFormat(birthdate) })], { type: 'application/json' })
+  const data = new FormData()
+  data.append('input', input)
+  if (image) data.append('photo', image)
+
+  return await customFetch(URIS.ATHLETES.update(id), 'PUT', data)
 }
 
 export async function deleteAthlete(id: number) {

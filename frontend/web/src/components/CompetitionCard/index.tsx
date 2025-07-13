@@ -10,6 +10,8 @@ import { Competition } from '../../types/Competition'
 
 import { deleteCompetition } from '../../../../services/athleteServices'
 
+import { useAuthentication } from '../../hooks/useAuthentication'
+
 import styles from './styles.module.css'
 
 type CompetitionCardProps = {
@@ -19,6 +21,8 @@ type CompetitionCardProps = {
 }
 
 export function CompetitionCard({ competition, onDeleteSuccess, onClick }: CompetitionCardProps) {
+  const [user] = useAuthentication()
+  
   async function handleDeleteCompetition() {
     if (confirm('Are you sure you want to delete this competition?')) {
       try {
@@ -32,7 +36,7 @@ export function CompetitionCard({ competition, onDeleteSuccess, onClick }: Compe
 
   return (
     <div className={styles.competitionCard}>
-      <Dropdown options={[{ label: 'Delete', onClick: handleDeleteCompetition }]} />
+      {user.isCoach && <Dropdown options={[{ label: 'Delete', onClick: handleDeleteCompetition }]} /> }
 
       <PlaceWithTrophy place={competition.place} />
 

@@ -17,6 +17,8 @@ import { getWaterActivity, getQuestionnaire } from '../../../../services/waterSe
 
 import { epochConverter } from '../../../../utils/epochConverter'
 
+import { useAuthentication } from '../../hooks/useAuthentication'
+
 import styles from './styles.module.css'
 
 type State =
@@ -76,6 +78,7 @@ function reducer(state: State, action: Action): State {
 export function WaterWorkoutsDetails() {
   const initialState: State = { tag: 'loading' }
   const [state, dispatch] = useReducer(reducer, initialState)
+  const [user] = useAuthentication()
   const wid = Number(useParams().wid)
 
   async function fetchActivityData() {
@@ -219,7 +222,7 @@ export function WaterWorkoutsDetails() {
                 </>
               }
             />
-            <Button text="Edit Workout" onClick={handleEditWorkout} height="50px" />
+            {user.isCoach && <Button text="Edit Workout" onClick={handleEditWorkout} height="50px" />}
           </>
         }
         right={

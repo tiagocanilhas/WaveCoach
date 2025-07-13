@@ -5,6 +5,8 @@ import { useParams } from 'react-router-dom'
 import { CircularProgress } from '@mui/material'
 import { ObjectList } from '../../components/ObjectList'
 import { CompetitionCard } from '../../components/CompetitionCard'
+import { CompetitionPopup } from '../../components/CompetitionPopup'
+import { AddCompetitionPopup } from '../../components/AddCompetitionPopup'
 
 import { getCompetitions } from '../../../../services/athleteServices'
 
@@ -12,9 +14,9 @@ import { Competition } from '../../types/Competition'
 
 import { handleError } from '../../../../utils/handleError'
 
+import { useAuthentication } from '../../hooks/useAuthentication'
+
 import styles from './styles.module.css'
-import { CompetitionPopup } from '../../components/CompetitionPopup'
-import { AddCompetitionPopup } from '../../components/AddCompetitionPopup'
 
 type State =
   | { tag: 'loading' }
@@ -61,6 +63,7 @@ function reducer(state: State, action: Action): State {
 export function Competition() {
   const initialState: State = { tag: 'loading' }
   const [state, dispatch] = useReducer(reducer, initialState)
+  const [user] = useAuthentication()
   const aid = Number(useParams().aid)
 
   async function fetchCompetitions() {
@@ -114,7 +117,7 @@ export function Competition() {
         renderItem={item => (
           <CompetitionCard competition={item} onDeleteSuccess={handleOnDeleteSuccess} onClick={handleOnClick} />
         )}
-        onAdd={handleToggleIsAdding}
+        onAdd={user.isCoach ? handleToggleIsAdding : undefined}
         cardSize="400px"
       />
 

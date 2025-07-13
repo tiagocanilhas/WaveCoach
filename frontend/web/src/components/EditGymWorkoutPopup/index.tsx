@@ -183,7 +183,7 @@ export function EditGymWorkoutPopup({ workout, onClose, onSuccess }: EditGymWork
       }
 
       return WorkoutEditing.noEditingMade(newExercise) ? null : newExercise
-    })
+    }) ?? []
 
     try {
       await updateGymActivity(gid, date, [...exercises, ...state.removedExercises])

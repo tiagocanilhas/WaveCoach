@@ -85,6 +85,8 @@ sealed class UpdateAthleteError {
     data object AthleteNotFound : UpdateAthleteError()
 
     data object NotAthletesCoach : UpdateAthleteError()
+
+    data object InvalidPhoto : UpdateAthleteError()
 }
 typealias UpdateAthleteResult = Either<UpdateAthleteError, Int>
 
@@ -375,12 +377,15 @@ class AthleteServices(
     fun updateAthlete(
         coachId: Int,
         aid: Int,
-        name: String,
-        birthdate: String,
+        name: String?,
+        birthdate: String?,
+        photo: MultipartFile?,
     ): UpdateAthleteResult {
-        val date = dateToLongWithVerification(birthdate) ?: return failure(UpdateAthleteError.Invalidbirthdate)
+        val date = birthdate?.let {
+            dateToLongWithVerification(birthdate)?: return failure(UpdateAthleteError.Invalidbirthdate)
+        }
 
-        if (!athleteDomain.isNameValid(name)) return failure(UpdateAthleteError.InvalidName)
+        if (name != null && !athleteDomain.isNameValid(name)) return failure(UpdateAthleteError.InvalidName)
 
         return transactionManager.run {
             val athleteRepository = it.athleteRepository
@@ -388,7 +393,17 @@ class AthleteServices(
             val athlete = athleteRepository.getAthlete(aid) ?: return@run failure(UpdateAthleteError.AthleteNotFound)
             if (athlete.coach != coachId) return@run failure(UpdateAthleteError.NotAthletesCoach)
 
-            athleteRepository.updateAthlete(aid, name, date)
+            val url =
+                photo?.let { photo ->
+                    cloudinaryServices.uploadAthleteImage(photo)
+                        ?: return@run failure(UpdateAthleteError.InvalidPhoto)
+                }
+
+            athleteRepository.updateAthlete(aid, name, date, url)
+
+            if (url != null && athlete.url != null)
+                cloudinaryServices.deleteImage(athlete.url!!)
+
             success(aid)
         }
     }

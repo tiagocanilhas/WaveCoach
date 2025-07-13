@@ -102,14 +102,15 @@ class AthleteController(
             )
     }
 
-    @PutMapping(Uris.Athletes.UPDATE)
+    @PutMapping(Uris.Athletes.UPDATE, consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun update(
         coach: AuthenticatedCoach,
         @PathVariable aid: String,
-        @RequestBody input: AthleteUpdateInputModel,
+        @RequestPart("input") input: AthleteUpdateInputModel,
+        @RequestPart("photo") photo: MultipartFile?,
     ): ResponseEntity<*> {
         val uid = aid.toIntOrNull() ?: return Problem.response(400, Problem.invalidAthleteId)
-        val result = athleteServices.updateAthlete(coach.info.id, uid, input.name, input.birthdate)
+        val result = athleteServices.updateAthlete(coach.info.id, uid, input.name, input.birthdate, photo)
 
         return when (result) {
             is Success -> ResponseEntity.status(204).build<Unit>()
@@ -120,6 +121,7 @@ class AthleteController(
                     UpdateAthleteError.Invalidbirthdate -> Problem.response(400, Problem.invalidBirthdate)
                     UpdateAthleteError.InvalidName -> Problem.response(400, Problem.invalidName)
                     UpdateAthleteError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
+                    UpdateAthleteError.InvalidPhoto -> Problem.response(400, Problem.invalidPhoto)
                 }
         }
     }

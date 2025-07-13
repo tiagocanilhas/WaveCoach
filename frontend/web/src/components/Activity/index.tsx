@@ -8,6 +8,8 @@ import { epochConverter } from '../../../../utils/epochConverter'
 import { deleteGymActivity } from '../../../../services/gymServices'
 import { deleteWaterActivity } from '../../../../services/waterServices'
 
+import { useAuthentication } from '../../hooks/useAuthentication'
+
 import styles from './styles.module.css'
 
 type ActivityProps = {
@@ -21,6 +23,7 @@ type ActivityProps = {
 
 export function Activity({ activity, onDeleteSuccess }: ActivityProps) {
   const navigate = useNavigate()
+  const [user] = useAuthentication()
   const id = Number(useParams().aid)
 
   async function handleDeleteActivity() {
@@ -54,7 +57,7 @@ export function Activity({ activity, onDeleteSuccess }: ActivityProps) {
 
   return (
     <div className={styles.activity}>
-      <Dropdown options={[{ label: 'Delete', onClick: handleDeleteActivity }]} />
+      {user.isCoach && <Dropdown options={[{ label: 'Delete', onClick: handleDeleteActivity }]} />}
       <div className={styles.imageContainer}>
         <img
           src={`/images/no_image.svg`}

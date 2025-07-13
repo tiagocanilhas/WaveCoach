@@ -22,9 +22,6 @@ type AddCompetitionPopupProps = {
 
 export function AddCompetitionPopup({ onClose, onSuccess }: AddCompetitionPopupProps) {
   async function handleOnSave(newCompetition: Competition) {
-
-    console.log('New competition:', newCompetition)
-
     const location = newCompetition.location
     const date = epochConverter(newCompetition.date, 'yyyy-mm-dd')
     const place = newCompetition.place

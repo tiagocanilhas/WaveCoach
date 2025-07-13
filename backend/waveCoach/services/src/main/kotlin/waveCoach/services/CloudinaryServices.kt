@@ -30,7 +30,7 @@ class CloudinaryServices(
     fun uploadManeuverImage(file: MultipartFile): String? = uploadImage(file, "maneuvers")
 
     fun deleteImage(url: String): Boolean {
-        val publicId = url.substringAfterLast("/").substringBeforeLast(".")
+        val publicId = url.substringAfter("/upload/").substringAfter("/").substringBeforeLast(".")
         return try {
             cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap())
             true

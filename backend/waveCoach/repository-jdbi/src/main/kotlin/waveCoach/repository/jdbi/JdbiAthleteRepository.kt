@@ -46,19 +46,24 @@ class JdbiAthleteRepository(
 
     override fun updateAthlete(
         uid: Int,
-        name: String,
-        birthdate: Long,
+        name: String?,
+        birthdate: Long?,
+        url: String?,
     ) {
         handle.createUpdate(
             """
             update waveCoach.athlete 
-            set name = :name, birthdate = :birthdate 
+            set 
+                name = coalesce(:name, name),
+                birthdate = coalesce(:birthdate, birthdate),
+                url = coalesce(:url, url)
             where uid = :uid
             """.trimIndent(),
         )
             .bind("uid", uid)
             .bind("name", name)
             .bind("birthdate", birthdate)
+            .bind("url", url)
             .execute()
     }
 

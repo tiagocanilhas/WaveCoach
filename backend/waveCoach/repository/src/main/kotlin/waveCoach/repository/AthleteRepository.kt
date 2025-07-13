@@ -19,8 +19,9 @@ interface AthleteRepository {
 
     fun updateAthlete(
         uid: Int,
-        name: String,
-        birthdate: Long,
+        name: String?,
+        birthdate: Long?,
+        url: String?,
     )
 
     fun setCredentialsChangedToTrue(uid: Int)
