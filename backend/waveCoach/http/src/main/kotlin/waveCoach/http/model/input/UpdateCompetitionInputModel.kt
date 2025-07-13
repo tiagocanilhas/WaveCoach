@@ -5,5 +5,5 @@ data class UpdateCompetitionInputModel(
     val location: String?,
     val place: Int?,
     val name: String?,
-    val heats: List<UpdateHeatInputModel>?
+    val heats: List<UpdateHeatInputModel>?,
 )

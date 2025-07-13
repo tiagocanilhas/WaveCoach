@@ -39,11 +39,11 @@ function reducer(state: State, action: Action): State {
       switch (action.type) {
         case 'setWorkout':
           if (state.questionnaire !== undefined) {
-            return { 
+            return {
               tag: 'loaded',
               workout: action.workout,
-              questionnaire: state.questionnaire, 
-              isEditing: false 
+              questionnaire: state.questionnaire,
+              isEditing: false,
             }
           }
           return { tag: 'loading', workout: action.workout, questionnaire: state.questionnaire }

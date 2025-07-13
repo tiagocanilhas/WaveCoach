@@ -215,19 +215,21 @@ class WaterActivityServices(
 
             val wavesIds = waterActivityRepository.storeWaves(wavesToInsert)
 
-            val maneuversToInsert = waves.flatMapIndexed { wavesIndex, wave ->
-                wave.maneuvers.mapIndexed { maneuverOrder, maneuver ->
-                    if (waterManeuverRepository.getWaterManeuverById(maneuver.waterManeuverId) == null)
-                        return@run failure(CreateWaterActivityError.InvalidWaterManeuver)
+            val maneuversToInsert =
+                waves.flatMapIndexed { wavesIndex, wave ->
+                    wave.maneuvers.mapIndexed { maneuverOrder, maneuver ->
+                        if (waterManeuverRepository.getWaterManeuverById(maneuver.waterManeuverId) == null) {
+                            return@run failure(CreateWaterActivityError.InvalidWaterManeuver)
+                        }
 
-                    ManeuverToInsert(
-                        wavesIds[wavesIndex],
-                        maneuver.waterManeuverId,
-                        maneuver.success,
-                        maneuverOrder + 1,
-                    )
+                        ManeuverToInsert(
+                            wavesIds[wavesIndex],
+                            maneuver.waterManeuverId,
+                            maneuver.success,
+                            maneuverOrder + 1,
+                        )
+                    }
                 }
-            }
 
             waterActivityRepository.storeManeuvers(maneuversToInsert)
 
@@ -272,15 +274,17 @@ class WaterActivityServices(
             val athleteRepository = it.athleteRepository
             val waterActivityRepository = it.waterActivityRepository
 
-            val athlete = athleteRepository.getAthlete(athleteId)
-                ?: return@run failure(GetLastWaterActivityError.AthleteNotFound)
+            val athlete =
+                athleteRepository.getAthlete(athleteId)
+                    ?: return@run failure(GetLastWaterActivityError.AthleteNotFound)
 
             if (athlete.uid != uid && athlete.coach != uid) {
                 return@run failure(GetLastWaterActivityError.NotAthletesCoach)
             }
 
-            val activity = waterActivityRepository.getLastWaterActivity(athlete.uid)
-                ?: return@run failure(GetLastWaterActivityError.ActivityNotFound)
+            val activity =
+                waterActivityRepository.getLastWaterActivity(athlete.uid)
+                    ?: return@run failure(GetLastWaterActivityError.ActivityNotFound)
 
             success(activity)
         }
@@ -330,8 +334,9 @@ class WaterActivityServices(
             val waterActivityRepository = it.waterActivityRepository
             val waterManeuverRepository = it.waterManeuverRepository
 
-            val activity = activityRepository.getActivityById(activityId)
-                ?: return@run failure(UpdateWaterActivityError.ActivityNotFound)
+            val activity =
+                activityRepository.getActivityById(activityId)
+                    ?: return@run failure(UpdateWaterActivityError.ActivityNotFound)
 
             if (activity.type != ActivityType.WATER) return@run failure(UpdateWaterActivityError.NotWaterActivity)
 
@@ -339,19 +344,22 @@ class WaterActivityServices(
 
             if (athlete.coach != coachId) return@run failure(UpdateWaterActivityError.NotAthletesCoach)
 
-            if (dateLong != null && dateLong != activity.date)
+            if (dateLong != null && dateLong != activity.date) {
                 activityRepository.updateActivity(activityId, dateLong)
+            }
 
             if (rpe != null || condition != null || trimp != null || duration != null) {
-
-                if (rpe != null && !waterActivityDomain.checkRpe(rpe))
+                if (rpe != null && !waterActivityDomain.checkRpe(rpe)) {
                     return@run failure(UpdateWaterActivityError.InvalidRpe)
+                }
 
-                if (trimp != null && !waterActivityDomain.checkTrimp(trimp))
+                if (trimp != null && !waterActivityDomain.checkTrimp(trimp)) {
                     return@run failure(UpdateWaterActivityError.InvalidTrimp)
+                }
 
-                if (duration != null && !waterActivityDomain.checkDuration(duration))
+                if (duration != null && !waterActivityDomain.checkDuration(duration)) {
                     return@run failure(UpdateWaterActivityError.InvalidDuration)
+                }
 
                 waterActivityRepository.updateWaterActivity(activityId, rpe, condition, trimp, duration)
             }
@@ -362,22 +370,25 @@ class WaterActivityServices(
                 val wavesOnDB = waterActivityRepository.getWavesByActivity(activityId)
 
                 // Update existing waves
-                val wavesToUpdate = update.map { wave ->
-                    if (wave.order != null &&
-                        (wave.order <= 0 || !checkOrderConflict(wavesOnDB, waves, "waveOrder", wave.order))
-                    )
-                        return@run failure(UpdateWaterActivityError.InvalidWaveOrder)
+                val wavesToUpdate =
+                    update.map { wave ->
+                        if (wave.order != null &&
+                            (wave.order <= 0 || !checkOrderConflict(wavesOnDB, waves, "waveOrder", wave.order))
+                        ) {
+                            return@run failure(UpdateWaterActivityError.InvalidWaveOrder)
+                        }
 
-                    if (wavesOnDB.none { it.id == wave.id })
-                        return@run failure(UpdateWaterActivityError.WaveNotFound)
+                        if (wavesOnDB.none { it.id == wave.id }) {
+                            return@run failure(UpdateWaterActivityError.WaveNotFound)
+                        }
 
-                    WaveToUpdate(
-                        wave.id!!,
-                        wave.points,
-                        wave.rightSide,
-                        wave.order,
-                    )
-                }
+                        WaveToUpdate(
+                            wave.id!!,
+                            wave.points,
+                            wave.rightSide,
+                            wave.order,
+                        )
+                    }
 
                 val maneuversCreate = mutableListOf<ManeuverToInsert>()
                 val maneuversUpdate = mutableListOf<ManeuverToUpdate>()
@@ -394,25 +405,31 @@ class WaterActivityServices(
                         maneuverUpdate.forEach {
                             if (it.waterManeuverId != null && it.waterManeuverId <= 0 &&
                                 waterManeuverRepository.getWaterManeuverById(it.waterManeuverId) != null
-                            )
+                            ) {
                                 return@run failure(UpdateWaterActivityError.InvalidWaterManeuver)
+                            }
 
-                            if (maneuversOnDB.none { maneuver -> maneuver.id == it.id })
+                            if (maneuversOnDB.none { maneuver -> maneuver.id == it.id }) {
                                 return@run failure(UpdateWaterActivityError.ManeuverNotFound)
+                            }
 
-                            if (it.order != null && (it.order <= 0 || !checkOrderConflict(
-                                    maneuversOnDB, maneuverUpdate, "maneuverOrder", it.order
-                                ))
-                            )
+                            if (it.order != null && (
+                                    it.order <= 0 ||
+                                        !checkOrderConflict(
+                                            maneuversOnDB, wave.maneuvers, "maneuverOrder", it.order,
+                                        )
+                                )
+                            ) {
                                 return@run failure(UpdateWaterActivityError.InvalidManeuverOrder)
+                            }
 
                             maneuversUpdate.add(
                                 ManeuverToUpdate(
                                     it.id!!,
                                     it.waterManeuverId,
                                     it.success,
-                                    it.order
-                                )
+                                    it.order,
+                                ),
                             )
                         }
                         waterActivityRepository.updateManeuvers(maneuversUpdate)
@@ -421,14 +438,17 @@ class WaterActivityServices(
                         maneuverCreate.forEach { maneuver ->
                             if (maneuver.waterManeuverId == null || maneuver.waterManeuverId <= 0 ||
                                 waterManeuverRepository.getWaterManeuverById(maneuver.waterManeuverId) == null
-                            )
+                            ) {
                                 return@run failure(UpdateWaterActivityError.InvalidWaterManeuver)
+                            }
 
-                            if (maneuver.success == null)
+                            if (maneuver.success == null) {
                                 return@run failure(UpdateWaterActivityError.InvalidSuccess)
+                            }
 
-                            if (maneuver.order == null || maneuver.order <= 0)
+                            if (maneuver.order == null || maneuver.order <= 0) {
                                 return@run failure(UpdateWaterActivityError.InvalidManeuverOrder)
+                            }
 
                             maneuversCreate.add(
                                 ManeuverToInsert(
@@ -436,14 +456,14 @@ class WaterActivityServices(
                                     maneuver.waterManeuverId,
                                     maneuver.success,
                                     maneuver.order,
-                                )
+                                ),
                             )
-
                         }
 
                         // Delete Maneuvers
-                        if (maneuverDelete.any { id -> maneuversOnDB.none { it.id == id } })
+                        if (maneuverDelete.any { id -> maneuversOnDB.none { it.id == id } }) {
                             return@run failure(UpdateWaterActivityError.ManeuverNotFound)
+                        }
 
                         maneuversDelete.addAll(maneuverDelete)
                     }
@@ -453,47 +473,53 @@ class WaterActivityServices(
                 }
 
                 // Add New waves
-                val wavesToInsert = create.map { wave ->
-                    if (wave.order == null || wave.order <= 0 ||
-                        waterActivityRepository.verifyWaveOrder(activityId, wave.order)
-                    )
-                        return@run failure(UpdateWaterActivityError.InvalidWaveOrder)
+                val wavesToInsert =
+                    create.map { wave ->
+                        if (wave.order == null || wave.order <= 0 ||
+                            waterActivityRepository.verifyWaveOrder(activityId, wave.order)
+                        ) {
+                            return@run failure(UpdateWaterActivityError.InvalidWaveOrder)
+                        }
 
-                    if (wave.rightSide == null) return@run failure(UpdateWaterActivityError.InvalidRightSide)
+                        if (wave.rightSide == null) return@run failure(UpdateWaterActivityError.InvalidRightSide)
 
-                    WaveToInsert(
-                        activityId,
-                        wave.points,
-                        wave.rightSide,
-                        wave.order,
-                    )
-                }
+                        WaveToInsert(
+                            activityId,
+                            wave.points,
+                            wave.rightSide,
+                            wave.order,
+                        )
+                    }
 
                 val wavesCreatedIds = waterActivityRepository.storeWaves(wavesToInsert)
 
-                val maneuversToInsert = create.flatMapIndexed { wavesIndex, wave ->
-                    if (wave.maneuvers == null) return@run failure(UpdateWaterActivityError.InvalidManeuvers)
+                val maneuversToInsert =
+                    create.flatMapIndexed { wavesIndex, wave ->
+                        if (wave.maneuvers == null) return@run failure(UpdateWaterActivityError.InvalidManeuvers)
 
-                    wave.maneuvers.mapIndexed { maneuverIndex, maneuver ->
-                        if (maneuver.waterManeuverId == null || maneuver.waterManeuverId <= 0)
-                            return@run failure(UpdateWaterActivityError.InvalidWaterManeuver)
+                        wave.maneuvers.mapIndexed { maneuverIndex, maneuver ->
+                            if (maneuver.waterManeuverId == null || maneuver.waterManeuverId <= 0) {
+                                return@run failure(UpdateWaterActivityError.InvalidWaterManeuver)
+                            }
 
-                        if (maneuver.success == null)
-                            return@run failure(UpdateWaterActivityError.InvalidSuccess)
+                            if (maneuver.success == null) {
+                                return@run failure(UpdateWaterActivityError.InvalidSuccess)
+                            }
 
-                        ManeuverToInsert(
-                            wavesCreatedIds[wavesIndex],
-                            maneuver.waterManeuverId,
-                            maneuver.success,
-                            maneuverIndex + 1,
-                        )
+                            ManeuverToInsert(
+                                wavesCreatedIds[wavesIndex],
+                                maneuver.waterManeuverId,
+                                maneuver.success,
+                                maneuverIndex + 1,
+                            )
+                        }
                     }
-                }
                 waterActivityRepository.storeManeuvers(maneuversToInsert + maneuversCreate)
 
                 // Delete waves
-                if (delete.any { id -> wavesOnDB.none { it.id == id } })
+                if (delete.any { id -> wavesOnDB.none { it.id == id } }) {
                     return@run failure(UpdateWaterActivityError.WaveNotFound)
+                }
                 waterActivityRepository.removeWavesById(delete)
             }
 

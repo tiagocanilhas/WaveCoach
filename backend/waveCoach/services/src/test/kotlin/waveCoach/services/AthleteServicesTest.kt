@@ -90,9 +90,9 @@ class AthleteServicesTest {
             is Success ->
                 assertTrue(
                     result.value.uid == FIRST_ATHLETE_ID &&
-                            result.value.coach == FIRST_COACH_ID &&
-                            result.value.name == FIRST_ATHLETE_NAME &&
-                            result.value.birthdate == FIRST_ATHLETE_BIRTH_DATE,
+                        result.value.coach == FIRST_COACH_ID &&
+                        result.value.name == FIRST_ATHLETE_NAME &&
+                        result.value.birthdate == FIRST_ATHLETE_BIRTH_DATE,
                 )
         }
     }
@@ -621,18 +621,18 @@ class AthleteServicesTest {
             is Success ->
                 assertTrue(
                     result.value.uid == FIRST_ATHLETE_ID &&
-                            result.value.date == ATHLETE_CHARACTERISTICS_FIRST_DATE_LONG &&
-                            result.value.height == ATHLETE_HEIGHT &&
-                            result.value.weight == ATHLETE_WEIGHT &&
-                            result.value.bmi == ATHLETE_BMI &&
-                            result.value.calories == ATHLETE_CALORIES &&
-                            result.value.bodyFat == ATHLETE_BODY_FAT &&
-                            result.value.waistSize == ATHLETE_WAIST_SIZE &&
-                            result.value.armSize == ATHLETE_ARM_SIZE &&
-                            result.value.thighSize == ATHLETE_THIGH_SIZE &&
-                            result.value.tricepFat == ATHLETE_TRICEP_FAT &&
-                            result.value.abdomenFat == ATHLETE_ABDOMEN_FAT &&
-                            result.value.thighFat == ATHLETE_THIGH_FAT,
+                        result.value.date == ATHLETE_CHARACTERISTICS_FIRST_DATE_LONG &&
+                        result.value.height == ATHLETE_HEIGHT &&
+                        result.value.weight == ATHLETE_WEIGHT &&
+                        result.value.bmi == ATHLETE_BMI &&
+                        result.value.calories == ATHLETE_CALORIES &&
+                        result.value.bodyFat == ATHLETE_BODY_FAT &&
+                        result.value.waistSize == ATHLETE_WAIST_SIZE &&
+                        result.value.armSize == ATHLETE_ARM_SIZE &&
+                        result.value.thighSize == ATHLETE_THIGH_SIZE &&
+                        result.value.tricepFat == ATHLETE_TRICEP_FAT &&
+                        result.value.abdomenFat == ATHLETE_ABDOMEN_FAT &&
+                        result.value.thighFat == ATHLETE_THIGH_FAT,
                 )
         }
     }
@@ -1136,7 +1136,7 @@ class AthleteServicesTest {
                     "Location",
                     2,
                     randomString(),
-                    emptyList()
+                    emptyList(),
                 )
         ) {
             is Failure -> fail("Unexpected $result")
@@ -1165,7 +1165,7 @@ class AthleteServicesTest {
                         "Location",
                         1,
                         randomString(),
-                        emptyList()
+                        emptyList(),
                     )
             ) {
                 is Failure -> assertTrue(result.value is CreateCompetitionError.InvalidDate)
@@ -1188,7 +1188,7 @@ class AthleteServicesTest {
                     "Location",
                     1,
                     randomString(),
-                    emptyList()
+                    emptyList(),
                 )
         ) {
             is Failure -> assertTrue(result.value is CreateCompetitionError.AthleteNotFound)
@@ -1210,7 +1210,7 @@ class AthleteServicesTest {
                     "Location",
                     2,
                     randomString(),
-                    emptyList()
+                    emptyList(),
                 )
         ) {
             is Failure -> assertTrue(result.value is CreateCompetitionError.NotAthletesCoach)
@@ -1235,27 +1235,30 @@ class AthleteServicesTest {
                     listOf(
                         HeatInputInfo(
                             score = 2,
-                            waterActivity = WaterActivityInputInfo(
-                                athleteId = FIRST_ATHLETE_ID,
-                                rpe = 4,
-                                condition = randomString(),
-                                trimp = 2,
-                                duration = 60,
-                                waves = listOf(
-                                    WaveInputInfo(
-                                        points = null,
-                                        rightSide = true,
-                                        maneuvers = listOf(
-                                            ManeuverInputInfo(
-                                                waterManeuverId = 1,
-                                                success = true
+                            waterActivity =
+                                WaterActivityInputInfo(
+                                    athleteId = FIRST_ATHLETE_ID,
+                                    rpe = 4,
+                                    condition = randomString(),
+                                    trimp = 2,
+                                    duration = 60,
+                                    waves =
+                                        listOf(
+                                            WaveInputInfo(
+                                                points = null,
+                                                rightSide = true,
+                                                maneuvers =
+                                                    listOf(
+                                                        ManeuverInputInfo(
+                                                            waterManeuverId = 1,
+                                                            success = true,
+                                                        ),
+                                                    ),
                                             ),
-                                        )
-                                    ),
+                                        ),
                                 ),
-                            ),
                         ),
-                    )
+                    ),
                 )
         ) {
             is Failure -> assertTrue(result.value is CreateCompetitionError.ActivityWithoutMicrocycle)
@@ -1280,27 +1283,30 @@ class AthleteServicesTest {
                     listOf(
                         HeatInputInfo(
                             score = 2,
-                            waterActivity = WaterActivityInputInfo(
-                                athleteId = FIRST_ATHLETE_ID,
-                                rpe = 4,
-                                condition = randomString(),
-                                trimp = 2,
-                                duration = -60, // Invalid duration
-                                waves = listOf(
-                                    WaveInputInfo(
-                                        points = null,
-                                        rightSide = true,
-                                        maneuvers = listOf(
-                                            ManeuverInputInfo(
-                                                waterManeuverId = 1,
-                                                success = true
+                            waterActivity =
+                                WaterActivityInputInfo(
+                                    athleteId = FIRST_ATHLETE_ID,
+                                    rpe = 4,
+                                    condition = randomString(),
+                                    trimp = 2,
+                                    duration = -60, // Invalid duration
+                                    waves =
+                                        listOf(
+                                            WaveInputInfo(
+                                                points = null,
+                                                rightSide = true,
+                                                maneuvers =
+                                                    listOf(
+                                                        ManeuverInputInfo(
+                                                            waterManeuverId = 1,
+                                                            success = true,
+                                                        ),
+                                                    ),
                                             ),
-                                        )
-                                    ),
+                                        ),
                                 ),
-                            ),
                         ),
-                    )
+                    ),
                 )
         ) {
             is Failure -> assertTrue(result.value is CreateCompetitionError.InvalidDuration)
@@ -1325,27 +1331,30 @@ class AthleteServicesTest {
                     listOf(
                         HeatInputInfo(
                             score = 2,
-                            waterActivity = WaterActivityInputInfo(
-                                athleteId = FIRST_ATHLETE_ID,
-                                rpe = -1, // Invalid RPE
-                                condition = randomString(),
-                                trimp = 2,
-                                duration = 60,
-                                waves = listOf(
-                                    WaveInputInfo(
-                                        points = null,
-                                        rightSide = true,
-                                        maneuvers = listOf(
-                                            ManeuverInputInfo(
-                                                waterManeuverId = 1,
-                                                success = true
+                            waterActivity =
+                                WaterActivityInputInfo(
+                                    athleteId = FIRST_ATHLETE_ID,
+                                    rpe = -1, // Invalid RPE
+                                    condition = randomString(),
+                                    trimp = 2,
+                                    duration = 60,
+                                    waves =
+                                        listOf(
+                                            WaveInputInfo(
+                                                points = null,
+                                                rightSide = true,
+                                                maneuvers =
+                                                    listOf(
+                                                        ManeuverInputInfo(
+                                                            waterManeuverId = 1,
+                                                            success = true,
+                                                        ),
+                                                    ),
                                             ),
-                                        )
-                                    ),
+                                        ),
                                 ),
-                            ),
                         ),
-                    )
+                    ),
                 )
         ) {
             is Failure -> assertTrue(result.value is CreateCompetitionError.InvalidRpe)
@@ -1370,27 +1379,30 @@ class AthleteServicesTest {
                     listOf(
                         HeatInputInfo(
                             score = 2,
-                            waterActivity = WaterActivityInputInfo(
-                                athleteId = FIRST_ATHLETE_ID,
-                                rpe = 4,
-                                condition = randomString(),
-                                trimp = -1, // Invalid TRIMP
-                                duration = 60,
-                                waves = listOf(
-                                    WaveInputInfo(
-                                        points = null,
-                                        rightSide = true,
-                                        maneuvers = listOf(
-                                            ManeuverInputInfo(
-                                                waterManeuverId = 1,
-                                                success = true
+                            waterActivity =
+                                WaterActivityInputInfo(
+                                    athleteId = FIRST_ATHLETE_ID,
+                                    rpe = 4,
+                                    condition = randomString(),
+                                    trimp = -1, // Invalid TRIMP
+                                    duration = 60,
+                                    waves =
+                                        listOf(
+                                            WaveInputInfo(
+                                                points = null,
+                                                rightSide = true,
+                                                maneuvers =
+                                                    listOf(
+                                                        ManeuverInputInfo(
+                                                            waterManeuverId = 1,
+                                                            success = true,
+                                                        ),
+                                                    ),
                                             ),
-                                        )
-                                    ),
+                                        ),
                                 ),
-                            ),
                         ),
-                    )
+                    ),
                 )
         ) {
             is Failure -> assertTrue(result.value is CreateCompetitionError.InvalidTrimp)
@@ -1415,27 +1427,30 @@ class AthleteServicesTest {
                     listOf(
                         HeatInputInfo(
                             score = -1, // Invalid score
-                            waterActivity = WaterActivityInputInfo(
-                                athleteId = FIRST_ATHLETE_ID,
-                                rpe = 4,
-                                condition = randomString(),
-                                trimp = 2,
-                                duration = 60,
-                                waves = listOf(
-                                    WaveInputInfo(
-                                        points = null,
-                                        rightSide = true,
-                                        maneuvers = listOf(
-                                            ManeuverInputInfo(
-                                                waterManeuverId = 1,
-                                                success = true
+                            waterActivity =
+                                WaterActivityInputInfo(
+                                    athleteId = FIRST_ATHLETE_ID,
+                                    rpe = 4,
+                                    condition = randomString(),
+                                    trimp = 2,
+                                    duration = 60,
+                                    waves =
+                                        listOf(
+                                            WaveInputInfo(
+                                                points = null,
+                                                rightSide = true,
+                                                maneuvers =
+                                                    listOf(
+                                                        ManeuverInputInfo(
+                                                            waterManeuverId = 1,
+                                                            success = true,
+                                                        ),
+                                                    ),
                                             ),
-                                        )
-                                    ),
+                                        ),
                                 ),
-                            ),
                         ),
-                    )
+                    ),
                 )
         ) {
             is Failure -> assertTrue(result.value is CreateCompetitionError.InvalidScore)
@@ -1460,27 +1475,30 @@ class AthleteServicesTest {
                     listOf(
                         HeatInputInfo(
                             score = 2,
-                            waterActivity = WaterActivityInputInfo(
-                                athleteId = FIRST_ATHLETE_ID,
-                                rpe = 4,
-                                condition = randomString(),
-                                trimp = 2,
-                                duration = 60,
-                                waves = listOf(
-                                    WaveInputInfo(
-                                        points = null,
-                                        rightSide = true,
-                                        maneuvers = listOf(
-                                            ManeuverInputInfo(
-                                                waterManeuverId = 0, // Invalid water maneuver ID
-                                                success = true
+                            waterActivity =
+                                WaterActivityInputInfo(
+                                    athleteId = FIRST_ATHLETE_ID,
+                                    rpe = 4,
+                                    condition = randomString(),
+                                    trimp = 2,
+                                    duration = 60,
+                                    waves =
+                                        listOf(
+                                            WaveInputInfo(
+                                                points = null,
+                                                rightSide = true,
+                                                maneuvers =
+                                                    listOf(
+                                                        ManeuverInputInfo(
+                                                            waterManeuverId = 0, // Invalid water maneuver ID
+                                                            success = true,
+                                                        ),
+                                                    ),
                                             ),
-                                        )
-                                    ),
+                                        ),
                                 ),
-                            ),
                         ),
-                    )
+                    ),
                 )
         ) {
             is Failure -> assertTrue(result.value is CreateCompetitionError.InvalidWaterManeuver)

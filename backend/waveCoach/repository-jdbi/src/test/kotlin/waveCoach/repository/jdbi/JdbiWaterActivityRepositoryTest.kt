@@ -14,19 +14,21 @@ class JdbiWaterActivityRepositoryTest {
             val waterActivityRepository = JdbiWaterActivityRepository(handle)
             val activityRepository = JdbiActivityRepository(handle)
 
-            val activityId = activityRepository.storeActivity(
-                ATHLETE_ID,
-                DATE_LONG,
-                MICROCYCLE_ID
-            )
+            val activityId =
+                activityRepository.storeActivity(
+                    ATHLETE_ID,
+                    DATE_LONG,
+                    MICROCYCLE_ID,
+                )
 
-            val waterActivityId = waterActivityRepository.storeWaterActivity(
-                activityId,
-                FIRST_RPE,
-                FIRST_CONDITION,
-                FIRST_TRIMP,
-                FIRST_DURATION
-            )
+            val waterActivityId =
+                waterActivityRepository.storeWaterActivity(
+                    activityId,
+                    FIRST_RPE,
+                    FIRST_CONDITION,
+                    FIRST_TRIMP,
+                    FIRST_DURATION,
+                )
 
             assertTrue(waterActivityId == activityId)
         }
@@ -64,7 +66,7 @@ class JdbiWaterActivityRepositoryTest {
                 FIRST_RPE + 1,
                 "Excellent",
                 FIRST_TRIMP + 10,
-                FIRST_DURATION + 5
+                FIRST_DURATION + 5,
             )
 
             val updatedActivity = waterActivityRepository.getWaterActivity(FIRST_WATER_ACTIVITY_ID)
@@ -103,26 +105,29 @@ class JdbiWaterActivityRepositoryTest {
             val waterActivityRepository = JdbiWaterActivityRepository(handle)
             val activityRepository = JdbiActivityRepository(handle)
 
-            val activityId = activityRepository.storeActivity(
-                ATHLETE_ID,
-                DATE_LONG,
-                MICROCYCLE_ID
-            )
+            val activityId =
+                activityRepository.storeActivity(
+                    ATHLETE_ID,
+                    DATE_LONG,
+                    MICROCYCLE_ID,
+                )
 
-            val waterActivityId = waterActivityRepository.storeWaterActivity(
-                activityId,
-                FIRST_RPE,
-                FIRST_CONDITION,
-                FIRST_TRIMP,
-                FIRST_DURATION
-            )
+            val waterActivityId =
+                waterActivityRepository.storeWaterActivity(
+                    activityId,
+                    FIRST_RPE,
+                    FIRST_CONDITION,
+                    FIRST_TRIMP,
+                    FIRST_DURATION,
+                )
 
-            val waveId = waterActivityRepository.storeWave(
-                waterActivityId,
-                null,
-                true,
-                1
-            )
+            val waveId =
+                waterActivityRepository.storeWave(
+                    waterActivityId,
+                    null,
+                    true,
+                    1,
+                )
 
             assertTrue(waveId > 0)
         }
@@ -133,26 +138,29 @@ class JdbiWaterActivityRepositoryTest {
             val waterActivityRepository = JdbiWaterActivityRepository(handle)
             val activityRepository = JdbiActivityRepository(handle)
 
-            val activityId = activityRepository.storeActivity(
-                ATHLETE_ID,
-                DATE_LONG,
-                MICROCYCLE_ID
-            )
+            val activityId =
+                activityRepository.storeActivity(
+                    ATHLETE_ID,
+                    DATE_LONG,
+                    MICROCYCLE_ID,
+                )
 
-            val waterActivityId = waterActivityRepository.storeWaterActivity(
-                activityId,
-                FIRST_RPE,
-                FIRST_CONDITION,
-                FIRST_TRIMP,
-                FIRST_DURATION
-            )
+            val waterActivityId =
+                waterActivityRepository.storeWaterActivity(
+                    activityId,
+                    FIRST_RPE,
+                    FIRST_CONDITION,
+                    FIRST_TRIMP,
+                    FIRST_DURATION,
+                )
 
-            val waveId = waterActivityRepository.storeWave(
-                waterActivityId,
-                null,
-                true,
-                1
-            )
+            val waveId =
+                waterActivityRepository.storeWave(
+                    waterActivityId,
+                    null,
+                    true,
+                    1,
+                )
 
             val wave = waterActivityRepository.getWaveById(waveId)
 
@@ -166,26 +174,29 @@ class JdbiWaterActivityRepositoryTest {
             val waterActivityRepository = JdbiWaterActivityRepository(handle)
             val activityRepository = JdbiActivityRepository(handle)
 
-            val activityId = activityRepository.storeActivity(
-                ATHLETE_ID,
-                DATE_LONG,
-                MICROCYCLE_ID
-            )
+            val activityId =
+                activityRepository.storeActivity(
+                    ATHLETE_ID,
+                    DATE_LONG,
+                    MICROCYCLE_ID,
+                )
 
-            val waterActivityId = waterActivityRepository.storeWaterActivity(
-                activityId,
-                FIRST_RPE,
-                FIRST_CONDITION,
-                FIRST_TRIMP,
-                FIRST_DURATION
-            )
+            val waterActivityId =
+                waterActivityRepository.storeWaterActivity(
+                    activityId,
+                    FIRST_RPE,
+                    FIRST_CONDITION,
+                    FIRST_TRIMP,
+                    FIRST_DURATION,
+                )
 
-            val waveID = waterActivityRepository.storeWave(
-                waterActivityId,
-                null,
-                true,
-                1
-            )
+            val waveID =
+                waterActivityRepository.storeWave(
+                    waterActivityId,
+                    null,
+                    true,
+                    1,
+                )
 
             val waves = waterActivityRepository.getWavesByActivity(waterActivityId)
 
@@ -199,26 +210,29 @@ class JdbiWaterActivityRepositoryTest {
             val waterActivityRepository = JdbiWaterActivityRepository(handle)
             val activityRepository = JdbiActivityRepository(handle)
 
-            val activityId = activityRepository.storeActivity(
-                ATHLETE_ID,
-                DATE_LONG,
-                MICROCYCLE_ID
-            )
+            val activityId =
+                activityRepository.storeActivity(
+                    ATHLETE_ID,
+                    DATE_LONG,
+                    MICROCYCLE_ID,
+                )
 
-            val waterActivityId = waterActivityRepository.storeWaterActivity(
-                activityId,
-                FIRST_RPE,
-                FIRST_CONDITION,
-                FIRST_TRIMP,
-                FIRST_DURATION
-            )
+            val waterActivityId =
+                waterActivityRepository.storeWaterActivity(
+                    activityId,
+                    FIRST_RPE,
+                    FIRST_CONDITION,
+                    FIRST_TRIMP,
+                    FIRST_DURATION,
+                )
 
-            val waveId = waterActivityRepository.storeWave(
-                waterActivityId,
-                null,
-                true,
-                1
-            )
+            val waveId =
+                waterActivityRepository.storeWave(
+                    waterActivityId,
+                    null,
+                    true,
+                    1,
+                )
 
             val updatedWaves = listOf(WaveToUpdate(waveId, 10f, false, null))
             waterActivityRepository.updateWaves(updatedWaves)
@@ -236,26 +250,29 @@ class JdbiWaterActivityRepositoryTest {
             val waterActivityRepository = JdbiWaterActivityRepository(handle)
             val activityRepository = JdbiActivityRepository(handle)
 
-            val activityId = activityRepository.storeActivity(
-                ATHLETE_ID,
-                DATE_LONG,
-                MICROCYCLE_ID
-            )
+            val activityId =
+                activityRepository.storeActivity(
+                    ATHLETE_ID,
+                    DATE_LONG,
+                    MICROCYCLE_ID,
+                )
 
-            val waterActivityId = waterActivityRepository.storeWaterActivity(
-                activityId,
-                FIRST_RPE,
-                FIRST_CONDITION,
-                FIRST_TRIMP,
-                FIRST_DURATION
-            )
+            val waterActivityId =
+                waterActivityRepository.storeWaterActivity(
+                    activityId,
+                    FIRST_RPE,
+                    FIRST_CONDITION,
+                    FIRST_TRIMP,
+                    FIRST_DURATION,
+                )
 
-            val waveId = waterActivityRepository.storeWave(
-                waterActivityId,
-                null,
-                true,
-                1
-            )
+            val waveId =
+                waterActivityRepository.storeWave(
+                    waterActivityId,
+                    null,
+                    true,
+                    1,
+                )
 
             val maneuverId =
                 waterActivityRepository.storeManeuver(
@@ -274,31 +291,35 @@ class JdbiWaterActivityRepositoryTest {
             val waterActivityRepository = JdbiWaterActivityRepository(handle)
             val activityRepository = JdbiActivityRepository(handle)
 
-            val activityId = activityRepository.storeActivity(
-                ATHLETE_ID,
-                DATE_LONG,
-                MICROCYCLE_ID
-            )
+            val activityId =
+                activityRepository.storeActivity(
+                    ATHLETE_ID,
+                    DATE_LONG,
+                    MICROCYCLE_ID,
+                )
 
-            val waterActivityId = waterActivityRepository.storeWaterActivity(
-                activityId,
-                FIRST_RPE,
-                FIRST_CONDITION,
-                FIRST_TRIMP,
-                FIRST_DURATION
-            )
+            val waterActivityId =
+                waterActivityRepository.storeWaterActivity(
+                    activityId,
+                    FIRST_RPE,
+                    FIRST_CONDITION,
+                    FIRST_TRIMP,
+                    FIRST_DURATION,
+                )
 
-            val waveId = waterActivityRepository.storeWave(
-                waterActivityId,
-                null,
-                true,
-                1
-            )
+            val waveId =
+                waterActivityRepository.storeWave(
+                    waterActivityId,
+                    null,
+                    true,
+                    1,
+                )
 
-            val maneuvers = listOf(
-                ManeuverToInsert(waveId, 1, true, 1),
-                ManeuverToInsert(waveId, 2, false, 2)
-            )
+            val maneuvers =
+                listOf(
+                    ManeuverToInsert(waveId, 1, true, 1),
+                    ManeuverToInsert(waveId, 2, false, 2),
+                )
 
             val maneuverIds = waterActivityRepository.storeManeuvers(maneuvers)
 
@@ -311,33 +332,37 @@ class JdbiWaterActivityRepositoryTest {
             val waterActivityRepository = JdbiWaterActivityRepository(handle)
             val activityRepository = JdbiActivityRepository(handle)
 
-            val activityId = activityRepository.storeActivity(
-                ATHLETE_ID,
-                DATE_LONG,
-                MICROCYCLE_ID
-            )
+            val activityId =
+                activityRepository.storeActivity(
+                    ATHLETE_ID,
+                    DATE_LONG,
+                    MICROCYCLE_ID,
+                )
 
-            val waterActivityId = waterActivityRepository.storeWaterActivity(
-                activityId,
-                FIRST_RPE,
-                FIRST_CONDITION,
-                FIRST_TRIMP,
-                FIRST_DURATION
-            )
+            val waterActivityId =
+                waterActivityRepository.storeWaterActivity(
+                    activityId,
+                    FIRST_RPE,
+                    FIRST_CONDITION,
+                    FIRST_TRIMP,
+                    FIRST_DURATION,
+                )
 
-            val waveId = waterActivityRepository.storeWave(
-                waterActivityId,
-                null,
-                true,
-                1
-            )
+            val waveId =
+                waterActivityRepository.storeWave(
+                    waterActivityId,
+                    null,
+                    true,
+                    1,
+                )
 
-            val maneuverId = waterActivityRepository.storeManeuver(
-                waveId,
-                1,
-                true,
-                1
-            )
+            val maneuverId =
+                waterActivityRepository.storeManeuver(
+                    waveId,
+                    1,
+                    true,
+                    1,
+                )
 
             val maneuver = waterActivityRepository.getManeuverById(maneuverId)
 
@@ -355,39 +380,44 @@ class JdbiWaterActivityRepositoryTest {
             val waterActivityRepository = JdbiWaterActivityRepository(handle)
             val activityRepository = JdbiActivityRepository(handle)
 
-            val activityId = activityRepository.storeActivity(
-                ATHLETE_ID,
-                DATE_LONG,
-                MICROCYCLE_ID
-            )
+            val activityId =
+                activityRepository.storeActivity(
+                    ATHLETE_ID,
+                    DATE_LONG,
+                    MICROCYCLE_ID,
+                )
 
-            val waterActivityId = waterActivityRepository.storeWaterActivity(
-                activityId,
-                FIRST_RPE,
-                FIRST_CONDITION,
-                FIRST_TRIMP,
-                FIRST_DURATION
-            )
+            val waterActivityId =
+                waterActivityRepository.storeWaterActivity(
+                    activityId,
+                    FIRST_RPE,
+                    FIRST_CONDITION,
+                    FIRST_TRIMP,
+                    FIRST_DURATION,
+                )
 
-            val waveId = waterActivityRepository.storeWave(
-                waterActivityId,
-                null,
-                true,
-                1
-            )
+            val waveId =
+                waterActivityRepository.storeWave(
+                    waterActivityId,
+                    null,
+                    true,
+                    1,
+                )
 
-            val waveId1 = waterActivityRepository.storeManeuver(
-                waveId,
-                1,
-                true,
-                1
-            )
-            val waveId2 = waterActivityRepository.storeManeuver(
-                waveId,
-                2,
-                false,
-                2
-            )
+            val waveId1 =
+                waterActivityRepository.storeManeuver(
+                    waveId,
+                    1,
+                    true,
+                    1,
+                )
+            val waveId2 =
+                waterActivityRepository.storeManeuver(
+                    waveId,
+                    2,
+                    false,
+                    2,
+                )
 
             val maneuvers = waterActivityRepository.getManeuversByWave(waveId)
 
@@ -402,33 +432,37 @@ class JdbiWaterActivityRepositoryTest {
             val waterActivityRepository = JdbiWaterActivityRepository(handle)
             val activityRepository = JdbiActivityRepository(handle)
 
-            val activityId = activityRepository.storeActivity(
-                ATHLETE_ID,
-                DATE_LONG,
-                MICROCYCLE_ID
-            )
+            val activityId =
+                activityRepository.storeActivity(
+                    ATHLETE_ID,
+                    DATE_LONG,
+                    MICROCYCLE_ID,
+                )
 
-            val waterActivityId = waterActivityRepository.storeWaterActivity(
-                activityId,
-                FIRST_RPE,
-                FIRST_CONDITION,
-                FIRST_TRIMP,
-                FIRST_DURATION
-            )
+            val waterActivityId =
+                waterActivityRepository.storeWaterActivity(
+                    activityId,
+                    FIRST_RPE,
+                    FIRST_CONDITION,
+                    FIRST_TRIMP,
+                    FIRST_DURATION,
+                )
 
-            val waveId = waterActivityRepository.storeWave(
-                waterActivityId,
-                null,
-                true,
-                1
-            )
+            val waveId =
+                waterActivityRepository.storeWave(
+                    waterActivityId,
+                    null,
+                    true,
+                    1,
+                )
 
-            val maneuverId = waterActivityRepository.storeManeuver(
-                waveId,
-                1,
-                true,
-                1
-            )
+            val maneuverId =
+                waterActivityRepository.storeManeuver(
+                    waveId,
+                    1,
+                    true,
+                    1,
+                )
 
             val updatedManeuvers = listOf(ManeuverToUpdate(maneuverId, 1, false, null))
             waterActivityRepository.updateManeuvers(updatedManeuvers)
@@ -445,25 +479,27 @@ class JdbiWaterActivityRepositoryTest {
             val waterActivityRepository = JdbiWaterActivityRepository(handle)
             val activityRepository = JdbiActivityRepository(handle)
 
-            val activityId = activityRepository.storeActivity(
-                ATHLETE_ID,
-                DATE_LONG,
-                MICROCYCLE_ID
-            )
+            val activityId =
+                activityRepository.storeActivity(
+                    ATHLETE_ID,
+                    DATE_LONG,
+                    MICROCYCLE_ID,
+                )
 
-            val waterActivityId = waterActivityRepository.storeWaterActivity(
-                activityId,
-                FIRST_RPE,
-                FIRST_CONDITION,
-                FIRST_TRIMP,
-                FIRST_DURATION
-            )
+            val waterActivityId =
+                waterActivityRepository.storeWaterActivity(
+                    activityId,
+                    FIRST_RPE,
+                    FIRST_CONDITION,
+                    FIRST_TRIMP,
+                    FIRST_DURATION,
+                )
 
             waterActivityRepository.storeWave(
                 waterActivityId,
                 null,
                 true,
-                1
+                1,
             )
 
             waterActivityRepository.removeWavesByActivity(activityId)
@@ -478,32 +514,35 @@ class JdbiWaterActivityRepositoryTest {
             val waterActivityRepository = JdbiWaterActivityRepository(handle)
             val activityRepository = JdbiActivityRepository(handle)
 
-            val activityId = activityRepository.storeActivity(
-                ATHLETE_ID,
-                DATE_LONG,
-                MICROCYCLE_ID
-            )
+            val activityId =
+                activityRepository.storeActivity(
+                    ATHLETE_ID,
+                    DATE_LONG,
+                    MICROCYCLE_ID,
+                )
 
-            val waterActivityId = waterActivityRepository.storeWaterActivity(
-                activityId,
-                FIRST_RPE,
-                FIRST_CONDITION,
-                FIRST_TRIMP,
-                FIRST_DURATION
-            )
+            val waterActivityId =
+                waterActivityRepository.storeWaterActivity(
+                    activityId,
+                    FIRST_RPE,
+                    FIRST_CONDITION,
+                    FIRST_TRIMP,
+                    FIRST_DURATION,
+                )
 
-            val waveId = waterActivityRepository.storeWave(
-                waterActivityId,
-                null,
-                true,
-                1
-            )
+            val waveId =
+                waterActivityRepository.storeWave(
+                    waterActivityId,
+                    null,
+                    true,
+                    1,
+                )
 
             waterActivityRepository.storeManeuver(
                 waveId,
                 1,
                 true,
-                1
+                1,
             )
 
             waterActivityRepository.removeManeuversByActivity(waterActivityId)
@@ -518,33 +557,37 @@ class JdbiWaterActivityRepositoryTest {
             val waterActivityRepository = JdbiWaterActivityRepository(handle)
             val activityRepository = JdbiActivityRepository(handle)
 
-            val activityId = activityRepository.storeActivity(
-                ATHLETE_ID,
-                DATE_LONG,
-                MICROCYCLE_ID
-            )
+            val activityId =
+                activityRepository.storeActivity(
+                    ATHLETE_ID,
+                    DATE_LONG,
+                    MICROCYCLE_ID,
+                )
 
-            val waterActivityId = waterActivityRepository.storeWaterActivity(
-                activityId,
-                FIRST_RPE,
-                FIRST_CONDITION,
-                FIRST_TRIMP,
-                FIRST_DURATION
-            )
+            val waterActivityId =
+                waterActivityRepository.storeWaterActivity(
+                    activityId,
+                    FIRST_RPE,
+                    FIRST_CONDITION,
+                    FIRST_TRIMP,
+                    FIRST_DURATION,
+                )
 
-            val waveId = waterActivityRepository.storeWave(
-                waterActivityId,
-                null,
-                true,
-                1
-            )
+            val waveId =
+                waterActivityRepository.storeWave(
+                    waterActivityId,
+                    null,
+                    true,
+                    1,
+                )
 
-            val maneuverId = waterActivityRepository.storeManeuver(
-                waveId,
-                1,
-                true,
-                1
-            )
+            val maneuverId =
+                waterActivityRepository.storeManeuver(
+                    waveId,
+                    1,
+                    true,
+                    1,
+                )
 
             waterActivityRepository.removeManeuverById(maneuverId)
 
@@ -558,31 +601,35 @@ class JdbiWaterActivityRepositoryTest {
             val waterActivityRepository = JdbiWaterActivityRepository(handle)
             val activityRepository = JdbiActivityRepository(handle)
 
-            val activityId = activityRepository.storeActivity(
-                ATHLETE_ID,
-                DATE_LONG,
-                MICROCYCLE_ID
-            )
+            val activityId =
+                activityRepository.storeActivity(
+                    ATHLETE_ID,
+                    DATE_LONG,
+                    MICROCYCLE_ID,
+                )
 
-            val waterActivityId = waterActivityRepository.storeWaterActivity(
-                activityId,
-                FIRST_RPE,
-                FIRST_CONDITION,
-                FIRST_TRIMP,
-                FIRST_DURATION
-            )
+            val waterActivityId =
+                waterActivityRepository.storeWaterActivity(
+                    activityId,
+                    FIRST_RPE,
+                    FIRST_CONDITION,
+                    FIRST_TRIMP,
+                    FIRST_DURATION,
+                )
 
-            val waveId = waterActivityRepository.storeWave(
-                waterActivityId,
-                null,
-                true,
-                1
-            )
+            val waveId =
+                waterActivityRepository.storeWave(
+                    waterActivityId,
+                    null,
+                    true,
+                    1,
+                )
 
-            val maneuverIds = listOf(
-                waterActivityRepository.storeManeuver(waveId, 1, true, 1),
-                waterActivityRepository.storeManeuver(waveId, 2, false, 2)
-            )
+            val maneuverIds =
+                listOf(
+                    waterActivityRepository.storeManeuver(waveId, 1, true, 1),
+                    waterActivityRepository.storeManeuver(waveId, 2, false, 2),
+                )
 
             waterActivityRepository.removeManeuversById(maneuverIds)
 
@@ -598,26 +645,29 @@ class JdbiWaterActivityRepositoryTest {
             val waterActivityRepository = JdbiWaterActivityRepository(handle)
             val activityRepository = JdbiActivityRepository(handle)
 
-            val activityId = activityRepository.storeActivity(
-                ATHLETE_ID,
-                DATE_LONG,
-                MICROCYCLE_ID
-            )
+            val activityId =
+                activityRepository.storeActivity(
+                    ATHLETE_ID,
+                    DATE_LONG,
+                    MICROCYCLE_ID,
+                )
 
-            val waterActivityId = waterActivityRepository.storeWaterActivity(
-                activityId,
-                FIRST_RPE,
-                FIRST_CONDITION,
-                FIRST_TRIMP,
-                FIRST_DURATION
-            )
+            val waterActivityId =
+                waterActivityRepository.storeWaterActivity(
+                    activityId,
+                    FIRST_RPE,
+                    FIRST_CONDITION,
+                    FIRST_TRIMP,
+                    FIRST_DURATION,
+                )
 
-            val waveId = waterActivityRepository.storeWave(
-                waterActivityId,
-                null,
-                true,
-                1
-            )
+            val waveId =
+                waterActivityRepository.storeWave(
+                    waterActivityId,
+                    null,
+                    true,
+                    1,
+                )
 
             waterActivityRepository.removeWaveById(waveId)
 
@@ -631,24 +681,27 @@ class JdbiWaterActivityRepositoryTest {
             val waterActivityRepository = JdbiWaterActivityRepository(handle)
             val activityRepository = JdbiActivityRepository(handle)
 
-            val activityId = activityRepository.storeActivity(
-                ATHLETE_ID,
-                DATE_LONG,
-                MICROCYCLE_ID
-            )
+            val activityId =
+                activityRepository.storeActivity(
+                    ATHLETE_ID,
+                    DATE_LONG,
+                    MICROCYCLE_ID,
+                )
 
-            val waterActivityId = waterActivityRepository.storeWaterActivity(
-                activityId,
-                FIRST_RPE,
-                FIRST_CONDITION,
-                FIRST_TRIMP,
-                FIRST_DURATION
-            )
+            val waterActivityId =
+                waterActivityRepository.storeWaterActivity(
+                    activityId,
+                    FIRST_RPE,
+                    FIRST_CONDITION,
+                    FIRST_TRIMP,
+                    FIRST_DURATION,
+                )
 
-            val waveIds = listOf(
-                waterActivityRepository.storeWave(waterActivityId, null, true, 1),
-                waterActivityRepository.storeWave(waterActivityId, null, false, 2)
-            )
+            val waveIds =
+                listOf(
+                    waterActivityRepository.storeWave(waterActivityId, null, true, 1),
+                    waterActivityRepository.storeWave(waterActivityId, null, false, 2),
+                )
 
             waterActivityRepository.removeWavesById(waveIds)
 

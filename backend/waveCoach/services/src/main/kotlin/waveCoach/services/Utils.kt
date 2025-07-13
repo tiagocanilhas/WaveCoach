@@ -48,14 +48,16 @@ fun <T : Any> separateCreateUpdateDelete(list: List<T>): Triple<List<T>, List<T>
     val deletes = mutableListOf<Int>()
 
     list.forEach { item ->
-        val id = item::class.memberProperties
-            .find { it.name == "id" }
-            ?.getter
-            ?.call(item) as? Int?
+        val id =
+            item::class.memberProperties
+                .find { it.name == "id" }
+                ?.getter
+                ?.call(item) as? Int?
 
-        val otherValues = item::class.memberProperties
-            .filterNot { it.name == "id" }
-            .map { it.getter.call(item) }
+        val otherValues =
+            item::class.memberProperties
+                .filterNot { it.name == "id" }
+                .map { it.getter.call(item) }
 
         val allNullRecursively = otherValues.all { isCompletelyNull(it) }
 
@@ -92,33 +94,36 @@ fun <T : Any, U : Any> checkOrderConflict(
     itemsOnDB: List<T>,
     itemsToUpdate: List<U>,
     orderPropOnDB: String,
-    order: Int
+    order: Int,
 ): Boolean {
-    val conflictDBItem = itemsOnDB.find { dbItem ->
-        val dbOrder = dbItem::class.memberProperties.find { prop -> prop.name == orderPropOnDB }?.getter?.call(dbItem)
+    val conflictDBItem =
+        itemsOnDB.find { dbItem ->
+            val dbOrder = dbItem::class.memberProperties.find { prop -> prop.name == orderPropOnDB }?.getter?.call(dbItem)
 
-        dbOrder != null && dbOrder == order
-    }
+            dbOrder != null && dbOrder == order
+        }
 
     if (conflictDBItem != null) {
         val dbItemId =
             conflictDBItem::class.memberProperties.find { prop -> prop.name == "id" }?.getter?.call(conflictDBItem)
 
-        val updateItem = itemsToUpdate.find { updateItem ->
-            val updateItemId =
-                updateItem::class.memberProperties.find { prop -> prop.name == "id" }?.getter?.call(updateItem)
+        val updateItem =
+            itemsToUpdate.find { updateItem ->
+                val updateItemId =
+                    updateItem::class.memberProperties.find { prop -> prop.name == "id" }?.getter?.call(updateItem)
 
-            updateItemId != null && updateItemId == dbItemId
-        }
+                updateItemId != null && updateItemId == dbItemId
+            }
         if (updateItem == null) return false
 
+        val otherValues =
+            updateItem::class.memberProperties
+                .filterNot { it.name == "id" }
+                .map { it.getter.call(updateItem) }
 
-        val otherValues = updateItem::class.memberProperties
-            .filterNot { it.name == "id" }
-            .map { it.getter.call(updateItem) }
-
-        if (otherValues.all { isCompletelyNull(it) })
+        if (otherValues.all { isCompletelyNull(it) }) {
             return true
+        }
 
         val updateItemOrder =
             updateItem::class.memberProperties.find { prop -> prop.name == "order" }?.getter?.call(updateItem) as? Int?
@@ -126,10 +131,11 @@ fun <T : Any, U : Any> checkOrderConflict(
         val conflictItemOrder =
             conflictDBItem::class.memberProperties.find { prop -> prop.name == orderPropOnDB }?.getter?.call(conflictDBItem) as? Int?
 
-        if (updateItemOrder == null || updateItemOrder <= 0 || updateItemOrder == conflictItemOrder)
+        if (updateItemOrder == null || updateItemOrder <= 0 || updateItemOrder == conflictItemOrder) {
             return false
+        }
     }
-    return  true
+    return true
 }
 /*
  val conflictOrderWave = wavesOnDB.find { w -> w.waveOrder == wave.order }

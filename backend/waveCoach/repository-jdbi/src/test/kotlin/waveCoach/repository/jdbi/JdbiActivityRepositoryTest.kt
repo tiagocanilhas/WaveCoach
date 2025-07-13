@@ -58,17 +58,18 @@ class JdbiActivityRepositoryTest {
             val competition = competitionRepository.storeCompetition(FIRST_ATHLETE_ID, DATE, "Test Location", 1, "Test Competition")
 
             val activity = activityRepository.storeActivity(FIRST_ATHLETE_ID, DATE, MICRO_ID)
-            waterActivityRepository.storeWaterActivity(activity, 1, "good", 5, 10,)
+            waterActivityRepository.storeWaterActivity(activity, 1, "good", 5, 10)
 
-            val heatId = competitionRepository.storeHeats(
-                listOf(
-                    HeatToInsert(
-                        competitionId = competition,
-                        waterActivityId = activity,
-                        score = 10
-                    )
+            val heatId =
+                competitionRepository.storeHeats(
+                    listOf(
+                        HeatToInsert(
+                            competitionId = competition,
+                            waterActivityId = activity,
+                            score = 10,
+                        ),
+                    ),
                 )
-            )
 
             val heatActivity = activityRepository.getActivityByHeatId(heatId[0])
 

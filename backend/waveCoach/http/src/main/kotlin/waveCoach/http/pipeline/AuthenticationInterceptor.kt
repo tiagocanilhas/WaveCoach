@@ -22,7 +22,7 @@ class AuthenticationInterceptor(
             handler is HandlerMethod &&
             handler.methodParameters.any {
                 it.parameterType == AuthenticatedUser::class.java ||
-                        it.parameterType == AuthenticatedCoach::class.java
+                    it.parameterType == AuthenticatedCoach::class.java
             }
         ) {
             val authenticatedUser = processAuthorization(request)
@@ -43,9 +43,7 @@ class AuthenticationInterceptor(
         return true
     }
 
-    private fun processAuthorization(
-        request: HttpServletRequest,
-    ): AuthenticatedUser? {
+    private fun processAuthorization(request: HttpServletRequest): AuthenticatedUser? {
         val headerValue = request.getHeader(AUTHORIZATION_HEADER)
         val cookieValue = request.getHeader(COOKIE_HEADER)
 

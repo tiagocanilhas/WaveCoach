@@ -38,7 +38,7 @@ export function CompetitionPopup({ competition, onClose, onUpdateSuccess }: Comp
           <Divisor
             left={
               <div className={styles.details}>
-                {user.isCoach && <Button text="Edit" onClick={handleToggleEdit} /> }
+                {user.isCoach && <Button text="Edit" onClick={handleToggleEdit} />}
                 <p className={styles.date}>{epochConverter(competition.date, 'dd/mm/yyyy')}</p>
                 <p className={styles.name}>{competition.name}</p>
                 <PlaceWithTrophy place={competition.place} />

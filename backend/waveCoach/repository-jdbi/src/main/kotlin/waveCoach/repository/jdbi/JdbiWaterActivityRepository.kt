@@ -9,10 +9,10 @@ import waveCoach.domain.MesocycleWater
 import waveCoach.domain.MicrocycleWater
 import waveCoach.domain.Questionnaire
 import waveCoach.domain.WaterActivityWithWaves
-import waveCoach.domain.WaveToInsert
-import waveCoach.domain.WaveWithManeuvers
 import waveCoach.domain.Wave
+import waveCoach.domain.WaveToInsert
 import waveCoach.domain.WaveToUpdate
+import waveCoach.domain.WaveWithManeuvers
 import waveCoach.repository.WaterActivityRepository
 
 class JdbiWaterActivityRepository(
@@ -62,10 +62,11 @@ class JdbiWaterActivityRepository(
             order by wv.wave_order, m.maneuver_order
             """.trimIndent()
 
-        val rows = handle.createQuery(query)
-            .bind("activityId", activityId)
-            .mapTo<Row>()
-            .list()
+        val rows =
+            handle.createQuery(query)
+                .bind("activityId", activityId)
+                .mapTo<Row>()
+                .list()
 
         val activity = rows.firstOrNull() ?: return null
 
@@ -126,10 +127,11 @@ class JdbiWaterActivityRepository(
 			)
         """.trimIndent()
 
-        val rows = handle.createQuery(query)
-            .bind("athleteId", athleteId)
-            .mapTo<Row>()
-            .list()
+        val rows =
+            handle.createQuery(query)
+                .bind("athleteId", athleteId)
+                .mapTo<Row>()
+                .list()
 
         val activity = rows.firstOrNull() ?: return null
 
@@ -336,7 +338,6 @@ class JdbiWaterActivityRepository(
             .execute()
     }
 
-
     // Wave methods
     override fun storeWave(
         activityId: Int,
@@ -370,7 +371,6 @@ class JdbiWaterActivityRepository(
             .bind("activityId", activityId)
             .mapTo<Wave>()
             .list()
-
 
     override fun storeWaves(waves: List<WaveToInsert>): List<Int> =
         handle.prepareBatch(
@@ -462,7 +462,10 @@ class JdbiWaterActivityRepository(
             .execute()
     }
 
-    override fun verifyWaveOrder(activityId: Int, order: Int): Boolean =
+    override fun verifyWaveOrder(
+        activityId: Int,
+        order: Int,
+    ): Boolean =
         handle.createQuery(
             """
             select exists (select 1 from waveCoach.wave 
@@ -501,7 +504,7 @@ class JdbiWaterActivityRepository(
             """
             insert into waveCoach.maneuver (wave, maneuver, success, maneuver_order) 
             values (:waveId, :waterManeuverId, :success, :order)
-            """
+            """,
         ).use { batch ->
             maneuvers.forEach {
                 batch.bind("waveId", it.waveId)
@@ -524,7 +527,7 @@ class JdbiWaterActivityRepository(
             join waveCoach.water_maneuver wm on m.maneuver = wm.id
             where m.wave = :waveId
             order by m.maneuver_order
-        """.trimIndent()
+            """.trimIndent(),
         )
             .bind("waveId", waveId)
             .mapTo<Maneuver>()
@@ -538,7 +541,7 @@ class JdbiWaterActivityRepository(
             from waveCoach.maneuver m
             join waveCoach.water_maneuver wm on m.maneuver = wm.id
             where m.id = :maneuverId
-        """.trimIndent()
+            """.trimIndent(),
         )
             .bind("maneuverId", maneuverId)
             .mapTo<Maneuver>()
@@ -607,7 +610,10 @@ class JdbiWaterActivityRepository(
             .execute()
     }
 
-    override fun verifyManeuverOrder(waveId: Int, order: Int): Boolean =
+    override fun verifyManeuverOrder(
+        waveId: Int,
+        order: Int,
+    ): Boolean =
         handle.createQuery(
             """
             select exists (select 1 from waveCoach.maneuver 
@@ -640,7 +646,6 @@ class JdbiWaterActivityRepository(
         val success: Boolean?,
         val maneuverOrder: Int?,
     )
-
 
     // Questionnaire methods
     override fun storeQuestionnaire(

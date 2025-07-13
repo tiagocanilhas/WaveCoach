@@ -118,7 +118,10 @@ export function AthletePopup({ onClose, onSuccess, data }: AthletePopupProps) {
     state.tag === 'submitting' ||
     name.trim() === '' ||
     birthdate.trim() === '' ||
-    (isEditing && name === initialRef.current?.name && birthdate === epochConverter(initialRef.current?.birthdate, 'yyyy-mm-dd') && !image)
+    (isEditing &&
+      name === initialRef.current?.name &&
+      birthdate === epochConverter(initialRef.current?.birthdate, 'yyyy-mm-dd') &&
+      !image)
 
   return (
     <Popup

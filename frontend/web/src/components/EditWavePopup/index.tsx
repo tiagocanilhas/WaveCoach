@@ -57,10 +57,12 @@ function reducer(state: State, action: Action): State {
         maneuverToEdit: null,
       }
     case 'deleteManeuver':
-      const removedManeuver = state.maneuvers.find(maneuver => maneuver.id !== null ? maneuver.id === action.id : maneuver.tempId === action.tempId)
+      const removedManeuver = state.maneuvers.find(maneuver =>
+        maneuver.id !== null ? maneuver.id === action.id : maneuver.tempId === action.tempId
+      )
       return {
         ...state,
-        maneuvers: state.maneuvers.filter(m => m.id !== null ? m.id !== action.id : m.tempId !== action.tempId),
+        maneuvers: state.maneuvers.filter(m => (m.id !== null ? m.id !== action.id : m.tempId !== action.tempId)),
         removedManeuvers: [...state.removedManeuvers, WorkoutEditing.nullifyFieldsExceptId(removedManeuver)],
       }
     case 'setManeuvers':
@@ -102,7 +104,6 @@ export function EditWavePopup({ wave, onClose, onSave }: EditWavePopupProps) {
       name: maneuver.name,
       url: maneuver.url,
       success,
-      order: state.maneuvers.length + 1,
     }
     dispatch({ type: 'addManeuver', maneuver: newManeuver })
   }

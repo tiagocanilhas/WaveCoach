@@ -96,6 +96,11 @@ export function Home() {
     dispatch({ type: 'togglePopup' })
   }
 
+  function handleOnAddSuccess() {
+    fetchAthletes()
+    dispatch({ type: 'togglePopup' })
+  }
+
   const athletes = state.athletes?.filter(athlete => {
     if (state.search === '') return true
     return athlete.name.toLowerCase().includes(state.search.toLowerCase())
@@ -138,7 +143,7 @@ export function Home() {
         />
       </div>
 
-      {isPopupOpen && <AddAthletePopup onClose={handlePopup} onSuccess={fetchAthletes} />}
+      {isPopupOpen && <AddAthletePopup onClose={handlePopup} onSuccess={handleOnAddSuccess} />}
     </>
   )
 }

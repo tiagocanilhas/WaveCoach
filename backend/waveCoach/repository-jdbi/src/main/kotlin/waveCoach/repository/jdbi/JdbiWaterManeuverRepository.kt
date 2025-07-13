@@ -52,5 +52,4 @@ class JdbiWaterManeuverRepository(
     override fun removeWaterManeuver(id: Int) {
         TODO("Not yet implemented")
     }
-
 }

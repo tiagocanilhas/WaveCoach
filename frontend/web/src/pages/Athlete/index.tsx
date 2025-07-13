@@ -84,7 +84,7 @@ export function Athlete() {
       console.error('Error fetching Activities:', error)
     }
   }
-  
+
   async function fetchAthlete() {
     try {
       const { status, res } = await getAthlete(id)
@@ -225,7 +225,9 @@ export function Athlete() {
 
       {isEditPopupOpen && <EditAthletePopup onClose={handleEdit} onSuccess={handleUpdateAthleteOnSuccess} data={athlete} />}
 
-      {isCyclesPopupOpen && <CyclesPopup onClose={handleManageCycles} onSuccess={handleSaveCalendarOnSuccess} cycles={state.calendar.mesocycles} />}
+      {isCyclesPopupOpen && (
+        <CyclesPopup onClose={handleManageCycles} onSuccess={handleSaveCalendarOnSuccess} cycles={state.calendar.mesocycles} />
+      )}
     </>
   )
 }

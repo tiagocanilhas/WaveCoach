@@ -91,7 +91,7 @@ export async function updateCharacteristics(
   abdomenFat: number,
   thighFat: number
 ) {
-  return await customFetch(URIS.ATHLETES.updateCharacteristics(id, toDisplayFormat(date)), 'PUT', {
+  return await customFetch(URIS.ATHLETES.updateCharacteristics(id, date), 'PUT', {
     date: toDisplayFormat(date),
     height,
     weight,
@@ -127,7 +127,7 @@ export async function getLastWaterActivity(id: number) {
 }
 
 export async function createCompetition(id: number, date: string, location: string, place: number, name: string, heats: any[]) {
-  return await customFetch(URIS.ATHLETES.createCompetition(id), 'POST', { 
+  return await customFetch(URIS.ATHLETES.createCompetition(id), 'POST', {
     date: toDisplayFormat(date),
     location,
     place,
@@ -136,15 +136,23 @@ export async function createCompetition(id: number, date: string, location: stri
   })
 }
 
-export async function getCompetition(aid: number, id: number){
+export async function getCompetition(aid: number, id: number) {
   return await customFetch(URIS.ATHLETES.getCompetition(aid, id), 'GET')
 }
 
-export async function getCompetitions(aid: number){
+export async function getCompetitions(aid: number) {
   return await customFetch(URIS.ATHLETES.getCompetitions(aid), 'GET')
 }
 
-export async function updateCompetition(id: number, cid: number, location: string, date: string, place: number, name: string, heats: any[]) {
+export async function updateCompetition(
+  id: number,
+  cid: number,
+  location: string,
+  date: string,
+  place: number,
+  name: string,
+  heats: any[]
+) {
   return await customFetch(URIS.ATHLETES.updateCompetition(id, cid), 'PATCH', {
     date: date ? toDisplayFormat(date) : null,
     location,

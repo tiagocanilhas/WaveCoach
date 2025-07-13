@@ -1831,38 +1831,38 @@ class AthleteControllerTest {
                 "place" to 1,
                 "name" to randomString(),
                 "heats" to
-                        listOf(
-                            mapOf(
-                                "score" to 2,
-                                "waterActivity" to
-                                        mapOf(
-                                            "athleteId" to FIRST_ATHLETE_ID,
-                                            "rpe" to 5,
-                                            "condition" to "good",
-                                            "trimp" to 120,
-                                            "duration" to 60,
-                                            "waves" to
+                    listOf(
+                        mapOf(
+                            "score" to 2,
+                            "waterActivity" to
+                                mapOf(
+                                    "athleteId" to FIRST_ATHLETE_ID,
+                                    "rpe" to 5,
+                                    "condition" to "good",
+                                    "trimp" to 120,
+                                    "duration" to 60,
+                                    "waves" to
+                                        listOf(
+                                            mapOf(
+                                                "points" to null,
+                                                "maneuvers" to
                                                     listOf(
                                                         mapOf(
-                                                            "points" to null,
-                                                            "maneuvers" to
-                                                                    listOf(
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 1,
-                                                                            "rightSide" to true,
-                                                                            "success" to true,
-                                                                        ),
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 2,
-                                                                            "rightSide" to false,
-                                                                            "success" to false,
-                                                                        ),
-                                                                    ),
+                                                            "waterManeuverId" to 1,
+                                                            "rightSide" to true,
+                                                            "success" to true,
+                                                        ),
+                                                        mapOf(
+                                                            "waterManeuverId" to 2,
+                                                            "rightSide" to false,
+                                                            "success" to false,
                                                         ),
                                                     ),
-                                        )
-                            )
-                        )
+                                            ),
+                                        ),
+                                ),
+                        ),
+                    ),
             )
 
         client.post().uri("/athletes/$FIRST_ATHLETE_ID/competition")
@@ -1872,8 +1872,7 @@ class AthleteControllerTest {
             .exchange()
             .expectStatus().isCreated.expectStatus().isCreated
             .expectHeader().exists("Location")
-            .expectHeader().value("location")
-            {
+            .expectHeader().value("location") {
                 assertTrue(it.startsWith("/api/athletes/$FIRST_ATHLETE_ID/competition/"))
             }
     }
@@ -1889,38 +1888,38 @@ class AthleteControllerTest {
                 "place" to 1,
                 "name" to randomString(),
                 "heats" to
-                        listOf(
-                            mapOf(
-                                "score" to 2,
-                                "waterActivity" to
-                                        mapOf(
-                                            "athleteId" to FIRST_ATHLETE_ID,
-                                            "rpe" to 5,
-                                            "condition" to "good",
-                                            "trimp" to 120,
-                                            "duration" to 60,
-                                            "waves" to
+                    listOf(
+                        mapOf(
+                            "score" to 2,
+                            "waterActivity" to
+                                mapOf(
+                                    "athleteId" to FIRST_ATHLETE_ID,
+                                    "rpe" to 5,
+                                    "condition" to "good",
+                                    "trimp" to 120,
+                                    "duration" to 60,
+                                    "waves" to
+                                        listOf(
+                                            mapOf(
+                                                "points" to null,
+                                                "maneuvers" to
                                                     listOf(
                                                         mapOf(
-                                                            "points" to null,
-                                                            "maneuvers" to
-                                                                    listOf(
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 1,
-                                                                            "rightSide" to true,
-                                                                            "success" to true,
-                                                                        ),
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 2,
-                                                                            "rightSide" to false,
-                                                                            "success" to false,
-                                                                        ),
-                                                                    ),
+                                                            "waterManeuverId" to 1,
+                                                            "rightSide" to true,
+                                                            "success" to true,
+                                                        ),
+                                                        mapOf(
+                                                            "waterManeuverId" to 2,
+                                                            "rightSide" to false,
+                                                            "success" to false,
                                                         ),
                                                     ),
-                                        )
-                            )
-                        )
+                                            ),
+                                        ),
+                                ),
+                        ),
+                    ),
             )
 
         client.post().uri("/athletes/$FIRST_ATHLETE_ID/competition")
@@ -1941,38 +1940,38 @@ class AthleteControllerTest {
                 "place" to 1,
                 "name" to randomString(),
                 "heats" to
-                        listOf(
-                            mapOf(
-                                "score" to 2,
-                                "waterActivity" to
-                                        mapOf(
-                                            "athleteId" to FIRST_ATHLETE_ID,
-                                            "rpe" to 5,
-                                            "condition" to "good",
-                                            "trimp" to 120,
-                                            "duration" to 60,
-                                            "waves" to
+                    listOf(
+                        mapOf(
+                            "score" to 2,
+                            "waterActivity" to
+                                mapOf(
+                                    "athleteId" to FIRST_ATHLETE_ID,
+                                    "rpe" to 5,
+                                    "condition" to "good",
+                                    "trimp" to 120,
+                                    "duration" to 60,
+                                    "waves" to
+                                        listOf(
+                                            mapOf(
+                                                "points" to null,
+                                                "maneuvers" to
                                                     listOf(
                                                         mapOf(
-                                                            "points" to null,
-                                                            "maneuvers" to
-                                                                    listOf(
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 1,
-                                                                            "rightSide" to true,
-                                                                            "success" to true,
-                                                                        ),
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 2,
-                                                                            "rightSide" to false,
-                                                                            "success" to false,
-                                                                        ),
-                                                                    ),
+                                                            "waterManeuverId" to 1,
+                                                            "rightSide" to true,
+                                                            "success" to true,
+                                                        ),
+                                                        mapOf(
+                                                            "waterManeuverId" to 2,
+                                                            "rightSide" to false,
+                                                            "success" to false,
                                                         ),
                                                     ),
-                                        )
-                            )
-                        )
+                                            ),
+                                        ),
+                                ),
+                        ),
+                    ),
             )
 
         client.post().uri("/athletes/$FIRST_ATHLETE_ID/competition")
@@ -1999,38 +1998,38 @@ class AthleteControllerTest {
                 "place" to 1,
                 "name" to randomString(),
                 "heats" to
-                        listOf(
-                            mapOf(
-                                "score" to 2,
-                                "waterActivity" to
-                                        mapOf(
-                                            "athleteId" to FIRST_ATHLETE_ID,
-                                            "rpe" to 5,
-                                            "condition" to "good",
-                                            "trimp" to 120,
-                                            "duration" to 60,
-                                            "waves" to
+                    listOf(
+                        mapOf(
+                            "score" to 2,
+                            "waterActivity" to
+                                mapOf(
+                                    "athleteId" to FIRST_ATHLETE_ID,
+                                    "rpe" to 5,
+                                    "condition" to "good",
+                                    "trimp" to 120,
+                                    "duration" to 60,
+                                    "waves" to
+                                        listOf(
+                                            mapOf(
+                                                "points" to null,
+                                                "maneuvers" to
                                                     listOf(
                                                         mapOf(
-                                                            "points" to null,
-                                                            "maneuvers" to
-                                                                    listOf(
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 1,
-                                                                            "rightSide" to true,
-                                                                            "success" to true,
-                                                                        ),
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 2,
-                                                                            "rightSide" to false,
-                                                                            "success" to false,
-                                                                        ),
-                                                                    ),
+                                                            "waterManeuverId" to 1,
+                                                            "rightSide" to true,
+                                                            "success" to true,
+                                                        ),
+                                                        mapOf(
+                                                            "waterManeuverId" to 2,
+                                                            "rightSide" to false,
+                                                            "success" to false,
                                                         ),
                                                     ),
-                                        )
-                            )
-                        )
+                                            ),
+                                        ),
+                                ),
+                        ),
+                    ),
             )
 
         client.post().uri("/athletes/$id/competition")
@@ -2057,38 +2056,38 @@ class AthleteControllerTest {
                 "place" to 1,
                 "name" to randomString(),
                 "heats" to
-                        listOf(
-                            mapOf(
-                                "score" to 2,
-                                "waterActivity" to
-                                        mapOf(
-                                            "athleteId" to FIRST_ATHLETE_ID,
-                                            "rpe" to 5,
-                                            "condition" to "good",
-                                            "trimp" to 120,
-                                            "duration" to 60,
-                                            "waves" to
+                    listOf(
+                        mapOf(
+                            "score" to 2,
+                            "waterActivity" to
+                                mapOf(
+                                    "athleteId" to FIRST_ATHLETE_ID,
+                                    "rpe" to 5,
+                                    "condition" to "good",
+                                    "trimp" to 120,
+                                    "duration" to 60,
+                                    "waves" to
+                                        listOf(
+                                            mapOf(
+                                                "points" to null,
+                                                "maneuvers" to
                                                     listOf(
                                                         mapOf(
-                                                            "points" to null,
-                                                            "maneuvers" to
-                                                                    listOf(
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 1,
-                                                                            "rightSide" to true,
-                                                                            "success" to true,
-                                                                        ),
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 2,
-                                                                            "rightSide" to false,
-                                                                            "success" to false,
-                                                                        ),
-                                                                    ),
+                                                            "waterManeuverId" to 1,
+                                                            "rightSide" to true,
+                                                            "success" to true,
+                                                        ),
+                                                        mapOf(
+                                                            "waterManeuverId" to 2,
+                                                            "rightSide" to false,
+                                                            "success" to false,
                                                         ),
                                                     ),
-                                        )
-                            )
-                        )
+                                            ),
+                                        ),
+                                ),
+                        ),
+                    ),
             )
 
         client.post().uri("/athletes/$id/competition")
@@ -2113,38 +2112,38 @@ class AthleteControllerTest {
                 "place" to 1,
                 "name" to randomString(),
                 "heats" to
-                        listOf(
-                            mapOf(
-                                "score" to 2,
-                                "waterActivity" to
-                                        mapOf(
-                                            "athleteId" to SECOND_ATHLETE_ID,
-                                            "rpe" to 5,
-                                            "condition" to "good",
-                                            "trimp" to 120,
-                                            "duration" to 60,
-                                            "waves" to
+                    listOf(
+                        mapOf(
+                            "score" to 2,
+                            "waterActivity" to
+                                mapOf(
+                                    "athleteId" to SECOND_ATHLETE_ID,
+                                    "rpe" to 5,
+                                    "condition" to "good",
+                                    "trimp" to 120,
+                                    "duration" to 60,
+                                    "waves" to
+                                        listOf(
+                                            mapOf(
+                                                "points" to null,
+                                                "maneuvers" to
                                                     listOf(
                                                         mapOf(
-                                                            "points" to null,
-                                                            "maneuvers" to
-                                                                    listOf(
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 1,
-                                                                            "rightSide" to true,
-                                                                            "success" to true,
-                                                                        ),
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 2,
-                                                                            "rightSide" to false,
-                                                                            "success" to false,
-                                                                        ),
-                                                                    ),
+                                                            "waterManeuverId" to 1,
+                                                            "rightSide" to true,
+                                                            "success" to true,
+                                                        ),
+                                                        mapOf(
+                                                            "waterManeuverId" to 2,
+                                                            "rightSide" to false,
+                                                            "success" to false,
                                                         ),
                                                     ),
-                                        )
-                            )
-                        )
+                                            ),
+                                        ),
+                                ),
+                        ),
+                    ),
             )
 
         client.post().uri("/athletes/$SECOND_ATHLETE_ID/competition")
@@ -2169,38 +2168,38 @@ class AthleteControllerTest {
                 "place" to 1,
                 "name" to randomString(),
                 "heats" to
-                        listOf(
-                            mapOf(
-                                "score" to 2,
-                                "waterActivity" to
-                                        mapOf(
-                                            "athleteId" to FIRST_ATHLETE_ID,
-                                            "rpe" to 5,
-                                            "condition" to "good",
-                                            "trimp" to 120,
-                                            "duration" to 60,
-                                            "waves" to
+                    listOf(
+                        mapOf(
+                            "score" to 2,
+                            "waterActivity" to
+                                mapOf(
+                                    "athleteId" to FIRST_ATHLETE_ID,
+                                    "rpe" to 5,
+                                    "condition" to "good",
+                                    "trimp" to 120,
+                                    "duration" to 60,
+                                    "waves" to
+                                        listOf(
+                                            mapOf(
+                                                "points" to null,
+                                                "maneuvers" to
                                                     listOf(
                                                         mapOf(
-                                                            "points" to null,
-                                                            "maneuvers" to
-                                                                    listOf(
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 1,
-                                                                            "rightSide" to true,
-                                                                            "success" to true,
-                                                                        ),
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 2,
-                                                                            "rightSide" to false,
-                                                                            "success" to false,
-                                                                        ),
-                                                                    ),
+                                                            "waterManeuverId" to 1,
+                                                            "rightSide" to true,
+                                                            "success" to true,
+                                                        ),
+                                                        mapOf(
+                                                            "waterManeuverId" to 2,
+                                                            "rightSide" to false,
+                                                            "success" to false,
                                                         ),
                                                     ),
-                                        )
-                            )
-                        )
+                                            ),
+                                        ),
+                                ),
+                        ),
+                    ),
             )
 
         client.post().uri("/athletes/$FIRST_ATHLETE_ID/competition")
@@ -2225,38 +2224,38 @@ class AthleteControllerTest {
                 "place" to 1,
                 "name" to randomString(),
                 "heats" to
-                        listOf(
-                            mapOf(
-                                "score" to 2,
-                                "waterActivity" to
-                                        mapOf(
-                                            "athleteId" to FIRST_ATHLETE_ID,
-                                            "rpe" to 5,
-                                            "condition" to "good",
-                                            "trimp" to 120,
-                                            "duration" to 60,
-                                            "waves" to
+                    listOf(
+                        mapOf(
+                            "score" to 2,
+                            "waterActivity" to
+                                mapOf(
+                                    "athleteId" to FIRST_ATHLETE_ID,
+                                    "rpe" to 5,
+                                    "condition" to "good",
+                                    "trimp" to 120,
+                                    "duration" to 60,
+                                    "waves" to
+                                        listOf(
+                                            mapOf(
+                                                "points" to null,
+                                                "maneuvers" to
                                                     listOf(
                                                         mapOf(
-                                                            "points" to null,
-                                                            "maneuvers" to
-                                                                    listOf(
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 1,
-                                                                            "rightSide" to true,
-                                                                            "success" to true,
-                                                                        ),
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 2,
-                                                                            "rightSide" to false,
-                                                                            "success" to false,
-                                                                        ),
-                                                                    ),
+                                                            "waterManeuverId" to 1,
+                                                            "rightSide" to true,
+                                                            "success" to true,
+                                                        ),
+                                                        mapOf(
+                                                            "waterManeuverId" to 2,
+                                                            "rightSide" to false,
+                                                            "success" to false,
                                                         ),
                                                     ),
-                                        )
-                            )
-                        )
+                                            ),
+                                        ),
+                                ),
+                        ),
+                    ),
             )
 
         client.post().uri("/athletes/$FIRST_ATHLETE_ID/competition")
@@ -2281,38 +2280,38 @@ class AthleteControllerTest {
                 "place" to 1,
                 "name" to randomString(),
                 "heats" to
-                        listOf(
-                            mapOf(
-                                "score" to 2,
-                                "waterActivity" to
-                                        mapOf(
-                                            "athleteId" to FIRST_ATHLETE_ID,
-                                            "rpe" to 5,
-                                            "condition" to "good",
-                                            "trimp" to 120,
-                                            "duration" to -60, // Invalid duration
-                                            "waves" to
+                    listOf(
+                        mapOf(
+                            "score" to 2,
+                            "waterActivity" to
+                                mapOf(
+                                    "athleteId" to FIRST_ATHLETE_ID,
+                                    "rpe" to 5,
+                                    "condition" to "good",
+                                    "trimp" to 120,
+                                    "duration" to -60, // Invalid duration
+                                    "waves" to
+                                        listOf(
+                                            mapOf(
+                                                "points" to null,
+                                                "maneuvers" to
                                                     listOf(
                                                         mapOf(
-                                                            "points" to null,
-                                                            "maneuvers" to
-                                                                    listOf(
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 1,
-                                                                            "rightSide" to true,
-                                                                            "success" to true,
-                                                                        ),
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 2,
-                                                                            "rightSide" to false,
-                                                                            "success" to false,
-                                                                        ),
-                                                                    ),
+                                                            "waterManeuverId" to 1,
+                                                            "rightSide" to true,
+                                                            "success" to true,
+                                                        ),
+                                                        mapOf(
+                                                            "waterManeuverId" to 2,
+                                                            "rightSide" to false,
+                                                            "success" to false,
                                                         ),
                                                     ),
-                                        )
-                            )
-                        )
+                                            ),
+                                        ),
+                                ),
+                        ),
+                    ),
             )
 
         client.post().uri("/athletes/$FIRST_ATHLETE_ID/competition")
@@ -2337,38 +2336,38 @@ class AthleteControllerTest {
                 "place" to 1,
                 "name" to randomString(),
                 "heats" to
-                        listOf(
-                            mapOf(
-                                "score" to 2,
-                                "waterActivity" to
-                                        mapOf(
-                                            "athleteId" to FIRST_ATHLETE_ID,
-                                            "rpe" to -5, // Invalid RPE
-                                            "condition" to "good",
-                                            "trimp" to 120,
-                                            "duration" to 60,
-                                            "waves" to
+                    listOf(
+                        mapOf(
+                            "score" to 2,
+                            "waterActivity" to
+                                mapOf(
+                                    "athleteId" to FIRST_ATHLETE_ID,
+                                    "rpe" to -5, // Invalid RPE
+                                    "condition" to "good",
+                                    "trimp" to 120,
+                                    "duration" to 60,
+                                    "waves" to
+                                        listOf(
+                                            mapOf(
+                                                "points" to null,
+                                                "maneuvers" to
                                                     listOf(
                                                         mapOf(
-                                                            "points" to null,
-                                                            "maneuvers" to
-                                                                    listOf(
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 1,
-                                                                            "rightSide" to true,
-                                                                            "success" to true,
-                                                                        ),
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 2,
-                                                                            "rightSide" to false,
-                                                                            "success" to false,
-                                                                        ),
-                                                                    ),
+                                                            "waterManeuverId" to 1,
+                                                            "rightSide" to true,
+                                                            "success" to true,
+                                                        ),
+                                                        mapOf(
+                                                            "waterManeuverId" to 2,
+                                                            "rightSide" to false,
+                                                            "success" to false,
                                                         ),
                                                     ),
-                                        )
-                            )
-                        )
+                                            ),
+                                        ),
+                                ),
+                        ),
+                    ),
             )
 
         client.post().uri("/athletes/$FIRST_ATHLETE_ID/competition")
@@ -2393,38 +2392,38 @@ class AthleteControllerTest {
                 "place" to 1,
                 "name" to randomString(),
                 "heats" to
-                        listOf(
-                            mapOf(
-                                "score" to -2, // Invalid score
-                                "waterActivity" to
-                                        mapOf(
-                                            "athleteId" to FIRST_ATHLETE_ID,
-                                            "rpe" to 5,
-                                            "condition" to "good",
-                                            "trimp" to 120,
-                                            "duration" to 60,
-                                            "waves" to
+                    listOf(
+                        mapOf(
+                            "score" to -2, // Invalid score
+                            "waterActivity" to
+                                mapOf(
+                                    "athleteId" to FIRST_ATHLETE_ID,
+                                    "rpe" to 5,
+                                    "condition" to "good",
+                                    "trimp" to 120,
+                                    "duration" to 60,
+                                    "waves" to
+                                        listOf(
+                                            mapOf(
+                                                "points" to null,
+                                                "maneuvers" to
                                                     listOf(
                                                         mapOf(
-                                                            "points" to null,
-                                                            "maneuvers" to
-                                                                    listOf(
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 1,
-                                                                            "rightSide" to true,
-                                                                            "success" to true,
-                                                                        ),
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 2,
-                                                                            "rightSide" to false,
-                                                                            "success" to false,
-                                                                        ),
-                                                                    ),
+                                                            "waterManeuverId" to 1,
+                                                            "rightSide" to true,
+                                                            "success" to true,
+                                                        ),
+                                                        mapOf(
+                                                            "waterManeuverId" to 2,
+                                                            "rightSide" to false,
+                                                            "success" to false,
                                                         ),
                                                     ),
-                                        )
-                            )
-                        )
+                                            ),
+                                        ),
+                                ),
+                        ),
+                    ),
             )
 
         client.post().uri("/athletes/$FIRST_ATHLETE_ID/competition")
@@ -2449,38 +2448,38 @@ class AthleteControllerTest {
                 "place" to 1,
                 "name" to randomString(),
                 "heats" to
-                        listOf(
-                            mapOf(
-                                "score" to 2,
-                                "waterActivity" to
-                                        mapOf(
-                                            "athleteId" to FIRST_ATHLETE_ID,
-                                            "rpe" to 5,
-                                            "condition" to "good",
-                                            "trimp" to -120, // Invalid TRIMP
-                                            "duration" to 60,
-                                            "waves" to
+                    listOf(
+                        mapOf(
+                            "score" to 2,
+                            "waterActivity" to
+                                mapOf(
+                                    "athleteId" to FIRST_ATHLETE_ID,
+                                    "rpe" to 5,
+                                    "condition" to "good",
+                                    "trimp" to -120, // Invalid TRIMP
+                                    "duration" to 60,
+                                    "waves" to
+                                        listOf(
+                                            mapOf(
+                                                "points" to null,
+                                                "maneuvers" to
                                                     listOf(
                                                         mapOf(
-                                                            "points" to null,
-                                                            "maneuvers" to
-                                                                    listOf(
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 1,
-                                                                            "rightSide" to true,
-                                                                            "success" to true,
-                                                                        ),
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 2,
-                                                                            "rightSide" to false,
-                                                                            "success" to false,
-                                                                        ),
-                                                                    ),
+                                                            "waterManeuverId" to 1,
+                                                            "rightSide" to true,
+                                                            "success" to true,
+                                                        ),
+                                                        mapOf(
+                                                            "waterManeuverId" to 2,
+                                                            "rightSide" to false,
+                                                            "success" to false,
                                                         ),
                                                     ),
-                                        )
-                            )
-                        )
+                                            ),
+                                        ),
+                                ),
+                        ),
+                    ),
             )
 
         client.post().uri("/athletes/$FIRST_ATHLETE_ID/competition")
@@ -2505,38 +2504,38 @@ class AthleteControllerTest {
                 "place" to 1,
                 "name" to randomString(),
                 "heats" to
-                        listOf(
-                            mapOf(
-                                "score" to 2,
-                                "waterActivity" to
-                                        mapOf(
-                                            "athleteId" to FIRST_ATHLETE_ID,
-                                            "rpe" to 5,
-                                            "condition" to "good",
-                                            "trimp" to 120,
-                                            "duration" to 60,
-                                            "waves" to
+                    listOf(
+                        mapOf(
+                            "score" to 2,
+                            "waterActivity" to
+                                mapOf(
+                                    "athleteId" to FIRST_ATHLETE_ID,
+                                    "rpe" to 5,
+                                    "condition" to "good",
+                                    "trimp" to 120,
+                                    "duration" to 60,
+                                    "waves" to
+                                        listOf(
+                                            mapOf(
+                                                "points" to null,
+                                                "maneuvers" to
                                                     listOf(
                                                         mapOf(
-                                                            "points" to null,
-                                                            "maneuvers" to
-                                                                    listOf(
-                                                                        mapOf(
-                                                                            "waterManeuverId" to -1, // Invalid water maneuver ID
-                                                                            "rightSide" to true,
-                                                                            "success" to true,
-                                                                        ),
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 2,
-                                                                            "rightSide" to false,
-                                                                            "success" to false,
-                                                                        ),
-                                                                    ),
+                                                            "waterManeuverId" to -1, // Invalid water maneuver ID
+                                                            "rightSide" to true,
+                                                            "success" to true,
+                                                        ),
+                                                        mapOf(
+                                                            "waterManeuverId" to 2,
+                                                            "rightSide" to false,
+                                                            "success" to false,
                                                         ),
                                                     ),
-                                        )
-                            )
-                        )
+                                            ),
+                                        ),
+                                ),
+                        ),
+                    ),
             )
 
         client.post().uri("/athletes/$FIRST_ATHLETE_ID/competition")
@@ -2747,41 +2746,41 @@ class AthleteControllerTest {
             mapOf(
                 "date" to FIRST_COMPETITION_DATE_STRING,
                 "heats" to
-                        listOf(
-                            mapOf(
-                                "score" to 85,
-                                "waterActivity" to
-                                        mapOf(
-                                            "rpe" to 6,
-                                            "condition" to "excellent",
-                                            "trimp" to 150,
-                                            "duration" to 75,
-                                            "waves" to
+                    listOf(
+                        mapOf(
+                            "score" to 85,
+                            "waterActivity" to
+                                mapOf(
+                                    "rpe" to 6,
+                                    "condition" to "excellent",
+                                    "trimp" to 150,
+                                    "duration" to 75,
+                                    "waves" to
+                                        listOf(
+                                            mapOf(
+                                                "points" to null,
+                                                "rightSide" to true,
+                                                "maneuvers" to
                                                     listOf(
                                                         mapOf(
-                                                            "points" to null,
-                                                            "rightSide" to true,
-                                                            "maneuvers" to
-                                                                    listOf(
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 1,
-                                                                            "success" to true,
-                                                                        ),
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 2,
-                                                                            "success" to false,
-                                                                        ),
-                                                                    ),
+                                                            "waterManeuverId" to 1,
+                                                            "success" to true,
+                                                        ),
+                                                        mapOf(
+                                                            "waterManeuverId" to 2,
+                                                            "success" to false,
                                                         ),
                                                     ),
-                                        )
-                            ),
-                            mapOf(
-                                "id" to 1,
-                                "score" to null,
-                                "waterActivity" to null
-                            )
-                        )
+                                            ),
+                                        ),
+                                ),
+                        ),
+                        mapOf(
+                            "id" to 1,
+                            "score" to null,
+                            "waterActivity" to null,
+                        ),
+                    ),
             )
 
         client.patch().uri("/athletes/$FIRST_ATHLETE_ID/competition/$FIRST_COMPETITION_ID")
@@ -2790,7 +2789,6 @@ class AthleteControllerTest {
             .bodyValue(body)
             .exchange()
             .expectStatus().isNoContent
-
     }
 
     @Test
@@ -2801,36 +2799,36 @@ class AthleteControllerTest {
             mapOf(
                 "date" to FIRST_COMPETITION_DATE_STRING,
                 "heats" to
-                        listOf(
-                            mapOf(
-                                "score" to 85,
-                                "waterActivity" to
-                                        mapOf(
-                                            "rpe" to 6,
-                                            "condition" to "excellent",
-                                            "trimp" to 150,
-                                            "duration" to 75,
-                                            "waves" to
+                    listOf(
+                        mapOf(
+                            "score" to 85,
+                            "waterActivity" to
+                                mapOf(
+                                    "rpe" to 6,
+                                    "condition" to "excellent",
+                                    "trimp" to 150,
+                                    "duration" to 75,
+                                    "waves" to
+                                        listOf(
+                                            mapOf(
+                                                "points" to null,
+                                                "rightSide" to true,
+                                                "maneuvers" to
                                                     listOf(
                                                         mapOf(
-                                                            "points" to null,
-                                                            "rightSide" to true,
-                                                            "maneuvers" to
-                                                                    listOf(
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 1,
-                                                                            "success" to true,
-                                                                        ),
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 2,
-                                                                            "success" to false,
-                                                                        ),
-                                                                    ),
+                                                            "waterManeuverId" to 1,
+                                                            "success" to true,
+                                                        ),
+                                                        mapOf(
+                                                            "waterManeuverId" to 2,
+                                                            "success" to false,
                                                         ),
                                                     ),
-                                        )
-                            )
-                        )
+                                            ),
+                                        ),
+                                ),
+                        ),
+                    ),
             )
 
         client.patch().uri("/athletes/$FIRST_ATHLETE_ID/competition/$FIRST_COMPETITION_ID")
@@ -2850,36 +2848,36 @@ class AthleteControllerTest {
             mapOf(
                 "date" to FIRST_COMPETITION_DATE_STRING,
                 "heats" to
-                        listOf(
-                            mapOf(
-                                "score" to 85,
-                                "waterActivity" to
-                                        mapOf(
-                                            "rpe" to 6,
-                                            "condition" to "excellent",
-                                            "trimp" to 150,
-                                            "duration" to 75,
-                                            "waves" to
+                    listOf(
+                        mapOf(
+                            "score" to 85,
+                            "waterActivity" to
+                                mapOf(
+                                    "rpe" to 6,
+                                    "condition" to "excellent",
+                                    "trimp" to 150,
+                                    "duration" to 75,
+                                    "waves" to
+                                        listOf(
+                                            mapOf(
+                                                "points" to null,
+                                                "rightSide" to true,
+                                                "maneuvers" to
                                                     listOf(
                                                         mapOf(
-                                                            "points" to null,
-                                                            "rightSide" to true,
-                                                            "maneuvers" to
-                                                                    listOf(
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 1,
-                                                                            "success" to true,
-                                                                        ),
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 2,
-                                                                            "success" to false,
-                                                                        ),
-                                                                    ),
+                                                            "waterManeuverId" to 1,
+                                                            "success" to true,
+                                                        ),
+                                                        mapOf(
+                                                            "waterManeuverId" to 2,
+                                                            "success" to false,
                                                         ),
                                                     ),
-                                        )
-                            )
-                        )
+                                            ),
+                                        ),
+                                ),
+                        ),
+                    ),
             )
 
         client.patch().uri("/athletes/$id/competition/$FIRST_COMPETITION_ID")
@@ -2903,36 +2901,36 @@ class AthleteControllerTest {
             mapOf(
                 "date" to FIRST_COMPETITION_DATE_STRING,
                 "heats" to
-                        listOf(
-                            mapOf(
-                                "score" to 85,
-                                "waterActivity" to
-                                        mapOf(
-                                            "rpe" to 6,
-                                            "condition" to "excellent",
-                                            "trimp" to 150,
-                                            "duration" to 75,
-                                            "waves" to
+                    listOf(
+                        mapOf(
+                            "score" to 85,
+                            "waterActivity" to
+                                mapOf(
+                                    "rpe" to 6,
+                                    "condition" to "excellent",
+                                    "trimp" to 150,
+                                    "duration" to 75,
+                                    "waves" to
+                                        listOf(
+                                            mapOf(
+                                                "points" to null,
+                                                "rightSide" to true,
+                                                "maneuvers" to
                                                     listOf(
                                                         mapOf(
-                                                            "points" to null,
-                                                            "rightSide" to true,
-                                                            "maneuvers" to
-                                                                    listOf(
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 1,
-                                                                            "success" to true,
-                                                                        ),
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 2,
-                                                                            "success" to false,
-                                                                        ),
-                                                                    ),
+                                                            "waterManeuverId" to 1,
+                                                            "success" to true,
+                                                        ),
+                                                        mapOf(
+                                                            "waterManeuverId" to 2,
+                                                            "success" to false,
                                                         ),
                                                     ),
-                                        )
-                            )
-                        )
+                                            ),
+                                        ),
+                                ),
+                        ),
+                    ),
             )
 
         client.patch().uri("/athletes/$FIRST_ATHLETE_ID/competition/$id")
@@ -2956,36 +2954,36 @@ class AthleteControllerTest {
             mapOf(
                 "date" to FIRST_COMPETITION_DATE_STRING,
                 "heats" to
-                        listOf(
-                            mapOf(
-                                "score" to 85,
-                                "waterActivity" to
-                                        mapOf(
-                                            "rpe" to 6,
-                                            "condition" to "excellent",
-                                            "trimp" to 150,
-                                            "duration" to 75,
-                                            "waves" to
+                    listOf(
+                        mapOf(
+                            "score" to 85,
+                            "waterActivity" to
+                                mapOf(
+                                    "rpe" to 6,
+                                    "condition" to "excellent",
+                                    "trimp" to 150,
+                                    "duration" to 75,
+                                    "waves" to
+                                        listOf(
+                                            mapOf(
+                                                "points" to null,
+                                                "rightSide" to true,
+                                                "maneuvers" to
                                                     listOf(
                                                         mapOf(
-                                                            "points" to null,
-                                                            "rightSide" to true,
-                                                            "maneuvers" to
-                                                                    listOf(
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 1,
-                                                                            "success" to true,
-                                                                        ),
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 2,
-                                                                            "success" to false,
-                                                                        ),
-                                                                    ),
+                                                            "waterManeuverId" to 1,
+                                                            "success" to true,
+                                                        ),
+                                                        mapOf(
+                                                            "waterManeuverId" to 2,
+                                                            "success" to false,
                                                         ),
                                                     ),
-                                        )
-                            )
-                        )
+                                            ),
+                                        ),
+                                ),
+                        ),
+                    ),
             )
 
         client.patch().uri("/athletes/$id/competition/$FIRST_COMPETITION_ID")
@@ -3009,36 +3007,36 @@ class AthleteControllerTest {
             mapOf(
                 "date" to FIRST_COMPETITION_DATE_STRING,
                 "heats" to
-                        listOf(
-                            mapOf(
-                                "score" to 85,
-                                "waterActivity" to
-                                        mapOf(
-                                            "rpe" to 6,
-                                            "condition" to "excellent",
-                                            "trimp" to 150,
-                                            "duration" to 75,
-                                            "waves" to
+                    listOf(
+                        mapOf(
+                            "score" to 85,
+                            "waterActivity" to
+                                mapOf(
+                                    "rpe" to 6,
+                                    "condition" to "excellent",
+                                    "trimp" to 150,
+                                    "duration" to 75,
+                                    "waves" to
+                                        listOf(
+                                            mapOf(
+                                                "points" to null,
+                                                "rightSide" to true,
+                                                "maneuvers" to
                                                     listOf(
                                                         mapOf(
-                                                            "points" to null,
-                                                            "rightSide" to true,
-                                                            "maneuvers" to
-                                                                    listOf(
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 1,
-                                                                            "success" to true,
-                                                                        ),
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 2,
-                                                                            "success" to false,
-                                                                        ),
-                                                                    ),
+                                                            "waterManeuverId" to 1,
+                                                            "success" to true,
+                                                        ),
+                                                        mapOf(
+                                                            "waterManeuverId" to 2,
+                                                            "success" to false,
                                                         ),
                                                     ),
-                                        )
-                            )
-                        )
+                                            ),
+                                        ),
+                                ),
+                        ),
+                    ),
             )
 
         client.patch().uri("/athletes/$FIRST_ATHLETE_ID/competition/$id")
@@ -3060,36 +3058,36 @@ class AthleteControllerTest {
             mapOf(
                 "date" to INVALID_DATE, // Invalid date
                 "heats" to
-                        listOf(
-                            mapOf(
-                                "score" to 85,
-                                "waterActivity" to
-                                        mapOf(
-                                            "rpe" to 6,
-                                            "condition" to "excellent",
-                                            "trimp" to 150,
-                                            "duration" to 75,
-                                            "waves" to
+                    listOf(
+                        mapOf(
+                            "score" to 85,
+                            "waterActivity" to
+                                mapOf(
+                                    "rpe" to 6,
+                                    "condition" to "excellent",
+                                    "trimp" to 150,
+                                    "duration" to 75,
+                                    "waves" to
+                                        listOf(
+                                            mapOf(
+                                                "points" to null,
+                                                "rightSide" to true,
+                                                "maneuvers" to
                                                     listOf(
                                                         mapOf(
-                                                            "points" to null,
-                                                            "rightSide" to true,
-                                                            "maneuvers" to
-                                                                    listOf(
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 1,
-                                                                            "success" to true,
-                                                                        ),
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 2,
-                                                                            "success" to false,
-                                                                        ),
-                                                                    ),
+                                                            "waterManeuverId" to 1,
+                                                            "success" to true,
+                                                        ),
+                                                        mapOf(
+                                                            "waterManeuverId" to 2,
+                                                            "success" to false,
                                                         ),
                                                     ),
-                                        )
-                            )
-                        )
+                                            ),
+                                        ),
+                                ),
+                        ),
+                    ),
             )
 
         client.patch().uri("/athletes/$FIRST_ATHLETE_ID/competition/$FIRST_COMPETITION_ID")
@@ -3111,36 +3109,36 @@ class AthleteControllerTest {
             mapOf(
                 "date" to FIRST_COMPETITION_DATE_STRING,
                 "heats" to
-                        listOf(
-                            mapOf(
-                                "score" to 85,
-                                "waterActivity" to
-                                        mapOf(
-                                            "rpe" to 6,
-                                            "condition" to "excellent",
-                                            "trimp" to 150,
-                                            "duration" to 75,
-                                            "waves" to
+                    listOf(
+                        mapOf(
+                            "score" to 85,
+                            "waterActivity" to
+                                mapOf(
+                                    "rpe" to 6,
+                                    "condition" to "excellent",
+                                    "trimp" to 150,
+                                    "duration" to 75,
+                                    "waves" to
+                                        listOf(
+                                            mapOf(
+                                                "points" to null,
+                                                "rightSide" to true,
+                                                "maneuvers" to
                                                     listOf(
                                                         mapOf(
-                                                            "points" to null,
-                                                            "rightSide" to true,
-                                                            "maneuvers" to
-                                                                    listOf(
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 1,
-                                                                            "success" to true,
-                                                                        ),
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 2,
-                                                                            "success" to false,
-                                                                        ),
-                                                                    ),
+                                                            "waterManeuverId" to 1,
+                                                            "success" to true,
+                                                        ),
+                                                        mapOf(
+                                                            "waterManeuverId" to 2,
+                                                            "success" to false,
                                                         ),
                                                     ),
-                                        )
-                            )
-                        )
+                                            ),
+                                        ),
+                                ),
+                        ),
+                    ),
             )
 
         client.patch().uri("/athletes/$FIRST_ATHLETE_ID/competition/$FIRST_COMPETITION_ID")
@@ -3162,36 +3160,36 @@ class AthleteControllerTest {
             mapOf(
                 "date" to VALID_DATE,
                 "heats" to
-                        listOf(
-                            mapOf(
-                                "score" to 85,
-                                "waterActivity" to
-                                        mapOf(
-                                            "rpe" to 6,
-                                            "condition" to "excellent",
-                                            "trimp" to 150,
-                                            "duration" to 75,
-                                            "waves" to
+                    listOf(
+                        mapOf(
+                            "score" to 85,
+                            "waterActivity" to
+                                mapOf(
+                                    "rpe" to 6,
+                                    "condition" to "excellent",
+                                    "trimp" to 150,
+                                    "duration" to 75,
+                                    "waves" to
+                                        listOf(
+                                            mapOf(
+                                                "points" to null,
+                                                "rightSide" to true,
+                                                "maneuvers" to
                                                     listOf(
                                                         mapOf(
-                                                            "points" to null,
-                                                            "rightSide" to true,
-                                                            "maneuvers" to
-                                                                    listOf(
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 1,
-                                                                            "success" to true,
-                                                                        ),
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 2,
-                                                                            "success" to false,
-                                                                        ),
-                                                                    ),
+                                                            "waterManeuverId" to 1,
+                                                            "success" to true,
+                                                        ),
+                                                        mapOf(
+                                                            "waterManeuverId" to 2,
+                                                            "success" to false,
                                                         ),
                                                     ),
-                                        )
-                            )
-                        )
+                                            ),
+                                        ),
+                                ),
+                        ),
+                    ),
             )
 
         client.patch().uri("/athletes/$FIRST_ATHLETE_ID/competition/$FIRST_COMPETITION_ID")
@@ -3213,36 +3211,36 @@ class AthleteControllerTest {
             mapOf(
                 "date" to DATE,
                 "heats" to
-                        listOf(
-                            mapOf(
-                                "score" to 85,
-                                "waterActivity" to
-                                        mapOf(
-                                            "rpe" to 6,
-                                            "condition" to "excellent",
-                                            "trimp" to 150,
-                                            "duration" to -75, // Invalid duration
-                                            "waves" to
+                    listOf(
+                        mapOf(
+                            "score" to 85,
+                            "waterActivity" to
+                                mapOf(
+                                    "rpe" to 6,
+                                    "condition" to "excellent",
+                                    "trimp" to 150,
+                                    "duration" to -75, // Invalid duration
+                                    "waves" to
+                                        listOf(
+                                            mapOf(
+                                                "points" to null,
+                                                "rightSide" to true,
+                                                "maneuvers" to
                                                     listOf(
                                                         mapOf(
-                                                            "points" to null,
-                                                            "rightSide" to true,
-                                                            "maneuvers" to
-                                                                    listOf(
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 1,
-                                                                            "success" to true,
-                                                                        ),
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 2,
-                                                                            "success" to false,
-                                                                        ),
-                                                                    ),
+                                                            "waterManeuverId" to 1,
+                                                            "success" to true,
+                                                        ),
+                                                        mapOf(
+                                                            "waterManeuverId" to 2,
+                                                            "success" to false,
                                                         ),
                                                     ),
-                                        )
-                            )
-                        )
+                                            ),
+                                        ),
+                                ),
+                        ),
+                    ),
             )
 
         client.patch().uri("/athletes/$FIRST_ATHLETE_ID/competition/$FIRST_COMPETITION_ID")
@@ -3264,36 +3262,36 @@ class AthleteControllerTest {
             mapOf(
                 "date" to DATE,
                 "heats" to
-                        listOf(
-                            mapOf(
-                                "score" to 85,
-                                "waterActivity" to
-                                        mapOf(
-                                            "rpe" to -6, // Invalid RPE
-                                            "condition" to "excellent",
-                                            "trimp" to 150,
-                                            "duration" to 75,
-                                            "waves" to
+                    listOf(
+                        mapOf(
+                            "score" to 85,
+                            "waterActivity" to
+                                mapOf(
+                                    "rpe" to -6, // Invalid RPE
+                                    "condition" to "excellent",
+                                    "trimp" to 150,
+                                    "duration" to 75,
+                                    "waves" to
+                                        listOf(
+                                            mapOf(
+                                                "points" to null,
+                                                "rightSide" to true,
+                                                "maneuvers" to
                                                     listOf(
                                                         mapOf(
-                                                            "points" to null,
-                                                            "rightSide" to true,
-                                                            "maneuvers" to
-                                                                    listOf(
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 1,
-                                                                            "success" to true,
-                                                                        ),
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 2,
-                                                                            "success" to false,
-                                                                        ),
-                                                                    ),
+                                                            "waterManeuverId" to 1,
+                                                            "success" to true,
+                                                        ),
+                                                        mapOf(
+                                                            "waterManeuverId" to 2,
+                                                            "success" to false,
                                                         ),
                                                     ),
-                                        )
-                            )
-                        )
+                                            ),
+                                        ),
+                                ),
+                        ),
+                    ),
             )
 
         client.patch().uri("/athletes/$FIRST_ATHLETE_ID/competition/$FIRST_COMPETITION_ID")
@@ -3315,36 +3313,36 @@ class AthleteControllerTest {
             mapOf(
                 "date" to DATE,
                 "heats" to
-                        listOf(
-                            mapOf(
-                                "score" to -85, // Invalid score
-                                "waterActivity" to
-                                        mapOf(
-                                            "rpe" to 6,
-                                            "condition" to "excellent",
-                                            "trimp" to 150,
-                                            "duration" to 75,
-                                            "waves" to
+                    listOf(
+                        mapOf(
+                            "score" to -85, // Invalid score
+                            "waterActivity" to
+                                mapOf(
+                                    "rpe" to 6,
+                                    "condition" to "excellent",
+                                    "trimp" to 150,
+                                    "duration" to 75,
+                                    "waves" to
+                                        listOf(
+                                            mapOf(
+                                                "points" to null,
+                                                "rightSide" to true,
+                                                "maneuvers" to
                                                     listOf(
                                                         mapOf(
-                                                            "points" to null,
-                                                            "rightSide" to true,
-                                                            "maneuvers" to
-                                                                    listOf(
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 1,
-                                                                            "success" to true,
-                                                                        ),
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 2,
-                                                                            "success" to false,
-                                                                        ),
-                                                                    ),
+                                                            "waterManeuverId" to 1,
+                                                            "success" to true,
+                                                        ),
+                                                        mapOf(
+                                                            "waterManeuverId" to 2,
+                                                            "success" to false,
                                                         ),
                                                     ),
-                                        )
-                            )
-                        )
+                                            ),
+                                        ),
+                                ),
+                        ),
+                    ),
             )
 
         client.patch().uri("/athletes/$FIRST_ATHLETE_ID/competition/$FIRST_COMPETITION_ID")
@@ -3366,36 +3364,36 @@ class AthleteControllerTest {
             mapOf(
                 "date" to DATE,
                 "heats" to
-                        listOf(
-                            mapOf(
-                                "score" to 85,
-                                "waterActivity" to
-                                        mapOf(
-                                            "rpe" to 6,
-                                            "condition" to "excellent",
-                                            "trimp" to -150, // Invalid TRIMP
-                                            "duration" to 75,
-                                            "waves" to
+                    listOf(
+                        mapOf(
+                            "score" to 85,
+                            "waterActivity" to
+                                mapOf(
+                                    "rpe" to 6,
+                                    "condition" to "excellent",
+                                    "trimp" to -150, // Invalid TRIMP
+                                    "duration" to 75,
+                                    "waves" to
+                                        listOf(
+                                            mapOf(
+                                                "points" to null,
+                                                "rightSide" to true,
+                                                "maneuvers" to
                                                     listOf(
                                                         mapOf(
-                                                            "points" to null,
-                                                            "rightSide" to true,
-                                                            "maneuvers" to
-                                                                    listOf(
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 1,
-                                                                            "success" to true,
-                                                                        ),
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 2,
-                                                                            "success" to false,
-                                                                        ),
-                                                                    ),
+                                                            "waterManeuverId" to 1,
+                                                            "success" to true,
+                                                        ),
+                                                        mapOf(
+                                                            "waterManeuverId" to 2,
+                                                            "success" to false,
                                                         ),
                                                     ),
-                                        )
-                            )
-                        )
+                                            ),
+                                        ),
+                                ),
+                        ),
+                    ),
             )
 
         client.patch().uri("/athletes/$FIRST_ATHLETE_ID/competition/$FIRST_COMPETITION_ID")
@@ -3417,36 +3415,36 @@ class AthleteControllerTest {
             mapOf(
                 "date" to DATE,
                 "heats" to
-                        listOf(
-                            mapOf(
-                                "score" to 85,
-                                "waterActivity" to
-                                        mapOf(
-                                            "rpe" to 6,
-                                            "condition" to "excellent",
-                                            "trimp" to 150,
-                                            "duration" to 75,
-                                            "waves" to
+                    listOf(
+                        mapOf(
+                            "score" to 85,
+                            "waterActivity" to
+                                mapOf(
+                                    "rpe" to 6,
+                                    "condition" to "excellent",
+                                    "trimp" to 150,
+                                    "duration" to 75,
+                                    "waves" to
+                                        listOf(
+                                            mapOf(
+                                                "points" to null,
+                                                "rightSide" to true,
+                                                "maneuvers" to
                                                     listOf(
                                                         mapOf(
-                                                            "points" to null,
-                                                            "rightSide" to true,
-                                                            "maneuvers" to
-                                                                    listOf(
-                                                                        mapOf(
-                                                                            "waterManeuverId" to -1, // Invalid water maneuver ID
-                                                                            "success" to true,
-                                                                        ),
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 2,
-                                                                            "success" to false,
-                                                                        ),
-                                                                    ),
+                                                            "waterManeuverId" to -1, // Invalid water maneuver ID
+                                                            "success" to true,
+                                                        ),
+                                                        mapOf(
+                                                            "waterManeuverId" to 2,
+                                                            "success" to false,
                                                         ),
                                                     ),
-                                        )
-                            )
-                        )
+                                            ),
+                                        ),
+                                ),
+                        ),
+                    ),
             )
 
         client.patch().uri("/athletes/$FIRST_ATHLETE_ID/competition/$FIRST_COMPETITION_ID")
@@ -3468,37 +3466,37 @@ class AthleteControllerTest {
             mapOf(
                 "date" to FIRST_COMPETITION_DATE_STRING,
                 "heats" to
-                        listOf(
-                            mapOf(
-                                "id" to 0, // Non-existent heat ID
-                                "score" to 85,
-                                "waterActivity" to
-                                        mapOf(
-                                            "rpe" to 6,
-                                            "condition" to "excellent",
-                                            "trimp" to 150,
-                                            "duration" to 75,
-                                            "waves" to
+                    listOf(
+                        mapOf(
+                            "id" to 0, // Non-existent heat ID
+                            "score" to 85,
+                            "waterActivity" to
+                                mapOf(
+                                    "rpe" to 6,
+                                    "condition" to "excellent",
+                                    "trimp" to 150,
+                                    "duration" to 75,
+                                    "waves" to
+                                        listOf(
+                                            mapOf(
+                                                "points" to null,
+                                                "rightSide" to true,
+                                                "maneuvers" to
                                                     listOf(
                                                         mapOf(
-                                                            "points" to null,
-                                                            "rightSide" to true,
-                                                            "maneuvers" to
-                                                                    listOf(
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 1,
-                                                                            "success" to true,
-                                                                        ),
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 2,
-                                                                            "success" to false,
-                                                                        ),
-                                                                    ),
+                                                            "waterManeuverId" to 1,
+                                                            "success" to true,
+                                                        ),
+                                                        mapOf(
+                                                            "waterManeuverId" to 2,
+                                                            "success" to false,
                                                         ),
                                                     ),
-                                        )
-                            )
-                        )
+                                            ),
+                                        ),
+                                ),
+                        ),
+                    ),
             )
 
         client.patch().uri("/athletes/$FIRST_ATHLETE_ID/competition/$FIRST_COMPETITION_ID")
@@ -3520,35 +3518,35 @@ class AthleteControllerTest {
             mapOf(
                 "date" to DATE,
                 "heats" to
-                        listOf(
-                            mapOf(
-                                "score" to 85,
-                                "waterActivity" to
-                                        mapOf(
-                                            "rpe" to 6,
-                                            "trimp" to 150,
-                                            "duration" to 75,
-                                            "waves" to
+                    listOf(
+                        mapOf(
+                            "score" to 85,
+                            "waterActivity" to
+                                mapOf(
+                                    "rpe" to 6,
+                                    "trimp" to 150,
+                                    "duration" to 75,
+                                    "waves" to
+                                        listOf(
+                                            mapOf(
+                                                "points" to null,
+                                                "rightSide" to true,
+                                                "maneuvers" to
                                                     listOf(
                                                         mapOf(
-                                                            "points" to null,
-                                                            "rightSide" to true,
-                                                            "maneuvers" to
-                                                                    listOf(
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 1,
-                                                                            "success" to true,
-                                                                        ),
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 2,
-                                                                            "success" to false,
-                                                                        ),
-                                                                    ),
+                                                            "waterManeuverId" to 1,
+                                                            "success" to true,
+                                                        ),
+                                                        mapOf(
+                                                            "waterManeuverId" to 2,
+                                                            "success" to false,
                                                         ),
                                                     ),
-                                        )
-                            )
-                        )
+                                            ),
+                                        ),
+                                ),
+                        ),
+                    ),
             )
 
         client.patch().uri("/athletes/$FIRST_ATHLETE_ID/competition/$FIRST_COMPETITION_ID")
@@ -3570,36 +3568,36 @@ class AthleteControllerTest {
             mapOf(
                 "date" to FIRST_COMPETITION_DATE_STRING,
                 "heats" to
-                        listOf(
-                            mapOf(
-                                "score" to 85,
-                                "waterActivity" to
-                                        mapOf(
-                                            "rpe" to 6,
-                                            "condition" to "excellent",
-                                            "trimp" to 150,
-                                            "duration" to 75,
-                                            "waves" to
+                    listOf(
+                        mapOf(
+                            "score" to 85,
+                            "waterActivity" to
+                                mapOf(
+                                    "rpe" to 6,
+                                    "condition" to "excellent",
+                                    "trimp" to 150,
+                                    "duration" to 75,
+                                    "waves" to
+                                        listOf(
+                                            mapOf(
+                                                "points" to null,
+                                                "rightSide" to true,
+                                                "maneuvers" to
                                                     listOf(
                                                         mapOf(
-                                                            "points" to null,
-                                                            "rightSide" to true,
-                                                            "maneuvers" to
-                                                                    listOf(
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 1,
-                                                                            "success" to true,
-                                                                        ),
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 2,
-                                                                            "success" to false,
-                                                                        ),
-                                                                    ),
+                                                            "waterManeuverId" to 1,
+                                                            "success" to true,
+                                                        ),
+                                                        mapOf(
+                                                            "waterManeuverId" to 2,
+                                                            "success" to false,
                                                         ),
                                                     ),
-                                        )
-                            )
-                        )
+                                            ),
+                                        ),
+                                ),
+                        ),
+                    ),
             )
 
         client.patch().uri("/athletes/$FIRST_ATHLETE_ID/competition/$FIRST_COMPETITION_ID")
@@ -3621,25 +3619,25 @@ class AthleteControllerTest {
             mapOf(
                 "date" to FIRST_COMPETITION_DATE_STRING,
                 "heats" to
-                        listOf(
-                            mapOf(
-                                "score" to 85,
-                                "waterActivity" to
-                                        mapOf(
-                                            "rpe" to 6,
-                                            "condition" to "excellent",
-                                            "trimp" to 150,
-                                            "duration" to 75,
-                                            "waves" to
-                                                    listOf(
-                                                        mapOf(
-                                                            "points" to null,
-                                                            "rightSide" to true,
-                                                        ),
-                                                    ),
-                                        )
-                            )
-                        )
+                    listOf(
+                        mapOf(
+                            "score" to 85,
+                            "waterActivity" to
+                                mapOf(
+                                    "rpe" to 6,
+                                    "condition" to "excellent",
+                                    "trimp" to 150,
+                                    "duration" to 75,
+                                    "waves" to
+                                        listOf(
+                                            mapOf(
+                                                "points" to null,
+                                                "rightSide" to true,
+                                            ),
+                                        ),
+                                ),
+                        ),
+                    ),
             )
 
         client.patch().uri("/athletes/$FIRST_ATHLETE_ID/competition/$FIRST_COMPETITION_ID")
@@ -3662,36 +3660,36 @@ class AthleteControllerTest {
                 "date" to FIRST_COMPETITION_DATE_STRING,
                 "place" to -1, // Invalid place
                 "heats" to
-                        listOf(
-                            mapOf(
-                                "score" to 85,
-                                "waterActivity" to
-                                        mapOf(
-                                            "rpe" to 6,
-                                            "condition" to "excellent",
-                                            "trimp" to 150,
-                                            "duration" to 75,
-                                            "waves" to
+                    listOf(
+                        mapOf(
+                            "score" to 85,
+                            "waterActivity" to
+                                mapOf(
+                                    "rpe" to 6,
+                                    "condition" to "excellent",
+                                    "trimp" to 150,
+                                    "duration" to 75,
+                                    "waves" to
+                                        listOf(
+                                            mapOf(
+                                                "points" to null,
+                                                "rightSide" to true,
+                                                "maneuvers" to
                                                     listOf(
                                                         mapOf(
-                                                            "points" to null,
-                                                            "rightSide" to true,
-                                                            "maneuvers" to
-                                                                    listOf(
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 1,
-                                                                            "success" to true,
-                                                                        ),
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 2,
-                                                                            "success" to false,
-                                                                        ),
-                                                                    ),
+                                                            "waterManeuverId" to 1,
+                                                            "success" to true,
+                                                        ),
+                                                        mapOf(
+                                                            "waterManeuverId" to 2,
+                                                            "success" to false,
                                                         ),
                                                     ),
+                                            ),
                                         ),
-                            )
-                        )
+                                ),
+                        ),
+                    ),
             )
 
         client.patch().uri("/athletes/$FIRST_ATHLETE_ID/competition/$FIRST_COMPETITION_ID")
@@ -3713,36 +3711,36 @@ class AthleteControllerTest {
             mapOf(
                 "date" to FIRST_COMPETITION_DATE_STRING,
                 "heats" to
-                        listOf(
-                            mapOf(
-                                "score" to 85,
-                                "waterActivity" to
-                                        mapOf(
-                                            "rpe" to 6,
-                                            "condition" to "excellent",
-                                            "trimp" to 150,
-                                            "duration" to 75,
-                                            "waves" to
+                    listOf(
+                        mapOf(
+                            "score" to 85,
+                            "waterActivity" to
+                                mapOf(
+                                    "rpe" to 6,
+                                    "condition" to "excellent",
+                                    "trimp" to 150,
+                                    "duration" to 75,
+                                    "waves" to
+                                        listOf(
+                                            mapOf(
+                                                "points" to null,
+                                                "rightSide" to null, // Invalid right side
+                                                "maneuvers" to
                                                     listOf(
                                                         mapOf(
-                                                            "points" to null,
-                                                            "rightSide" to null, // Invalid right side
-                                                            "maneuvers" to
-                                                                    listOf(
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 1,
-                                                                            "success" to true,
-                                                                        ),
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 2,
-                                                                            "success" to false,
-                                                                        ),
-                                                                    ),
+                                                            "waterManeuverId" to 1,
+                                                            "success" to true,
+                                                        ),
+                                                        mapOf(
+                                                            "waterManeuverId" to 2,
+                                                            "success" to false,
                                                         ),
                                                     ),
-                                        )
-                            )
-                        )
+                                            ),
+                                        ),
+                                ),
+                        ),
+                    ),
             )
 
         client.patch().uri("/athletes/$FIRST_ATHLETE_ID/competition/$FIRST_COMPETITION_ID")
@@ -3764,36 +3762,36 @@ class AthleteControllerTest {
             mapOf(
                 "date" to FIRST_COMPETITION_DATE_STRING,
                 "heats" to
-                        listOf(
-                            mapOf(
-                                "score" to 85,
-                                "waterActivity" to
-                                        mapOf(
-                                            "rpe" to 6,
-                                            "condition" to "excellent",
-                                            "trimp" to 150,
-                                            "duration" to 75,
-                                            "waves" to
+                    listOf(
+                        mapOf(
+                            "score" to 85,
+                            "waterActivity" to
+                                mapOf(
+                                    "rpe" to 6,
+                                    "condition" to "excellent",
+                                    "trimp" to 150,
+                                    "duration" to 75,
+                                    "waves" to
+                                        listOf(
+                                            mapOf(
+                                                "points" to null,
+                                                "rightSide" to true,
+                                                "maneuvers" to
                                                     listOf(
                                                         mapOf(
-                                                            "points" to null,
-                                                            "rightSide" to true,
-                                                            "maneuvers" to
-                                                                    listOf(
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 1,
-                                                                            "success" to null, // Invalid success
-                                                                        ),
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 2,
-                                                                            "success" to false,
-                                                                        ),
-                                                                    ),
+                                                            "waterManeuverId" to 1,
+                                                            "success" to null, // Invalid success
+                                                        ),
+                                                        mapOf(
+                                                            "waterManeuverId" to 2,
+                                                            "success" to false,
                                                         ),
                                                     ),
-                                        )
-                            )
-                        )
+                                            ),
+                                        ),
+                                ),
+                        ),
+                    ),
             )
 
         client.patch().uri("/athletes/$FIRST_ATHLETE_ID/competition/$FIRST_COMPETITION_ID")
@@ -3815,19 +3813,19 @@ class AthleteControllerTest {
             mapOf(
                 "date" to FIRST_COMPETITION_DATE_STRING,
                 "heats" to
-                        listOf(
-                            mapOf(
-                                "score" to 85,
-                                "waterActivity" to
-                                        mapOf(
-                                            "rpe" to 6,
-                                            "condition" to "excellent",
-                                            "trimp" to 150,
-                                            "duration" to 75,
-                                            "waves" to null // Invalid waves
-                                        )
-                            )
-                        )
+                    listOf(
+                        mapOf(
+                            "score" to 85,
+                            "waterActivity" to
+                                mapOf(
+                                    "rpe" to 6,
+                                    "condition" to "excellent",
+                                    "trimp" to 150,
+                                    "duration" to 75,
+                                    "waves" to null, // Invalid waves
+                                ),
+                        ),
+                    ),
             )
 
         client.patch().uri("/athletes/$FIRST_ATHLETE_ID/competition/$FIRST_COMPETITION_ID")
@@ -3849,36 +3847,36 @@ class AthleteControllerTest {
             mapOf(
                 "date" to FIRST_COMPETITION_DATE_STRING,
                 "heats" to
-                        listOf(
-                            mapOf(
-                                "score" to 85,
-                                "waterActivity" to
-                                        mapOf(
-                                            "rpe" to 6,
-                                            "condition" to "excellent",
-                                            "trimp" to 150,
-                                            "duration" to 75,
-                                            "waves" to
+                    listOf(
+                        mapOf(
+                            "score" to 85,
+                            "waterActivity" to
+                                mapOf(
+                                    "rpe" to 6,
+                                    "condition" to "excellent",
+                                    "trimp" to 150,
+                                    "duration" to 75,
+                                    "waves" to
+                                        listOf(
+                                            mapOf(
+                                                "points" to null,
+                                                "rightSide" to true,
+                                                "maneuvers" to
                                                     listOf(
                                                         mapOf(
-                                                            "points" to null,
-                                                            "rightSide" to true,
-                                                            "maneuvers" to
-                                                                    listOf(
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 1,
-                                                                            "success" to true,
-                                                                        ),
-                                                                        mapOf(
-                                                                            "waterManeuverId" to 2,
-                                                                            "success" to false,
-                                                                        ),
-                                                                    ),
+                                                            "waterManeuverId" to 1,
+                                                            "success" to true,
+                                                        ),
+                                                        mapOf(
+                                                            "waterManeuverId" to 2,
+                                                            "success" to false,
                                                         ),
                                                     ),
-                                        )
-                            )
-                        )
+                                            ),
+                                        ),
+                                ),
+                        ),
+                    ),
             )
 
         client.patch().uri("/athletes/$SECOND_ATHLETE_ID/competition/$FIRST_COMPETITION_ID")

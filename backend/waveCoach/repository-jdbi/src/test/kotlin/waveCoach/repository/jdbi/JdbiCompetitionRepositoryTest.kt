@@ -13,13 +13,14 @@ class JdbiCompetitionRepositoryTest {
         testWithHandleAndRollback { handle ->
             val competitionRepository = JdbiCompetitionRepository(handle)
 
-            val competitionId = competitionRepository.storeCompetition(
-                uid = UID,
-                date = DATE,
-                location = randomString(),
-                place = 1,
-                name = randomString()
-            )
+            val competitionId =
+                competitionRepository.storeCompetition(
+                    uid = UID,
+                    date = DATE,
+                    location = randomString(),
+                    place = 1,
+                    name = randomString(),
+                )
 
             val competition = competitionRepository.competitionExists(competitionId)
 
@@ -33,13 +34,14 @@ class JdbiCompetitionRepositoryTest {
         testWithHandleAndRollback { handle ->
             val competitionRepository = JdbiCompetitionRepository(handle)
 
-            val competitionId = competitionRepository.storeCompetition(
-                uid = UID,
-                date = DATE,
-                location = randomString(),
-                place = 1,
-                name = randomString()
-            )
+            val competitionId =
+                competitionRepository.storeCompetition(
+                    uid = UID,
+                    date = DATE,
+                    location = randomString(),
+                    place = 1,
+                    name = randomString(),
+                )
 
             val competition = competitionRepository.getCompetition(competitionId)
 
@@ -56,20 +58,22 @@ class JdbiCompetitionRepositoryTest {
         testWithHandleAndRollback { handle ->
             val competitionRepository = JdbiCompetitionRepository(handle)
 
-            val competitionId1 = competitionRepository.storeCompetition(
-                uid = UID,
-                date = DATE,
-                location = randomString(),
-                place = 1,
-                name = randomString()
-            )
-            val competitionId2 = competitionRepository.storeCompetition(
-                uid = UID,
-                date = DATE + 1000,
-                location = randomString(),
-                place = 2,
-                name = randomString()
-            )
+            val competitionId1 =
+                competitionRepository.storeCompetition(
+                    uid = UID,
+                    date = DATE,
+                    location = randomString(),
+                    place = 1,
+                    name = randomString(),
+                )
+            val competitionId2 =
+                competitionRepository.storeCompetition(
+                    uid = UID,
+                    date = DATE + 1000,
+                    location = randomString(),
+                    place = 2,
+                    name = randomString(),
+                )
 
             val competitions = competitionRepository.getCompetitionsByAthlete(UID)
 
@@ -83,13 +87,14 @@ class JdbiCompetitionRepositoryTest {
         testWithHandleAndRollback { handle ->
             val competitionRepository = JdbiCompetitionRepository(handle)
 
-            val competitionId = competitionRepository.storeCompetition(
-                uid = UID,
-                date = DATE,
-                location = randomString(),
-                place = 1,
-                name = randomString()
-            )
+            val competitionId =
+                competitionRepository.storeCompetition(
+                    uid = UID,
+                    date = DATE,
+                    location = randomString(),
+                    place = 1,
+                    name = randomString(),
+                )
 
             val newLocation = randomString()
             val newPlace = 2
@@ -99,7 +104,7 @@ class JdbiCompetitionRepositoryTest {
                 date = null,
                 location = newLocation,
                 place = newPlace,
-                name = null
+                name = null,
             )
 
             val updatedCompetition = competitionRepository.getCompetition(competitionId)
@@ -117,13 +122,14 @@ class JdbiCompetitionRepositoryTest {
         testWithHandleAndRollback { handle ->
             val competitionRepository = JdbiCompetitionRepository(handle)
 
-            val competitionId = competitionRepository.storeCompetition(
-                uid = UID,
-                date = DATE,
-                location = randomString(),
-                place = 1,
-                name = randomString()
-            )
+            val competitionId =
+                competitionRepository.storeCompetition(
+                    uid = UID,
+                    date = DATE,
+                    location = randomString(),
+                    place = 1,
+                    name = randomString(),
+                )
 
             competitionRepository.removeCompetition(competitionId)
 
@@ -139,28 +145,31 @@ class JdbiCompetitionRepositoryTest {
             val activityRepository = JdbiActivityRepository(handle)
             val waterActivityRepository = JdbiWaterActivityRepository(handle)
 
-            val competitionId = competitionRepository.storeCompetition(
-                uid = UID,
-                date = DATE,
-                location = randomString(),
-                place = 1,
-                name = randomString()
-            )
+            val competitionId =
+                competitionRepository.storeCompetition(
+                    uid = UID,
+                    date = DATE,
+                    location = randomString(),
+                    place = 1,
+                    name = randomString(),
+                )
             val activityId = activityRepository.storeActivity(UID, ANOTHER_DATE, MICRO_ID)
 
-            val waterActivityId = waterActivityRepository.storeWaterActivity(
-                activityId,
-                3,
-                randomString(),
-                4,
-                60,
-            )
+            val waterActivityId =
+                waterActivityRepository.storeWaterActivity(
+                    activityId,
+                    3,
+                    randomString(),
+                    4,
+                    60,
+                )
 
-            val heatToInsert = HeatToInsert(
-                competitionId = competitionId,
-                waterActivityId = waterActivityId,
-                score = 2
-            )
+            val heatToInsert =
+                HeatToInsert(
+                    competitionId = competitionId,
+                    waterActivityId = waterActivityId,
+                    score = 2,
+                )
 
             val heatIds = competitionRepository.storeHeats(listOf(heatToInsert))
 
@@ -175,28 +184,31 @@ class JdbiCompetitionRepositoryTest {
             val activityRepository = JdbiActivityRepository(handle)
             val waterActivityRepository = JdbiWaterActivityRepository(handle)
 
-            val competitionId = competitionRepository.storeCompetition(
-                uid = UID,
-                date = DATE,
-                location = randomString(),
-                place = 1,
-                name = randomString()
-            )
+            val competitionId =
+                competitionRepository.storeCompetition(
+                    uid = UID,
+                    date = DATE,
+                    location = randomString(),
+                    place = 1,
+                    name = randomString(),
+                )
             val activityId = activityRepository.storeActivity(UID, ANOTHER_DATE, MICRO_ID)
 
-            val waterActivityId = waterActivityRepository.storeWaterActivity(
-                activityId,
-                3,
-                randomString(),
-                4,
-                60,
-            )
+            val waterActivityId =
+                waterActivityRepository.storeWaterActivity(
+                    activityId,
+                    3,
+                    randomString(),
+                    4,
+                    60,
+                )
 
-            val heatToInsert = HeatToInsert(
-                competitionId = competitionId,
-                waterActivityId = waterActivityId,
-                score = 2
-            )
+            val heatToInsert =
+                HeatToInsert(
+                    competitionId = competitionId,
+                    waterActivityId = waterActivityId,
+                    score = 2,
+                )
 
             competitionRepository.storeHeats(listOf(heatToInsert))
 
@@ -213,28 +225,31 @@ class JdbiCompetitionRepositoryTest {
             val activityRepository = JdbiActivityRepository(handle)
             val waterActivityRepository = JdbiWaterActivityRepository(handle)
 
-            val competitionId = competitionRepository.storeCompetition(
-                uid = UID,
-                date = DATE,
-                location = randomString(),
-                place = 1,
-                name = randomString()
-            )
+            val competitionId =
+                competitionRepository.storeCompetition(
+                    uid = UID,
+                    date = DATE,
+                    location = randomString(),
+                    place = 1,
+                    name = randomString(),
+                )
             val activityId = activityRepository.storeActivity(UID, ANOTHER_DATE, MICRO_ID)
 
-            val waterActivityId = waterActivityRepository.storeWaterActivity(
-                activityId,
-                3,
-                randomString(),
-                4,
-                60,
-            )
+            val waterActivityId =
+                waterActivityRepository.storeWaterActivity(
+                    activityId,
+                    3,
+                    randomString(),
+                    4,
+                    60,
+                )
 
-            val heatToInsert = HeatToInsert(
-                competitionId = competitionId,
-                waterActivityId = waterActivityId,
-                score = 2
-            )
+            val heatToInsert =
+                HeatToInsert(
+                    competitionId = competitionId,
+                    waterActivityId = waterActivityId,
+                    score = 2,
+                )
 
             val heatIds = competitionRepository.storeHeats(listOf(heatToInsert))
 

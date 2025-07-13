@@ -1,19 +1,24 @@
 package waveCoach.repository
 
+import waveCoach.domain.Maneuver
 import waveCoach.domain.ManeuverToInsert
+import waveCoach.domain.ManeuverToUpdate
 import waveCoach.domain.MesocycleWater
 import waveCoach.domain.Questionnaire
 import waveCoach.domain.WaterActivityWithWaves
-import waveCoach.domain.WaveToInsert
 import waveCoach.domain.Wave
-import waveCoach.domain.Maneuver
-import waveCoach.domain.ManeuverToUpdate
+import waveCoach.domain.WaveToInsert
 import waveCoach.domain.WaveToUpdate
-
 
 interface WaterActivityRepository {
     // Activity methods
-    fun storeWaterActivity(activityId: Int, rpe: Int, condition: String, trimp: Int, duration: Int): Int
+    fun storeWaterActivity(
+        activityId: Int,
+        rpe: Int,
+        condition: String,
+        trimp: Int,
+        duration: Int,
+    ): Int
 
     fun isWaterActivityValid(activityId: Int): Boolean
 
@@ -38,7 +43,12 @@ interface WaterActivityRepository {
     // Wave methods
     fun storeWaves(waves: List<WaveToInsert>): List<Int>
 
-    fun storeWave(activityId: Int, points: Float?, rightSide: Boolean, order: Int): Int
+    fun storeWave(
+        activityId: Int,
+        points: Float?,
+        rightSide: Boolean,
+        order: Int,
+    ): Int
 
     fun getWaves(activityId: Int): List<Wave>
 
@@ -56,10 +66,18 @@ interface WaterActivityRepository {
 
     fun removeWaveById(waveId: Int)
 
-    fun verifyWaveOrder(activityId: Int, order: Int): Boolean
+    fun verifyWaveOrder(
+        activityId: Int,
+        order: Int,
+    ): Boolean
 
     // Maneuver methods
-    fun storeManeuver(waveId: Int, waterManeuverId: Int, success: Boolean, order: Int): Int
+    fun storeManeuver(
+        waveId: Int,
+        waterManeuverId: Int,
+        success: Boolean,
+        order: Int,
+    ): Int
 
     fun storeManeuvers(maneuvers: List<ManeuverToInsert>): List<Int>
 
@@ -77,10 +95,19 @@ interface WaterActivityRepository {
 
     fun removeManeuverById(maneuverId: Int)
 
-    fun verifyManeuverOrder(waveId: Int, order: Int): Boolean
+    fun verifyManeuverOrder(
+        waveId: Int,
+        order: Int,
+    ): Boolean
 
     // Questionnaire methods
-    fun storeQuestionnaire(activityId: Int, sleep: Int, fatigue: Int, stress: Int, musclePain: Int)
+    fun storeQuestionnaire(
+        activityId: Int,
+        sleep: Int,
+        fatigue: Int,
+        stress: Int,
+        musclePain: Int,
+    )
 
     fun getQuestionnaire(activityId: Int): Questionnaire?
 

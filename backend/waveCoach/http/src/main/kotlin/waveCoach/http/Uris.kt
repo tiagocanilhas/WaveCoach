@@ -112,7 +112,10 @@ object Uris {
         const val UPDATE_COMPETITION = "$ATHLETES/{aid}/competition/{id}"
         const val REMOVE_COMPETITION = "$ATHLETES/{aid}/competition/{id}"
 
-        fun competitionById(aid: Int, id: Int): URI = UriTemplate(GET_COMPETITION_BY_ID).expand(aid, id)
+        fun competitionById(
+            aid: Int,
+            id: Int,
+        ): URI = UriTemplate(GET_COMPETITION_BY_ID).expand(aid, id)
 
         fun byId(id: Int): URI = UriTemplate(GET_BY_ID).expand(id)
 

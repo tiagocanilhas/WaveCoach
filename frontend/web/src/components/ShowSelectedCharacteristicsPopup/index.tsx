@@ -15,6 +15,7 @@ import { handleError } from '../../../../utils/handleError'
 import { useAuthentication } from '../../hooks/useAuthentication'
 
 import styles from './styles.module.css'
+import { toDisplayFormat } from '../../../../utils/toDisplayFormat'
 
 type State =
   | { tag: 'showing'; error?: string; values: Characteristics }
@@ -106,6 +107,7 @@ export function ShowSelectedCharacteristicsPopup({ data, onClose, onSuccess }: S
   }
 
   function handleEdit(ev: React.ChangeEvent<HTMLInputElement>) {
+    console.log('handleEdit', ev.currentTarget.name, ev.currentTarget.value)
     dispatch({ type: 'edit', name: ev.currentTarget.name, value: ev.currentTarget.value })
   }
 
@@ -132,13 +134,14 @@ export function ShowSelectedCharacteristicsPopup({ data, onClose, onSuccess }: S
 
   return (
     <Popup
-      title="Selected Characteristics"
+      title={'Edit Characteristics' + ` - ${data?.date || 'N/A'}`}
       content={
         <div className={styles.characteristics}>
           {state.tag === 'showing' && <Showing data={state.values} handleUpdate={handleUpdate} handleDelete={handleDelete} />}
           {state.tag === 'editing' && (
             <Editing data={state.inputs} handleEdit={handleEdit} handleUpdate={handleShow} handleSubmit={handleSubmit} />
           )}
+          {state.tag === 'showing' && state.error && <p className={styles.error}>{state.error}</p>}
         </div>
       }
       onClose={onClose}
@@ -158,7 +161,6 @@ function Showing({ data, handleUpdate, handleDelete }: ShowingProps) {
     <form className={styles.form}>
       <div className={styles.row}>
         <div className={styles.column}>
-          <TextField value={data.date || 'N/A'} inputProps={{ readOnly: true }} label="Date" InputLabelProps={{ shrink: true }} />
           <TextField label="Height (cm)" value={data.height || 'N/A'} inputProps={{ readOnly: true }} />
           <TextField label="Weight (kg)" value={data.weight || 'N/A'} inputProps={{ readOnly: true }} />
           <TextField label="Calories (kcal)" value={data.calories || 'N/A'} inputProps={{ readOnly: true }} />
@@ -191,22 +193,10 @@ type EditingProps = {
 }
 
 function Editing({ data, handleEdit, handleUpdate, handleSubmit }: EditingProps) {
-  // dd-mm-yyyy to dd/mm/yyyy format conversion
-  const dateNewFormat = data.date
-    ? new Date(data.date.split('-').reverse().join('-')).toISOString().split('T')[0]
-    : new Date().toISOString().split('T')[0]
   return (
     <form onSubmit={handleSubmit} className={styles.form}>
       <div className={styles.row}>
         <div className={styles.column}>
-          <TextField
-            value={dateNewFormat}
-            onChange={handleEdit}
-            name="date"
-            type="date"
-            label="Date"
-            InputLabelProps={{ shrink: true }}
-          />
           <TextField label="Height (cm)" value={data.height} onChange={handleEdit} name="height" type="number" />
           <TextField label="Weight (kg)" value={data.weight} onChange={handleEdit} name="weight" type="number" />
           <TextField label="Calories (kcal)" value={data.calories} onChange={handleEdit} name="calories" type="number" />

@@ -155,10 +155,11 @@ class JdbiGymActivityRepositoryTest {
 
             val exerciseId = gymActivityRepository.storeExercise(gymActivityId, 1, 1)
 
-            val setsToInsert = listOf(
-                SetToInsert(exerciseId, 10, 20f, 30f, 1),
-                SetToInsert(exerciseId, 15, 25f, 35f, 2)
-            )
+            val setsToInsert =
+                listOf(
+                    SetToInsert(exerciseId, 10, 20f, 30f, 1),
+                    SetToInsert(exerciseId, 15, 25f, 35f, 2),
+                )
 
             val setIds = gymActivityRepository.storeSets(setsToInsert)
 

@@ -20,5 +20,4 @@ class JdbiWaterManeuverRepositoryTest {
 
             assertEquals(maneuver.name, name)
         }
-
 }

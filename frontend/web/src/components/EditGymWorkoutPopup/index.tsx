@@ -158,32 +158,33 @@ export function EditGymWorkoutPopup({ workout, onClose, onSuccess }: EditGymWork
 
     const date = state.date === epochConverter(workout.date, 'yyyy-mm-dd') ? null : state.date
 
-    const exercises = diffListOrNull(state.exercises, (exercise, index) => {
-      const original = initialState.exercises.find(e => e.id === exercise.id)
+    const exercises =
+      diffListOrNull(state.exercises, (exercise, index) => {
+        const original = initialState.exercises.find(e => e.id === exercise.id)
 
-      const newExercise = {
-        id: exercise.id,
-        gymExerciseId: exercise.gymExerciseId,
-        order: WorkoutEditing.checkOrder(index, exercise.order),
-        sets: diffListOrNull(exercise.sets, (set, setIndex) => {
-          if (WorkoutEditing.checkDeleteObject(set)) return set
+        const newExercise = {
+          id: exercise.id,
+          gymExerciseId: exercise.gymExerciseId,
+          order: WorkoutEditing.checkOrder(index, exercise.order),
+          sets: diffListOrNull(exercise.sets, (set, setIndex) => {
+            if (WorkoutEditing.checkDeleteObject(set)) return set
 
-          const originalSet = original?.sets.find(s => s.id === set.id) || {}
+            const originalSet = original?.sets.find(s => s.id === set.id) || {}
 
-          const newSet = {
-            id: set.id,
-            reps: WorkoutEditing.onlyIfDifferent('reps', set, originalSet),
-            weight: WorkoutEditing.onlyIfDifferent('weight', set, originalSet),
-            restTime: WorkoutEditing.onlyIfDifferent('restTime', set, originalSet),
-            order: WorkoutEditing.checkOrder(setIndex, set.order),
-          }
+            const newSet = {
+              id: set.id,
+              reps: WorkoutEditing.onlyIfDifferent('reps', set, originalSet),
+              weight: WorkoutEditing.onlyIfDifferent('weight', set, originalSet),
+              restTime: WorkoutEditing.onlyIfDifferent('restTime', set, originalSet),
+              order: WorkoutEditing.checkOrder(setIndex, set.order),
+            }
 
-          return WorkoutEditing.noEditingMade(newSet) ? null : newSet
-        }),
-      }
+            return WorkoutEditing.noEditingMade(newSet) ? null : newSet
+          }),
+        }
 
-      return WorkoutEditing.noEditingMade(newExercise) ? null : newExercise
-    }) ?? []
+        return WorkoutEditing.noEditingMade(newExercise) ? null : newExercise
+      }) ?? []
 
     try {
       await updateGymActivity(gid, date, [...exercises, ...state.removedExercises])

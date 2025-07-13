@@ -338,7 +338,6 @@ class UserServicesTest {
         }
     }
 
-
     companion object {
         private val ID_OF_ADMIN = 1
         private val USERNAME_OF_ADMIN = "admin"
@@ -348,7 +347,6 @@ class UserServicesTest {
         private val ID_OF_SECOND_COACH = 2
         private val USERNAME_OF_SECOND_COACH = "user2"
         private val TOKEN_OF_SECOND_COACH = "fM5JjtPOUqtnZg1lB7jnJhXBP5gI2WbIIBoO3JhYM5M="
-
 
         private val ID_OF_THIRD_COACH = 8
         private val USERNAME_TO_LOGIN = "user3"

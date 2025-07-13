@@ -3,7 +3,6 @@ package waveCoach.repository
 import waveCoach.domain.*
 
 interface GymActivityRepository {
-
     // Activity methods
     fun storeGymActivity(activityId: Int): Int
 
@@ -14,7 +13,11 @@ interface GymActivityRepository {
     fun removeGymActivity(activityId: Int)
 
     // Exercise methods
-    fun storeExercise(activityID: Int, exerciseID: Int, exerciseOrder: Int): Int
+    fun storeExercise(
+        activityID: Int,
+        exerciseID: Int,
+        exerciseOrder: Int,
+    ): Int
 
     fun storeExercises(exercises: List<ExerciseToInsert>): List<Int>
 
@@ -33,7 +36,13 @@ interface GymActivityRepository {
     fun removeExercisesById(exerciseIds: List<Int>)
 
     // Set methods
-    fun storeSet(exerciseId: Int, reps: Int, weight: Float, rest: Float, setOrder: Int): Int
+    fun storeSet(
+        exerciseId: Int,
+        reps: Int,
+        weight: Float,
+        rest: Float,
+        setOrder: Int,
+    ): Int
 
     fun storeSets(sets: List<SetToInsert>): List<Int>
 
@@ -52,22 +61,39 @@ interface GymActivityRepository {
     fun removeSetsById(setIds: List<Int>)
 
     // Verify methods
-    fun verifyExerciseOrder(activityId: Int, exerciseOrder: Int): Boolean
+    fun verifyExerciseOrder(
+        activityId: Int,
+        exerciseOrder: Int,
+    ): Boolean
 
-    fun setBelongsToExercise(exerciseId: Int, setId: Int): Boolean
+    fun setBelongsToExercise(
+        exerciseId: Int,
+        setId: Int,
+    ): Boolean
 
     fun isGymExerciseValid(exerciseId: Int): Boolean
 
-    fun verifySetOrder(exerciseId: Int, setOrder: Int): Boolean
+    fun verifySetOrder(
+        exerciseId: Int,
+        setOrder: Int,
+    ): Boolean
 
     // GymExercise methods
-    fun storeGymExercise(name: String, category: String, url: String?): Int
+    fun storeGymExercise(
+        name: String,
+        category: String,
+        url: String?,
+    ): Int
 
     fun getGymExerciseByName(name: String): GymExercise?
 
     fun getAllGymExercises(): List<GymExercise>
 
-    fun updateGymExercise(exerciseId: Int, name: String, category: String)
+    fun updateGymExercise(
+        exerciseId: Int,
+        name: String,
+        category: String,
+    )
 
     fun removeGymExercise(exerciseId: Int)
 }

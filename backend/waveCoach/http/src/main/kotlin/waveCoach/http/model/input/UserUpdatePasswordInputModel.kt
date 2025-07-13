@@ -1,6 +1,6 @@
 package waveCoach.http.model.input
 
-data class UserUpdatePasswordInputModel (
+data class UserUpdatePasswordInputModel(
     val oldPassword: String,
     val newPassword: String,
 )

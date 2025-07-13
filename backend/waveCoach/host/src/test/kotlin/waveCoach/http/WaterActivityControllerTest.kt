@@ -36,24 +36,24 @@ class WaterActivityControllerTest {
                 "trimp" to 120,
                 "duration" to 60,
                 "waves" to
-                        listOf(
-                            mapOf(
-                                "points" to null,
-                                "maneuvers" to
-                                        listOf(
-                                            mapOf(
-                                                "waterManeuverId" to 1,
-                                                "rightSide" to true,
-                                                "success" to true,
-                                            ),
-                                            mapOf(
-                                                "waterManeuverId" to 2,
-                                                "rightSide" to false,
-                                                "success" to false,
-                                            ),
-                                        ),
-                            ),
+                    listOf(
+                        mapOf(
+                            "points" to null,
+                            "maneuvers" to
+                                listOf(
+                                    mapOf(
+                                        "waterManeuverId" to 1,
+                                        "rightSide" to true,
+                                        "success" to true,
+                                    ),
+                                    mapOf(
+                                        "waterManeuverId" to 2,
+                                        "rightSide" to false,
+                                        "success" to false,
+                                    ),
+                                ),
                         ),
+                    ),
             )
 
         client.post()
@@ -82,19 +82,19 @@ class WaterActivityControllerTest {
                 "trimp" to 120,
                 "duration" to 60,
                 "waves" to
-                        listOf(
-                            mapOf(
-                                "points" to 10.0,
-                                "maneuvers" to
-                                        listOf(
-                                            mapOf(
-                                                "waterManeuverId" to 1,
-                                                "rightSide" to true,
-                                                "success" to true,
-                                            ),
-                                        ),
-                            ),
+                    listOf(
+                        mapOf(
+                            "points" to 10.0,
+                            "maneuvers" to
+                                listOf(
+                                    mapOf(
+                                        "waterManeuverId" to 1,
+                                        "rightSide" to true,
+                                        "success" to true,
+                                    ),
+                                ),
                         ),
+                    ),
             )
 
         client.post()
@@ -122,19 +122,19 @@ class WaterActivityControllerTest {
                 "trimp" to 120,
                 "duration" to 60,
                 "waves" to
-                        listOf(
-                            mapOf(
-                                "points" to 10.0,
-                                "maneuvers" to
-                                        listOf(
-                                            mapOf(
-                                                "waterManeuverId" to 1,
-                                                "rightSide" to true,
-                                                "success" to true,
-                                            ),
-                                        ),
-                            ),
+                    listOf(
+                        mapOf(
+                            "points" to 10.0,
+                            "maneuvers" to
+                                listOf(
+                                    mapOf(
+                                        "waterManeuverId" to 1,
+                                        "rightSide" to true,
+                                        "success" to true,
+                                    ),
+                                ),
                         ),
+                    ),
             )
 
         client.post()
@@ -162,19 +162,19 @@ class WaterActivityControllerTest {
                 "trimp" to 120,
                 "duration" to 60,
                 "waves" to
-                        listOf(
-                            mapOf(
-                                "points" to 10.0,
-                                "maneuvers" to
-                                        listOf(
-                                            mapOf(
-                                                "waterManeuverId" to 1,
-                                                "rightSide" to true,
-                                                "success" to true,
-                                            ),
-                                        ),
-                            ),
+                    listOf(
+                        mapOf(
+                            "points" to 10.0,
+                            "maneuvers" to
+                                listOf(
+                                    mapOf(
+                                        "waterManeuverId" to 1,
+                                        "rightSide" to true,
+                                        "success" to true,
+                                    ),
+                                ),
                         ),
+                    ),
             )
 
         client.post()
@@ -199,19 +199,19 @@ class WaterActivityControllerTest {
                 "trimp" to 120,
                 "duration" to 60,
                 "waves" to
-                        listOf(
-                            mapOf(
-                                "points" to 10.0,
-                                "maneuvers" to
-                                        listOf(
-                                            mapOf(
-                                                "waterManeuverId" to 1,
-                                                "rightSide" to true,
-                                                "success" to true,
-                                            ),
-                                        ),
-                            ),
+                    listOf(
+                        mapOf(
+                            "points" to 10.0,
+                            "maneuvers" to
+                                listOf(
+                                    mapOf(
+                                        "waterManeuverId" to 1,
+                                        "rightSide" to true,
+                                        "success" to true,
+                                    ),
+                                ),
                         ),
+                    ),
             )
 
         client.post()
@@ -239,19 +239,19 @@ class WaterActivityControllerTest {
                 "trimp" to 120,
                 "duration" to 60,
                 "waves" to
-                        listOf(
-                            mapOf(
-                                "points" to 10.0,
-                                "maneuvers" to
-                                        listOf(
-                                            mapOf(
-                                                "waterManeuverId" to 1,
-                                                "rightSide" to true,
-                                                "success" to true,
-                                            ),
-                                        ),
-                            ),
+                    listOf(
+                        mapOf(
+                            "points" to 10.0,
+                            "maneuvers" to
+                                listOf(
+                                    mapOf(
+                                        "waterManeuverId" to 1,
+                                        "rightSide" to true,
+                                        "success" to true,
+                                    ),
+                                ),
                         ),
+                    ),
             )
 
         client.post()
@@ -279,19 +279,19 @@ class WaterActivityControllerTest {
                 "trimp" to -1,
                 "duration" to 60,
                 "waves" to
-                        listOf(
-                            mapOf(
-                                "points" to 10.0,
-                                "maneuvers" to
-                                        listOf(
-                                            mapOf(
-                                                "waterManeuverId" to 1,
-                                                "rightSide" to true,
-                                                "success" to true,
-                                            ),
-                                        ),
-                            ),
+                    listOf(
+                        mapOf(
+                            "points" to 10.0,
+                            "maneuvers" to
+                                listOf(
+                                    mapOf(
+                                        "waterManeuverId" to 1,
+                                        "rightSide" to true,
+                                        "success" to true,
+                                    ),
+                                ),
                         ),
+                    ),
             )
 
         client.post()
@@ -319,19 +319,19 @@ class WaterActivityControllerTest {
                 "trimp" to 120,
                 "duration" to -1,
                 "waves" to
-                        listOf(
-                            mapOf(
-                                "points" to 10.0,
-                                "maneuvers" to
-                                        listOf(
-                                            mapOf(
-                                                "waterManeuverId" to 1,
-                                                "rightSide" to true,
-                                                "success" to true,
-                                            ),
-                                        ),
-                            ),
+                    listOf(
+                        mapOf(
+                            "points" to 10.0,
+                            "maneuvers" to
+                                listOf(
+                                    mapOf(
+                                        "waterManeuverId" to 1,
+                                        "rightSide" to true,
+                                        "success" to true,
+                                    ),
+                                ),
                         ),
+                    ),
             )
 
         client.post()
@@ -359,19 +359,19 @@ class WaterActivityControllerTest {
                 "trimp" to 120,
                 "duration" to 60,
                 "waves" to
-                        listOf(
-                            mapOf(
-                                "points" to 10.0,
-                                "maneuvers" to
-                                        listOf(
-                                            mapOf(
-                                                "waterManeuverId" to 0,
-                                                "rightSide" to true,
-                                                "success" to true,
-                                            ),
-                                        ),
-                            ),
+                    listOf(
+                        mapOf(
+                            "points" to 10.0,
+                            "maneuvers" to
+                                listOf(
+                                    mapOf(
+                                        "waterManeuverId" to 0,
+                                        "rightSide" to true,
+                                        "success" to true,
+                                    ),
+                                ),
                         ),
+                    ),
             )
 
         client.post()
@@ -513,39 +513,39 @@ class WaterActivityControllerTest {
                 "trimp" to 130,
                 "duration" to 60,
                 "waves" to
-                        listOf(
-                            mapOf(
-                                "points" to 10.0,
-                                "rightSide" to true,
-                                "order" to 2,
-                                "maneuvers" to
-                                        listOf(
-                                            mapOf(
-                                                "waterManeuverId" to 1,
-                                                "success" to true,
-                                            ),
-                                            mapOf(
-                                                "waterManeuverId" to 2,
-                                                "success" to false,
-                                            ),
-                                        ),
-                            ),
-                            mapOf(
-                                "id" to 2,
-                                "points" to 12.0,
-                                "rightSide" to false,
-                                "order" to 3,
-                                "maneuvers" to
-                                        listOf(
-                                            mapOf(
-                                                "id" to 3,
-                                                "waterManeuverId" to 2,
-                                                "success" to false,
-                                                "order" to 2,
-                                            ),
-                                        ),
-                            )
+                    listOf(
+                        mapOf(
+                            "points" to 10.0,
+                            "rightSide" to true,
+                            "order" to 2,
+                            "maneuvers" to
+                                listOf(
+                                    mapOf(
+                                        "waterManeuverId" to 1,
+                                        "success" to true,
+                                    ),
+                                    mapOf(
+                                        "waterManeuverId" to 2,
+                                        "success" to false,
+                                    ),
+                                ),
                         ),
+                        mapOf(
+                            "id" to 2,
+                            "points" to 12.0,
+                            "rightSide" to false,
+                            "order" to 3,
+                            "maneuvers" to
+                                listOf(
+                                    mapOf(
+                                        "id" to 3,
+                                        "waterManeuverId" to 2,
+                                        "success" to false,
+                                        "order" to 2,
+                                    ),
+                                ),
+                        ),
+                    ),
             )
 
         client.patch().uri("/water/$FIRST_ACTIVITY_ID")
@@ -806,21 +806,21 @@ class WaterActivityControllerTest {
                 "trimp" to 130,
                 "duration" to 60,
                 "waves" to
-                        listOf(
-                            mapOf(
-                                "points" to 10.0,
-                                "rightSide" to true,
-                                "order" to -1,
-                                "maneuvers" to
-                                        listOf(
-                                            mapOf(
-                                                "waterManeuverId" to 1,
-                                                "rightSide" to true,
-                                                "success" to true,
-                                            ),
-                                        ),
-                            ),
+                    listOf(
+                        mapOf(
+                            "points" to 10.0,
+                            "rightSide" to true,
+                            "order" to -1,
+                            "maneuvers" to
+                                listOf(
+                                    mapOf(
+                                        "waterManeuverId" to 1,
+                                        "rightSide" to true,
+                                        "success" to true,
+                                    ),
+                                ),
                         ),
+                    ),
             )
 
         client.patch().uri("/water/$FIRST_ACTIVITY_ID")
@@ -846,21 +846,21 @@ class WaterActivityControllerTest {
                 "trimp" to 130,
                 "duration" to 60,
                 "waves" to
-                        listOf(
-                            mapOf(
-                                "points" to 10.0,
-                                "rightSide" to true,
-                                "order" to 3,
-                                "maneuvers" to
-                                        listOf(
-                                            mapOf(
-                                                "waterManeuverId" to 0, // Invalid water maneuver ID
-                                                "rightSide" to true,
-                                                "success" to true,
-                                            ),
-                                        ),
-                            ),
+                    listOf(
+                        mapOf(
+                            "points" to 10.0,
+                            "rightSide" to true,
+                            "order" to 3,
+                            "maneuvers" to
+                                listOf(
+                                    mapOf(
+                                        "waterManeuverId" to 0, // Invalid water maneuver ID
+                                        "rightSide" to true,
+                                        "success" to true,
+                                    ),
+                                ),
                         ),
+                    ),
             )
 
         client.patch().uri("/water/$FIRST_ACTIVITY_ID")
@@ -886,13 +886,13 @@ class WaterActivityControllerTest {
                 "trimp" to 130,
                 "duration" to 60,
                 "waves" to
-                        listOf(
-                            mapOf(
-                                "points" to 10.0,
-                                "rightSide" to true,
-                                "order" to 3,
-                            ),
+                    listOf(
+                        mapOf(
+                            "points" to 10.0,
+                            "rightSide" to true,
+                            "order" to 3,
                         ),
+                    ),
             )
 
         client.patch().uri("/water/$FIRST_ACTIVITY_ID")
@@ -918,21 +918,21 @@ class WaterActivityControllerTest {
                 "trimp" to 130,
                 "duration" to 60,
                 "waves" to
-                        listOf(
-                            mapOf(
-                                "points" to 10.0,
-                                "rightSide" to null,
-                                "order" to 4,
-                                "maneuvers" to
-                                        listOf(
-                                            mapOf(
-                                                "waterManeuverId" to 1,
-                                                "rightSide" to true,
-                                                "success" to true,
-                                            ),
-                                        ),
-                            ),
+                    listOf(
+                        mapOf(
+                            "points" to 10.0,
+                            "rightSide" to null,
+                            "order" to 4,
+                            "maneuvers" to
+                                listOf(
+                                    mapOf(
+                                        "waterManeuverId" to 1,
+                                        "rightSide" to true,
+                                        "success" to true,
+                                    ),
+                                ),
                         ),
+                    ),
             )
 
         client.patch().uri("/water/$FIRST_ACTIVITY_ID")
@@ -958,21 +958,21 @@ class WaterActivityControllerTest {
                 "trimp" to 130,
                 "duration" to 60,
                 "waves" to
-                        listOf(
-                            mapOf(
-                                "points" to 10.0,
-                                "rightSide" to true,
-                                "order" to 5,
-                                "maneuvers" to
-                                        listOf(
-                                            mapOf(
-                                                "waterManeuverId" to 1,
-                                                "rightSide" to true,
-                                                "success" to null,
-                                            ),
-                                        ),
-                            ),
+                    listOf(
+                        mapOf(
+                            "points" to 10.0,
+                            "rightSide" to true,
+                            "order" to 5,
+                            "maneuvers" to
+                                listOf(
+                                    mapOf(
+                                        "waterManeuverId" to 1,
+                                        "rightSide" to true,
+                                        "success" to null,
+                                    ),
+                                ),
                         ),
+                    ),
             )
 
         client.patch().uri("/water/$FIRST_ACTIVITY_ID")
@@ -998,23 +998,23 @@ class WaterActivityControllerTest {
                 "trimp" to 130,
                 "duration" to 60,
                 "waves" to
-                        listOf(
-                            mapOf(
-                                "id" to 2,
-                                "points" to 10.0,
-                                "rightSide" to true,
-                                "order" to 4,
-                                "maneuvers" to
-                                        listOf(
-                                            mapOf(
-                                                "id" to 0,
-                                                "waterManeuverId" to 1,
-                                                "rightSide" to true,
-                                                "success" to true,
-                                            ),
-                                        ),
-                            ),
+                    listOf(
+                        mapOf(
+                            "id" to 2,
+                            "points" to 10.0,
+                            "rightSide" to true,
+                            "order" to 4,
+                            "maneuvers" to
+                                listOf(
+                                    mapOf(
+                                        "id" to 0,
+                                        "waterManeuverId" to 1,
+                                        "rightSide" to true,
+                                        "success" to true,
+                                    ),
+                                ),
                         ),
+                    ),
             )
 
         client.patch().uri("/water/$FIRST_ACTIVITY_ID")
@@ -1040,22 +1040,22 @@ class WaterActivityControllerTest {
                 "trimp" to 130,
                 "duration" to 60,
                 "waves" to
-                        listOf(
-                            mapOf(
-                                "id" to 0,
-                                "points" to 10.0,
-                                "rightSide" to true,
-                                "order" to 4,
-                                "maneuvers" to
-                                        listOf(
-                                            mapOf(
-                                                "waterManeuverId" to 1,
-                                                "rightSide" to true,
-                                                "success" to true,
-                                            ),
-                                        ),
-                            ),
+                    listOf(
+                        mapOf(
+                            "id" to 0,
+                            "points" to 10.0,
+                            "rightSide" to true,
+                            "order" to 4,
+                            "maneuvers" to
+                                listOf(
+                                    mapOf(
+                                        "waterManeuverId" to 1,
+                                        "rightSide" to true,
+                                        "success" to true,
+                                    ),
+                                ),
                         ),
+                    ),
             )
 
         client.patch().uri("/water/$FIRST_ACTIVITY_ID")
@@ -1153,7 +1153,6 @@ class WaterActivityControllerTest {
             .expectBody()
             .jsonPath("type").isEqualTo(Problem.userIsNotACoach.type.toString())
     }
-
 
     /**
      * Create Questionnaire Test
@@ -1510,7 +1509,6 @@ class WaterActivityControllerTest {
     /**
      * Remove Questionnaire Test
      */
-
 
     companion object {
         private const val FIRST_COACH_TOKEN = "i_aY-4lpMqAIMuhkimTbKy4xYEuyvgFPaaTpVS0lctQ="

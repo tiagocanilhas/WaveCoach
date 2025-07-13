@@ -1,6 +1,6 @@
 package waveCoach.http.model.input
 
-data class CompetitionWaveInputModel (
+data class CompetitionWaveInputModel(
     val points: Float?,
     val rightSide: Boolean,
     val maneuvers: List<CompetitionManeuverInputModel>,

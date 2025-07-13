@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import waveCoach.domain.AuthenticatedCoach
 import waveCoach.domain.AuthenticatedUser
-import waveCoach.http.model.input.AddExerciseInputModel
-import waveCoach.http.model.input.AddSetInputModel
 import waveCoach.http.model.input.CreateGymActivityInputModel
 import waveCoach.http.model.input.UpdateGymActivityInputModel
 import waveCoach.http.model.output.ExerciseWithSetsOutputModel
@@ -118,16 +116,17 @@ class GymActivityController(
     ): ResponseEntity<*> {
         val activityIdInt = activityId.toIntOrNull() ?: return Problem.response(400, Problem.invalidGymActivityId)
 
-        val exercises = input.exercises?.map { exercise ->
-            UpdateExerciseInputInfo(
-                exercise.id,
-                exercise.gymExerciseId,
-                exercise.sets?.map { set ->
-                    UpdateSetInputInfo(set.id, set.reps, set.weight, set.restTime, set.order)
-                },
-                exercise.order,
-            )
-        }
+        val exercises =
+            input.exercises?.map { exercise ->
+                UpdateExerciseInputInfo(
+                    exercise.id,
+                    exercise.gymExerciseId,
+                    exercise.sets?.map { set ->
+                        UpdateSetInputInfo(set.id, set.reps, set.weight, set.restTime, set.order)
+                    },
+                    exercise.order,
+                )
+            }
 
         val result = gymActivityServices.updateGymActivity(coach.info.id, activityIdInt, input.date, exercises)
 

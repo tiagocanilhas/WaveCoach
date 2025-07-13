@@ -4,9 +4,7 @@ import org.jdbi.v3.core.Jdbi
 import org.springframework.stereotype.Component
 import waveCoach.repository.Transaction
 import waveCoach.repository.TransactionManager
-import waveCoach.utils.Either
 import waveCoach.utils.Failure
-import waveCoach.utils.Success
 
 @Component
 class JdbiTransactionManager(

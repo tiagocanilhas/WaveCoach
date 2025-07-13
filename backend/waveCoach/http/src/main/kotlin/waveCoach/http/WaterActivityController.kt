@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import waveCoach.domain.AuthenticatedCoach
 import waveCoach.domain.AuthenticatedUser
-import waveCoach.http.model.input.AddManeuverInputModel
-import waveCoach.http.model.input.AddWaveInputModel
 import waveCoach.http.model.input.CreateWaterActivityInputModel
 import waveCoach.http.model.input.QuestionnaireCreateInputModel
 import waveCoach.http.model.input.UpdateWaterActivityInputModel
@@ -216,14 +214,15 @@ class WaterActivityController(
     ): ResponseEntity<*> {
         val id = activityId.toIntOrNull() ?: return Problem.response(400, Problem.invalidWaterActivityId)
 
-        val result = waterActivityService.createQuestionnaire(
-            user.info.id,
-            id,
-            input.sleep,
-            input.fatigue,
-            input.stress,
-            input.musclePain
-        )
+        val result =
+            waterActivityService.createQuestionnaire(
+                user.info.id,
+                id,
+                input.sleep,
+                input.fatigue,
+                input.stress,
+                input.musclePain,
+            )
 
         return when (result) {
             is Success -> ResponseEntity.status(204).build<Unit>()

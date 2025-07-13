@@ -13,7 +13,7 @@ class JdbiCompetitionRepository(
         date: Long,
         location: String,
         place: Int,
-        name: String
+        name: String,
     ): Int {
         return handle.createUpdate(
             """
@@ -60,9 +60,7 @@ class JdbiCompetitionRepository(
         val maneuverOrder: Int?,
     )
 
-    override fun getCompetition(
-        id: Int
-    ): CompetitionWithHeats? {
+    override fun getCompetition(id: Int): CompetitionWithHeats? {
         val query =
             """
             select c.id, c.uid, c.date as competition_date, c.location, c.place, c.name, h.id as heat_id, h.score, 
@@ -79,10 +77,11 @@ class JdbiCompetitionRepository(
             where c.id = :id
             """.trimIndent()
 
-        val rows = handle.createQuery(query)
-            .bind("id", id)
-            .mapTo<Row>()
-            .list()
+        val rows =
+            handle.createQuery(query)
+                .bind("id", id)
+                .mapTo<Row>()
+                .list()
 
         val competition = rows.firstOrNull() ?: return null
 
@@ -130,7 +129,7 @@ class JdbiCompetitionRepository(
                                                             url = maneuverRow.url ?: "",
                                                             success = maneuverRow.success ?: false,
                                                             maneuverOrder =
-                                                                maneuverRow.maneuverOrder ?: 0
+                                                                maneuverRow.maneuverOrder ?: 0,
                                                         )
                                                     } else {
                                                         null
@@ -138,15 +137,13 @@ class JdbiCompetitionRepository(
                                                 }.ifEmpty { emptyList() },
                                         )
                                     }.ifEmpty { emptyList() },
-                            )
+                            ),
                     )
                 }.ifEmpty { emptyList() },
         )
     }
 
-    override fun getCompetitionsByAthlete(
-        athleteId: Int
-    ): List<CompetitionWithHeats> {
+    override fun getCompetitionsByAthlete(athleteId: Int): List<CompetitionWithHeats> {
         val query =
             """
             select c.id, c.uid, c.date as competition_date, c.location, c.place, c.name, h.id as heat_id, h.score, 
@@ -164,10 +161,11 @@ class JdbiCompetitionRepository(
             order by c.date asc
             """.trimIndent()
 
-        val rows = handle.createQuery(query)
-            .bind("athleteId", athleteId)
-            .mapTo<Row>()
-            .list()
+        val rows =
+            handle.createQuery(query)
+                .bind("athleteId", athleteId)
+                .mapTo<Row>()
+                .list()
 
         return rows.groupBy { it.id }.map { (_, competitionRows) ->
             val competitionInfo = competitionRows.first()
@@ -215,7 +213,7 @@ class JdbiCompetitionRepository(
                                                                 url = maneuverRow.url ?: "",
                                                                 success = maneuverRow.success ?: false,
                                                                 maneuverOrder =
-                                                                    maneuverRow.maneuverOrder ?: 0
+                                                                    maneuverRow.maneuverOrder ?: 0,
                                                             )
                                                         } else {
                                                             null
@@ -223,15 +221,20 @@ class JdbiCompetitionRepository(
                                                     }.ifEmpty { emptyList() },
                                             )
                                         }.ifEmpty { emptyList() },
-                                )
+                                ),
                         )
                     }.ifEmpty { emptyList() },
             )
         }.ifEmpty { emptyList() }
     }
 
-
-    override fun updateCompetition(id: Int, date: Long?, location: String?, place: Int?, name: String?) {
+    override fun updateCompetition(
+        id: Int,
+        date: Long?,
+        location: String?,
+        place: Int?,
+        name: String?,
+    ) {
         handle.createUpdate(
             """
             update waveCoach.competition set
@@ -250,9 +253,7 @@ class JdbiCompetitionRepository(
             .execute()
     }
 
-    override fun competitionExists(
-        id: Int
-    ): Boolean {
+    override fun competitionExists(id: Int): Boolean {
         return handle.createQuery(
             """
             select exists(select 1 from waveCoach.competition where id = :id)
@@ -263,9 +264,7 @@ class JdbiCompetitionRepository(
             .one()
     }
 
-    override fun removeCompetition(
-        id: Int
-    ) {
+    override fun removeCompetition(id: Int) {
         handle.createUpdate(
             """
             delete from waveCoach.competition where id = :id
@@ -275,9 +274,7 @@ class JdbiCompetitionRepository(
             .execute()
     }
 
-    override fun storeHeats(
-        heats: List<HeatToInsert>
-    ): List<Int> =
+    override fun storeHeats(heats: List<HeatToInsert>): List<Int> =
         handle.prepareBatch(
             """
             insert into waveCoach.heat (competition, water_activity, score)
@@ -295,9 +292,7 @@ class JdbiCompetitionRepository(
                 .list()
         }
 
-    override fun getHeatsByCompetition(
-        competitionId: Int
-    ): List<Heat> {
+    override fun getHeatsByCompetition(competitionId: Int): List<Heat> {
         return handle.createQuery(
             """
             select id, competition, water_activity, score

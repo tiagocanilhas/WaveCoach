@@ -6,13 +6,25 @@ import waveCoach.domain.HeatToInsert
 import waveCoach.domain.HeatToUpdate
 
 interface CompetitionRepository {
-    fun storeCompetition(uid: Int, date: Long, location: String, place: Int, name: String): Int
+    fun storeCompetition(
+        uid: Int,
+        date: Long,
+        location: String,
+        place: Int,
+        name: String,
+    ): Int
 
     fun getCompetition(id: Int): CompetitionWithHeats?
 
     fun getCompetitionsByAthlete(athleteId: Int): List<CompetitionWithHeats>
 
-    fun updateCompetition(id: Int, date: Long?, location: String?, place: Int?, name: String?)
+    fun updateCompetition(
+        id: Int,
+        date: Long?,
+        location: String?,
+        place: Int?,
+        name: String?,
+    )
 
     fun competitionExists(id: Int): Boolean
 

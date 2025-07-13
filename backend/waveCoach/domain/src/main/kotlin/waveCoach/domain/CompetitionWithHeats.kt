@@ -7,5 +7,5 @@ data class CompetitionWithHeats(
     val location: String,
     val place: Int,
     val name: String,
-    val heats: List<HeatWithWaterActivity>
+    val heats: List<HeatWithWaterActivity>,
 )

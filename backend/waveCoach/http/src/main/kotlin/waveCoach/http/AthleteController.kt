@@ -23,7 +23,7 @@ import waveCoach.utils.Success
 @RestController
 class AthleteController(
     private val athleteServices: AthleteServices,
-    private val waterActivityServices: WaterActivityServices
+    private val waterActivityServices: WaterActivityServices,
 ) {
     @PostMapping(Uris.Athletes.CREATE, consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun create(
@@ -615,38 +615,39 @@ class AthleteController(
         @RequestBody input: CreateCompetitionInputModel,
     ): ResponseEntity<*> {
         val uid = aid.toIntOrNull() ?: return Problem.response(400, Problem.invalidAthleteId)
-        val result = athleteServices.createCompetition(
-            coach.info.id,
-            uid,
-            input.date,
-            input.location,
-            input.place,
-            input.name,
-            input.heats.map { heatInputModel ->
-                HeatInputInfo(
-                    heatInputModel.score,
-                    WaterActivityInputInfo(
-                        heatInputModel.waterActivity.athleteId,
-                        heatInputModel.waterActivity.rpe,
-                        heatInputModel.waterActivity.condition,
-                        heatInputModel.waterActivity.trimp,
-                        heatInputModel.waterActivity.duration,
-                        heatInputModel.waterActivity.waves.map { waveInputModel ->
-                            WaveInputInfo(
-                                waveInputModel.points,
-                                waveInputModel.rightSide,
-                                waveInputModel.maneuvers.map { maneuverInputModel ->
-                                    ManeuverInputInfo(
-                                        maneuverInputModel.waterManeuverId,
-                                        maneuverInputModel.success,
-                                    )
-                                },
-                            )
-                        },
+        val result =
+            athleteServices.createCompetition(
+                coach.info.id,
+                uid,
+                input.date,
+                input.location,
+                input.place,
+                input.name,
+                input.heats.map { heatInputModel ->
+                    HeatInputInfo(
+                        heatInputModel.score,
+                        WaterActivityInputInfo(
+                            heatInputModel.waterActivity.athleteId,
+                            heatInputModel.waterActivity.rpe,
+                            heatInputModel.waterActivity.condition,
+                            heatInputModel.waterActivity.trimp,
+                            heatInputModel.waterActivity.duration,
+                            heatInputModel.waterActivity.waves.map { waveInputModel ->
+                                WaveInputInfo(
+                                    waveInputModel.points,
+                                    waveInputModel.rightSide,
+                                    waveInputModel.maneuvers.map { maneuverInputModel ->
+                                        ManeuverInputInfo(
+                                            maneuverInputModel.waterManeuverId,
+                                            maneuverInputModel.success,
+                                        )
+                                    },
+                                )
+                            },
+                        ),
                     )
-                )
-            },
-        )
+                },
+            )
 
         return when (result) {
             is Success ->
@@ -660,10 +661,11 @@ class AthleteController(
                     CreateCompetitionError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
                     CreateCompetitionError.InvalidDate -> Problem.response(400, Problem.invalidDate)
                     CreateCompetitionError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
-                    CreateCompetitionError.ActivityWithoutMicrocycle -> Problem.response(
-                        400,
-                        Problem.activityWithoutMicrocycle
-                    )
+                    CreateCompetitionError.ActivityWithoutMicrocycle ->
+                        Problem.response(
+                            400,
+                            Problem.activityWithoutMicrocycle,
+                        )
 
                     CreateCompetitionError.InvalidDuration -> Problem.response(400, Problem.invalidDuration)
                     CreateCompetitionError.InvalidRpe -> Problem.response(400, Problem.invalidRpe)
@@ -823,44 +825,45 @@ class AthleteController(
     ): ResponseEntity<*> {
         val uid = aid.toIntOrNull() ?: return Problem.response(400, Problem.invalidAthleteId)
         val competitionId = id.toIntOrNull() ?: return Problem.response(400, Problem.invalidCompetitionId)
-        val result = athleteServices.updateCompetition(
-            coach.info.id,
-            uid,
-            competitionId,
-            input.date,
-            input.location,
-            input.place,
-            input.name,
-            input.heats?.map { heatInputModel ->
-                UpdateHeatInputInfo(
-                    heatInputModel.id,
-                    heatInputModel.score,
-                    UpdateWaterActivityInputInfo(
-                        heatInputModel.waterActivity?.id,
-                        heatInputModel.waterActivity?.rpe,
-                        heatInputModel.waterActivity?.condition,
-                        heatInputModel.waterActivity?.trimp,
-                        heatInputModel.waterActivity?.duration,
-                        heatInputModel.waterActivity?.waves?.map { waveInputModel ->
-                            UpdateWaveInputInfo(
-                                waveInputModel.id,
-                                waveInputModel.points,
-                                waveInputModel.rightSide,
-                                waveInputModel.order,
-                                waveInputModel.maneuvers?.map { maneuverInputModel ->
-                                    UpdateManeuverInputInfo(
-                                        maneuverInputModel.id,
-                                        maneuverInputModel.waterManeuverId,
-                                        maneuverInputModel.success,
-                                        maneuverInputModel.order,
-                                    )
-                                },
-                            )
-                        },
+        val result =
+            athleteServices.updateCompetition(
+                coach.info.id,
+                uid,
+                competitionId,
+                input.date,
+                input.location,
+                input.place,
+                input.name,
+                input.heats?.map { heatInputModel ->
+                    UpdateHeatInputInfo(
+                        heatInputModel.id,
+                        heatInputModel.score,
+                        UpdateWaterActivityInputInfo(
+                            heatInputModel.waterActivity?.id,
+                            heatInputModel.waterActivity?.rpe,
+                            heatInputModel.waterActivity?.condition,
+                            heatInputModel.waterActivity?.trimp,
+                            heatInputModel.waterActivity?.duration,
+                            heatInputModel.waterActivity?.waves?.map { waveInputModel ->
+                                UpdateWaveInputInfo(
+                                    waveInputModel.id,
+                                    waveInputModel.points,
+                                    waveInputModel.rightSide,
+                                    waveInputModel.order,
+                                    waveInputModel.maneuvers?.map { maneuverInputModel ->
+                                        UpdateManeuverInputInfo(
+                                            maneuverInputModel.id,
+                                            maneuverInputModel.waterManeuverId,
+                                            maneuverInputModel.success,
+                                            maneuverInputModel.order,
+                                        )
+                                    },
+                                )
+                            },
+                        ),
                     )
-                )
-            },
-        )
+                },
+            )
 
         return when (result) {
             is Success -> ResponseEntity.status(204).build<Unit>()
@@ -871,19 +874,21 @@ class AthleteController(
                     UpdateCompetitionError.CompetitionNotFound -> Problem.response(404, Problem.competitionNotFound)
                     UpdateCompetitionError.InvalidDate -> Problem.response(400, Problem.invalidDate)
                     UpdateCompetitionError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
-                    UpdateCompetitionError.ActivityWithoutMicrocycle -> Problem.response(
-                        400,
-                        Problem.activityWithoutMicrocycle
-                    )
+                    UpdateCompetitionError.ActivityWithoutMicrocycle ->
+                        Problem.response(
+                            400,
+                            Problem.activityWithoutMicrocycle,
+                        )
 
                     UpdateCompetitionError.InvalidDuration -> Problem.response(400, Problem.invalidDuration)
                     UpdateCompetitionError.InvalidRpe -> Problem.response(400, Problem.invalidRpe)
                     UpdateCompetitionError.InvalidScore -> Problem.response(400, Problem.invalidScore)
                     UpdateCompetitionError.InvalidTrimp -> Problem.response(400, Problem.invalidTrimp)
-                    UpdateCompetitionError.InvalidWaterManeuver -> Problem.response(
-                        400,
-                        Problem.invalidWaterManeuver
-                    )
+                    UpdateCompetitionError.InvalidWaterManeuver ->
+                        Problem.response(
+                            400,
+                            Problem.invalidWaterManeuver,
+                        )
 
                     UpdateCompetitionError.HeatNotFound -> Problem.response(404, Problem.heatNotFound)
                     UpdateCompetitionError.InvalidCondition -> Problem.response(400, Problem.invalidCondition)
@@ -896,10 +901,11 @@ class AthleteController(
                     UpdateCompetitionError.InvalidWaveOrder -> Problem.response(400, Problem.invalidWaveOrder)
                     UpdateCompetitionError.InvalidWaves -> Problem.response(400, Problem.invalidWaves)
                     UpdateCompetitionError.ManeuverNotFound -> Problem.response(404, Problem.maneuverNotFound)
-                    UpdateCompetitionError.NotAthletesCompetition -> Problem.response(
-                        400,
-                        Problem.notAthletesCompetition
-                    )
+                    UpdateCompetitionError.NotAthletesCompetition ->
+                        Problem.response(
+                            400,
+                            Problem.notAthletesCompetition,
+                        )
 
                     UpdateCompetitionError.WaveNotFound -> Problem.response(404, Problem.waveNotFound)
                     UpdateCompetitionError.InvalidName -> Problem.response(400, Problem.invalidName)
@@ -925,10 +931,11 @@ class AthleteController(
                     RemoveCompetitionError.AthleteNotFound -> Problem.response(404, Problem.athleteNotFound)
                     RemoveCompetitionError.CompetitionNotFound -> Problem.response(404, Problem.competitionNotFound)
                     RemoveCompetitionError.NotAthletesCoach -> Problem.response(403, Problem.notAthletesCoach)
-                    RemoveCompetitionError.NotAthletesCompetition -> Problem.response(
-                        400,
-                        Problem.notAthletesCompetition
-                    )
+                    RemoveCompetitionError.NotAthletesCompetition ->
+                        Problem.response(
+                            400,
+                            Problem.notAthletesCompetition,
+                        )
                 }
         }
     }

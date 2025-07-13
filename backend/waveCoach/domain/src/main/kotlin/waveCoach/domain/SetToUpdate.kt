@@ -1,6 +1,6 @@
 package waveCoach.domain
 
-data class SetToUpdate (
+data class SetToUpdate(
     val id: Int,
     val reps: Int?,
     val weight: Float?,

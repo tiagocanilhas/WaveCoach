@@ -30,40 +30,40 @@ class GymActivityControllerTest {
                 "athleteId" to FIRST_ATHLETE_ID,
                 "date" to VALID_DATE,
                 "exercises" to
-                        listOf(
-                            mapOf(
-                                "sets" to
-                                        listOf(
-                                            mapOf(
-                                                "reps" to 10,
-                                                "weight" to 100.0,
-                                                "restTime" to 60.0,
-                                            ),
-                                            mapOf(
-                                                "reps" to 20,
-                                                "weight" to 100.0,
-                                                "restTime" to 60.0,
-                                            ),
-                                        ),
-                                "gymExerciseId" to 1,
-                            ),
-                            mapOf(
-                                "sets" to
-                                        listOf(
-                                            mapOf(
-                                                "reps" to 10,
-                                                "weight" to 100.0,
-                                                "restTime" to 60.0,
-                                            ),
-                                            mapOf(
-                                                "reps" to 20,
-                                                "weight" to 100.0,
-                                                "restTime" to 60.0,
-                                            ),
-                                        ),
-                                "gymExerciseId" to 2,
-                            ),
+                    listOf(
+                        mapOf(
+                            "sets" to
+                                listOf(
+                                    mapOf(
+                                        "reps" to 10,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                    mapOf(
+                                        "reps" to 20,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                ),
+                            "gymExerciseId" to 1,
                         ),
+                        mapOf(
+                            "sets" to
+                                listOf(
+                                    mapOf(
+                                        "reps" to 10,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                    mapOf(
+                                        "reps" to 20,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                ),
+                            "gymExerciseId" to 2,
+                        ),
+                    ),
             )
 
         client.post().uri("/gym")
@@ -87,40 +87,40 @@ class GymActivityControllerTest {
                 "athleteId" to THIRD_ATHLETE_ID,
                 "date" to VALID_DATE,
                 "exercises" to
-                        listOf(
-                            mapOf(
-                                "sets" to
-                                        listOf(
-                                            mapOf(
-                                                "reps" to 10,
-                                                "weight" to 100.0,
-                                                "restTime" to 60.0,
-                                            ),
-                                            mapOf(
-                                                "reps" to 20,
-                                                "weight" to 100.0,
-                                                "restTime" to 60.0,
-                                            ),
-                                        ),
-                                "gymExerciseId" to 1,
-                            ),
-                            mapOf(
-                                "sets" to
-                                        listOf(
-                                            mapOf(
-                                                "reps" to 10,
-                                                "weight" to 100.0,
-                                                "restTime" to 60.0,
-                                            ),
-                                            mapOf(
-                                                "reps" to 20,
-                                                "weight" to 100.0,
-                                                "restTime" to 60.0,
-                                            ),
-                                        ),
-                                "gymExerciseId" to 2,
-                            ),
+                    listOf(
+                        mapOf(
+                            "sets" to
+                                listOf(
+                                    mapOf(
+                                        "reps" to 10,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                    mapOf(
+                                        "reps" to 20,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                ),
+                            "gymExerciseId" to 1,
                         ),
+                        mapOf(
+                            "sets" to
+                                listOf(
+                                    mapOf(
+                                        "reps" to 10,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                    mapOf(
+                                        "reps" to 20,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                ),
+                            "gymExerciseId" to 2,
+                        ),
+                    ),
             )
 
         client.post().uri("/gym")
@@ -139,40 +139,40 @@ class GymActivityControllerTest {
                 "athleteId" to THIRD_ATHLETE_ID,
                 "date" to INVALID_DATE,
                 "exercises" to
-                        listOf(
-                            mapOf(
-                                "sets" to
-                                        listOf(
-                                            mapOf(
-                                                "reps" to 10,
-                                                "weight" to 100.0,
-                                                "restTime" to 60.0,
-                                            ),
-                                            mapOf(
-                                                "reps" to 20,
-                                                "weight" to 100.0,
-                                                "restTime" to 60.0,
-                                            ),
-                                        ),
-                                "gymExerciseId" to 1,
-                            ),
-                            mapOf(
-                                "sets" to
-                                        listOf(
-                                            mapOf(
-                                                "reps" to 10,
-                                                "weight" to 100.0,
-                                                "restTime" to 60.0,
-                                            ),
-                                            mapOf(
-                                                "reps" to 20,
-                                                "weight" to 100.0,
-                                                "restTime" to 60.0,
-                                            ),
-                                        ),
-                                "gymExerciseId" to 2,
-                            ),
+                    listOf(
+                        mapOf(
+                            "sets" to
+                                listOf(
+                                    mapOf(
+                                        "reps" to 10,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                    mapOf(
+                                        "reps" to 20,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                ),
+                            "gymExerciseId" to 1,
                         ),
+                        mapOf(
+                            "sets" to
+                                listOf(
+                                    mapOf(
+                                        "reps" to 10,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                    mapOf(
+                                        "reps" to 20,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                ),
+                            "gymExerciseId" to 2,
+                        ),
+                    ),
             )
 
         client.post().uri("/gym")
@@ -197,40 +197,40 @@ class GymActivityControllerTest {
                 "athleteId" to id,
                 "date" to VALID_DATE,
                 "exercises" to
-                        listOf(
-                            mapOf(
-                                "sets" to
-                                        listOf(
-                                            mapOf(
-                                                "reps" to 10,
-                                                "weight" to 100.0,
-                                                "restTime" to 60.0,
-                                            ),
-                                            mapOf(
-                                                "reps" to 20,
-                                                "weight" to 100.0,
-                                                "restTime" to 60.0,
-                                            ),
-                                        ),
-                                "gymExerciseId" to 1,
-                            ),
-                            mapOf(
-                                "sets" to
-                                        listOf(
-                                            mapOf(
-                                                "reps" to 10,
-                                                "weight" to 100.0,
-                                                "restTime" to 60.0,
-                                            ),
-                                            mapOf(
-                                                "reps" to 20,
-                                                "weight" to 100.0,
-                                                "restTime" to 60.0,
-                                            ),
-                                        ),
-                                "gymExerciseId" to 2,
-                            ),
+                    listOf(
+                        mapOf(
+                            "sets" to
+                                listOf(
+                                    mapOf(
+                                        "reps" to 10,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                    mapOf(
+                                        "reps" to 20,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                ),
+                            "gymExerciseId" to 1,
                         ),
+                        mapOf(
+                            "sets" to
+                                listOf(
+                                    mapOf(
+                                        "reps" to 10,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                    mapOf(
+                                        "reps" to 20,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                ),
+                            "gymExerciseId" to 2,
+                        ),
+                    ),
             )
 
         client.post().uri("/gym")
@@ -253,40 +253,40 @@ class GymActivityControllerTest {
                 "athleteId" to THIRD_ATHLETE_ID,
                 "date" to VALID_DATE,
                 "exercises" to
-                        listOf(
-                            mapOf(
-                                "sets" to
-                                        listOf(
-                                            mapOf(
-                                                "reps" to 10,
-                                                "weight" to 100.0,
-                                                "restTime" to 60.0,
-                                            ),
-                                            mapOf(
-                                                "reps" to 20,
-                                                "weight" to 100.0,
-                                                "restTime" to 60.0,
-                                            ),
-                                        ),
-                                "gymExerciseId" to 1,
-                            ),
-                            mapOf(
-                                "sets" to
-                                        listOf(
-                                            mapOf(
-                                                "reps" to 10,
-                                                "weight" to 100.0,
-                                                "restTime" to 60.0,
-                                            ),
-                                            mapOf(
-                                                "reps" to 20,
-                                                "weight" to 100.0,
-                                                "restTime" to 60.0,
-                                            ),
-                                        ),
-                                "gymExerciseId" to 2,
-                            ),
+                    listOf(
+                        mapOf(
+                            "sets" to
+                                listOf(
+                                    mapOf(
+                                        "reps" to 10,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                    mapOf(
+                                        "reps" to 20,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                ),
+                            "gymExerciseId" to 1,
                         ),
+                        mapOf(
+                            "sets" to
+                                listOf(
+                                    mapOf(
+                                        "reps" to 10,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                    mapOf(
+                                        "reps" to 20,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                ),
+                            "gymExerciseId" to 2,
+                        ),
+                    ),
             )
 
         client.post().uri("/gym")
@@ -309,24 +309,24 @@ class GymActivityControllerTest {
                 "athleteId" to FIRST_ATHLETE_ID,
                 "date" to VALID_DATE,
                 "exercises" to
-                        listOf(
-                            mapOf(
-                                "sets" to
-                                        listOf(
-                                            mapOf(
-                                                "reps" to 10,
-                                                "weight" to 100.0,
-                                                "restTime" to 60.0,
-                                            ),
-                                            mapOf(
-                                                "reps" to 20,
-                                                "weight" to 100.0,
-                                                "restTime" to 60.0,
-                                            ),
-                                        ),
-                                "gymExerciseId" to -1,
-                            ),
+                    listOf(
+                        mapOf(
+                            "sets" to
+                                listOf(
+                                    mapOf(
+                                        "reps" to 10,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                    mapOf(
+                                        "reps" to 20,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                ),
+                            "gymExerciseId" to -1,
                         ),
+                    ),
             )
 
         client.post().uri("/gym")
@@ -349,19 +349,19 @@ class GymActivityControllerTest {
                 "athleteId" to FIRST_ATHLETE_ID,
                 "date" to VALID_DATE,
                 "exercises" to
-                        listOf(
-                            mapOf(
-                                "sets" to
-                                        listOf(
-                                            mapOf(
-                                                "reps" to -1,
-                                                "weight" to 100.0,
-                                                "restTime" to 60.0,
-                                            ),
-                                        ),
-                                "gymExerciseId" to 1,
-                            ),
+                    listOf(
+                        mapOf(
+                            "sets" to
+                                listOf(
+                                    mapOf(
+                                        "reps" to -1,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                ),
+                            "gymExerciseId" to 1,
                         ),
+                    ),
             )
 
         client.post().uri("/gym")
@@ -384,40 +384,40 @@ class GymActivityControllerTest {
                 "athleteId" to THIRD_ATHLETE_ID,
                 "date" to VALID_DATE,
                 "exercises" to
-                        listOf(
-                            mapOf(
-                                "sets" to
-                                        listOf(
-                                            mapOf(
-                                                "reps" to 10,
-                                                "weight" to 100.0,
-                                                "restTime" to 60.0,
-                                            ),
-                                            mapOf(
-                                                "reps" to 20,
-                                                "weight" to 100.0,
-                                                "restTime" to 60.0,
-                                            ),
-                                        ),
-                                "gymExerciseId" to 1,
-                            ),
-                            mapOf(
-                                "sets" to
-                                        listOf(
-                                            mapOf(
-                                                "reps" to 10,
-                                                "weight" to 100.0,
-                                                "restTime" to 60.0,
-                                            ),
-                                            mapOf(
-                                                "reps" to 20,
-                                                "weight" to 100.0,
-                                                "restTime" to 60.0,
-                                            ),
-                                        ),
-                                "gymExerciseId" to 2,
-                            ),
+                    listOf(
+                        mapOf(
+                            "sets" to
+                                listOf(
+                                    mapOf(
+                                        "reps" to 10,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                    mapOf(
+                                        "reps" to 20,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                ),
+                            "gymExerciseId" to 1,
                         ),
+                        mapOf(
+                            "sets" to
+                                listOf(
+                                    mapOf(
+                                        "reps" to 10,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                    mapOf(
+                                        "reps" to 20,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                ),
+                            "gymExerciseId" to 2,
+                        ),
+                    ),
             )
 
         client.post().uri("/gym")
@@ -539,46 +539,49 @@ class GymActivityControllerTest {
         val body =
             mapOf(
                 "date" to "02-05-2025",
-                "exercises" to listOf(
-                    mapOf(
-                        "gymExerciseId" to 3,
-                        "sets" to listOf(
-                            mapOf(
-                                "reps" to 10,
-                                "weight" to 100.0,
-                                "restTime" to 60.0,
-                            ),
-                            mapOf(
-                                "reps" to 20,
-                                "weight" to 100.0,
-                                "restTime" to 60.0,
-                            ),
+                "exercises" to
+                    listOf(
+                        mapOf(
+                            "gymExerciseId" to 3,
+                            "sets" to
+                                listOf(
+                                    mapOf(
+                                        "reps" to 10,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                    mapOf(
+                                        "reps" to 20,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                ),
+                            "order" to 1,
                         ),
-                        "order" to 1,
-                    ),
-                    mapOf(
-                        "id" to 7,
-                        "sets" to listOf(
-                            mapOf(
-                                "reps" to 10,
-                                "weight" to 100.0,
-                                "restTime" to 60.0,
-                                "order" to 3,
-                            ),
-                            mapOf(
-                                "id" to 17,
-                                "reps" to 20,
-                            ),
-                            mapOf(
-                                "id" to 18
-                            ),
+                        mapOf(
+                            "id" to 7,
+                            "sets" to
+                                listOf(
+                                    mapOf(
+                                        "reps" to 10,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                        "order" to 3,
+                                    ),
+                                    mapOf(
+                                        "id" to 17,
+                                        "reps" to 20,
+                                    ),
+                                    mapOf(
+                                        "id" to 18,
+                                    ),
+                                ),
+                            "order" to 3,
                         ),
-                        "order" to 3,
+                        mapOf(
+                            "id" to 8,
+                        ),
                     ),
-                    mapOf(
-                        "id" to 8,
-                    ),
-                ),
             )
 
         client.patch().uri("/gym/$SECOND_GYM_ACTIVITY_ID")
@@ -596,24 +599,26 @@ class GymActivityControllerTest {
         val body =
             mapOf(
                 "date" to "02-05-2025",
-                "exercises" to listOf(
-                    mapOf(
-                        "gymExerciseId" to 3,
-                        "sets" to listOf(
-                            mapOf(
-                                "reps" to 10,
-                                "weight" to 100.0,
-                                "restTime" to 60.0,
-                            ),
-                            mapOf(
-                                "reps" to 20,
-                                "weight" to 100.0,
-                                "restTime" to 60.0,
-                            ),
+                "exercises" to
+                    listOf(
+                        mapOf(
+                            "gymExerciseId" to 3,
+                            "sets" to
+                                listOf(
+                                    mapOf(
+                                        "reps" to 10,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                    mapOf(
+                                        "reps" to 20,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                ),
+                            "order" to 1,
                         ),
-                        "order" to 1,
                     ),
-                ),
             )
 
         client.patch().uri("/gym/$SECOND_GYM_ACTIVITY_ID")
@@ -630,24 +635,26 @@ class GymActivityControllerTest {
         val body =
             mapOf(
                 "date" to "02-05-2025",
-                "exercises" to listOf(
-                    mapOf(
-                        "gymExerciseId" to 3,
-                        "sets" to listOf(
-                            mapOf(
-                                "reps" to 10,
-                                "weight" to 100.0,
-                                "restTime" to 60.0,
-                            ),
-                            mapOf(
-                                "reps" to 20,
-                                "weight" to 100.0,
-                                "restTime" to 60.0,
-                            ),
+                "exercises" to
+                    listOf(
+                        mapOf(
+                            "gymExerciseId" to 3,
+                            "sets" to
+                                listOf(
+                                    mapOf(
+                                        "reps" to 10,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                    mapOf(
+                                        "reps" to 20,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                ),
+                            "order" to 1,
                         ),
-                        "order" to 1,
                     ),
-                ),
             )
 
         client.patch().uri("/gym/$SECOND_GYM_ACTIVITY_ID")
@@ -670,24 +677,26 @@ class GymActivityControllerTest {
         val body =
             mapOf(
                 "date" to "02-05-2025",
-                "exercises" to listOf(
-                    mapOf(
-                        "gymExerciseId" to 3,
-                        "sets" to listOf(
-                            mapOf(
-                                "reps" to 10,
-                                "weight" to 100.0,
-                                "restTime" to 60.0,
-                            ),
-                            mapOf(
-                                "reps" to 20,
-                                "weight" to 100.0,
-                                "restTime" to 60.0,
-                            ),
+                "exercises" to
+                    listOf(
+                        mapOf(
+                            "gymExerciseId" to 3,
+                            "sets" to
+                                listOf(
+                                    mapOf(
+                                        "reps" to 10,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                    mapOf(
+                                        "reps" to 20,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                ),
+                            "order" to 1,
                         ),
-                        "order" to 1,
                     ),
-                ),
             )
 
         client.patch().uri("/gym/$id")
@@ -708,24 +717,26 @@ class GymActivityControllerTest {
         val body =
             mapOf(
                 "date" to INVALID_DATE,
-                "exercises" to listOf(
-                    mapOf(
-                        "gymExerciseId" to 3,
-                        "sets" to listOf(
-                            mapOf(
-                                "reps" to 10,
-                                "weight" to 100.0,
-                                "restTime" to 60.0,
-                            ),
-                            mapOf(
-                                "reps" to 20,
-                                "weight" to 100.0,
-                                "restTime" to 60.0,
-                            ),
+                "exercises" to
+                    listOf(
+                        mapOf(
+                            "gymExerciseId" to 3,
+                            "sets" to
+                                listOf(
+                                    mapOf(
+                                        "reps" to 10,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                    mapOf(
+                                        "reps" to 20,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                ),
+                            "order" to 1,
                         ),
-                        "order" to 1,
                     ),
-                ),
             )
 
         client.patch().uri("/gym/$SECOND_GYM_ACTIVITY_ID")
@@ -746,24 +757,26 @@ class GymActivityControllerTest {
         val body =
             mapOf(
                 "date" to "02-05-2025",
-                "exercises" to listOf(
-                    mapOf(
-                        "gymExerciseId" to -1,
-                        "sets" to listOf(
-                            mapOf(
-                                "reps" to 10,
-                                "weight" to 100.0,
-                                "restTime" to 60.0,
-                            ),
-                            mapOf(
-                                "reps" to 20,
-                                "weight" to 100.0,
-                                "restTime" to 60.0,
-                            ),
+                "exercises" to
+                    listOf(
+                        mapOf(
+                            "gymExerciseId" to -1,
+                            "sets" to
+                                listOf(
+                                    mapOf(
+                                        "reps" to 10,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                    mapOf(
+                                        "reps" to 20,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                ),
+                            "order" to 1,
                         ),
-                        "order" to 1,
                     ),
-                ),
             )
 
         client.patch().uri("/gym/$SECOND_GYM_ACTIVITY_ID")
@@ -785,23 +798,25 @@ class GymActivityControllerTest {
 
         val body =
             mapOf(
-                "exercises" to listOf(
-                    mapOf(
-                        "id" to id,
-                        "sets" to listOf(
-                            mapOf(
-                                "reps" to 10,
-                                "weight" to 100.0,
-                                "restTime" to 60.0,
-                            ),
-                            mapOf(
-                                "reps" to 20,
-                                "weight" to 100.0,
-                                "restTime" to 60.0,
-                            ),
+                "exercises" to
+                    listOf(
+                        mapOf(
+                            "id" to id,
+                            "sets" to
+                                listOf(
+                                    mapOf(
+                                        "reps" to 10,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                    mapOf(
+                                        "reps" to 20,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                ),
                         ),
                     ),
-                ),
             )
 
         client.patch().uri("/gym/$SECOND_GYM_ACTIVITY_ID")
@@ -823,11 +838,12 @@ class GymActivityControllerTest {
 
         val body =
             mapOf(
-                "exercises" to listOf(
-                    mapOf(
-                        "id" to id,
+                "exercises" to
+                    listOf(
+                        mapOf(
+                            "id" to id,
+                        ),
                     ),
-                ),
             )
 
         client.patch().uri("/gym/$SECOND_GYM_ACTIVITY_ID")
@@ -848,24 +864,26 @@ class GymActivityControllerTest {
         val body =
             mapOf(
                 "date" to "02-05-2025",
-                "exercises" to listOf(
-                    mapOf(
-                        "gymExerciseId" to 3,
-                        "sets" to listOf(
-                            mapOf(
-                                "reps" to 10,
-                                "weight" to 100.0,
-                                "restTime" to 60.0,
-                            ),
-                            mapOf(
-                                "reps" to 20,
-                                "weight" to 100.0,
-                                "restTime" to 60.0,
-                            ),
+                "exercises" to
+                    listOf(
+                        mapOf(
+                            "gymExerciseId" to 3,
+                            "sets" to
+                                listOf(
+                                    mapOf(
+                                        "reps" to 10,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                    mapOf(
+                                        "reps" to 20,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                ),
+                            "order" to -1,
                         ),
-                        "order" to -1,
                     ),
-                ),
             )
 
         client.patch().uri("/gym/$SECOND_GYM_ACTIVITY_ID")
@@ -888,19 +906,21 @@ class GymActivityControllerTest {
         val body =
             mapOf(
                 "date" to "02-05-2025",
-                "exercises" to listOf(
-                    mapOf(
-                        "id" to 7,
-                        "sets" to listOf(
-                            mapOf(
-                                "id" to id,
-                                "reps" to 10,
-                                "weight" to 100.0,
-                                "restTime" to 60.0,
-                            ),
+                "exercises" to
+                    listOf(
+                        mapOf(
+                            "id" to 7,
+                            "sets" to
+                                listOf(
+                                    mapOf(
+                                        "id" to id,
+                                        "reps" to 10,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                ),
                         ),
                     ),
-                ),
             )
 
         client.patch().uri("/gym/$SECOND_GYM_ACTIVITY_ID")
@@ -922,16 +942,18 @@ class GymActivityControllerTest {
 
         val body =
             mapOf(
-                "exercises" to listOf(
-                    mapOf(
-                        "id" to 7,
-                        "sets" to listOf(
-                            mapOf(
-                                "id" to id,
-                            ),
+                "exercises" to
+                    listOf(
+                        mapOf(
+                            "id" to 7,
+                            "sets" to
+                                listOf(
+                                    mapOf(
+                                        "id" to id,
+                                    ),
+                                ),
                         ),
                     ),
-                ),
             )
 
         client.patch().uri("/gym/$SECOND_GYM_ACTIVITY_ID")
@@ -952,18 +974,20 @@ class GymActivityControllerTest {
         val body =
             mapOf(
                 "date" to "02-05-2025",
-                "exercises" to listOf(
-                    mapOf(
-                        "id" to 7,
-                        "sets" to listOf(
-                            mapOf(
-                                "reps" to -1,
-                                "weight" to 100.0,
-                                "restTime" to 60.0,
-                            ),
+                "exercises" to
+                    listOf(
+                        mapOf(
+                            "id" to 7,
+                            "sets" to
+                                listOf(
+                                    mapOf(
+                                        "reps" to -1,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                ),
                         ),
                     ),
-                ),
             )
 
         client.patch().uri("/gym/$SECOND_GYM_ACTIVITY_ID")
@@ -986,24 +1010,26 @@ class GymActivityControllerTest {
         val body =
             mapOf(
                 "date" to "02-05-2025",
-                "exercises" to listOf(
-                    mapOf(
-                        "gymExerciseId" to 3,
-                        "sets" to listOf(
-                            mapOf(
-                                "reps" to 10,
-                                "weight" to 100.0,
-                                "restTime" to 60.0,
-                            ),
-                            mapOf(
-                                "reps" to 20,
-                                "weight" to 100.0,
-                                "restTime" to 60.0,
-                            ),
+                "exercises" to
+                    listOf(
+                        mapOf(
+                            "gymExerciseId" to 3,
+                            "sets" to
+                                listOf(
+                                    mapOf(
+                                        "reps" to 10,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                    mapOf(
+                                        "reps" to 20,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                ),
+                            "order" to 1,
                         ),
-                        "order" to 1,
                     ),
-                ),
             )
 
         client.patch().uri("/gym/$id")
@@ -1018,30 +1044,32 @@ class GymActivityControllerTest {
     }
 
     @Test
-    fun `update gym activity - not gym activity`(){
+    fun `update gym activity - not gym activity`() {
         val client = WebTestClient.bindToServer().baseUrl(BASE_URL).build()
 
         val body =
             mapOf(
                 "date" to "02-05-2025",
-                "exercises" to listOf(
-                    mapOf(
-                        "gymExerciseId" to 3,
-                        "sets" to listOf(
-                            mapOf(
-                                "reps" to 10,
-                                "weight" to 100.0,
-                                "restTime" to 60.0,
-                            ),
-                            mapOf(
-                                "reps" to 20,
-                                "weight" to 100.0,
-                                "restTime" to 60.0,
-                            ),
+                "exercises" to
+                    listOf(
+                        mapOf(
+                            "gymExerciseId" to 3,
+                            "sets" to
+                                listOf(
+                                    mapOf(
+                                        "reps" to 10,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                    mapOf(
+                                        "reps" to 20,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                ),
+                            "order" to 1,
                         ),
-                        "order" to 1,
                     ),
-                ),
             )
 
         client.patch().uri("/gym/$NOT_GYM_ACTIVITY_ID")
@@ -1062,24 +1090,26 @@ class GymActivityControllerTest {
         val body =
             mapOf(
                 "date" to "02-05-2025",
-                "exercises" to listOf(
-                    mapOf(
-                        "gymExerciseId" to 3,
-                        "sets" to listOf(
-                            mapOf(
-                                "reps" to 10,
-                                "weight" to 100.0,
-                                "restTime" to 60.0,
-                            ),
-                            mapOf(
-                                "reps" to 20,
-                                "weight" to 100.0,
-                                "restTime" to 60.0,
-                            ),
+                "exercises" to
+                    listOf(
+                        mapOf(
+                            "gymExerciseId" to 3,
+                            "sets" to
+                                listOf(
+                                    mapOf(
+                                        "reps" to 10,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                    mapOf(
+                                        "reps" to 20,
+                                        "weight" to 100.0,
+                                        "restTime" to 60.0,
+                                    ),
+                                ),
+                            "order" to 1,
                         ),
-                        "order" to 1,
                     ),
-                ),
             )
 
         client.patch().uri("/gym/$FIRST_GYM_ACTIVITY_ID")
@@ -1184,7 +1214,6 @@ class GymActivityControllerTest {
             .expectBody()
             .jsonPath("type").isEqualTo(Problem.notGymActivity.type.toString())
     }
-
 
     companion object {
         private const val VALID_DATE = "18-07-2025"

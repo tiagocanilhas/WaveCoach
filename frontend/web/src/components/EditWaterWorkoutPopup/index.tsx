@@ -120,7 +120,6 @@ export function EditWaterWorkoutPopup({ workout, onClose, onSuccess }: EditWater
   }
 
   function handleUpdateWave(maneuvers: Maneuver[], rightSide: boolean) {
-    console.log('Updating wave with maneuvers:', maneuvers, 'and rightSide:', rightSide)
     dispatch({ type: 'updateWave', wave: { ...state.waveToEdit, maneuvers, rightSide } })
   }
 
@@ -146,29 +145,31 @@ export function EditWaterWorkoutPopup({ workout, onClose, onSuccess }: EditWater
     const duration = state.duration === workout.duration ? null : state.duration
     const trimp = state.trimp === workout.trimp ? null : state.trimp
 
-    const waves = diffListOrNull(state.waves, (wave, index) => {
-      const original = initialState.waves.find(w => w.id === wave.id)
+    const waves =
+      diffListOrNull(state.waves, (wave, index) => {
+        const original = initialState.waves.find(w => w.id === wave.id)
 
-      const newWave = {
-        id: wave.id,
-        rightSide: WorkoutEditing.onlyIfDifferent('rightSide', wave, original || {}),
-        maneuvers: diffListOrNull(wave.maneuvers, (maneuver, mIndex) => {
-          const originalManeuver = original?.maneuvers.find(m => m.id === maneuver.id) || {}
+        const newWave = {
+          id: wave.id,
+          rightSide: WorkoutEditing.onlyIfDifferent('rightSide', wave, original || {}),
+          maneuvers: diffListOrNull(wave.maneuvers, (maneuver, mIndex) => {
+            const originalManeuver = original?.maneuvers.find(m => m.id === maneuver.id) || {}
+            if (WorkoutEditing.checkDeleteObject(maneuver)) return maneuver
 
-          const newManeuver = {
-            id: maneuver.id,
-            waterManeuverId: maneuver.waterManeuverId,
-            success: WorkoutEditing.onlyIfDifferent('success', maneuver, originalManeuver),
-            order: WorkoutEditing.checkOrder(mIndex, maneuver.order),
-          }
+            const newManeuver = {
+              id: maneuver.id,
+              waterManeuverId: WorkoutEditing.onlyIfDifferent('waterManeuverId', maneuver, originalManeuver),
+              success: WorkoutEditing.onlyIfDifferent('success', maneuver, originalManeuver),
+              order: WorkoutEditing.checkOrder(mIndex, maneuver.order),
+            }
 
-          return WorkoutEditing.noEditingMade(newManeuver) ? null : newManeuver
-        }),
-        order: WorkoutEditing.checkOrder(index, wave.order),
-      }
+            return WorkoutEditing.noEditingMade(newManeuver) ? null : newManeuver
+          }),
+          order: WorkoutEditing.checkOrder(index, wave.order),
+        }
 
-      return WorkoutEditing.noEditingMade(newWave) ? null : newWave
-    })
+        return WorkoutEditing.noEditingMade(newWave) ? null : newWave
+      }) ?? []
 
     try {
       await updateWaterActivity(wid, date, condition, rpe, duration, trimp, [...waves, ...state.removedWaves])
@@ -240,13 +241,17 @@ export function EditWaterWorkoutPopup({ workout, onClose, onSuccess }: EditWater
                 <ReorderableList<WaterWorkoutWave>
                   list={waves}
                   renderItem={info => (
-                    <div>
+                    <div key={info.id || info.tempId}>
                       <p>Side: {info.rightSide ? '➡️' : '⬅️'}</p>
-                      {info.maneuvers.map(m => (
-                        <p>
-                          {m.name} {m.success ? '✅' : '❌'}
-                        </p>
-                      ))}
+                      {info.maneuvers.map(m => {
+                        if (WorkoutEditing.checkDeleteObject(m)) return null
+
+                        return (
+                          <p key={m.id || m.tempId}>
+                            {m.name} {m.success ? '✅' : '❌'}
+                          </p>
+                        )
+                      })}
                     </div>
                   )}
                   onReorder={handleSetWaves}

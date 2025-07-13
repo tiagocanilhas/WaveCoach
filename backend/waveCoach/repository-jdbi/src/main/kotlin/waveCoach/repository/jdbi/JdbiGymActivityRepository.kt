@@ -66,7 +66,7 @@ class JdbiGymActivityRepository(
             """
             insert into waveCoach.exercise (activity, exercise, exercise_order) 
             values (:activity, :exercise, :exerciseOrder)
-            """
+            """,
         ).use { batch ->
             exercises.forEach { exercise ->
                 batch.bind("activity", exercise.activityId)
@@ -111,7 +111,7 @@ class JdbiGymActivityRepository(
             """
             update waveCoach.exercise set exercise_order = coalesce(:exerciseOrder, exercise_order)
             where id = :id
-            """
+            """,
         ).use { batch ->
             exercises.forEach { exercise ->
                 batch
@@ -194,7 +194,7 @@ class JdbiGymActivityRepository(
             """
             insert into waveCoach.set (exercise_id, weight, reps, rest_time, set_order) 
             values (:exercise_id, :weight, :reps, :rest_time, :setOrder)
-            """
+            """,
         ).use { batch ->
             sets.forEach { set ->
                 batch.bind("exercise_id", set.exerciseId)
@@ -239,7 +239,7 @@ class JdbiGymActivityRepository(
             rest_time = coalesce(:restTime, rest_time), 
             set_order = coalesce(:setOrder, set_order) 
         where id = :id
-        """
+        """,
         ).use { batch ->
             sets.forEach { set ->
                 batch.bind("id", set.id)
@@ -297,7 +297,10 @@ class JdbiGymActivityRepository(
     }
 
     // Verify methods
-    override fun verifyExerciseOrder(activityId: Int, exerciseOrder: Int): Boolean =
+    override fun verifyExerciseOrder(
+        activityId: Int,
+        exerciseOrder: Int,
+    ): Boolean =
         handle.createQuery(
             """
             select exists(select 1 from waveCoach.exercise where activity = :activityId and exercise_order = :exerciseOrder)
@@ -308,7 +311,10 @@ class JdbiGymActivityRepository(
             .mapTo<Boolean>()
             .one()
 
-    override fun setBelongsToExercise(exerciseId: Int, setId: Int): Boolean =
+    override fun setBelongsToExercise(
+        exerciseId: Int,
+        setId: Int,
+    ): Boolean =
         handle.createQuery(
             """
             select exists(select 1 from waveCoach.set where exercise_id = :exerciseId and id = :setId)
@@ -319,7 +325,10 @@ class JdbiGymActivityRepository(
             .mapTo<Boolean>()
             .one()
 
-    override fun verifySetOrder(exerciseId: Int, setOrder: Int): Boolean =
+    override fun verifySetOrder(
+        exerciseId: Int,
+        setOrder: Int,
+    ): Boolean =
         handle.createQuery(
             """
             select exists(select 1 from waveCoach.set where exercise_id = :exerciseId and set_order = :setOrder)

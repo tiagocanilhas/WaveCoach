@@ -99,7 +99,7 @@ export function Competition() {
     await fetchCompetitions()
     dispatch({ type: 'toggleIsAdding' })
   }
-  
+
   async function handleOnUpdateSuccess() {
     await fetchCompetitions()
     dispatch({ type: 'setCompetition', competition: undefined })
@@ -123,7 +123,13 @@ export function Competition() {
 
       {isAdding && <AddCompetitionPopup onClose={handleToggleIsAdding} onSuccess={handleOnSuccess} />}
 
-      {competition && <CompetitionPopup competition={competition} onClose={() => handleOnClick(undefined)} onUpdateSuccess={handleOnUpdateSuccess} />}
+      {competition && (
+        <CompetitionPopup
+          competition={competition}
+          onClose={() => handleOnClick(undefined)}
+          onUpdateSuccess={handleOnUpdateSuccess}
+        />
+      )}
     </div>
   )
 }

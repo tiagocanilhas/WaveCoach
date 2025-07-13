@@ -127,7 +127,7 @@ class GymActivityServicesTest {
             listOf(
                 ExerciseInputInfo(
                     sets = listOf(SetInputInfo(reps = -1, weight = -1f, restTime = -1f)),
-                    gymExerciseId = 1
+                    gymExerciseId = 1,
                 ),
             )
 

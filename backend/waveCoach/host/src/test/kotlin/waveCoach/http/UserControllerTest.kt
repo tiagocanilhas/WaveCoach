@@ -294,7 +294,7 @@ class UserControllerTest {
             )
 
         invalidUsernames.forEach { username ->
-            val body = mapOf("newUsername" to username,)
+            val body = mapOf("newUsername" to username)
 
             client.patch().uri("/me/username")
                 .header("Authorization", "Bearer $TOKEN_OF_SECOND_COACH")

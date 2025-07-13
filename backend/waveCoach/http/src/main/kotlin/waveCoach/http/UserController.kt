@@ -99,7 +99,7 @@ class UserController(
     @PatchMapping(Uris.Users.UPDATE_PASSWORD)
     fun updatePassword(
         user: AuthenticatedUser,
-        @RequestBody input: UserUpdatePasswordInputModel
+        @RequestBody input: UserUpdatePasswordInputModel,
     ): ResponseEntity<*> {
         val result = userServices.updatePassword(user.info.id, input.oldPassword, input.newPassword)
 
@@ -119,5 +119,4 @@ class UserController(
                 }
         }
     }
-
 }
