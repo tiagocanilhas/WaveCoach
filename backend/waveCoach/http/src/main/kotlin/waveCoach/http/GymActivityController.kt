@@ -83,6 +83,7 @@ class GymActivityController(
                                 ExerciseWithSetsOutputModel(
                                     exercise.id,
                                     exercise.gymExercise,
+                                    exercise.name,
                                     exercise.exerciseOrder,
                                     exercise.url,
                                     exercise.sets.map { set ->

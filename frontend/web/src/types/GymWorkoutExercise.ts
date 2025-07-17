@@ -4,7 +4,7 @@ export type GymWorkoutExercise = {
   id: number
   tempId?: number
   gymExerciseId?: number
-  name: string
+  name?: string
   order?: number
   url?: string
   sets: GymWorkoutSet[]

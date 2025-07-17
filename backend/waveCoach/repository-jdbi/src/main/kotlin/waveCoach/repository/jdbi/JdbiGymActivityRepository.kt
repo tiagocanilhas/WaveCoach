@@ -82,7 +82,7 @@ class JdbiGymActivityRepository(
     override fun getExercises(activityId: Int): List<Exercise> =
         handle.createQuery(
             """
-            select e.id, e.activity, ge.name, e.exercise_order, ge.url
+            select e.id, e.activity, ge.id as gym_exercise, ge.name, e.exercise_order, ge.url
             from waveCoach.exercise e
             join waveCoach.gym_exercise ge on e.exercise = ge.id
             where e.activity = :activityId

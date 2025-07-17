@@ -198,6 +198,7 @@ class GymActivityServices(
                     ExerciseWithSets(
                         exercise.id,
                         exercise.activity,
+                        exercise.gymExercise,
                         exercise.name,
                         exercise.exerciseOrder,
                         exercise.url,

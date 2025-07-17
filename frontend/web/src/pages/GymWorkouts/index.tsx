@@ -9,10 +9,12 @@ import { AddGymWorkoutPopup } from '../../components/AddGymWorkoutPopup'
 import { getCalendar } from '../../../../services/athleteServices'
 import { getGymActivity } from '../../../../services/gymServices'
 
-import styles from './styles.module.css'
-import { useAuthentication } from '../../hooks/useAuthentication'
 import { handleError } from '../../../../utils/handleError'
 import { epochConverter } from '../../../../utils/epochConverter'
+
+import { useAuthentication } from '../../hooks/useAuthentication'
+
+import styles from './styles.module.css'
 
 type State = {
   calendar: any[]
@@ -98,7 +100,23 @@ export function GymWorkouts() {
     dispatch({ type: 'closeWorkout' })
   }
 
-  if (state.calendar === undefined) return <CircularProgress />
+  if (state.calendar === undefined || state.workout === undefined) return <CircularProgress />
+
+  const lastWorkoutContent = {
+    ...state.workout,
+    id: null,
+    date: new Date().toISOString().split('T')[0],
+    exercises: state.workout.exercises.map(exercise => ({
+      ...exercise,
+      id: null,
+      tempId: Date.now() + Math.random(),
+      sets: exercise.sets.map(set => ({
+        ...set,
+        id: null,
+        tempId: Date.now() + Math.random()
+      })),
+    }))
+  }
 
   return (
     <>
@@ -138,7 +156,7 @@ export function GymWorkouts() {
         onDeleteSuccess={fetchCalendar}
       />
 
-      {state.isOpen && <AddGymWorkoutPopup onClose={handleClose} onSuccess={handleOnSuccess} />}
+      {state.isOpen && <AddGymWorkoutPopup workout={lastWorkoutContent} onClose={handleClose} onSuccess={handleOnSuccess} />}
     </>
   )
 }
