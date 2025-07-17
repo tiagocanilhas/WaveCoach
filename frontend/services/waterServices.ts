@@ -26,14 +26,22 @@ export async function getWaterActivity(wid: number) {
   return customFetch(URIS.WATER.getById(wid), 'GET')
 }
 
-export async function updateWaterActivity(wid: number, date?: string, condition?: string, rpe?: number, duration?: number, trimp?: number, waves?: any[]){
+export async function updateWaterActivity(
+  wid: number,
+  date?: string,
+  condition?: string,
+  rpe?: number,
+  duration?: number,
+  trimp?: number,
+  waves?: any[]
+) {
   return customFetch(URIS.WATER.update(wid), 'PATCH', {
     date: date == null ? null : toDisplayFormat(date),
     condition,
     rpe,
     duration,
     trimp,
-    waves
+    waves,
   })
 }
 

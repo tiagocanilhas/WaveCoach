@@ -30,6 +30,7 @@ type Action =
   | { type: 'setWaveToEdit'; wave: WaterWorkoutWave }
   | { type: 'updateWave'; wave: WaterWorkoutWave }
   | { type: 'removeWave'; id: number; tempId: number }
+  | { type: 'setWavePoints'; id: number; tempId?: number; points: number }
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
@@ -64,6 +65,15 @@ function reducer(state: State, action: Action): State {
         waves: state.waves.filter(w => (w.id !== null ? w.id !== action.id : w.tempId !== action.tempId)),
         removedWaves: [...state.removedWaves, WorkoutEditing.nullifyFieldsExceptId(waveToRemove)],
       }
+    case 'setWavePoints':
+      return {
+        ...state,
+        waves: state.waves.map(wave => {
+          const matchById = wave.id !== null && wave.id === action.id
+          const matchByTempId = wave.id === null && wave.tempId === action.tempId
+          return matchById || matchByTempId ? { ...wave, points: action.points } : wave
+        }),
+      }
     default:
       return state
   }
@@ -71,11 +81,10 @@ function reducer(state: State, action: Action): State {
 
 type HandleHeatProps = {
   heat?: Heat
-  onDelete: () => void
   setHeat: (heat: Heat) => void
 }
 
-export function HandleHeat({ heat, onDelete, setHeat }: HandleHeatProps) {
+export function HandleHeat({ heat, setHeat }: HandleHeatProps) {
   const initialState: State = {
     points: heat ? heat.score : 0,
     waves: JSON.parse(JSON.stringify(heat ? heat.waterActivity.waves : [])),
@@ -123,6 +132,10 @@ export function HandleHeat({ heat, onDelete, setHeat }: HandleHeatProps) {
     }
   }
 
+  function handleSetWavePoints(points: number, id: number, tempId?: number) {
+    dispatch({ type: 'setWavePoints', id, tempId, points })
+  }
+
   const points = state.points
   const waves = state.waves
 
@@ -132,7 +145,9 @@ export function HandleHeat({ heat, onDelete, setHeat }: HandleHeatProps) {
         <TextField name="points" type="number" label="Points" value={points} onChange={handleOnChange} />
         <ReorderableList
           list={waves}
-          renderItem={info => <HandleHeatWave wave={info} />}
+          renderItem={info => (
+            <HandleHeatWave wave={info} setPoints={points => handleSetWavePoints(points, info.id, info.tempId)} />
+          )}
           onReorder={handleReorder}
           onClick={handleWaveToEdit}
           onDelete={wave => handleOnDeleteWave(wave.id, wave.tempId)}

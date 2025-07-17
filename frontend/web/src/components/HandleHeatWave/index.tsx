@@ -25,9 +25,10 @@ function reducer(state: State, action: Action): State {
 
 type HandleHeatWaveProps = {
   wave?: WaterWorkoutWave
+  setPoints: (points: number) => void
 }
 
-export function HandleHeatWave({ wave: initialWave }: HandleHeatWaveProps) {
+export function HandleHeatWave({ wave: initialWave, setPoints }: HandleHeatWaveProps) {
   const initialState: State = {
     points: initialWave ? initialWave.points : 0,
   }
@@ -36,6 +37,9 @@ export function HandleHeatWave({ wave: initialWave }: HandleHeatWaveProps) {
   function handleOnChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target
     dispatch({ type: 'edit', name, value })
+    if (name === 'points') {
+      setPoints(Number(value))
+    }
   }
 
   const points = state.points

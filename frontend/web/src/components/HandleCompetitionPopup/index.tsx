@@ -18,12 +18,26 @@ import { parseToEpoch } from '../../../../utils/parseToEpoch'
 import styles from './styles.module.css'
 
 type State = {
+  tag: 'editing'
   date: string
   location: string
   place: number
   name: string
   heats: Heat[]
   removedHeats: Heat[]
+  error?: string
+}
+| {
+  tag: 'submitting'
+  date: string
+  location: string
+  place: number
+  name: string
+  heats: Heat[]
+  removedHeats: Heat[]
+}
+| {
+  tag: 'submitted'
 }
 
 type Action =
@@ -32,32 +46,55 @@ type Action =
   | { type: 'addHeat'; heat: Heat }
   | { type: 'removeHeat'; id: number; tempId: number }
   | { type: 'setHeat'; heat: Heat }
+  | { type: 'submit' }
+  | { type: 'success' }
+  | { type: 'error'; error: string }
 
 function reducer(state: State, action: Action): State {
-  switch (action.type) {
-    case 'edit':
-      return { ...state, [action.name]: action.value }
-    case 'setHeats':
-      return { ...state, heats: action.heats }
-    case 'addHeat':
-      return { ...state, heats: [...state.heats, action.heat] }
-    case 'removeHeat':
-      const removedHeat = state.heats.find(heat => (heat.id === null ? heat.tempId === action.tempId : heat.id === action.id))
-      return {
-        ...state,
-        heats: state.heats.filter(heat => (heat.id === null ? heat.tempId !== action.tempId : heat.id !== action.id)),
-        removedHeats: [...state.removedHeats, WorkoutEditing.nullifyFieldsExceptId(removedHeat)],
+  switch (state.tag) {
+    case 'editing':
+      switch (action.type) {
+        case 'edit':
+          return { ...state, [action.name]: action.value }
+        case 'setHeats':
+          return { ...state, heats: action.heats }
+        case 'addHeat':
+          return { ...state, heats: [...state.heats, action.heat] }
+        case 'removeHeat':
+          const removedHeat = state.heats.find(heat => (heat.id === null ? heat.tempId === action.tempId : heat.id === action.id))
+          return {
+            ...state,
+            heats: state.heats.filter(heat => (heat.id === null ? heat.tempId !== action.tempId : heat.id !== action.id)),
+            removedHeats: [...state.removedHeats, WorkoutEditing.nullifyFieldsExceptId(removedHeat)],
+          }
+        case 'setHeat':
+          console.log('Setting heat:', action.heat)
+          return {
+            ...state,
+            heats: state.heats.map(heat => {
+              const matchById = heat.id !== null && heat.id === action.heat.id
+              const matchByTempId = heat.id === null && heat.tempId === action.heat.tempId
+              return matchById || matchByTempId ? action.heat : heat
+            }),
+          }
+        case 'submit':
+          return { ...state, tag: 'submitting' }
+        case 'error':
+        default:
+          return state
       }
-    case 'setHeat':
-      return {
-        ...state,
-        heats: state.heats.map(heat => {
-          const matchById = heat.id !== null && heat.id === action.heat.id
-          const matchByTempId = heat.id === null && heat.tempId === action.heat.tempId
-          return matchById || matchByTempId ? action.heat : heat
-        }),
+
+    case 'submitting':
+      switch (action.type) {
+        case 'success':
+          return { tag: 'submitted' }
+        case 'error':
+          return { ...state, tag: 'editing', error: action.error }
+        default:
+          return state
       }
-    default:
+
+    case 'submitted':
       return state
   }
 }
@@ -70,6 +107,7 @@ type HandleCompetitionPopupProps = {
 
 export function HandleCompetitionPopup({ competition, onSave, onClose }: HandleCompetitionPopupProps) {
   const initialState: State = {
+    tag: 'editing',
     date: competition ? new Date(competition.date).toISOString().split('T')[0] : '',
     location: competition ? competition.location : '',
     place: competition ? competition.place : 1,
@@ -121,6 +159,12 @@ export function HandleCompetitionPopup({ competition, onSave, onClose }: HandleC
 
   async function handleOnSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
+
+    if (state.tag !== 'editing') return
+
+    dispatch({ type: 'submit' })
+
+
     const competitionData: Competition = {
       id: competition ? competition.id : null,
       uid: aid,
@@ -132,30 +176,32 @@ export function HandleCompetitionPopup({ competition, onSave, onClose }: HandleC
     }
     try {
       await onSave(competitionData)
+      dispatch({ type: 'success' })
     } catch (error) {
       alert(`Error saving competition: ${error.message}`)
       return
     }
   }
 
+  if (state.tag === 'submitted') return
+  
   const date = state.date
   const location = state.location
   const place = state.place
   const name = state.name
   const heats = state.heats
 
-  const disabled = 
+  const disabled =
+    state.tag !== 'editing' ||
     date.length === 0 ||
     location.length === 0 ||
     place <= 0 ||
     name.length === 0 ||
-    (
-      date === initialState.date &&
+    (date === initialState.date &&
       location === initialState.location &&
       place === initialState.place &&
       name === initialState.name &&
-      JSON.stringify(heats) === JSON.stringify(initialState.heats)
-    )
+      JSON.stringify(heats) === JSON.stringify(initialState.heats))
 
   return (
     <Popup
@@ -182,9 +228,7 @@ export function HandleCompetitionPopup({ competition, onSave, onClose }: HandleC
               <div className={styles.heatsContainer}>
                 <ReorderableList<Heat>
                   list={heats}
-                  renderItem={heat => (
-                    <HandleHeat key={heat.id} heat={heat} onDelete={() => handleOnDeleteHeat(heat.id, heat.tempId)} setHeat={handleOnSetHeat} />
-                  )}
+                  renderItem={heat => <HandleHeat key={heat.id} heat={heat} setHeat={handleOnSetHeat} />}
                   onReorder={handleReorder}
                   onDelete={heat => handleOnDeleteHeat(heat.id, heat.tempId)}
                   onAdd={handleAddHeat}

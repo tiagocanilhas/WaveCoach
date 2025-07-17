@@ -76,7 +76,7 @@ export function AthletePopup({ onClose, onSuccess, data }: AthletePopupProps) {
 
   const initialState: State = {
     tag: 'editing',
-    inputs: { name: data?.name || '', birthdate: epochConverter(data?.birthdate, 'yyyy-mm-dd'), url: data?.url },
+    inputs: { name: data?.name || '', birthdate: data ? epochConverter(data.birthdate, 'yyyy-mm-dd') : '', url: data?.url },
     image: null,
   }
   const [state, dispatch] = useReducer(reducer, initialState)
@@ -115,7 +115,7 @@ export function AthletePopup({ onClose, onSuccess, data }: AthletePopupProps) {
   const url = state.tag === 'editing' ? state.inputs.url : undefined
   const image = state.tag === 'editing' ? state.image : null
   const disabled =
-    state.tag === 'submitting' ||
+    state.tag !== 'editing' ||
     name.trim() === '' ||
     birthdate.trim() === '' ||
     (isEditing &&

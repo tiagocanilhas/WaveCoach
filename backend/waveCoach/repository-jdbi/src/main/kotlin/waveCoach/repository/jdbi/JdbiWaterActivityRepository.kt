@@ -125,6 +125,7 @@ class JdbiWaterActivityRepository(
 			  order by a2.date desc
 			  limit 1
 			)
+            order by wv.wave_order asc, m.maneuver_order asc
         """.trimIndent()
 
         val rows =

@@ -59,7 +59,7 @@ export class WorkoutEditing {
     const newValue = index + 1
     switch (oldValue) {
         case null:
-            return null
+            return newValue
         case newValue:
             return null
         default:

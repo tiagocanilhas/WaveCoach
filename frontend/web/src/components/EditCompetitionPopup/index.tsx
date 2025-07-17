@@ -43,7 +43,7 @@ export function EditCompetitionPopup({ competition, onClose, onSuccess }: EditCo
       return WorkoutEditing.noEditingMade(newHeat) ? null : newHeat
     })
 
-    await updateCompetition(competition.uid, competition.id, location,  epochConverter(date, 'yyyy-mm-dd'), place, name, heats)
+    await updateCompetition(competition.uid, competition.id, location, epochConverter(date, 'yyyy-mm-dd'), place, name, heats)
     onSuccess()
   }
 
@@ -65,7 +65,6 @@ function checkWaterActivity(newWaterActivity: WaterWorkout, oldWaterActivity?: W
       points: WorkoutEditing.onlyIfDifferent('points', wave, original || {}),
       rightSide: WorkoutEditing.onlyIfDifferent('rightSide', wave, original || {}),
       maneuvers: diffListOrNull(wave.maneuvers, (maneuver, mIndex) => {
-
         const originalManeuver = original?.maneuvers.find(m => m.id === maneuver.id)
 
         const newManeuver = {
@@ -73,14 +72,13 @@ function checkWaterActivity(newWaterActivity: WaterWorkout, oldWaterActivity?: W
           waterManeuverId: WorkoutEditing.onlyIfDifferent('waterManeuverId', maneuver, originalManeuver || {}),
           name: WorkoutEditing.onlyIfDifferent('name', maneuver, originalManeuver || {}),
           success: WorkoutEditing.onlyIfDifferent('success', maneuver, originalManeuver || {}),
-          order: WorkoutEditing.checkOrder(mIndex, maneuver.order)
+          order: WorkoutEditing.checkOrder(mIndex, maneuver.order),
         }
 
         return WorkoutEditing.noEditingMade(newManeuver) ? null : newManeuver
       }),
       order: WorkoutEditing.checkOrder(index, wave.order),
     }
-
 
     return WorkoutEditing.noEditingMade(newWave) ? null : newWave
   })

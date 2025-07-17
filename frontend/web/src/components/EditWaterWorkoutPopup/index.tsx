@@ -23,18 +23,33 @@ import styles from './styles.module.css'
 import { epochConverter } from '../../../../utils/epochConverter'
 import { diffListOrNull } from '../../../../utils/diffListOrNull'
 
-type State = {
-  isAdding: boolean
-  date: string
-  condition: string
-  rpe: number
-  duration: number
-  trimp: number
-  waveToEdit: WaterWorkoutWave | null
-  waves: WaterWorkoutWave[]
-  removedWaves: WaterWorkoutWave[]
-  error?: string
-}
+type State =
+  | {
+      tag: 'editing'
+      isAdding: boolean
+      date: string
+      condition: string
+      rpe: number
+      duration: number
+      trimp: number
+      waveToEdit: WaterWorkoutWave | null
+      waves: WaterWorkoutWave[]
+      removedWaves: WaterWorkoutWave[]
+      error?: string
+    }
+  | {
+      tag: 'submitting'
+      isAdding: boolean
+      date: string
+      condition: string
+      rpe: number
+      duration: number
+      trimp: number
+      waves: WaterWorkoutWave[]
+      removedWaves: WaterWorkoutWave[]
+      waveToEdit: WaterWorkoutWave | null
+    }
+  | { tag: 'submitted' }
 
 type Action =
   | { type: 'toggleIsAdding' }
@@ -42,45 +57,70 @@ type Action =
   | { type: 'addWave'; wave: WaterWorkoutWave }
   | { type: 'setWaveToEdit'; wave: WaterWorkoutWave | null }
   | { type: 'updateWave'; wave: WaterWorkoutWave }
-  | { type: 'deleteWave'; id: number }
+  | { type: 'deleteWave'; id: number; tempId?: number }
   | { type: 'setWaves'; waves: WaterWorkoutWave[] }
   | { type: 'error'; error: string }
+  | { type: 'submit' }
+  | { type: 'success' }
 
 function reducer(state: State, action: Action): State {
-  switch (action.type) {
-    case 'toggleIsAdding':
-      return { ...state, isAdding: !state.isAdding }
-    case 'setValue':
-      return { ...state, [action.name]: action.value }
-    case 'addWave':
-      return {
-        ...state,
-        isAdding: false,
-        waves: [...state.waves, action.wave],
+  switch (state.tag) {
+    case 'editing':
+      switch (action.type) {
+        case 'toggleIsAdding':
+          return { ...state, isAdding: !state.isAdding }
+        case 'setValue':
+          return { ...state, [action.name]: action.value }
+        case 'addWave':
+          return {
+            ...state,
+            isAdding: false,
+            waves: [...state.waves, action.wave],
+          }
+        case 'setWaveToEdit':
+          return { ...state, waveToEdit: action.wave, isAdding: false }
+        case 'updateWave':
+          return {
+            ...state,
+            waves: state.waves.map(wave => {
+              const matchById = wave.id !== null && wave.id === action.wave.id
+              const matchByTempId = wave.id === null && wave.tempId === action.wave.tempId
+              return matchById || matchByTempId ? action.wave : wave
+            }),
+            waveToEdit: null,
+          }
+        case 'deleteWave':
+          const removedWave = state.waves.find(wave => (wave.id === null ? wave.tempId === action.tempId : wave.id === action.id))
+          if (!removedWave) return state
+
+          return {
+            ...state,
+            waves: state.waves.filter(wave => wave !== removedWave),
+            removedWaves:
+              removedWave.id !== null
+                ? [...state.removedWaves, WorkoutEditing.nullifyFieldsExceptId(removedWave)]
+                : state.removedWaves,
+          }
+        case 'setWaves':
+          return { ...state, waves: action.waves }
+        case 'error':
+          return { ...state, error: action.error }
+        case 'submit':
+          return { ...state, tag: 'submitting' }
+        default:
+          return state
       }
-    case 'setWaveToEdit':
-      return { ...state, waveToEdit: action.wave, isAdding: false }
-    case 'updateWave':
-      return {
-        ...state,
-        waves: state.waves.map(wave => {
-          const matchById = wave.id !== null && wave.id === action.wave.id
-          const matchByTempId = wave.id === null && wave.tempId === action.wave.tempId
-          return matchById || matchByTempId ? action.wave : wave
-        }),
-        waveToEdit: null,
+    case 'submitting':
+      switch (action.type) {
+        case 'success':
+          return { ...state, tag: 'submitted' }
+        case 'error':
+          return { ...state, tag: 'editing', error: action.error }
+        default:
+          return state
       }
-    case 'deleteWave':
-      const removedWave = state.waves.find(wave => wave.id === action.id)
-      return {
-        ...state,
-        waves: state.waves.filter(wave => wave.id !== action.id),
-        removedWaves: [...state.removedWaves, WorkoutEditing.nullifyFieldsExceptId(removedWave)],
-      }
-    case 'setWaves':
-      return { ...state, waves: action.waves }
-    case 'error':
-      return { ...state, error: action.error }
+    case 'submitted':
+      return state
     default:
       return state
   }
@@ -94,6 +134,7 @@ type EditWaterWorkoutPopupProps = {
 
 export function EditWaterWorkoutPopup({ workout, onClose, onSuccess }: EditWaterWorkoutPopupProps) {
   const initialState: State = {
+    tag: 'editing',
     date: epochConverter(workout.date, 'yyyy-mm-dd'),
     isAdding: false,
     condition: workout.condition,
@@ -106,6 +147,11 @@ export function EditWaterWorkoutPopup({ workout, onClose, onSuccess }: EditWater
   }
   const [state, dispatch] = useReducer(reducer, initialState)
   const wid = Number(useParams().wid)
+
+  if (state.tag === 'submitted') {
+    onSuccess()
+    return
+  }
 
   function handleToggleIsAdding() {
     dispatch({ type: 'toggleIsAdding' })
@@ -120,11 +166,12 @@ export function EditWaterWorkoutPopup({ workout, onClose, onSuccess }: EditWater
   }
 
   function handleUpdateWave(maneuvers: Maneuver[], rightSide: boolean) {
+    if (state.tag !== 'editing' || !state.waveToEdit) return
     dispatch({ type: 'updateWave', wave: { ...state.waveToEdit, maneuvers, rightSide } })
   }
 
-  function handleDeleteWave(id: number) {
-    if (confirm('Are you sure you want to delete this wave?')) dispatch({ type: 'deleteWave', id })
+  function handleDeleteWave(id: number, tempId?: number) {
+    if (confirm('Are you sure you want to delete this wave?')) dispatch({ type: 'deleteWave', id, tempId })
   }
 
   function handleSetWaves(waves: WaterWorkoutWave[]) {
@@ -139,6 +186,8 @@ export function EditWaterWorkoutPopup({ workout, onClose, onSuccess }: EditWater
   async function handleOnSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
 
+    if (state.tag !== 'editing') return
+
     const date = state.date === epochConverter(workout.date, 'yyyy-mm-dd') ? null : state.date
     const condition = state.condition === workout.condition ? null : state.condition
     const rpe = state.rpe === workout.rpe ? null : state.rpe
@@ -147,7 +196,7 @@ export function EditWaterWorkoutPopup({ workout, onClose, onSuccess }: EditWater
 
     const waves =
       diffListOrNull(state.waves, (wave, index) => {
-        const original = initialState.waves.find(w => w.id === wave.id)
+        const original = workout.waves.find(w => w.id === wave.id)
 
         const newWave = {
           id: wave.id,
@@ -187,7 +236,9 @@ export function EditWaterWorkoutPopup({ workout, onClose, onSuccess }: EditWater
   const trimp = state.trimp
   const waves = state.waves
   const waveToEdit = state.waveToEdit
+  const error = state.tag === 'editing' ? state.error : undefined
   const disabled =
+    state.tag !== 'editing' ||
     state.waves.length === 0 ||
     date.length === 0 ||
     duration === 0 ||
@@ -256,13 +307,13 @@ export function EditWaterWorkoutPopup({ workout, onClose, onSuccess }: EditWater
                   )}
                   onReorder={handleSetWaves}
                   onClick={item => handleSetWaveToEdit(item)}
-                  onDelete={item => handleDeleteWave(item.id)}
+                  onDelete={item => handleDeleteWave(item.id, item.tempId)}
                   onAdd={handleToggleIsAdding}
                 />
               </div>
               <Button text="Save" type="submit" disabled={disabled} width="100%" height="30px" />
             </form>
-            {state.error && <p className={styles.error}>{state.error}</p>}
+            {error && <p className={styles.error}>{error}</p>}
           </>
         }
         onClose={onClose}

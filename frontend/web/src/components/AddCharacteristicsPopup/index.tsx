@@ -199,7 +199,7 @@ export function AddCharacteristicsPopup({ onClose, onSuccess }: AddCharacteristi
   const tricepFat = state.tag === 'editing' ? state.inputs.tricepFat : undefined
   const abdomenFat = state.tag === 'editing' ? state.inputs.abdomenFat : undefined
   const thighFat = state.tag === 'editing' ? state.inputs.thighFat : undefined
-  const disabled = state.tag === 'submitting'
+  const disabled = state.tag !== 'editing'
 
   return (
     <Popup

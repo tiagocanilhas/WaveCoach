@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useEffect, useReducer } from 'react'
-import { Text, View } from 'react-native'
+import { Alert, Text, View } from 'react-native'
 import { NavigationProp, RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 
 import { MainView } from '@components/MainView'
@@ -9,13 +9,15 @@ import { Loading } from '@components/Loading'
 import { ItemsWithSearchBox } from '@components/ItemsWithSearchBox'
 import { ManeuverPopup } from '@components/ManeuverPopup'
 import { RootStackParamList } from '@components/Navigator'
+import { Header } from '@components/Header'
 
 import { getWaterManeuvers } from '@services/waterManeuverServices'
 
 import { WaterManeuver as WaterManeuverType } from '@types/WaterManeuver'
 
+import { handleError } from '@utils/handleError'
+
 import { styles } from './styles'
-import { Header } from '@components/Header'
 
 type State =
   | { tag: 'loading' }
@@ -65,7 +67,7 @@ export function Maneuvers() {
         const { status, res } = await getWaterManeuvers()
         dispatch({ type: 'setManeuvers', maneuvers: res.maneuvers })
       } catch (error) {
-        console.error('Error fetching maneuvers:', error)
+        Alert.alert('Error', `Failed to fetch maneuvers: ${handleError(error.res)}`)
       }
     }
     fetchData()

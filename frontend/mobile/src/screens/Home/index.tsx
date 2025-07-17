@@ -152,12 +152,14 @@ export function Home() {
         waves: res.waves.map(wave => ({
           id: wave.id,
           rightSide: wave.rightSide,
+          order: wave.order,
           maneuvers: wave.maneuvers.map(maneuver => ({
             id: maneuver.id,
             waterManeuverId: maneuver.waterManeuverId,
             name: maneuver.name,
             url: maneuver.url,
             success: maneuver.success,
+            order: maneuver.order,
           })),
         })),
       }
@@ -165,7 +167,7 @@ export function Home() {
       await new Promise(resolve => setTimeout(resolve, 600))
       dispatch({ type: 'edit', name: '' })
     } catch (error) {
-      Alert.alert('Error', `Failed to fetch last workout: ${handleError(error)}`)
+      Alert.alert('Error', `Failed to fetch last workout: ${handleError(error.res)}`)
     }
   }
 

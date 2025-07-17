@@ -23,14 +23,25 @@ import { diffListOrNull } from '../../../../utils/diffListOrNull'
 
 import styles from './styles.module.css'
 
-type State = {
-  isAdding: boolean
-  date: string
-  exercises: GymWorkoutExercise[]
-  removedExercises: GymWorkoutExercise[]
-  exerciseToEdit: GymWorkoutExercise
-  error?: string
-}
+type State =
+  | {
+      tag: 'editing'
+      isAdding: boolean
+      date: string
+      exercises: GymWorkoutExercise[]
+      removedExercises: GymWorkoutExercise[]
+      exerciseToEdit: GymWorkoutExercise
+      error?: string
+    }
+  | {
+      tag: 'submitting'
+      isAdding: boolean
+      date: string
+      exercises: GymWorkoutExercise[]
+      removedExercises: GymWorkoutExercise[]
+      exerciseToEdit: GymWorkoutExercise
+    }
+  | { tag: 'submitted' }
 
 type Action =
   | { type: 'toggleAdding' }
@@ -41,52 +52,90 @@ type Action =
   | { type: 'editExercise'; exercise: GymWorkoutExercise }
   | { type: 'setExercises'; exercises: GymWorkoutExercise[] }
   | { type: 'error'; error: string }
+  | { type: 'submit' }
+  | { type: 'success' }
 
 function reducer(state: State, action: Action): State {
-  switch (action.type) {
-    case 'toggleAdding':
-      return { ...state, isAdding: !state.isAdding }
-    case 'setValue':
-      return { ...state, [action.name]: action.value }
-    case 'removeExercise':
-      const removedExercise = state.exercises.find(exercise =>
-        exercise.id === null ? exercise.tempId === action.tempId : exercise.id === action.id
-      )
-      return {
-        ...state,
-        exercises: state.exercises.filter(exercise =>
-          exercise.id === null ? exercise.tempId !== action.tempId : exercise.id !== action.id
-        ),
-        removedExercises: [...state.removedExercises, WorkoutEditing.nullifyFieldsExceptId(removedExercise)],
+  switch (state.tag) {
+    case 'editing':
+      switch (action.type) {
+        case 'toggleAdding':
+          return { ...state, isAdding: !state.isAdding }
+        case 'setValue':
+          return { ...state, [action.name]: action.value }
+        case 'removeExercise':
+          const removedExercise = state.exercises.find(exercise =>
+            exercise.id === null ? exercise.tempId === action.tempId : exercise.id === action.id
+          )
+          if (!removedExercise) return state
+
+          return {
+            ...state,
+            exercises: state.exercises.filter(exercise =>
+              exercise.id === null ? exercise.tempId !== action.tempId : exercise.id !== action.id
+            ),
+            removedExercises:
+              removedExercise.id !== null
+                ? [...state.removedExercises, WorkoutEditing.nullifyFieldsExceptId(removedExercise)]
+                : state.removedExercises,
+          }
+        case 'addExercise':
+          return {
+            ...state,
+            exercises: [...state.exercises, action.exercise],
+            isAdding: false,
+            exerciseToEdit: null,
+          }
+        case 'setExerciseToEdit':
+          return {
+            ...state,
+            exerciseToEdit: action.exercise,
+            isAdding: false,
+          }
+        case 'editExercise':
+          return {
+            ...state,
+            exercises: state.exercises.map(exercise => {
+              const matchById = exercise.id !== null && exercise.id === action.exercise.id
+              const matchByTempId = exercise.id === null && exercise.tempId === action.exercise.tempId
+              return matchById || matchByTempId ? action.exercise : exercise
+            }),
+            exerciseToEdit: null,
+          }
+        case 'setExercises':
+          return { ...state, exercises: action.exercises }
+        case 'error':
+          return { ...state, error: action.error }
+        case 'submit':
+          return {
+            tag: 'submitting',
+            date: state.date,
+            exercises: state.exercises,
+            removedExercises: state.removedExercises,
+            exerciseToEdit: state.exerciseToEdit,
+            isAdding: state.isAdding,
+          }
+        default:
+          return state
       }
-    case 'addExercise':
-      return {
-        ...state,
-        exercises: [...state.exercises, action.exercise],
-        isAdding: false,
-        exerciseToEdit: null,
+    case 'submitting':
+      switch (action.type) {
+        case 'success':
+          return { tag: 'submitted' }
+        case 'error':
+          return {
+            tag: 'editing',
+            isAdding: false,
+            error: action.error,
+            date: state.date,
+            exercises: state.exercises,
+            removedExercises: state.removedExercises,
+            exerciseToEdit: state.exerciseToEdit,
+          }
+        default:
+          return state
       }
-    case 'setExerciseToEdit':
-      return {
-        ...state,
-        exerciseToEdit: action.exercise,
-        isAdding: false,
-      }
-    case 'editExercise':
-      return {
-        ...state,
-        exercises: state.exercises.map(exercise => {
-          const matchById = exercise.id !== null && exercise.id === action.exercise.id
-          const matchByTempId = exercise.id === null && exercise.tempId === action.exercise.tempId
-          return matchById || matchByTempId ? action.exercise : exercise
-        }),
-        exerciseToEdit: null,
-      }
-    case 'setExercises':
-      return { ...state, exercises: action.exercises }
-    case 'error':
-      return { ...state, error: action.error }
-    default:
+    case 'submitted':
       return state
   }
 }
@@ -99,6 +148,7 @@ type EditGymWorkoutPopupProps = {
 
 export function EditGymWorkoutPopup({ workout, onClose, onSuccess }: EditGymWorkoutPopupProps) {
   const initialState: State = {
+    tag: 'editing',
     isAdding: false,
     date: epochConverter(workout.date, 'yyyy-mm-dd'),
     exercises: JSON.parse(JSON.stringify(workout.exercises)) as GymWorkoutExercise[],
@@ -108,6 +158,11 @@ export function EditGymWorkoutPopup({ workout, onClose, onSuccess }: EditGymWork
   }
   const [state, dispatch] = useReducer(reducer, initialState)
   const gid = Number(useParams().gid)
+
+  if (state.tag === 'submitted') {
+    onSuccess()
+    return
+  }
 
   function handleToggleAdding() {
     dispatch({ type: 'toggleAdding' })
@@ -156,11 +211,15 @@ export function EditGymWorkoutPopup({ workout, onClose, onSuccess }: EditGymWork
   async function handleOnSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
 
+    if (state.tag !== 'editing') return
+
+    dispatch({ type: 'submit' })
+
     const date = state.date === epochConverter(workout.date, 'yyyy-mm-dd') ? null : state.date
 
     const exercises =
       diffListOrNull(state.exercises, (exercise, index) => {
-        const original = initialState.exercises.find(e => e.id === exercise.id)
+        const original = workout.exercises.find(e => e.id === exercise.id)
 
         const newExercise = {
           id: exercise.id,
@@ -188,7 +247,7 @@ export function EditGymWorkoutPopup({ workout, onClose, onSuccess }: EditGymWork
 
     try {
       await updateGymActivity(gid, date, [...exercises, ...state.removedExercises])
-      onSuccess()
+      dispatch({ type: 'success' })
     } catch (error) {
       dispatch({ type: 'error', error: handleError(error.res) })
     }
@@ -197,8 +256,9 @@ export function EditGymWorkoutPopup({ workout, onClose, onSuccess }: EditGymWork
   const isAdding = state.isAdding
   const date = state.date
   const exercises = state.exercises
-  const error = state.error
+  const error = state.tag === 'editing' ? state.error : undefined
   const disabled =
+    state.tag !== 'editing' ||
     state.exercises.length === 0 ||
     date.length === 0 ||
     (date === epochConverter(workout.date, 'yyyy-mm-dd') &&
@@ -241,7 +301,7 @@ export function EditGymWorkoutPopup({ workout, onClose, onSuccess }: EditGymWork
               </div>
               <Button text="Save" type="submit" disabled={disabled} width="100%" height="30px" />
             </form>
-            {state.error && <p className={styles.error}>{error}</p>}
+            {error && <p className={styles.error}>{error}</p>}
           </>
         }
         onClose={onClose}

@@ -101,7 +101,7 @@ export function Wave() {
   function handleOnAddManeuver() {
     navigation.navigate('Maneuvers', {
       onSave: (maneuver: Maneuver) => {
-        dispatch({ type: 'addManeuver', maneuver: { ...maneuver, order: state.editableManeuvers.length + 1 } })
+        dispatch({ type: 'addManeuver', maneuver })
       },
     })
   }

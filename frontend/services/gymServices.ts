@@ -17,4 +17,3 @@ export async function updateGymActivity(gid: number, date: string, exercises: an
 export async function deleteGymActivity(gid: number) {
   return await customFetch(URIS.GYM.delete(gid), 'DELETE')
 }
-

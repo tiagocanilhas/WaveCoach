@@ -68,8 +68,8 @@ export function GymWorkoutsDetails() {
     dispatch({ type: 'toggleEditing' })
   }
 
-  function handleOnSuccess() {
-    fetchData()
+  async function handleOnSuccess() {
+    await fetchData()
     dispatch({ type: 'toggleEditing' })
   }
 

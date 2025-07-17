@@ -77,7 +77,9 @@ export function Login() {
     try {
       const { status, res } = await login(name, password)
 
-      setUser({ id: res.id, username: res.username, isCoach: res.isCoach })
+      if (!res.isCoach) throw { status, res: { title: 'Athlete cannot login', type: '' } }
+
+      setUser({ id: res.id, username: res.username })
       await Storage.saveToken(res.token)
 
       dispatch({ type: 'success' })
