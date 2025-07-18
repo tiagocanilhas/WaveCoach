@@ -28,9 +28,8 @@ export function AddGymWorkoutPopup({ workout, onClose, onSuccess }: AddGymWorkou
     }))
 
     await createGymActivity(id, date, exercises)
-    onSuccess()
   }
 
-  return <GymWorkoutPopup workout={workout} isNew={true} onClose={onClose} onSave={handleOnSave} />
+  return <GymWorkoutPopup workout={workout} isNew={true} onClose={onClose} onSave={handleOnSave} onSuccess={onSuccess} />
 }
 

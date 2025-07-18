@@ -53,8 +53,7 @@ export function EditGymWorkoutPopup({ workout, onClose, onSuccess }: EditGymWork
       }) ?? []
       
     await updateGymActivity(gid, date, [...exercises, ...stateRemovedExercises])
-    onSuccess()
   }
 
-  return <GymWorkoutPopup workout={workout} isNew={false}  onClose={onClose} onSave={handleOnSave} />
+  return <GymWorkoutPopup workout={workout} isNew={false}  onClose={onClose} onSave={handleOnSave} onSuccess={onSuccess} />
 }

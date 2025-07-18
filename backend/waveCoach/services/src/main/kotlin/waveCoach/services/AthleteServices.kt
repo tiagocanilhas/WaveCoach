@@ -422,6 +422,8 @@ class AthleteServices(
 
             userRepository.removeUser(aid)
 
+            athlete.url?.let { url -> cloudinaryServices.deleteImage(url) }
+
             success(aid)
         }
     }

@@ -141,9 +141,10 @@ type GymWorkoutPopupProps = {
   isNew: boolean
   onClose: () => void
   onSave: (date: string, exercises: GymWorkoutExercise[], removedExercises: GymWorkoutExercise[]) => Promise<void>
+  onSuccess: () => void
 }
 
-export function GymWorkoutPopup({ workout, isNew, onClose, onSave }: GymWorkoutPopupProps) {
+export function GymWorkoutPopup({ workout, isNew, onClose, onSave, onSuccess }: GymWorkoutPopupProps) {
   const initialState: State = {
     tag: 'editing',
     isAdding: false,
@@ -156,6 +157,7 @@ export function GymWorkoutPopup({ workout, isNew, onClose, onSave }: GymWorkoutP
   const [state, dispatch] = useReducer(reducer, initialState)
 
   if (state.tag === 'submitted') {
+    onSuccess()
     return
   }
 
@@ -211,7 +213,7 @@ export function GymWorkoutPopup({ workout, isNew, onClose, onSave }: GymWorkoutP
     dispatch({ type: 'submit' })
 
     try {
-      onSave(date, state.exercises, state.removedExercises)
+      await onSave(date, state.exercises, state.removedExercises)
       dispatch({ type: 'success' })
     } catch (error) {
       dispatch({ type: 'error', error: handleError(error.res) })

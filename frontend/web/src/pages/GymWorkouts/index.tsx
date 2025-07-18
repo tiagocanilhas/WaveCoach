@@ -102,7 +102,7 @@ export function GymWorkouts() {
 
   if (state.calendar === undefined || state.workout === undefined) return <CircularProgress />
 
-  const lastWorkoutContent = {
+  const lastWorkoutContent = state.workout === null ? undefined : {
     ...state.workout,
     id: null,
     date: new Date().toISOString().split('T')[0],

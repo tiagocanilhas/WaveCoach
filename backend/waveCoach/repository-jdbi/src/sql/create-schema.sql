@@ -1,12 +1,11 @@
 -- Drop existing tables if they exist
 DROP TABLE IF EXISTS waveCoach.heat;
-DROP TABLE IF EXISTS waveCoach.athlete_competition;
 DROP TABLE IF EXISTS waveCoach.competition;
 DROP TABLE IF EXISTS waveCoach.maneuver;
-DROP TABLE IF EXISTS waveCoach.water_maneuver;
+DROP TABLE IF EXISTS waveCoach.wave;
 DROP TABLE IF EXISTS waveCoach.questionnaire;
 DROP TABLE IF EXISTS waveCoach.water;
-DROP TABLE IF EXISTS waveCoach.sets;
+DROP TABLE IF EXISTS waveCoach.set;
 DROP TABLE IF EXISTS waveCoach.exercise;
 DROP TABLE IF EXISTS waveCoach.gym_exercise;
 DROP TABLE IF EXISTS waveCoach.gym;
@@ -19,6 +18,7 @@ DROP TABLE IF EXISTS waveCoach.code;
 DROP TABLE IF EXISTS waveCoach.athlete;
 DROP TABLE IF EXISTS waveCoach.coach;
 DROP TABLE IF EXISTS waveCoach.user;
+DROP TABLE IF EXISTS waveCoach.water_maneuver;
 
 -- Create schema
 CREATE SCHEMA IF NOT EXISTS waveCoach;

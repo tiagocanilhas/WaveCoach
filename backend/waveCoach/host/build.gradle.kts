@@ -56,48 +56,22 @@ kotlin {
     jvmToolchain(21)
 }
 
-/**
- * Docker related tasks
- */
-task<Copy>("extractUberJar") {
-    dependsOn("assemble")
-    from(zipTree(layout.buildDirectory.file("libs/host-$version.jar").get().toString()))
-    into("build/dependency")
+tasks.register<Copy>("copyRuntimeDependencies") {
+    into("build/libs")
+    from(configurations.runtimeClasspath)
 }
 
-val jvmTag = "wavecoach-jvm"
-val nginxTag = "wavecoach-nginx"
-val postgresTestTag = "wavecoach-postgres-test"
-val ubuntuTag = "wavecoach-ubuntu"
-
-task<Exec>("buildImageJvm") {
-    dependsOn("extractUberJar")
-    commandLine("docker", "build", "-t", jvmTag, "-f", "tests/Dockerfile-jvm", ".")
+tasks.named<Jar>("jar") {
+    archiveBaseName.set("wavecoach")
+    archiveVersion.set("")
+    archiveClassifier.set("")
+    dependsOn("copyRuntimeDependencies")
+    manifest {
+        attributes["Main-Class"] = "waveCoach.host.WaveCoachApplicationKt"
+        attributes["Class-Path"] = configurations.runtimeClasspath.get().joinToString(" ") { it.name }
+    }
 }
 
-task<Exec>("buildImageNginx") {
-    commandLine("docker", "build", "-t", nginxTag, "-f", "tests/Dockerfile-nginx", ".")
-}
-
-task<Exec>("buildImagePostgresTest") {
-    commandLine("docker", "build", "-t", postgresTestTag, "-f", "tests/Dockerfile-postgres-test", "../repository-jdbi")
-}
-
-task<Exec>("buildImageUbuntu") {
-    commandLine("docker", "build", "-t", ubuntuTag, "-f", "tests/Dockerfile-ubuntu", ".")
-}
-
-task("buildImageAll") {
-    dependsOn("buildImageJvm")
-    dependsOn("buildImageNginx")
-    dependsOn("buildImagePostgresTest")
-    dependsOn("buildImageUbuntu")
-}
-
-task<Exec>("allUp") {
-    commandLine("docker", "compose", "up", "--force-recreate", "-d")
-}
-
-task<Exec>("allDown") {
-    commandLine("docker", "compose", "down")
+tasks.register("stage") {
+    dependsOn("assemble", "copyRuntimeDependencies")
 }
