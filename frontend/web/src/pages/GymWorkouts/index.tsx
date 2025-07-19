@@ -102,21 +102,24 @@ export function GymWorkouts() {
 
   if (state.calendar === undefined || state.workout === undefined) return <CircularProgress />
 
-  const lastWorkoutContent = state.workout === null ? undefined : {
-    ...state.workout,
-    id: null,
-    date: new Date().toISOString().split('T')[0],
-    exercises: state.workout.exercises.map(exercise => ({
-      ...exercise,
-      id: null,
-      tempId: Date.now() + Math.random(),
-      sets: exercise.sets.map(set => ({
-        ...set,
-        id: null,
-        tempId: Date.now() + Math.random()
-      })),
-    }))
-  }
+  const lastWorkoutContent =
+    state.workout === null
+      ? undefined
+      : {
+          ...state.workout,
+          id: null,
+          date: new Date().toISOString().split('T')[0],
+          exercises: state.workout.exercises.map(exercise => ({
+            ...exercise,
+            id: null,
+            tempId: Date.now() + Math.random(),
+            sets: exercise.sets.map(set => ({
+              ...set,
+              id: null,
+              tempId: Date.now() + Math.random(),
+            })),
+          })),
+        }
 
   return (
     <>

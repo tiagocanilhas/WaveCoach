@@ -138,8 +138,8 @@ export function WaterWorkoutsDetails() {
   const numberOfWavesPerMinute = (numberOfWaves / durationInMinutes).toFixed(2)
   const questionnaire = state.tag === 'loaded' ? state.questionnaire : null
 
-  const leftSideManeuvers = workout.waves.filter(wave => wave.rightSide).flatMap(wave => wave.maneuvers)
-  const rightSideManeuvers = workout.waves.filter(wave => !wave.rightSide).flatMap(wave => wave.maneuvers)
+  const leftSideManeuvers = workout.waves.filter(wave => !wave.rightSide).flatMap(wave => wave.maneuvers)
+  const rightSideManeuvers = workout.waves.filter(wave => wave.rightSide).flatMap(wave => wave.maneuvers)
 
   return (
     <>

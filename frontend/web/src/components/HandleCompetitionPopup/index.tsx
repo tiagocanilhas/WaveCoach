@@ -17,28 +17,29 @@ import { parseToEpoch } from '../../../../utils/parseToEpoch'
 
 import styles from './styles.module.css'
 
-type State = {
-  tag: 'editing'
-  date: string
-  location: string
-  place: number
-  name: string
-  heats: Heat[]
-  removedHeats: Heat[]
-  error?: string
-}
-| {
-  tag: 'submitting'
-  date: string
-  location: string
-  place: number
-  name: string
-  heats: Heat[]
-  removedHeats: Heat[]
-}
-| {
-  tag: 'submitted'
-}
+type State =
+  | {
+      tag: 'editing'
+      date: string
+      location: string
+      place: number
+      name: string
+      heats: Heat[]
+      removedHeats: Heat[]
+      error?: string
+    }
+  | {
+      tag: 'submitting'
+      date: string
+      location: string
+      place: number
+      name: string
+      heats: Heat[]
+      removedHeats: Heat[]
+    }
+  | {
+      tag: 'submitted'
+    }
 
 type Action =
   | { type: 'edit'; name: string; value: string | number }
@@ -164,7 +165,6 @@ export function HandleCompetitionPopup({ competition, onSave, onClose }: HandleC
 
     dispatch({ type: 'submit' })
 
-
     const competitionData: Competition = {
       id: competition ? competition.id : null,
       uid: aid,
@@ -184,7 +184,7 @@ export function HandleCompetitionPopup({ competition, onSave, onClose }: HandleC
   }
 
   if (state.tag === 'submitted') return
-  
+
   const date = state.date
   const location = state.location
   const place = state.place

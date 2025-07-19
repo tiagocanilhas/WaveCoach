@@ -80,9 +80,9 @@ const initialState: State = {
   date: new Date().toISOString().split('T')[0],
   isAdding: false,
   condition: '',
-  rpe: 0,
+  rpe: 1,
   time: 0,
-  trimp: 0,
+  trimp: 50,
   waveToEdit: null,
   waves: [],
 }

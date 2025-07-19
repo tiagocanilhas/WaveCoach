@@ -1031,7 +1031,7 @@ class AthleteServices(
                                         if (wave.order != null &&
                                             (
                                                 wave.order <= 0 ||
-                                                    !checkOrderConflict(wavesOnDB, update, "waveOrder", wave.order)
+                                                    !checkOrderConflict(wavesOnDB, heat.waterActivity.waves, "waveOrder", wave.order)
                                             )
                                         ) {
                                             return@run failure(UpdateCompetitionError.InvalidWaveOrder)
@@ -1075,7 +1075,7 @@ class AthleteServices(
                                             if (it.order != null && (
                                                     it.order <= 0 ||
                                                         !checkOrderConflict(
-                                                            maneuversOnDB, maneuverUpdate, "maneuverOrder", it.order,
+                                                            maneuversOnDB, wave.maneuvers, "maneuverOrder", it.order,
                                                         )
                                                 )
                                             ) {

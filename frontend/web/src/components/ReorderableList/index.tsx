@@ -1,8 +1,7 @@
 import * as React from 'react'
-import { Reorder } from 'framer-motion'
-
+import { FaBars } from 'react-icons/fa'
+import { Reorder, useDragControls } from 'framer-motion'
 import { Card } from '../Card'
-
 import styles from './styles.module.css'
 
 type ReorderableListProps<T> = {
@@ -35,17 +34,13 @@ export function ReorderableList<T>({
       style={{ flexDirection: order === 'y' ? 'column' : 'row' }}
     >
       {list.map(item => (
-        <Reorder.Item
-          className={styles.item}
+        <ReorderableListItem
           key={JSON.stringify(item)}
-          value={item}
-          whileDrag={{
-            opacity: 0.6,
-            pointerEvents: 'none',
-          }}
-        >
-          <Card content={renderItem(item)} onClick={() => onClick?.(item)} onDelete={() => onDelete?.(item)} width="100%" />
-        </Reorder.Item>
+          item={item}
+          renderItem={renderItem}
+          onClick={onClick}
+          onDelete={onDelete}
+        />
       ))}
       {onAdd && (
         <Card
@@ -58,5 +53,38 @@ export function ReorderableList<T>({
         />
       )}
     </Reorder.Group>
+  )
+}
+
+type ReorderableListItemProps<T> = {
+  item: T
+  renderItem: (item: T) => React.ReactNode
+  onClick?: (item: T) => void
+  onDelete?: (item: T) => void
+}
+
+function ReorderableListItem<T>({ item, renderItem, onClick, onDelete }: ReorderableListItemProps<T>) {
+  const controls = useDragControls()
+
+  return (
+    <Reorder.Item
+      className={styles.item}
+      value={item}
+      dragListener={false}
+      dragControls={controls}
+      whileDrag={{ opacity: 0.6, pointerEvents: 'none' }}
+    >
+      <Card
+        content={
+          <div className={styles.item}>
+            <FaBars className={styles.dragItem} onPointerDown={e => controls.start(e)} />
+            {renderItem(item)}
+          </div>
+        }
+        onClick={() => onClick?.(item)}
+        onDelete={() => onDelete?.(item)}
+        width="100%"
+      />
+    </Reorder.Item>
   )
 }

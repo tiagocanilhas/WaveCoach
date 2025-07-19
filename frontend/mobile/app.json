@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "mobile",
+    "name": "WaveCoach",
     "slug": "mobile",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -20,13 +20,19 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.tiagocanilhas.wavecoach"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "expo-secure-store"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "411f1152-99cb-450e-a109-d203744b3f77"
+      }
+    }
   }
 }

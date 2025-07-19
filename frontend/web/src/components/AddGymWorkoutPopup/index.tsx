@@ -32,4 +32,3 @@ export function AddGymWorkoutPopup({ workout, onClose, onSuccess }: AddGymWorkou
 
   return <GymWorkoutPopup workout={workout} isNew={true} onClose={onClose} onSave={handleOnSave} onSuccess={onSuccess} />
 }
-

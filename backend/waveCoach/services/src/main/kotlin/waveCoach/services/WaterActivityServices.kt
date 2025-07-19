@@ -476,7 +476,7 @@ class WaterActivityServices(
                 val wavesToInsert =
                     create.map { wave ->
                         if (wave.order == null || wave.order <= 0 ||
-                            waterActivityRepository.verifyWaveOrder(activityId, wave.order)
+                            !checkOrderConflict(wavesOnDB, waves, "waveOrder", wave.order)
                         ) {
                             return@run failure(UpdateWaterActivityError.InvalidWaveOrder)
                         }

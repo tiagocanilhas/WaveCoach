@@ -45,7 +45,7 @@ type AddQuestionnairePopupProps = {
 }
 
 export function AddQuestionnairePopup({ onClose, onSuccess }: AddQuestionnairePopupProps) {
-  const initialState: State = { tag: 'editing', sleep: 0, fatigue: 0, stress: 0, musclePain: 0, error: undefined }
+  const initialState: State = { tag: 'editing', sleep: 1, fatigue: 1, stress: 1, musclePain: 1, error: undefined }
   const [state, dispatch] = useReducer(reducer, initialState)
   const wid = Number(useParams().wid)
 

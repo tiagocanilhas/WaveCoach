@@ -38,12 +38,11 @@ export function ItemsWithSearchBox<T>({
     <MainView style={styles.container}>
       <View style={styles.header}>
         <Input style={styles.input} value={value} placeholder="Search" onChange={onChange} />
-        {isExtended !== undefined ||
-          (toggleExtended !== undefined && (
+        { toggleExtended !== undefined && (
             <TouchableOpacity style={styles.button} onPress={toggleExtended}>
               <MaterialIcons name={isExtended ? 'view-agenda' : 'view-module'} size={24} color="black" />
             </TouchableOpacity>
-          ))}
+        )}
       </View>
       <ScrollView style={styles.scrollContainer}>
         <View style={[styles.itemsContainer, isExtended ? styles.extended : styles.notExtended]}>

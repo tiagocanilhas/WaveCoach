@@ -233,9 +233,9 @@ export function WaterCharts({ data, selected }: WaterChartsProps) {
 
     // Maneuvers Attempts Data (Right Side)
     const maneuverR = waves.filter(w => w.rightSide).flatMap(wave => wave.maneuvers)
-    const maneuversRLabels = maneuverR.map(m => m.name).filter((value, index, self) => self.indexOf(value) === index)
 
     const rightManeuvers = countManeuvers(maneuverR)
+    const maneuversRLabels = Object.values(rightManeuvers).map(m => m.name)
     const rightSuccessesData = Object.keys(rightManeuvers).map(label => rightManeuvers[label].success || 0)
     const rightFailuresData = Object.keys(rightManeuvers).map(label => rightManeuvers[label].failure || 0)
     const rightAccuracyData = Object.keys(rightManeuvers).map(label => {
@@ -245,8 +245,9 @@ export function WaterCharts({ data, selected }: WaterChartsProps) {
 
     // Maneuvers Attempts Data (Left Side)
     const maneuverL = waves.filter(w => !w.rightSide).flatMap(wave => wave.maneuvers)
-    const maneuversLLabels = maneuverL.map(m => m.name).filter((value, index, self) => self.indexOf(value) === index)
+
     const leftManeuvers = countManeuvers(maneuverL)
+    const maneuversLLabels = Object.values(leftManeuvers).map(m => m.name)
     const leftSuccessesData = Object.keys(leftManeuvers).map(label => leftManeuvers[label].success || 0)
     const leftFailuresData = Object.keys(leftManeuvers).map(label => leftManeuvers[label].failure || 0)
     const maneuversLPercentages = Object.keys(leftManeuvers).map(label => {

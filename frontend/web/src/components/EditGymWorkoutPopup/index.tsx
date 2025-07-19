@@ -25,7 +25,8 @@ export function EditGymWorkoutPopup({ workout, onClose, onSuccess }: EditGymWork
   async function handleOnSave(stateDate: string, stateExercises: any[], stateRemovedExercises: any[]) {
     const date = stateDate === epochConverter(workout.date, 'yyyy-mm-dd') ? null : stateDate
 
-    const exercises: GymWorkoutExercise[] = diffListOrNull(stateExercises, (exercise, index) => {
+    const exercises: GymWorkoutExercise[] =
+      diffListOrNull(stateExercises, (exercise, index) => {
         const original = workout.exercises.find(e => e.id === exercise.id)
 
         const newExercise = {
@@ -51,9 +52,9 @@ export function EditGymWorkoutPopup({ workout, onClose, onSuccess }: EditGymWork
 
         return WorkoutEditing.noEditingMade(newExercise) ? null : newExercise
       }) ?? []
-      
+
     await updateGymActivity(gid, date, [...exercises, ...stateRemovedExercises])
   }
 
-  return <GymWorkoutPopup workout={workout} isNew={false}  onClose={onClose} onSave={handleOnSave} onSuccess={onSuccess} />
+  return <GymWorkoutPopup workout={workout} isNew={false} onClose={onClose} onSave={handleOnSave} onSuccess={onSuccess} />
 }

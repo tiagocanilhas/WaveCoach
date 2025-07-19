@@ -149,7 +149,7 @@ export function GymWorkoutPopup({ workout, isNew, onClose, onSave, onSuccess }: 
     tag: 'editing',
     isAdding: false,
     date: workout ? epochConverter(workout.date, 'yyyy-mm-dd') : new Date().toISOString().split('T')[0],
-    exercises: workout ? JSON.parse(JSON.stringify(workout.exercises)) as GymWorkoutExercise[] : [],
+    exercises: workout ? (JSON.parse(JSON.stringify(workout.exercises)) as GymWorkoutExercise[]) : [],
     removedExercises: [],
     exerciseToEdit: null,
     error: undefined,
